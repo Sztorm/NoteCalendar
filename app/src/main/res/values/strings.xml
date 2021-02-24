@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Note Calendar</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="Save">Save</string>
+    <string name="Cancel">Cancel</string>
+    <string name="AddText">Add text</string>
+    <string name="DayOfMonthTestValue">8</string>
+    <string name="MonthTestValue">October</string>
+    <string name="DayOfWeekTestValue">Monday</string>
+    <string name="AddNote">Add note</string>
+    <string name="lblMonth_January">January</string>
+    <string name="lblMonth_February">February</string>
+    <string name="lblMonth_March">March</string>
+    <string name="lblMonth_April">April</string>
+    <string name="lblMonth_May">May</string>
+    <string name="lblMonth_June">June</string>
+    <string name="lblMonth_July">July</string>
+    <string name="lblMonth_August">August</string>
+    <string name="lblMonth_September">September</string>
+    <string name="lblMonth_October">October</string>
+    <string name="lblMonth_November">November</string>
+    <string name="lblMonth_December">December</string>
+    <string name="lblDayOfWeek_Monday">Monday</string>
+    <string name="lblDayOfWeek_Tuesday">Tuesday</string>
+    <string name="lblDayOfWeek_Wednesday">Wednesday</string>
+    <string name="lblDayOfWeek_Thursday">Thursday</string>
+    <string name="lblDayOfWeek_Friday">Friday</string>
+    <string name="lblDayOfWeek_Saturday">Saturday</string>
+    <string name="lblDayOfWeek_Sunday">Sunday</string>
+</resources>

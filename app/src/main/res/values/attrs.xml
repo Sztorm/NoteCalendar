@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="colorText" format="reference" />
+    <attr name="colorNotePrimary" format="reference" />
+    <attr name="colorNoteSecondary" format="reference" />
+    <attr name="colorBackground" format="reference" />
+</resources>
