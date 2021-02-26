@@ -66,6 +66,18 @@ class DayFragment : Fragment() {
             fragmentSetter.setFragment(
                 DayNoteFragment.createInstance(this, possibleNote))
         }
+        mView.setOnTouchListener(object : OnSwipeTouchListener(mView.context) {
+
+            override fun onSwipeLeft() {
+                mainActivity.viewedDate = mainActivity.viewedDate.plusDays(1)
+                mainActivity.setFragment(DayFragment, R.anim.anim_in_left, R.anim.anim_out_left)
+            }
+
+            override fun onSwipeRight() {
+                mainActivity.viewedDate = mainActivity.viewedDate.minusDays(1)
+                mainActivity.setFragment(DayFragment, R.anim.anim_in_right, R.anim.anim_out_right)
+            }
+        })
         handleBtnNoteAddClickEvent()
         setLabelsText(viewedDate)
         return mView

@@ -32,8 +32,12 @@ class MainActivity : AppCompatActivity() {
         schemaGenerator.createDatabase(SugarDb(this).db)
     }
 
-    fun <T, TCreator> setFragment(fragmentCreator: TCreator)
-            where T : Fragment, TCreator : InstanceCreator<T> {
+    fun <T, TCreator> setFragment(
+        fragmentCreator: TCreator,
+        resAnimIn: Int = R.anim.anim_in,
+        resAnimOut: Int = R.anim.anim_out)
+        where T : Fragment, TCreator : InstanceCreator<T> {
+
         when (fragmentCreator) {
             is DayFragment.Companion -> {
                 currentFragmentType = FragmentType.DAY_FRAGMENT
@@ -48,7 +52,7 @@ class MainActivity : AppCompatActivity() {
                 groupNavBtn.check(R.id.btnViewMonth)
             }
         }
-        fragmentSetter.setFragment(fragmentCreator)
+        fragmentSetter.setFragment(fragmentCreator, resAnimIn, resAnimOut)
     }
 
     private fun handleBtnViewDayClickEvent() = btnViewDay.setOnClickListener {
