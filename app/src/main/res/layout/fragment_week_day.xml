@@ -1,39 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".WeekDayFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:layout_height="65dp"
+    android:orientation="horizontal"
     android:layout_marginVertical="10dp"
     android:layout_marginHorizontal="10dp"
     android:layout_weight="1"
-    tools:context=".WeekDayFragment">
+    android:transitionGroup="true"
+    android:background="@drawable/selector_week_day"
+    android:id="@+id/layoutDayWeek">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@drawable/selector_bg_rounded_rectangle"
-        android:transitionGroup="true"
-        android:id="@+id/layoutDayWeek">
+        android:padding="10dp"
+        android:textSize="30sp"
+        android:text="@string/DayOfMonthTestValue"
+        android:textColor="?attr/colorText"
+        android:id="@+id/lblWeekDayOfMonth"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:textSize="30sp"
-            android:text="@string/DayOfMonthTestValue"
-            android:textColor="?attr/colorText"
-            android:id="@+id/lblWeekDayOfMonth"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:textSize="30sp"
-            android:text="@string/DayOfWeekTestValue"
-            android:textColor="?attr/colorText"
-            android:id="@+id/lblWeekDayOfWeek"/>
-    </LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textSize="30sp"
+        android:text="@string/DayOfWeekTestValue"
+        android:textColor="?attr/colorText"
+        android:id="@+id/lblWeekDayOfWeek" />
 
 </LinearLayout>
