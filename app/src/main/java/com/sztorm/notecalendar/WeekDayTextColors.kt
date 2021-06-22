@@ -1,40 +1,24 @@
 package com.sztorm.notecalendar
 
-import android.content.Context
-import android.util.TypedValue
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import java.time.DayOfWeek
 
-class WeekDayTextColors(mainActivity: AppCompatActivity, context: Context) {
-    val colorMonday: Int
-    val colorTuesday: Int
-    val colorWednesday: Int
-    val colorThursday: Int
-    val colorFriday: Int
-    val colorSaturday: Int
-    val colorSunday: Int
-
-    init {
-        val typedValue = TypedValue()
-        mainActivity.theme.resolveAttribute(R.attr.colorPrimary, typedValue, true)
-        val colorPrimary: Int = ContextCompat.getColor(context, typedValue.resourceId)
-        mainActivity.theme.resolveAttribute(R.attr.colorSecondary, typedValue, true)
-        val colorSecondary: Int = ContextCompat.getColor(context, typedValue.resourceId)
-        mainActivity.theme.resolveAttribute(R.attr.colorText, typedValue, true)
-        val colorText: Int = ContextCompat.getColor(context, typedValue.resourceId)
-        colorMonday = colorText
-        colorTuesday = colorText
-        colorWednesday = colorText
-        colorThursday = colorText
-        colorFriday = colorText
-        colorSaturday = colorSecondary
-        colorSunday = colorPrimary
-    }
+data class WeekDayTextColors(
+    val monday: Int,
+    val tuesday: Int,
+    val wednesday: Int,
+    val thursday: Int,
+    val friday: Int,
+    val saturday: Int,
+    val sunday: Int) {
 
     fun getTextColorOf(dayOfWeek: DayOfWeek): Int = when (dayOfWeek) {
-        DayOfWeek.SATURDAY -> colorSaturday
-        DayOfWeek.SUNDAY -> colorSunday
-        else -> colorMonday
+        DayOfWeek.MONDAY -> monday
+        DayOfWeek.TUESDAY -> tuesday
+        DayOfWeek.WEDNESDAY -> wednesday
+        DayOfWeek.THURSDAY -> thursday
+        DayOfWeek.FRIDAY -> friday
+        DayOfWeek.SATURDAY -> saturday
+        DayOfWeek.SUNDAY -> sunday
+        else -> monday
     }
 }

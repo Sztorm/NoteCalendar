@@ -1,8 +1,9 @@
-package com.sztorm.notecalendar
+package com.sztorm.notecalendar.helpers
 
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.sztorm.notecalendar.R
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Month
@@ -20,7 +21,7 @@ class DateHelper {
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate()
 
-        fun DayOfWeek.toLocalizedString(appContext: Context): String {
+        fun DayOfWeek.toLocalizedString(context: Context): String {
             val result: Int? = when (this.toString().toUpperCase(Locale.ENGLISH)) {
                 "MONDAY" -> R.string.lblDayOfWeek_Monday
                 "TUESDAY" -> R.string.lblDayOfWeek_Tuesday
@@ -31,10 +32,10 @@ class DateHelper {
                 "SUNDAY" -> R.string.lblDayOfWeek_Sunday
                 else -> null
             }
-            return if (result != null) appContext.resources.getString(result) else "Error"
+            return if (result != null) context.resources.getString(result) else "Error"
         }
 
-        fun Month.toLocalizedString(appContext: Context): String {
+        fun Month.toLocalizedString(context: Context): String {
             val result: Int? = when (this.toString().toUpperCase(Locale.ENGLISH)) {
                 "JANUARY" -> R.string.lblMonth_January
                 "FEBRUARY" -> R.string.lblMonth_February
@@ -50,7 +51,7 @@ class DateHelper {
                 "DECEMBER" -> R.string.lblMonth_December
                 else -> null
             }
-            return if (result != null) appContext.resources.getString(result) else "Error"
+            return if (result != null) context.resources.getString(result) else "Error"
         }
     }
 }

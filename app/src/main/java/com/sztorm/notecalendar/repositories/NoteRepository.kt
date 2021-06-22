@@ -13,6 +13,10 @@ class NoteRepository {
         note.delete()
     }
 
+    fun deleteAll() {
+        SugarRecord.deleteAll(NoteData::class.java)
+    }
+
     fun getByDate(date: LocalDate): NoteData? {
         val records: List<NoteData> = SugarRecord
                 .find(NoteData::class.java, "date = ?", date.toString())

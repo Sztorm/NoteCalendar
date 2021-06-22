@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--suppress ALL -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
+    <item android:id="@+id/layerNotePrimary">
         <vector
             android:width="90dp"
             android:height="160dp"
@@ -8,10 +9,10 @@
             android:viewportHeight="160.0">
             <path
                 android:pathData="M0,0 L0,160 L90,160 L90,30 L75,0 z"
-                android:fillColor="?attr/colorNotePrimary"/>
+                android:fillColor="?attr/colorNote"/>
         </vector>
     </item>
-    <item>
+    <item android:id="@+id/layerNoteSecondary">
         <vector
             android:width="90dp"
             android:height="160dp"
@@ -19,7 +20,7 @@
             android:viewportHeight="160.0">
             <path
                 android:pathData="M75,0 L90,30 L75,30 z"
-                android:fillColor="?attr/colorNoteSecondary"/>
+                android:fillColor="?attr/colorNoteVariant"/>
         </vector>
     </item>
 </layer-list>

@@ -13,23 +13,39 @@ class FragmentSetter(
         fragmentCreator: TCreator,
         resAnimIn: Int = defaultResAnimIn,
         resAnimOut: Int = defaultResAnimOut)
-        where T : Fragment, TCreator : InstanceCreator<T> {
-        val fragment: T = fragmentCreator.createInstance()
-        val transaction = fragmentManager.beginTransaction()
+            where T : Fragment, TCreator : InstanceCreator<T>
+            = setFragment(fragmentCreator.createInstance(), resAnimIn, resAnimOut)
 
-        transaction.setCustomAnimations(resAnimIn, resAnimOut)
-        transaction.replace(fragmentContainerID, fragment)
-        transaction.commit()
-    }
+    fun <T, TCreator> setFragment (
+        fragmentCreator: TCreator,
+        backStackTag: String?,
+        resAnimIn: Int = defaultResAnimIn,
+        resAnimOut: Int = defaultResAnimOut)
+            where T : Fragment, TCreator : InstanceCreator<T>
+            = setFragment(fragmentCreator.createInstance(), backStackTag, resAnimIn, resAnimOut)
 
     fun <T> setFragment (
         fragment: T,
         resAnimIn: Int = defaultResAnimIn,
         resAnimOut: Int = defaultResAnimOut)
-        where T : Fragment {
+            where T : Fragment {
         val transaction = fragmentManager.beginTransaction()
         transaction.setCustomAnimations(resAnimIn, resAnimOut)
         transaction.replace(fragmentContainerID, fragment)
+        transaction.disallowAddToBackStack()
+        transaction.commit()
+    }
+
+    fun <T> setFragment (
+        fragment: T,
+        backStackTag: String?,
+        resAnimIn: Int = defaultResAnimIn,
+        resAnimOut: Int = defaultResAnimOut)
+            where T : Fragment {
+        val transaction = fragmentManager.beginTransaction()
+        transaction.setCustomAnimations(resAnimIn, resAnimOut)
+        transaction.replace(fragmentContainerID, fragment)
+        transaction.addToBackStack(backStackTag)
         transaction.commit()
     }
 }

@@ -1,13 +1,22 @@
 <resources>
     <string name="app_name">Kalendarz Notatnikowy</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="Save">Zapisz</string>
     <string name="Cancel">Anuluj</string>
     <string name="AddText">Dodaj tekst</string>
-    <string name="DayOfMonthTestValue">8</string>
-    <string name="MonthTestValue">Października</string>
-    <string name="DayOfWeekTestValue">Poniedziałek</string>
     <string name="AddNote">Dodaj notatkę</string>
+    <string name="Confirm">Potwierdź</string>
+    <string name="SetDefault">Ustaw domyślny</string>
+    <string name="ColorPicker">Próbnik kolorów</string>
+    <string name="PrimaryColor">Kolor pierwszorzędny</string>
+    <string name="SecondaryColor">Kolor drugorzędny</string>
+    <string name="InactiveItemColor">Kolor elementów nieaktywnych</string>
+    <string name="InactiveItemColorVariant">Wariant koloru elementów nieaktywnych</string>
+    <string name="TextColor">Kolor tekstu</string>
+    <string name="ButtonTextColor">Kolor tekstu przycisków</string>
+    <string name="NoteTextColor">Kolor tekstu notatki</string>
+    <string name="BackgroundColor">Kolor tła</string>
+    <string name="NoteColor">Kolor notatki</string>
+    <string name="NoteColorVariant">Wariant koloru notatki</string>
     <string name="lblMonth_January">Stycznia</string>
     <string name="lblMonth_February">Lutego</string>
     <string name="lblMonth_March">Marca</string>
@@ -27,4 +36,13 @@
     <string name="lblDayOfWeek_Friday">Piątek</string>
     <string name="lblDayOfWeek_Saturday">Sobota</string>
     <string name="lblDayOfWeek_Sunday">Niedziela</string>
+    <string name="Settings_Header_Theme">Motyw</string>
+    <string name="Settings_Header_Notifications">Powiadomienia</string>
+    <string name="Settings_Header_Notes">Notatki</string>
+    <string name="Settings_DeleteNotesDateRange">Usuń notatki z okresu</string>
+    <string name="Settings_DeleteAllNotes">Usuń wszystkie notatki</string>
+    <string name="Settings_DeleteAllNotes_Alert_Title">Usunąć wszystkie notatki?</string>
+    <string name="Settings_DeleteAllNotes_Alert_Message">Ta czynność usunie wszystkie dane notatek. Czy chcesz kontynuować?</string>
+    <string name="Settings_EnableNotifications">Włącz powiadomienia</string>
+    <string name="Settings_NotifyEverydayAt">Powiadamiaj codziennie o godzinie</string>
 </resources>

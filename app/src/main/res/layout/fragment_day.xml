@@ -12,29 +12,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/DayOfMonthTestValue"
         android:textSize="110sp"
-        android:textColor="?attr/colorText"/>
+        android:textColor="?attr/colorText"
+        tools:text="8" />
 
     <TextView
         android:id="@+id/lblMonth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/MonthTestValue"
         android:textSize="50sp"
         android:textColor="?attr/colorText"
-        android:maxLines="1" />
+        android:maxLines="1"
+        tools:text="October" />
 
     <TextView
         android:id="@+id/lblDayOfWeek"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/DayOfWeekTestValue"
         android:textSize="30sp"
         android:textColor="?attr/colorText"
-        android:maxLines="1" />
+        android:maxLines="1"
+        tools:text="Monday" />
 
     <com.google.android.material.button.MaterialButton
         style="@style/Widget.MaterialComponents.Button.Icon"

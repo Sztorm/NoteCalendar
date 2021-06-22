@@ -9,9 +9,9 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedString
 import kotlinx.android.synthetic.main.fragment_day.view.*
 import java.time.LocalDate
-import com.sztorm.notecalendar.DateHelper.Companion.toLocalizedString
 
 /**
  * [Fragment] which represents day with notes etc in calendar.
@@ -30,7 +30,7 @@ class DayFragment : Fragment() {
     }
 
     fun <T, TCreator> setFragment (fragment: T)
-            where T : Fragment, TCreator : InstanceCreator<T> {
+        where T : Fragment, TCreator : InstanceCreator<T> {
         fragmentSetter.setFragment(fragment)
     }
 
@@ -45,6 +45,30 @@ class DayFragment : Fragment() {
         fragmentSetter.setFragment(DayNoteAddFragment.createInstance(this))
     }
 
+    private fun handleTouchEvent() = mView.setOnTouchListener(
+        object : OnSwipeTouchListener(mView.context) {
+
+        override fun onSwipeLeft() {
+            mainActivity.viewedDate = mainActivity.viewedDate.plusDays(1)
+            mainActivity.setMainFragment(DayFragment, R.anim.anim_in_left, R.anim.anim_out_left)
+        }
+
+        override fun onSwipeRight() {
+            mainActivity.viewedDate = mainActivity.viewedDate.minusDays(1)
+            mainActivity.setMainFragment(DayFragment, R.anim.anim_in_right, R.anim.anim_out_right)
+        }
+    })
+
+    private fun setTheme() {
+        val themePainter: ThemePainter = mainActivity.themePainter
+        val themeValues: ThemeValues = themePainter.values
+
+        themePainter.paintButton(mView.btnNoteAdd)
+        mView.lblDayOfMonth.setTextColor(themeValues.textColor)
+        mView.lblDayOfWeek.setTextColor(themeValues.textColor)
+        mView.lblMonth.setTextColor(themeValues.textColor)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,6 +79,8 @@ class DayFragment : Fragment() {
             R.anim.anim_in_note,
             R.anim.anim_out_note)
         mView = inflater.inflate(R.layout.fragment_day, container, false)
+        setTheme()
+
         val viewedDate: LocalDate = mainActivity.viewedDate
         val possibleNote: NoteData? = mainActivity.noteRepository.getByDate(viewedDate)
 
@@ -66,25 +92,19 @@ class DayFragment : Fragment() {
             fragmentSetter.setFragment(
                 DayNoteFragment.createInstance(this, possibleNote))
         }
-        mView.setOnTouchListener(object : OnSwipeTouchListener(mView.context) {
 
-            override fun onSwipeLeft() {
-                mainActivity.viewedDate = mainActivity.viewedDate.plusDays(1)
-                mainActivity.setFragment(DayFragment, R.anim.anim_in_left, R.anim.anim_out_left)
-            }
-
-            override fun onSwipeRight() {
-                mainActivity.viewedDate = mainActivity.viewedDate.minusDays(1)
-                mainActivity.setFragment(DayFragment, R.anim.anim_in_right, R.anim.anim_out_right)
-            }
-        })
+        handleTouchEvent()
         handleBtnNoteAddClickEvent()
         setLabelsText(viewedDate)
         return mView
     }
 
-    companion object : InstanceCreator<DayFragment> {
+    companion object : MainFragmentCreator<DayFragment> {
         @JvmStatic
         override fun createInstance(): DayFragment = DayFragment()
+
+        @JvmStatic
+        override val fragmentType: MainActivity.MainFragmentType
+                = MainActivity.MainFragmentType.DAY_FRAGMENT
     }
 }

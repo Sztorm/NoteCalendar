@@ -1,13 +1,22 @@
 <resources>
     <string name="app_name">Note Calendar</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="Save">Save</string>
     <string name="Cancel">Cancel</string>
     <string name="AddText">Add text</string>
-    <string name="DayOfMonthTestValue">8</string>
-    <string name="MonthTestValue">October</string>
-    <string name="DayOfWeekTestValue">Monday</string>
     <string name="AddNote">Add note</string>
+    <string name="Confirm">Confirm</string>
+    <string name="SetDefault">Set default</string>
+    <string name="ColorPicker">Color picker</string>
+    <string name="PrimaryColor">Primary color</string>
+    <string name="SecondaryColor">Secondary color</string>
+    <string name="InactiveItemColor">Inactive item color</string>
+    <string name="InactiveItemColorVariant">Inactive item color variant</string>
+    <string name="TextColor">Text color</string>
+    <string name="ButtonTextColor">Button text color</string>
+    <string name="NoteTextColor">Note text color</string>
+    <string name="BackgroundColor">Background color</string>
+    <string name="NoteColor">Note color</string>
+    <string name="NoteColorVariant">Note color variant</string>
     <string name="lblMonth_January">January</string>
     <string name="lblMonth_February">February</string>
     <string name="lblMonth_March">March</string>
@@ -27,4 +36,28 @@
     <string name="lblDayOfWeek_Friday">Friday</string>
     <string name="lblDayOfWeek_Saturday">Saturday</string>
     <string name="lblDayOfWeek_Sunday">Sunday</string>
+    <string name="Settings_Header_Theme">Theme</string>
+    <string name="Settings_Header_Notifications">Notifications</string>
+    <string name="Settings_Header_Notes">Notes</string>
+    <string name="Settings_DeleteNotesDateRange">Delete notes from date range</string>
+    <string name="Settings_DeleteAllNotes">Delete all notes</string>
+    <string name="Settings_DeleteAllNotes_Alert_Title">Delete all notes?</string>
+    <string name="Settings_DeleteAllNotes_Alert_Message">This action will delete all notes data. Do you want to continue?</string>
+    <string name="Settings_EnableNotifications">Enable notifications</string>
+    <string name="Settings_NotifyEverydayAt">Notify everyday at</string>
+    <string name="PrefKey_CategoryTheme" translatable="false">PrefKey_CategoryTheme</string>
+    <string name="PrefKey_PrimaryColor" translatable="false">PrefKey_PrimaryColor</string>
+    <string name="PrefKey_SecondaryColor" translatable="false">PrefKey_SecondaryColor</string>
+    <string name="PrefKey_InactiveItemColor" translatable="false">PrefKey_InactiveItemColor</string>
+    <string name="PrefKey_InactiveItemColorVariant" translatable="false">PrefKey_InactiveItemColorVariant</string>
+    <string name="PrefKey_TextColor" translatable="false">PrefKey_TextColor</string>
+    <string name="PrefKey_ButtonTextColor" translatable="false">PrefKey_ButtonTextColor</string>
+    <string name="PrefKey_NoteTextColor" translatable="false">PrefKey_NoteTextColor</string>
+    <string name="PrefKey_BackgroundColor" translatable="false">PrefKey_BackgroundColor</string>
+    <string name="PrefKey_NoteColor" translatable="false">PrefKey_NoteColor</string>
+    <string name="PrefKey_NoteColorVariant" translatable="false">PrefKey_NoteColorVariant</string>
+    <string name="PrefKey_CategoryNotes" translatable="false">PrefKey_CategoryNotes</string>
+    <string name="PrefKey_DeleteAllNotes" translatable="false">PrefKey_DeleteAllNotes</string>
+    <string name="PrefKey_CategoryNotifications" translatable="false">PrefKey_CategoryNotifications</string>
+    <string name="PrefKey_EnableNotifications" translatable="false">PrefKey_EnableNotifications</string>
 </resources>

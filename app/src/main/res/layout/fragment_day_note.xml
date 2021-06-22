@@ -15,15 +15,15 @@
         android:orientation="horizontal"
         android:layout_marginStart="10dp"
         android:layout_marginVertical="10dp">
-        <Button
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnNoteEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:icon="@drawable/icon_edit"
-            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
-            />
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnNoteDeleteText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,9 +44,9 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:gravity="start|top"
-            android:text="@string/hello_blank_fragment"
             android:textSize="24sp"
-            android:textColor="?attr/colorText" />
+            android:textColor="?attr/colorText"
+            tools:text="This is text for testing purposes.\n1\n2" />
     </ScrollView>
 
     <LinearLayout
@@ -80,6 +80,7 @@
     </LinearLayout>
 
     <EditText
+        style="@style/EditText"
         android:id="@+id/txtNoteEdit"
         android:visibility="gone"
         android:layout_width="match_parent"
@@ -88,7 +89,8 @@
         android:gravity="start|top"
         android:inputType="textMultiLine"
         android:textSize="24sp"
-        android:textColor="?attr/colorText"
         android:layout_marginHorizontal="10dp"
-        android:importantForAutofill="no" />
+        android:importantForAutofill="no"
+        tools:ignore="LabelFor" />
+
 </LinearLayout>

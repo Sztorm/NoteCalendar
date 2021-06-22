@@ -4,6 +4,8 @@
     <color name="note_light_secondary">#F3BC6B</color>
     <color name="note_dark_primary">#5D1E95</color>
     <color name="note_dark_secondary">#7636A6</color>
+    <color name="item_inactive_light">#999A9A9A</color>
+    <color name="item_inactive_dark">#99494949</color>
     <color name="background_light">#FFFFFF</color>
     <color name="background_dark">#141414</color>
     <color name="black_cool">#252525</color>

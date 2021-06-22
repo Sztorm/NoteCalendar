@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="colorText" format="reference" />
-    <attr name="colorNotePrimary" format="reference" />
-    <attr name="colorNoteSecondary" format="reference" />
+    <attr name="colorNote" format="reference" />
+    <attr name="colorNoteVariant" format="reference" />
+    <attr name="colorInactiveItem" format="reference" />
+    <attr name="colorInactiveItemVariant" format="reference" />
     <attr name="colorBackground" format="reference" />
+    <attr name="colorButtonText" format="reference" />
 </resources>

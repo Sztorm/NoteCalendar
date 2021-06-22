@@ -21,7 +21,6 @@ class DayListAdapter(
         val dayOfWeekLabel: TextView = view.lblWeekDayOfWeek
         val layout: LinearLayout = view.layoutDayWeek
         var dataPosition: Int = -1
-        var layoutBackgroundResourceId: Int = R.drawable.selector_week_day
 
         override fun onClick(view: View) {
             onItemClick?.invoke(dayItems[dataPosition])
@@ -51,11 +50,10 @@ class DayListAdapter(
         viewHolder.layout.setOnClickListener(viewHolder)
 
         if (areRepresentingTheSameDay(viewedDate, dayItem.date)) {
-            viewHolder.layout.setBackgroundResource(R.drawable.selector_week_day_selected)
-            viewHolder.layoutBackgroundResourceId = R.drawable.selector_week_day_selected
+            mainActivity.themePainter.paintSelectedWeekDayItem(viewHolder.layout)
         }
-        else if (viewHolder.layoutBackgroundResourceId == R.drawable.selector_week_day_selected){
-            viewHolder.layout.setBackgroundResource(R.drawable.selector_week_day)
+        else {
+            mainActivity.themePainter.paintWeekDayItem(viewHolder.layout)
         }
     }
 

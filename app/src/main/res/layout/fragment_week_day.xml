@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutDayWeek"
     tools:context=".WeekDayFragment"
     android:layout_width="match_parent"
     android:layout_height="65dp"
@@ -9,25 +10,24 @@
     android:layout_marginHorizontal="10dp"
     android:layout_weight="1"
     android:transitionGroup="true"
-    android:background="@drawable/selector_week_day"
-    android:id="@+id/layoutDayWeek">
+    android:background="@drawable/selector_week_day" >
 
     <TextView
+        android:id="@+id/lblWeekDayOfMonth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:textSize="30sp"
-        android:text="@string/DayOfMonthTestValue"
-        android:textColor="?attr/colorText"
-        android:id="@+id/lblWeekDayOfMonth"/>
+        tools:text="8"
+        android:textColor="?attr/colorText" />
 
     <TextView
+        android:id="@+id/lblWeekDayOfWeek"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:textSize="30sp"
-        android:text="@string/DayOfWeekTestValue"
-        android:textColor="?attr/colorText"
-        android:id="@+id/lblWeekDayOfWeek" />
+        tools:text="Monday"
+        android:textColor="?attr/colorText" />
 
 </LinearLayout>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".SettingsFragment">
+
+    <com.sztorm.notecalendar.themedpreferences.ThemedPreferenceCategory
+        app:key="@string/PrefKey_CategoryTheme"
+        app:title="@string/Settings_Header_Theme">
+
+        <com.sztorm.notecalendar.themedpreferences.ThemedColorPickerPreference
+            android:id="@+id/cpp"
+            android:key="@string/PrefKey_PrimaryColor"
+            android:title="@string/PrimaryColor"
+            app:default_color="?attr/colorPrimary"
+            app:outline_color="?attr/colorText"
+            app:outline_size="2dp"
+            app:enableCopying="true"
+            app:preference_selector="@drawable/wheel"
+            app:preference_attachAlphaSlideBar="false"
+            app:preference_attachBrightnessSlideBar="true"
+            app:preference_colorBox_radius="26dp"
+            app:preference_dialog_negative="@string/Cancel"
+            app:preference_dialog_positive="@string/Confirm"
+            app:preference_dialog_title="@string/ColorPicker" />
+
+        <com.sztorm.notecalendar.themedpreferences.ThemedColorPickerPreference
+            android:key="@string/PrefKey_SecondaryColor"
+            android:title="@string/SecondaryColor"
+            app:default_color="?attr/colorSecondary"
+            app:outline_color="?attr/colorText"
+            app:outline_size="2dp"
+            app:enableCopying="true"
+            app:preference_selector="@drawable/wheel"
+            app:preference_attachAlphaSlideBar="false"
+            app:preference_attachBrightnessSlideBar="true"
+            app:preference_colorBox_radius="26dp"
+            app:preference_dialog_negative="@string/Cancel"
+            app:preference_dialog_positive="@string/Confirm"
+            app:preference_dialog_title="@string/ColorPicker" />
+
+        <com.sztorm.notecalendar.themedpreferences.ThemedColorPickerPreference
+            android:key="@string/PrefKey_InactiveItemColor"
+            android:title="@string/InactiveItemColor"
+            app:default_color="?attr/colorInactiveItem"
+            app:outline_color="?attr/colorText"
+            app:outline_size="2dp"
+            app:enableCopying="true"
+            app:preference_selector="@drawable/wheel"
+            app:preference_attachAlphaSlideBar="true"
+            app:preference_attachBrightnessSlideBar="true"
+            app:preference_colorBox_radius="26dp"
+            app:preference_dialog_negative="@string/Cancel"
+            app:preference_dialog_positive="@string/Confirm"
+            app:preference_dialog_title="@string/ColorPicker" />
+
+        <com.sztorm.notecalendar.themedpreferences.ThemedColorPickerPreference
+            android:key="@string/PrefKey_InactiveItemColorVariant"
+            android:title="@string/InactiveItemColorVariant"
+            app:default_color="?attr/colorInactiveItemVariant"
+            app:outline_color="?attr/colorText"
+            app:outline_size="2dp"
+            app:enableCopying="true"
+            app:preference_selector="@drawable/wheel"
+            app:preference_attachAlphaSlideBar="true"
+            app:preference_attachBrightnessSlideBar="true"
+            app:preference_colorBox_radius="26dp"
+            app:preference_dialog_negative="@string/Cancel"
+            app:preference_dialog_positive="@string/Confirm"
+            app:preference_dialog_title="@string/ColorPicker" />
+
+        <com.sztorm.notecalendar.themedpreferences.ThemedColorPickerPreference
+            android:key="@string/PrefKey_NoteColor"
+            android:title="@string/NoteColor"
+            app:default_color="?attr/colorNote"
+            app:outline_color="?attr/colorText"
+            app:outline_size="2dp"
+            app:enableCopying="true"
+            app:preference_selector="@drawable/wheel"
+            app:preference_attachAlphaSlideBar="false"
+            app:preference_attachBrightnessSlideBar="true"
+            app:preference_colorBox_radius="26dp"
+            app:preference_dialog_negative="@string/Cancel"
+            app:preference_dialog_positive="@string/Confirm"
+            app:preference_dialog_title="@string/ColorPicker" />
+
+        <com.sztorm.notecalendar.themedpreferences.ThemedColorPickerPreference
+            android:key="@string/PrefKey_NoteColorVariant"
+            android:title="@string/NoteColorVariant"
+            app:default_color="?attr/colorNoteVariant"
+            app:outline_color="?attr/colorText"
+            app:outline_size="2dp"
+            app:enableCopying="true"
+            app:preference_selector="@drawable/wheel"
+            app:preference_attachAlphaSlideBar="false"
+            app:preference_attachBrightnessSlideBar="true"
+            app:preference_colorBox_radius="26dp"
+            app:preference_dialog_negative="@string/Cancel"
+            app:preference_dialog_positive="@string/Confirm"
+            app:preference_dialog_title="@string/ColorPicker" />
+
+        <com.sztorm.notecalendar.themedpreferences.ThemedColorPickerPreference
+            android:key="@string/PrefKey_TextColor"
+            android:title="@string/TextColor"
+            app:default_color="?attr/colorText"
+            app:outline_color="?attr/colorText"
+            app:outline_size="2dp"
+            app:enableCopying="true"
+            app:preference_selector="@drawable/wheel"
+            app:preference_attachAlphaSlideBar="false"
+            app:preference_attachBrightnessSlideBar="true"
+            app:preference_colorBox_radius="26dp"
+            app:preference_dialog_negative="@string/Cancel"
+            app:preference_dialog_positive="@string/Confirm"
+            app:preference_dialog_title="@string/ColorPicker" />
+
+        <com.sztorm.notecalendar.themedpreferences.ThemedColorPickerPreference
+            android:key="@string/PrefKey_ButtonTextColor"
+            android:title="@string/ButtonTextColor"
+            app:default_color="?attr/colorOnPrimary"
+            app:outline_color="?attr/colorText"
+            app:outline_size="2dp"
+            app:enableCopying="true"
+            app:preference_selector="@drawable/wheel"
+            app:preference_attachAlphaSlideBar="false"
+            app:preference_attachBrightnessSlideBar="true"
+            app:preference_colorBox_radius="26dp"
+            app:preference_dialog_negative="@string/Cancel"
+            app:preference_dialog_positive="@string/Confirm"
+            app:preference_dialog_title="@string/ColorPicker" />
+
+        <com.sztorm.notecalendar.themedpreferences.ThemedColorPickerPreference
+            android:key="@string/PrefKey_NoteTextColor"
+            android:title="@string/NoteTextColor"
+            app:default_color="?attr/colorText"
+            app:outline_color="?attr/colorText"
+            app:outline_size="2dp"
+            app:enableCopying="true"
+            app:preference_selector="@drawable/wheel"
+            app:preference_attachAlphaSlideBar="false"
+            app:preference_attachBrightnessSlideBar="true"
+            app:preference_colorBox_radius="26dp"
+            app:preference_dialog_negative="@string/Cancel"
+            app:preference_dialog_positive="@string/Confirm"
+            app:preference_dialog_title="@string/ColorPicker" />
+
+        <com.sztorm.notecalendar.themedpreferences.ThemedColorPickerPreference
+            android:key="@string/PrefKey_BackgroundColor"
+            android:title="@string/BackgroundColor"
+            app:default_color="?attr/colorBackground"
+            app:outline_color="?attr/colorText"
+            app:outline_size="2dp"
+            app:enableCopying="true"
+            app:preference_selector="@drawable/wheel"
+            app:preference_attachAlphaSlideBar="false"
+            app:preference_attachBrightnessSlideBar="true"
+            app:preference_colorBox_radius="26dp"
+            app:preference_dialog_negative="@string/Cancel"
+            app:preference_dialog_positive="@string/Confirm"
+            app:preference_dialog_title="@string/ColorPicker" />
+
+    </com.sztorm.notecalendar.themedpreferences.ThemedPreferenceCategory>
+
+    <com.sztorm.notecalendar.themedpreferences.ThemedPreferenceCategory
+        app:key="@string/PrefKey_CategoryNotes"
+        app:title="@string/Settings_Header_Notes">
+
+        <!-- Settings_DeleteNotesDateRange (Datepicker)-->
+
+        <com.sztorm.notecalendar.themedpreferences.ThemedConfirmationPreference
+            app:key="@string/PrefKey_DeleteAllNotes"
+            app:title="@string/Settings_DeleteAllNotes" />
+
+    </com.sztorm.notecalendar.themedpreferences.ThemedPreferenceCategory>
+
+    <com.sztorm.notecalendar.themedpreferences.ThemedPreferenceCategory
+        app:key="@string/PrefKey_CategoryNotifications"
+        app:title="@string/Settings_Header_Notifications">
+
+        <com.sztorm.notecalendar.themedpreferences.ThemedSwitchPreference
+            app:key="@string/PrefKey_EnableNotifications"
+            app:title="@string/Settings_EnableNotifications" />
+
+        <!-- Settings_NotifyEverydayAt (Timepicker)-->
+
+    </com.sztorm.notecalendar.themedpreferences.ThemedPreferenceCategory>
+
+</PreferenceScreen >

@@ -3,12 +3,13 @@ package com.sztorm.notecalendar
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import com.sztorm.notecalendar.helpers.ViewHelper.Companion.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_day_note_add.*
 import kotlinx.android.synthetic.main.fragment_day_note_add.view.*
 
@@ -36,9 +37,11 @@ class DayNoteAddFragment : Fragment() {
 
     private fun handleBtnNoteCancelClickEvent() = mView.btnNoteCancel.setOnClickListener {
         txtNoteAdd.text.clear()
+
         mView.txtNoteAdd.isVisible = false
         mView.layoutSaveCancelNote.isVisible = false
         mView.btnNoteAddText.isVisible = true
+        mView.hideKeyboard()
     }
 
     private fun handleBtnNoteSaveClickEvent() = mView.btnNoteSave.setOnClickListener {
@@ -49,14 +52,25 @@ class DayNoteAddFragment : Fragment() {
         dayFragment.setFragment(DayNoteFragment.createInstance(dayFragment, noteData))
     }
 
+    private fun setTheme() {
+        val themePainter: ThemePainter = mainActivity.themePainter
+        themePainter.paintNote(mView)
+        themePainter.paintButton(mView.btnNoteAddText)
+        themePainter.paintButton(mView.btnNoteSave)
+        themePainter.paintButton(mView.btnNoteCancel)
+        themePainter.paintTextView(mView.txtNoteAdd)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         mView = inflater.inflate(R.layout.fragment_day_note_add, container, false)
+        setTheme()
         handleBtnNoteAddTextClickEvent()
         handleBtnNoteCancelClickEvent()
         handleBtnNoteSaveClickEvent()
+
         return mView
     }
 
