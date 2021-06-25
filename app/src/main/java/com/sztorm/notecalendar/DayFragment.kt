@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedString
+import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedStringGenitiveCase
 import kotlinx.android.synthetic.main.fragment_day.view.*
 import java.time.LocalDate
 
@@ -37,7 +38,7 @@ class DayFragment : Fragment() {
     private fun setLabelsText(date: LocalDate) {
         mView.lblDayOfMonth.text = date.dayOfMonth.toString()
         mView.lblDayOfWeek.text = date.dayOfWeek.toLocalizedString(mView.context)
-        mView.lblMonth.text = date.month.toLocalizedString(mView.context)
+        mView.lblMonth.text = date.month.toLocalizedStringGenitiveCase(mView.context)
     }
 
     private fun handleBtnNoteAddClickEvent() = mView.btnNoteAdd.setOnClickListener {
@@ -49,13 +50,15 @@ class DayFragment : Fragment() {
         object : OnSwipeTouchListener(mView.context) {
 
         override fun onSwipeLeft() {
-            mainActivity.viewedDate = mainActivity.viewedDate.plusDays(1)
-            mainActivity.setMainFragment(DayFragment, R.anim.anim_in_left, R.anim.anim_out_left)
+            val date: LocalDate = mainActivity.viewedDate.plusDays(1)
+            mainActivity.setMainFragment(
+                DayFragment, R.anim.anim_in_left, R.anim.anim_out_left, date)
         }
 
         override fun onSwipeRight() {
-            mainActivity.viewedDate = mainActivity.viewedDate.minusDays(1)
-            mainActivity.setMainFragment(DayFragment, R.anim.anim_in_right, R.anim.anim_out_right)
+            val date: LocalDate = mainActivity.viewedDate.minusDays(1)
+            mainActivity.setMainFragment(
+                DayFragment, R.anim.anim_in_right, R.anim.anim_out_right, date)
         }
     })
 

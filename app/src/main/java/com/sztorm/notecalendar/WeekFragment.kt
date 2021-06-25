@@ -1,21 +1,22 @@
 package com.sztorm.notecalendar
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.sztorm.notecalendar.helpers.DateHelper.Companion.seventhDayOfWeek
 import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedString
 import kotlinx.android.synthetic.main.fragment_week.view.*
+import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.temporal.WeekFields
+import java.util.*
 import kotlin.collections.ArrayDeque
 
-@RequiresApi(Build.VERSION_CODES.O)
 class WeekFragment : Fragment() {
     private lateinit var mView: View
     private lateinit var adapter: DayListAdapter
@@ -102,15 +103,18 @@ class WeekFragment : Fragment() {
     private fun setTheme() {
         val themePainter: ThemePainter = mainActivity.themePainter
         val themeValues: ThemeValues = themePainter.values
+        val seventhDayOfWeek: DayOfWeek = WeekFields.of(Locale.getDefault()).seventhDayOfWeek
+        val sixthDayOfWeek: DayOfWeek = seventhDayOfWeek - 1
+        val colors = IntArray(size = 7)
 
-        textColors = WeekDayTextColors(
-            monday = themeValues.textColor,
-            tuesday = themeValues.textColor,
-            wednesday = themeValues.textColor,
-            thursday = themeValues.textColor,
-            friday = themeValues.textColor,
-            saturday = themeValues.secondaryColor,
-            sunday = themeValues.primaryColor)
+        for (i in 0..6) {
+            colors[i] = when(i + 1) {
+                seventhDayOfWeek.value -> themeValues.primaryColor
+                sixthDayOfWeek.value -> themeValues.secondaryColor
+                else -> themeValues.textColor
+            }
+        }
+        textColors = WeekDayTextColors.of(colors)
     }
 
     override fun onCreateView(
@@ -122,8 +126,7 @@ class WeekFragment : Fragment() {
         initDayItems(mView, CACHED_DAY_ITEMS_COUNT)
         adapter = DayListAdapter(dayItems, mainActivity, textColors)
         adapter.onItemClick = {
-            mainActivity.viewedDate = it.date
-            mainActivity.setMainFragment(DayFragment)
+            mainActivity.setMainFragment(DayFragment, date = it.date)
         }
         val recyclerView: RecyclerView = mView.weekDayFragmentContainer
         recyclerView.layoutManager = LinearLayoutManager(mView.context)

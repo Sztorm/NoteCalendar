@@ -1,57 +1,83 @@
 package com.sztorm.notecalendar.helpers
 
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.sztorm.notecalendar.R
 import java.time.DayOfWeek
-import java.time.LocalDate
 import java.time.Month
-import java.time.ZoneId
-import java.util.*
+import java.time.temporal.WeekFields
 
 class DateHelper {
     companion object {
-        @RequiresApi(Build.VERSION_CODES.O)
-        fun LocalDate.toDate(): Date = Date.from(
-                this.atStartOfDay(ZoneId.systemDefault()).toInstant())
+        val WeekFields.secondDayOfWeek: DayOfWeek
+            get() = firstDayOfWeek + 1
 
-        @RequiresApi(Build.VERSION_CODES.O)
-        fun Date.toLocalDate(): LocalDate = this.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate()
+        val WeekFields.thirdDayOfWeek: DayOfWeek
+            get() = firstDayOfWeek + 2
 
-        fun DayOfWeek.toLocalizedString(context: Context): String {
-            val result: Int? = when (this.toString().toUpperCase(Locale.ENGLISH)) {
-                "MONDAY" -> R.string.lblDayOfWeek_Monday
-                "TUESDAY" -> R.string.lblDayOfWeek_Tuesday
-                "WEDNESDAY" -> R.string.lblDayOfWeek_Wednesday
-                "THURSDAY" -> R.string.lblDayOfWeek_Thursday
-                "FRIDAY" -> R.string.lblDayOfWeek_Friday
-                "SATURDAY" -> R.string.lblDayOfWeek_Saturday
-                "SUNDAY" -> R.string.lblDayOfWeek_Sunday
-                else -> null
-            }
-            return if (result != null) context.resources.getString(result) else "Error"
+        val WeekFields.fourthDayOfWeek: DayOfWeek
+            get() = firstDayOfWeek + 3
+
+        val WeekFields.fifthDayOfWeek: DayOfWeek
+            get() = firstDayOfWeek + 4
+
+        val WeekFields.sixthDayOfWeek: DayOfWeek
+            get() = firstDayOfWeek + 5
+
+        val WeekFields.seventhDayOfWeek: DayOfWeek
+            get() = firstDayOfWeek + 6
+
+        fun DayOfWeek.toLocalizedString(context: Context): String = when (this.value) {
+            1 -> context.getString(R.string.lblDayOfWeek_Monday)
+            2 -> context.getString(R.string.lblDayOfWeek_Tuesday)
+            3 -> context.getString(R.string.lblDayOfWeek_Wednesday)
+            4 -> context.getString(R.string.lblDayOfWeek_Thursday)
+            5 -> context.getString(R.string.lblDayOfWeek_Friday)
+            6 -> context.getString(R.string.lblDayOfWeek_Saturday)
+            7 -> context.getString(R.string.lblDayOfWeek_Sunday)
+            else -> "Error"
         }
 
-        fun Month.toLocalizedString(context: Context): String {
-            val result: Int? = when (this.toString().toUpperCase(Locale.ENGLISH)) {
-                "JANUARY" -> R.string.lblMonth_January
-                "FEBRUARY" -> R.string.lblMonth_February
-                "MARCH" -> R.string.lblMonth_March
-                "APRIL" -> R.string.lblMonth_April
-                "MAY" -> R.string.lblMonth_May
-                "JUNE" -> R.string.lblMonth_June
-                "JULY" -> R.string.lblMonth_July
-                "AUGUST" -> R.string.lblMonth_August
-                "SEPTEMBER" -> R.string.lblMonth_September
-                "OCTOBER" -> R.string.lblMonth_October
-                "NOVEMBER" -> R.string.lblMonth_November
-                "DECEMBER" -> R.string.lblMonth_December
-                else -> null
-            }
-            return if (result != null) context.resources.getString(result) else "Error"
+        fun DayOfWeek.toLocalizedAbbreviatedString(context: Context): String = when (this.value) {
+            1 -> context.getString(R.string.abbreviation_Monday)
+            2 -> context.getString(R.string.abbreviation_Tuesday)
+            3 -> context.getString(R.string.abbreviation_Wednesday)
+            4 -> context.getString(R.string.abbreviation_Thursday)
+            5 -> context.getString(R.string.abbreviation_Friday)
+            6 -> context.getString(R.string.abbreviation_Saturday)
+            7 -> context.getString(R.string.abbreviation_Sunday)
+            else -> "Error"
+        }
+
+        fun Month.toLocalizedStringGenitiveCase(context: Context): String = when (this.value) {
+            1 -> context.getString(R.string.lblMonth_January)
+            2 -> context.getString(R.string.lblMonth_February)
+            3 -> context.getString(R.string.lblMonth_March)
+            4 -> context.getString(R.string.lblMonth_April)
+            5 -> context.getString(R.string.lblMonth_May)
+            6 -> context.getString(R.string.lblMonth_June)
+            7 -> context.getString(R.string.lblMonth_July)
+            8 -> context.getString(R.string.lblMonth_August)
+            9 -> context.getString(R.string.lblMonth_September)
+            10 -> context.getString(R.string.lblMonth_October)
+            11 -> context.getString(R.string.lblMonth_November)
+            12 -> context.getString(R.string.lblMonth_December)
+            else -> "Error"
+        }
+
+        fun Month.toLocalizedString(context: Context): String = when (this.value) {
+            1 -> context.getString(R.string.January)
+            2 -> context.getString(R.string.February)
+            3 -> context.getString(R.string.March)
+            4 -> context.getString(R.string.April)
+            5 -> context.getString(R.string.May)
+            6 -> context.getString(R.string.June)
+            7 -> context.getString(R.string.July)
+            8 -> context.getString(R.string.August)
+            9 -> context.getString(R.string.September)
+            10 -> context.getString(R.string.October)
+            11 -> context.getString(R.string.November)
+            12 -> context.getString(R.string.December)
+            else -> "Error"
         }
     }
 }

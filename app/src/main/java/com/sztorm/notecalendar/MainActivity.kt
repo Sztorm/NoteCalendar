@@ -1,3 +1,5 @@
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package com.sztorm.notecalendar
 
 import android.content.Intent
@@ -45,9 +47,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fragmentSetter: FragmentSetter
     private lateinit var currentFragmentType: MainFragmentType
     private lateinit var mThemePainter: ThemePainter
-
-    var viewedDate: LocalDate = LocalDate.now()
+    private var mViewedDate: LocalDate = LocalDate.now()
     val noteRepository = NoteRepository()
+    val viewedDate: LocalDate
+        get() = mViewedDate
     val themePainter: ThemePainter
         get() = mThemePainter
     
@@ -117,8 +120,12 @@ class MainActivity : AppCompatActivity() {
     fun <T, TCreator> setMainFragment(
         fragmentCreator: TCreator,
         resAnimIn: Int = R.anim.anim_in,
-        resAnimOut: Int = R.anim.anim_out)
+        resAnimOut: Int = R.anim.anim_out,
+        date: LocalDate = mViewedDate)
             where T : Fragment, TCreator : MainFragmentCreator<T> {
+        if (date != mViewedDate) {
+            mViewedDate = date
+        }
         currentFragmentType = fragmentCreator.fragmentType
         navigation.check(mainButtonResourceIds[currentFragmentType.ordinal])
         fragmentSetter.setFragment(fragmentCreator, resAnimIn, resAnimOut)
@@ -127,7 +134,11 @@ class MainActivity : AppCompatActivity() {
     fun setMainFragment(
         mainFragmentType: MainFragmentType,
         resAnimIn: Int = R.anim.anim_in,
-        resAnimOut: Int = R.anim.anim_out) {
+        resAnimOut: Int = R.anim.anim_out,
+        date: LocalDate = mViewedDate) {
+        if (date != mViewedDate) {
+            mViewedDate = date
+        }
         currentFragmentType = mainFragmentType
         navigation.check(mainButtonResourceIds[mainFragmentType.ordinal])
 

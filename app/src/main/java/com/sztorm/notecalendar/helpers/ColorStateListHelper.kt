@@ -41,6 +41,16 @@ class ColorStateListHelper {
             return ColorStateList(states, colors)
         }
 
+        fun createClickableButtonColorStateList(
+            pressedColor: Int, unpressedColor: Int): ColorStateList {
+            val states: Array<IntArray> = arrayOf(
+                intArrayOf(android.R.attr.state_pressed),
+                intArrayOf(-android.R.attr.state_pressed))
+            val colors = intArrayOf(pressedColor, unpressedColor)
+
+            return ColorStateList(states, colors)
+        }
+
         fun createRippleColorStateList(color: Int): ColorStateList {
             val states: Array<IntArray> = arrayOf(
                 intArrayOf(android.R.attr.state_pressed),

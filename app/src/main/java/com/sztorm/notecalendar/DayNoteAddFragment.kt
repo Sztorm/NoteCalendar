@@ -1,12 +1,10 @@
 package com.sztorm.notecalendar
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.sztorm.notecalendar.helpers.ViewHelper.Companion.hideKeyboard
@@ -18,7 +16,6 @@ import kotlinx.android.synthetic.main.fragment_day_note_add.view.*
  * Use the [DayNoteAddFragment.createInstance] factory method to create an instance of this
  * fragment.
  */
-@RequiresApi(Build.VERSION_CODES.O)
 class DayNoteAddFragment : Fragment() {
     private lateinit var mView: View
     private lateinit var mainActivity: MainActivity
