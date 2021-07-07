@@ -3,22 +3,23 @@
 package com.sztorm.notecalendar
 
 import android.content.Intent
-import android.os.Build
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.orm.SchemaGenerator
 import com.orm.SugarContext
 import com.orm.SugarDb
 import com.skydoves.colorpickerview.preference.ColorPickerPreferenceManager
+import com.sztorm.notecalendar.TimePickerPreference.Time.Companion.asTime
 import com.sztorm.notecalendar.helpers.ColorPickerPreferenceManagerHelper.Companion.getThemeColors
 import com.sztorm.notecalendar.repositories.NoteRepository
 import kotlinx.android.synthetic.main.activity_main.*
 import java.time.LocalDate
+import java.time.LocalDateTime
 
-@RequiresApi(Build.VERSION_CODES.O)
 class MainActivity : AppCompatActivity() {
     companion object {
         private const val BUNDLE_KEY_MAIN_FRAGMENT_TYPE = "MainFragmentType"
@@ -115,6 +116,7 @@ class MainActivity : AppCompatActivity() {
         handleNavigationButtonClickEvent(btnViewMonth, MonthFragment)
         handleNavigationButtonClickEvent(btnViewSettings, SettingsFragment)
         setMainFragmentOnCreate()
+        scheduleNoteNotification(ScheduleNoteNotificationArguments())
     }
 
     fun <T, TCreator> setMainFragment(
@@ -153,6 +155,34 @@ class MainActivity : AppCompatActivity() {
                 SettingsFragment, resAnimIn, resAnimOut)
             else -> fragmentSetter.setFragment(DayFragment)
         }
+    }
+
+    fun scheduleNoteNotification(args: ScheduleNoteNotificationArguments) {
+        val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val enabledNotifications = args.enabledNotifications ?: preferences.getBoolean(
+                getString(R.string.PrefKey_EnableNotifications), false)
+
+        if (!enabledNotifications) {
+            return
+        }
+        val notificationTime = args.notificationTime ?: preferences
+            .getInt(getString(R.string.PrefKey_NotificationTime), TimePickerPreference.DEFAULT_TIME_RAW)
+            .asTime()
+        val currentDateTime = LocalDateTime.now()
+        var notificationDateTime = LocalDateTime.of(
+            currentDateTime.toLocalDate(), notificationTime.toLocalTime())
+
+        if (notificationTime.toLocalTime() <= currentDateTime.toLocalTime()) {
+            notificationDateTime = notificationDateTime.plusDays(1)
+        }
+        val note: NoteData? = args.note ?: noteRepository.getByDate(notificationDateTime.toLocalDate())
+
+        if (note === null) {
+            return
+        }
+        val notificationData = NoteNotificationData(note, notificationDateTime)
+
+        NoteNotificationManager.scheduleNotification(this, notificationData)
     }
 
     fun <T, TCreator> restart(startingMainFragment: TCreator)

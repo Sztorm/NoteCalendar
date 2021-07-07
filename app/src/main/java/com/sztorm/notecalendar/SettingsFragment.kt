@@ -76,13 +76,17 @@ class SettingsFragment : Fragment() {
                 themePainter, R.string.PrefKey_CategoryNotes)
             setPreferenceThemePainter<ThemedPreferenceCategory>(
                 themePainter, R.string.PrefKey_CategoryNotifications)
-            setPreferenceThemePainter<ThemedSwitchPreference>(
-                themePainter, R.string.PrefKey_EnableNotifications)
 
+            setupColorPickerPreferences()
+            setupDeleteAllNotesPreference()
+            setupEnableNotificationsPreference()
+            setupNotificationTimePreference()
+        }
+
+        private fun setupColorPickerPreferences() {
             for (i in COLOR_ATTR_IDS.indices) {
                 setupColorPickerPreference(COLOR_PREF_KEY_IDS[i], COLOR_ATTR_IDS[i])
             }
-            setupDeleteAllNotesPreference()
         }
 
         private fun <T> setPreferenceThemePainter(
@@ -198,6 +202,45 @@ class SettingsFragment : Fragment() {
                     mainActivity.noteRepository.deleteAll()
                     dlgInterface.dismiss()
                 }
+            }
+        }
+
+        private fun setupEnableNotificationsPreference() {
+            val context: Context = requireContext()
+            val mainActivity = activity as MainActivity
+            val key = context.getString(R.string.PrefKey_EnableNotifications)
+            val preference: ThemedSwitchPreference = (findPreference(key)
+                    as ThemedSwitchPreference?)!!
+            preference.themePainter = mainActivity.themePainter
+
+            preference.setOnPreferenceChangeListener { _, valueBoxed ->
+                val value = valueBoxed as Boolean
+                if (value) {
+                    mainActivity.scheduleNoteNotification(
+                        ScheduleNoteNotificationArguments(enabledNotifications = true))
+                }
+                else {
+                    NoteNotificationManager.cancelScheduledNotification(mainActivity)
+                }
+                true
+            }
+        }
+
+        private fun setupNotificationTimePreference() {
+            val context: Context = requireContext()
+            val mainActivity = activity as MainActivity
+            val key = context.getString(R.string.PrefKey_NotificationTime)
+            val preference: ThemedTimePickerPreference = (findPreference(key)
+                as ThemedTimePickerPreference?)!!
+
+            preference.themePainter = mainActivity.themePainter
+            preference.setOnPreferenceChangeListener { _, valueBoxed ->
+                val value = valueBoxed as TimePickerPreference.Time
+                mainActivity.scheduleNoteNotification(
+                    ScheduleNoteNotificationArguments(
+                        enabledNotifications = true,
+                        notificationTime = value))
+                true
             }
         }
     }

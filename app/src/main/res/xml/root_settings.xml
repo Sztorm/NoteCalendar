@@ -182,7 +182,10 @@
             app:key="@string/PrefKey_EnableNotifications"
             app:title="@string/Settings_EnableNotifications" />
 
-        <!-- Settings_NotifyEverydayAt (Timepicker)-->
+        <com.sztorm.notecalendar.themedpreferences.ThemedTimePickerPreference
+            app:key="@string/PrefKey_NotificationTime"
+            android:title="@string/Settings_NotificationTime"
+            android:dependency="@string/PrefKey_EnableNotifications"/>
 
     </com.sztorm.notecalendar.themedpreferences.ThemedPreferenceCategory>
 

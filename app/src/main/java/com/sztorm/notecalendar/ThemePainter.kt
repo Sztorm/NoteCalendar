@@ -10,11 +10,13 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.Switch
 import android.widget.TextView
+import androidx.core.graphics.ColorUtils
 import com.google.android.material.button.MaterialButton
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getDrawableCompat
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getPixelsFromDip
 import com.sztorm.notecalendar.helpers.DrawableHelper.Companion.wrapCompat
 import kotlinx.android.synthetic.main.calendar_week_day_bar.view.*
+import picker.ugurtekbas.com.Picker.Picker
 
 class ThemePainter(val values: ThemeValues) {
     fun paintWeekDayItem(view: View) {
@@ -123,8 +125,7 @@ class ThemePainter(val values: ThemeValues) {
         val background: GradientDrawable = (textView.background.mutate() as GradientDrawable)
 
         if (!isInMonth) {
-            textView.setTextColor(values.textColor)
-            textView.alpha = 0.3f
+            textView.setTextColor(values.inactiveTextColor)
             background.color = values.dayViewButtonColorStateList
             background.setStroke(0, Color.TRANSPARENT)
             return
@@ -162,8 +163,15 @@ class ThemePainter(val values: ThemeValues) {
     }
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
-    fun paintSwitch( switch: Switch) {
+    fun paintSwitch(switch: Switch) {
         switch.thumbTintList = values.switchThumbColorStateList
         switch.trackTintList = values.switchTrackColorStateList
+    }
+
+    fun paintTimePicker(picker: Picker) {
+        picker.setCanvasColor(values.backgroundColor)
+        picker.setClockColor(ColorUtils.setAlphaComponent(values.secondaryColor, 64))
+        picker.setTextColor(values.textColor)
+        picker.setDialColor(values.secondaryColor)
     }
 }

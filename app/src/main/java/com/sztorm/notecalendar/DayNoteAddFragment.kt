@@ -46,6 +46,7 @@ class DayNoteAddFragment : Fragment() {
             mainActivity.viewedDate.toString(),
             txtNoteAdd.text.toString())
         mainActivity.noteRepository.add(noteData)
+        mainActivity.scheduleNoteNotification(ScheduleNoteNotificationArguments(note = noteData))
         dayFragment.setFragment(DayNoteFragment.createInstance(dayFragment, noteData))
     }
 

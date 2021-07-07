@@ -4,7 +4,7 @@
     <string name="Cancel">Cancel</string>
     <string name="AddText">Add text</string>
     <string name="AddNote">Add note</string>
-    <string name="Confirm">Confirm</string>
+    <string name="Confirm">OK</string>
     <string name="SetDefault">Set default</string>
     <string name="ColorPicker">Color picker</string>
     <string name="PrimaryColor">Primary color</string>
@@ -55,6 +55,9 @@
     <string name="lblDayOfWeek_Friday">Friday</string>
     <string name="lblDayOfWeek_Saturday">Saturday</string>
     <string name="lblDayOfWeek_Sunday">Sunday</string>
+    <string name="Notification_Note_Title">Today\'s note</string>
+    <string name="Notification_Note_ChannelName">Notes</string>
+    <string name="Notification_Note_ChannelDescription">Inform about saved note daily.</string>
     <string name="Settings_Header_Theme">Theme</string>
     <string name="Settings_Header_Notifications">Notifications</string>
     <string name="Settings_Header_Notes">Notes</string>
@@ -63,7 +66,7 @@
     <string name="Settings_DeleteAllNotes_Alert_Title">Delete all notes?</string>
     <string name="Settings_DeleteAllNotes_Alert_Message">This action will delete all notes data. Do you want to continue?</string>
     <string name="Settings_EnableNotifications">Enable notifications</string>
-    <string name="Settings_NotifyEverydayAt">Notify everyday at</string>
+    <string name="Settings_NotificationTime">Notification time</string>
     <string name="PrefKey_CategoryTheme" translatable="false">PrefKey_CategoryTheme</string>
     <string name="PrefKey_PrimaryColor" translatable="false">PrefKey_PrimaryColor</string>
     <string name="PrefKey_SecondaryColor" translatable="false">PrefKey_SecondaryColor</string>
@@ -79,4 +82,5 @@
     <string name="PrefKey_DeleteAllNotes" translatable="false">PrefKey_DeleteAllNotes</string>
     <string name="PrefKey_CategoryNotifications" translatable="false">PrefKey_CategoryNotifications</string>
     <string name="PrefKey_EnableNotifications" translatable="false">PrefKey_EnableNotifications</string>
+    <string name="PrefKey_NotificationTime" translatable="false">PrefKey_NotificationTime</string>
 </resources>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/lblTitle"
+        android:padding="10dp"
+        android:textSize="20sp"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="?attr/colorText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:importantForAccessibility="no"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Time picker" />
+
+    <picker.ugurtekbas.com.Picker.Picker
+        android:id="@+id/timePicker"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        app:canvasColor="?attr/colorBackground"
+        app:dialRadius="100dp"
+        app:hourFormat="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lblTitle"
+        app:textColor="?attr/colorText"
+        app:trackSize="20dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnNegative"
+        style="?attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="60dp"
+        android:layout_marginBottom="10dp"
+        android:text="@string/Cancel"
+        app:layout_constraintEnd_toStartOf="@+id/btnPositive"
+        app:layout_constraintTop_toBottomOf="@+id/timePicker" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnPositive"
+        style="?attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="60dp"
+        android:text="@string/Confirm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timePicker" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

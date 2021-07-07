@@ -48,6 +48,7 @@ dependencies {
     implementation 'com.github.satyan:sugar:1.5'
     implementation 'com.github.Sztorm:ColorPickerPreference:2.0.5-fork.2'
     implementation 'com.github.kizitonwose:CalendarView:1.0.4'
+    implementation 'com.github.ugurtekbas:dialTimePicker:8d263fc3a1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

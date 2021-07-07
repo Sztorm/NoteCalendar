@@ -4,7 +4,7 @@
     <string name="Cancel">Anuluj</string>
     <string name="AddText">Dodaj tekst</string>
     <string name="AddNote">Dodaj notatkę</string>
-    <string name="Confirm">Potwierdź</string>
+    <string name="Confirm">OK</string>
     <string name="SetDefault">Ustaw domyślny</string>
     <string name="ColorPicker">Próbnik kolorów</string>
     <string name="PrimaryColor">Kolor pierwszorzędny</string>
@@ -55,6 +55,9 @@
     <string name="lblDayOfWeek_Friday">Piątek</string>
     <string name="lblDayOfWeek_Saturday">Sobota</string>
     <string name="lblDayOfWeek_Sunday">Niedziela</string>
+    <string name="Notification_Note_Title">Dzisiejsza notatka</string>
+    <string name="Notification_Note_ChannelName">Notatki</string>
+    <string name="Notification_Note_ChannelDescription">Informuj o zapisanej notatce codziennie.</string>
     <string name="Settings_Header_Theme">Motyw</string>
     <string name="Settings_Header_Notifications">Powiadomienia</string>
     <string name="Settings_Header_Notes">Notatki</string>
@@ -63,5 +66,5 @@
     <string name="Settings_DeleteAllNotes_Alert_Title">Usunąć wszystkie notatki?</string>
     <string name="Settings_DeleteAllNotes_Alert_Message">Ta czynność usunie wszystkie dane notatek. Czy chcesz kontynuować?</string>
     <string name="Settings_EnableNotifications">Włącz powiadomienia</string>
-    <string name="Settings_NotifyEverydayAt">Powiadamiaj codziennie o godzinie</string>
+    <string name="Settings_NotificationTime">Czas powiadomienia</string>
 </resources>
