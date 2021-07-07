@@ -1,6 +1,7 @@
 package com.sztorm.notecalendar
 
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.DrawableContainer.DrawableContainerState
 import android.graphics.drawable.GradientDrawable
@@ -123,32 +124,41 @@ class ThemePainter(val values: ThemeValues) {
         isToday: Boolean,
         hasNote: Boolean) {
         val background: GradientDrawable = (textView.background.mutate() as GradientDrawable)
+        var strokeColor: Int = Color.TRANSPARENT
+        var strokeWidth = 0
+        var textColor: Int = values.textColor
+        var backgroundColor: ColorStateList = values.dayViewButtonColorStateList
 
         if (!isInMonth) {
-            textView.setTextColor(values.inactiveTextColor)
-            background.color = values.dayViewButtonColorStateList
-            background.setStroke(0, Color.TRANSPARENT)
+            textColor = values.inactiveTextColor
+
+            if (hasNote) {
+                strokeWidth = textView.context.getPixelsFromDip(4f).toInt()
+                strokeColor = ColorUtils.setAlphaComponent(values.noteColor, 255/3)
+            }
+            if (isToday) {
+                textColor = ColorUtils.setAlphaComponent(values.secondaryColor, 255/3)
+            }
+            background.color = backgroundColor
+            background.setStroke(strokeWidth, strokeColor)
+            textView.setTextColor(textColor)
+
             return
         }
         if (hasNote) {
-            val strokeWidth = textView.context.getPixelsFromDip(4f).toInt()
-            background.setStroke(strokeWidth, values.noteColor)
+            strokeWidth = textView.context.getPixelsFromDip(4f).toInt()
+            strokeColor = values.noteColor
         }
-        else {
-            background.setStroke(0, Color.TRANSPARENT)
+        if (isToday) {
+            textColor = values.secondaryColor
         }
         if (isSelected) {
-            textView.setTextColor(values.buttonTextColor)
-            background.color = values.dayViewSelectedButtonColorStateList
-            return
+            textColor = values.buttonTextColor
+            backgroundColor = values.dayViewSelectedButtonColorStateList
         }
-        background.color = values.dayViewButtonColorStateList
-
-        if (isToday) {
-            textView.setTextColor(values.secondaryColor)
-            return
-        }
-        textView.setTextColor(values.textColor)
+        background.color = backgroundColor
+        background.setStroke(strokeWidth, strokeColor)
+        textView.setTextColor(textColor)
     }
 
     fun paintCaledarDayOfWeekBar(bar: View) {

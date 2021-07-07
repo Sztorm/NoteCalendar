@@ -2,6 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.NoteCalendar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorText">@color/white_cool</item>
+        <item name="colorNoteText">@color/white_cool</item>
         <item name="colorBackground">@color/background_dark</item>
         <item name="colorNote">@color/note_dark_primary</item>
         <item name="colorNoteVariant">@color/note_dark_secondary</item>

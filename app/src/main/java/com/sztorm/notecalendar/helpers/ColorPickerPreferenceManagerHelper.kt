@@ -25,8 +25,8 @@ class ColorPickerPreferenceManagerHelper {
                 context.getColorFromAttr(R.attr.colorText)),
             buttonTextColor = getColor(context.getString(R.string.PrefKey_ButtonTextColor),
                 context.getColorFromAttr(R.attr.colorButtonText)),
-            noteTextColor = getColor(context.getString(R.string.PrefKey_TextColor),
-                context.getColorFromAttr(R.attr.colorText)),
+            noteTextColor = getColor(context.getString(R.string.PrefKey_NoteTextColor),
+                context.getColorFromAttr(R.attr.colorNoteText)),
             backgroundColor = getColor(context.getString(R.string.PrefKey_BackgroundColor),
                 context.getColorFromAttr(R.attr.colorBackground)))
     }
