@@ -26,7 +26,7 @@ open class ConfirmationPreference: Preference {
         dialog.setCancelable(true)
         dialog.setPositiveButton(context.getString(R.string.Confirm)) { _, _ -> }
         dialog.setNegativeButton(context.getString(R.string.Cancel)) {
-            dlg, which -> dlg.cancel()
+            dlg, _ -> dlg.cancel()
         }
         return dialog.create()
     }

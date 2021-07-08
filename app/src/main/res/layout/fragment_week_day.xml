@@ -16,8 +16,10 @@
         android:id="@+id/lblWeekDayOfMonth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:minWidth="55sp"
         android:padding="10dp"
         android:textSize="30sp"
+        android:textAlignment="center"
         tools:text="8"
         android:textColor="?attr/colorText" />
 

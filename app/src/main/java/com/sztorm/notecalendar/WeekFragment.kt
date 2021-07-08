@@ -25,7 +25,6 @@ class WeekFragment : Fragment() {
     private val dayItems: ArrayDeque<DayItem> = ArrayDeque(initialCapacity = CACHED_DAY_ITEMS_COUNT)
 
     inner class WeekDayOnScrollListener: RecyclerView.OnScrollListener() {
-
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             val llm = recyclerView.layoutManager as LinearLayoutManager
             val directionDown = 1
@@ -138,8 +137,8 @@ class WeekFragment : Fragment() {
     }
 
     companion object : MainFragmentCreator<WeekFragment> {
-        private const val CACHED_DAY_ITEMS_COUNT: Int = 30
-        private const val LOADED_DAY_ITEMS_COUNT: Int = 14
+        private const val CACHED_DAY_ITEMS_COUNT: Int = 45
+        private const val LOADED_DAY_ITEMS_COUNT: Int = 30
 
         @JvmStatic
         override fun createInstance(): WeekFragment = WeekFragment()

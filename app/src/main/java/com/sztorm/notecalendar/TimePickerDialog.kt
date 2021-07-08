@@ -1,6 +1,5 @@
 package com.sztorm.notecalendar
 
-import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.*
@@ -133,16 +132,15 @@ open class TimePickerDialog: DialogFragment() {
     open fun removeOnDismissListener(listener: DialogInterface.OnDismissListener): Boolean
         = dismissListeners.remove(listener)
 
-    open fun addOnViewCreatedClickListener(listener: OnViewCreatedListener): Boolean
+    open fun clearOnDismissListeners() = dismissListeners.clear()
+
+    open fun addOnViewCreatedListener(listener: OnViewCreatedListener): Boolean
         = viewCreatedListeners.add(listener)
 
-    open fun removeOnViewCreatedClickListener(listener: OnViewCreatedListener): Boolean
+    open fun removeOnViewCreatedListener(listener: OnViewCreatedListener): Boolean
         = viewCreatedListeners.remove(listener)
 
-    open fun clearOnViewCreatedClickListeners() = viewCreatedListeners.clear()
-
-
-    open fun clearOnDismissListeners() = dismissListeners.clear()
+    open fun clearOnViewCreatedListeners() = viewCreatedListeners.clear()
 
     interface OnViewCreatedListener {
         fun onViewCreated(view: View)

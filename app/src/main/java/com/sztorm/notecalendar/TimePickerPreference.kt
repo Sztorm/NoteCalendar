@@ -59,7 +59,7 @@ open class TimePickerPreference : Preference, View.OnClickListener {
     }
 
     private val formatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
-    protected lateinit var sharedPrefs: SharedPreferences
+    private lateinit var sharedPrefs: SharedPreferences
 
     init {
         widgetLayoutResource = R.layout.preference_timepicker

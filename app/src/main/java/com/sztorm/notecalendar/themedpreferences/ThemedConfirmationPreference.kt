@@ -27,7 +27,6 @@ class ThemedConfirmationPreference: ConfirmationPreference, ThemePaintable  {
     constructor(context: Context, attributeSet: AttributeSet, defStyle: Int) :
             super(context, attributeSet, defStyle)
 
-
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
 

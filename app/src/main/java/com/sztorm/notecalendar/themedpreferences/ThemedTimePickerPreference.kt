@@ -31,7 +31,7 @@ class ThemedTimePickerPreference : TimePickerPreference, ThemePaintable {
     override fun createTimePickerDialog(): TimePickerDialog {
         val dialog: TimePickerDialog = super.createTimePickerDialog()
 
-        dialog.addOnViewCreatedClickListener(object : TimePickerDialog.OnViewCreatedListener {
+        dialog.addOnViewCreatedListener(object : TimePickerDialog.OnViewCreatedListener {
             override fun onViewCreated(view: View) {
                 val themeValues: ThemeValues = themePainter.values
                 val titleHeader: TextView = view.findViewById(R.id.lblTitle)

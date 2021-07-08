@@ -39,14 +39,15 @@ class DayListAdapter(
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val dayItem: DayItem = dayItems[position]
-        val textColor: Int = textColors.getTextColorOf(dayItem.date.dayOfWeek)
+        val dayOfMonthTextColor: Int = textColors.getTextColorOf(dayItem.date.dayOfWeek)
+        val dayOfWeekTextColor: Int = mainActivity.themePainter.values.textColor
         val viewedDate: LocalDate = mainActivity.viewedDate
 
         viewHolder.dataPosition = position
         viewHolder.dayOfMonthLabel.text = dayItem.dayOfMonth
-        viewHolder.dayOfMonthLabel.setTextColor(textColor)
+        viewHolder.dayOfMonthLabel.setTextColor(dayOfMonthTextColor)
         viewHolder.dayOfWeekLabel.text = dayItem.dayOfWeek
-        viewHolder.dayOfWeekLabel.setTextColor(textColor)
+        viewHolder.dayOfWeekLabel.setTextColor(dayOfWeekTextColor)
         viewHolder.layout.setOnClickListener(viewHolder)
 
         if (areRepresentingTheSameDay(viewedDate, dayItem.date)) {
