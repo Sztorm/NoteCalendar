@@ -1,11 +1,13 @@
 package com.sztorm.notecalendar
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sztorm.notecalendar.helpers.DateHelper.Companion.seventhDayOfWeek
@@ -102,8 +104,9 @@ class WeekFragment : Fragment() {
     private fun setTheme() {
         val themePainter: ThemePainter = mainActivity.themePainter
         val themeValues: ThemeValues = themePainter.values
-        val seventhDayOfWeek: DayOfWeek = WeekFields.of(Locale.getDefault()).seventhDayOfWeek
-        val sixthDayOfWeek: DayOfWeek = seventhDayOfWeek - 1
+        val firstDayOfWeek: DayOfWeek = mainActivity.settingsReader.firstDayOfWeek
+        val seventhDayOfWeek: DayOfWeek = firstDayOfWeek - 1
+        val sixthDayOfWeek: DayOfWeek = firstDayOfWeek - 2
         val colors = IntArray(size = 7)
 
         for (i in 0..6) {

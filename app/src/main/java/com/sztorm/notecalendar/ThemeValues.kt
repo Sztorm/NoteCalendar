@@ -75,6 +75,11 @@ class ThemeValues(
             pressedColor = inactiveItemColor,
             unpressedColor = Color.TRANSPARENT)
 
+    val radioButtonTintList: ColorStateList = ColorStateListHelper
+        .createToggleColorStateList(
+            checkedColor = secondaryColor,
+            uncheckedColor = inactiveItemColor)
+
     val dayViewSelectedButtonColorStateList: ColorStateList = ColorStateListHelper
         .createClickableButtonColorStateList(
             pressedColor = inactiveItemColor,

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CustomizableListPreference">
+        <attr name="android:entries" format="reference" />
+        <attr name="android:entryValues" format="reference" />
+        <attr name="android:defaultValue" format="string" />
+    </declare-styleable>
+</resources>

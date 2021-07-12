@@ -1,7 +1,6 @@
 package com.sztorm.notecalendar
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -84,7 +83,7 @@ class DayNoteFragment : Fragment() {
         themePainter.paintOutlinedButton(mView.btnNoteDeleteText)
         themePainter.paintButton(mView.btnNoteEditSave)
         themePainter.paintButton(mView.btnNoteEditCancel)
-        themePainter.paintTextView(mView.txtNoteEdit)
+        themePainter.paintEditText(mView.txtNoteEdit)
         mView.lblNote.setTextColor(themeValues.noteTextColor)
     }
 

@@ -5,19 +5,14 @@ import android.util.AttributeSet
 import android.widget.TextView
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceViewHolder
+import com.sztorm.notecalendar.ThemePaintable
 import com.sztorm.notecalendar.ThemePainter
 
-class ThemedPreferenceCategory: PreferenceCategory, ThemePaintable  {
-    private lateinit var mThemePainter: ThemePainter
-
+class ThemedPreferenceCategory: PreferenceCategory, ThemePaintable {
     /**
      * [themePainter] must be set before can be get.
      */
-    override var themePainter: ThemePainter
-        get() = mThemePainter
-        set(value) {
-            mThemePainter = value
-        }
+    override lateinit var themePainter: ThemePainter
 
     constructor(context: Context) : super(context)
 

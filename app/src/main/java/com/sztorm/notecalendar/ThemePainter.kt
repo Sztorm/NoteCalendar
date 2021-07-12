@@ -9,6 +9,8 @@ import android.graphics.drawable.LayerDrawable
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.widget.EditText
+import android.widget.RadioButton
 import android.widget.Switch
 import android.widget.TextView
 import androidx.core.graphics.ColorUtils
@@ -91,27 +93,27 @@ class ThemePainter(val values: ThemeValues) {
         button.rippleColor = values.alertButtonRippleColorStateList
     }
 
-    fun paintTextView(textView: TextView) {
-        textView.setTextColor(values.noteTextColor)
-        textView.background.setTint(values.secondaryColor)
-        textView.highlightColor = values.textHighlightColor
+    fun paintEditText(editText: EditText) {
+        editText.setTextColor(values.noteTextColor)
+        editText.background.setTint(values.secondaryColor)
+        editText.highlightColor = values.textHighlightColor
 
-        textView.context
+        editText.context
             .getDrawableCompat(R.drawable.cursor_edit_text)!!
             .wrapCompat()
             .setTint(values.secondaryColor)
 
-        textView.context
+        editText.context
             .getDrawableCompat(R.drawable.text_select_handle_middle)!!
             .wrapCompat()
             .setTint(values.secondaryColor)
 
-        textView.context
+        editText.context
             .getDrawableCompat(R.drawable.text_select_handle_left)!!
             .wrapCompat()
             .setTint(values.secondaryColor)
 
-        textView.context
+        editText.context
             .getDrawableCompat(R.drawable.text_select_handle_right)!!
             .wrapCompat()
             .setTint(values.secondaryColor)
@@ -176,6 +178,10 @@ class ThemePainter(val values: ThemeValues) {
     fun paintSwitch(switch: Switch) {
         switch.thumbTintList = values.switchThumbColorStateList
         switch.trackTintList = values.switchTrackColorStateList
+    }
+
+    fun paintRadio(radio: RadioButton) {
+        radio.buttonTintList = values.radioButtonTintList
     }
 
     fun paintTimePicker(picker: Picker) {

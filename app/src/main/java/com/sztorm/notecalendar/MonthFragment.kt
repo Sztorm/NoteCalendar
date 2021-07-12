@@ -68,7 +68,7 @@ class MonthFragment : Fragment() {
         val currentSelectedMonth: YearMonth = YearMonth.of(viewedDate.year, viewedDate.month)
         startMonth = currentSelectedMonth.minusMonths(HALF_CACHED_MONTH_COUNT)
         endMonth = currentSelectedMonth.plusMonths(HALF_CACHED_MONTH_COUNT)
-        val firstDayOfWeek: DayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
+        val firstDayOfWeek: DayOfWeek = mainActivity.settingsReader.firstDayOfWeek
         val dayBinder = ThemedDayBinder(mainActivity)
 
         setDayOfWeekBarText(firstDayOfWeek)

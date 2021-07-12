@@ -61,10 +61,12 @@
     <string name="Settings_Header_Theme">Motyw</string>
     <string name="Settings_Header_Notifications">Powiadomienia</string>
     <string name="Settings_Header_Notes">Notatki</string>
+    <string name="Settings_Header_Other">Inne</string>
     <string name="Settings_DeleteNotesDateRange">Usuń notatki z okresu</string>
     <string name="Settings_DeleteAllNotes">Usuń wszystkie notatki</string>
     <string name="Settings_DeleteAllNotes_Alert_Title">Usunąć wszystkie notatki?</string>
     <string name="Settings_DeleteAllNotes_Alert_Message">Ta czynność usunie wszystkie dane notatek. Czy chcesz kontynuować?</string>
     <string name="Settings_EnableNotifications">Włącz powiadomienia</string>
     <string name="Settings_NotificationTime">Czas powiadomienia</string>
+    <string name="Settings_FirstDayOfWeek">Pierwszy dzień tygodnia</string>
 </resources>

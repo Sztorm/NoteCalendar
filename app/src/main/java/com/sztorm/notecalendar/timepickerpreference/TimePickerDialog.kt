@@ -1,22 +1,30 @@
-package com.sztorm.notecalendar
+package com.sztorm.notecalendar.timepickerpreference
 
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
 import androidx.annotation.IntRange
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.timepicker.TimeFormat
+import com.sztorm.notecalendar.R
+import com.sztorm.notecalendar.eventsubjects.*
+import com.sztorm.notecalendar.helpers.DialogFragmentHelper.Companion.setMaximumWidth
 import picker.ugurtekbas.com.Picker.Picker
 
-open class TimePickerDialog: DialogFragment() {
-    private val positiveButtonListeners: MutableSet<View.OnClickListener> = LinkedHashSet()
-    private val negativeButtonListeners: MutableSet<View.OnClickListener> = LinkedHashSet()
-    private val cancelListeners: MutableSet<DialogInterface.OnCancelListener> = LinkedHashSet()
-    private val dismissListeners: MutableSet<DialogInterface.OnDismissListener> = LinkedHashSet()
-    private val viewCreatedListeners: MutableSet<OnViewCreatedListener> = LinkedHashSet()
+open class TimePickerDialog(
+    private val positiveBtnSubject: PositiveButtonClickSubjectImpl = PositiveButtonClickSubjectImpl(),
+    private val negativeBtnSubject: NegativeButtonClickSubjectImpl = NegativeButtonClickSubjectImpl(),
+    private val dialogCancelSubject: DialogCancelSubjectImpl = DialogCancelSubjectImpl(),
+    private val dialogDismissSubject: DialogDismissSubjectImpl = DialogDismissSubjectImpl(),
+    private val viewCreatedSubject: ViewCreatedSubjectImpl = ViewCreatedSubjectImpl()) :
+        DialogFragment(),
+        PositiveButtonClickSubject by positiveBtnSubject,
+        NegativeButtonClickSubject by negativeBtnSubject,
+        DialogCancelSubject by dialogCancelSubject,
+        DialogDismissSubject by dialogDismissSubject,
+        ViewCreatedSubject by viewCreatedSubject {
     private lateinit var mPicker: Picker
     private var mTitle: CharSequence? = null
     private var mHour: Int = 0
@@ -33,13 +41,7 @@ open class TimePickerDialog: DialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        val view = requireActivity().window.decorView
-        val insets = WindowInsetsCompat.toWindowInsetsCompat(view.rootWindowInsets, view).getInsets(
-            WindowInsetsCompat.Type.systemBars())
-        val width: Int = ((resources.displayMetrics.widthPixels - insets.right - insets.left))
-        val height = ViewGroup.LayoutParams.WRAP_CONTENT
-
-        requireDialog().window!!.setLayout(width, height)
+        setMaximumWidth()
     }
 
     override fun onCreateView(
@@ -63,15 +65,11 @@ open class TimePickerDialog: DialogFragment() {
             titleHeader.text = mTitle
         }
         positiveButton.setOnClickListener { v ->
-            for (listener in positiveButtonListeners) {
-                listener.onClick(v)
-            }
+            positiveBtnSubject.invokePositiveButtonClickListeners(v)
             dismiss()
         }
         negativeButton.setOnClickListener { v ->
-            for (listener in negativeButtonListeners) {
-                listener.onClick(v)
-            }
+            negativeBtnSubject.invokeNegativeButtonClickListeners(v)
             dismiss()
         }
         return root
@@ -79,71 +77,21 @@ open class TimePickerDialog: DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        for (listener in viewCreatedListeners) {
-            listener.onViewCreated(view)
-        }
+        viewCreatedSubject.invokeViewCreatedListeners(view)
     }
 
     override fun onCancel(dialogInterface: DialogInterface) {
-        for (listener in cancelListeners) {
-            listener.onCancel(dialogInterface)
-        }
+        dialogCancelSubject.invokeCancelListeners(dialogInterface)
         super.onCancel(dialogInterface)
     }
 
     override fun onDismiss(dialogInterface: DialogInterface) {
-        for (listener in dismissListeners) {
-            listener.onDismiss(dialogInterface)
-        }
+        dialogDismissSubject.invokeDismissListeners(dialogInterface)
+
         val viewGroup = view as ViewGroup?
         viewGroup?.removeAllViews()
 
         super.onDismiss(dialogInterface)
-    }
-
-    open fun addOnPositiveButtonClickListener(listener: View.OnClickListener): Boolean
-        = positiveButtonListeners.add(listener)
-
-    open fun removeOnPositiveButtonClickListener(listener: View.OnClickListener): Boolean
-        = positiveButtonListeners.remove(listener)
-
-    open fun clearOnPositiveButtonClickListeners() = positiveButtonListeners.clear()
-
-    open fun addOnNegativeButtonClickListener(listener: View.OnClickListener): Boolean
-        = negativeButtonListeners.add(listener)
-
-    open fun removeOnNegativeButtonClickListener(listener: View.OnClickListener): Boolean
-        = negativeButtonListeners.remove(listener)
-
-    open fun clearOnNegativeButtonClickListeners() = negativeButtonListeners.clear()
-
-    open fun addOnCancelListener(listener: DialogInterface.OnCancelListener): Boolean
-        = cancelListeners.add(listener)
-
-    open fun removeOnCancelListener(listener: DialogInterface.OnCancelListener): Boolean
-        = cancelListeners.remove(listener)
-
-    open fun clearOnCancelListeners() = cancelListeners.clear()
-
-    open fun addOnDismissListener(listener: DialogInterface.OnDismissListener): Boolean
-        = dismissListeners.add(listener)
-
-    open fun removeOnDismissListener(listener: DialogInterface.OnDismissListener): Boolean
-        = dismissListeners.remove(listener)
-
-    open fun clearOnDismissListeners() = dismissListeners.clear()
-
-    open fun addOnViewCreatedListener(listener: OnViewCreatedListener): Boolean
-        = viewCreatedListeners.add(listener)
-
-    open fun removeOnViewCreatedListener(listener: OnViewCreatedListener): Boolean
-        = viewCreatedListeners.remove(listener)
-
-    open fun clearOnViewCreatedListeners() = viewCreatedListeners.clear()
-
-    interface OnViewCreatedListener {
-        fun onViewCreated(view: View)
     }
 
     class Builder {

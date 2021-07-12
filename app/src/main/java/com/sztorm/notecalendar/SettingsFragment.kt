@@ -17,7 +17,12 @@ import com.google.android.material.button.MaterialButton
 import com.skydoves.colorpickerview.flag.BubbleFlag
 import com.skydoves.colorpickerview.flag.FlagMode
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getColorFromAttr
+import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedString
 import com.sztorm.notecalendar.themedpreferences.*
+import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference
+import java.time.DayOfWeek
+import java.time.temporal.WeekFields
+import java.util.*
 
 /**
  * [Fragment] which represents settings of the application.
@@ -68,6 +73,15 @@ class SettingsFragment : Fragment() {
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_settings, rootKey)
+            setupCategoryPreferences()
+            setupColorPickerPreferences()
+            setupDeleteAllNotesPreference()
+            setupEnableNotificationsPreference()
+            setupNotificationTimePreference()
+            setupFirstDayOfWeekPreference()
+        }
+
+        private fun setupCategoryPreferences() {
             val themePainter: ThemePainter = (activity as MainActivity).themePainter
 
             setPreferenceThemePainter<ThemedPreferenceCategory>(
@@ -76,11 +90,8 @@ class SettingsFragment : Fragment() {
                 themePainter, R.string.PrefKey_CategoryNotes)
             setPreferenceThemePainter<ThemedPreferenceCategory>(
                 themePainter, R.string.PrefKey_CategoryNotifications)
-
-            setupColorPickerPreferences()
-            setupDeleteAllNotesPreference()
-            setupEnableNotificationsPreference()
-            setupNotificationTimePreference()
+            setPreferenceThemePainter<ThemedPreferenceCategory>(
+                themePainter, R.string.PrefKey_CategoryOther)
         }
 
         private fun setupColorPickerPreferences() {
@@ -116,8 +127,8 @@ class SettingsFragment : Fragment() {
         private fun setupColorPickerPreference(
             @StringRes prefKeyStringResId: Int, @AttrRes defaultColorAttrResId: Int) {
             val context: Context = requireContext()
-            val preference: ThemedColorPickerPreference = (findPreference(
-                context.getString(prefKeyStringResId)) as ThemedColorPickerPreference?)!!
+            val key: String = context.getString(prefKeyStringResId)
+            val preference: ThemedColorPickerPreference = findPreference(key)!!
             val colorPickerDialog: AlertDialog = preference.getPreferenceDialog()
 
             preference.themePainter = (activity as MainActivity).themePainter
@@ -179,8 +190,8 @@ class SettingsFragment : Fragment() {
 
         private fun setupDeleteAllNotesPreference() {
             val context: Context = requireContext()
-            val preference: ThemedConfirmationPreference = (findPreference(
-                context.getString(R.string.PrefKey_DeleteAllNotes)) as ThemedConfirmationPreference?)!!
+            val key: String = context.getString(R.string.PrefKey_DeleteAllNotes)
+            val preference: ThemedConfirmationPreference = findPreference(key)!!
             val title: String = context.getString(R.string.Settings_DeleteAllNotes_Alert_Title)
             val message: String = context.getString(R.string.Settings_DeleteAllNotes_Alert_Message)
             val confirmationDialog: AlertDialog = preference.confirmationDialog
@@ -208,9 +219,8 @@ class SettingsFragment : Fragment() {
         private fun setupEnableNotificationsPreference() {
             val context: Context = requireContext()
             val mainActivity = activity as MainActivity
-            val key = context.getString(R.string.PrefKey_EnableNotifications)
-            val preference: ThemedSwitchPreference = (findPreference(key)
-                    as ThemedSwitchPreference?)!!
+            val key: String = context.getString(R.string.PrefKey_EnableNotifications)
+            val preference: ThemedSwitchPreference = findPreference(key)!!
             preference.themePainter = mainActivity.themePainter
 
             preference.setOnPreferenceChangeListener { _, valueBoxed ->
@@ -229,9 +239,8 @@ class SettingsFragment : Fragment() {
         private fun setupNotificationTimePreference() {
             val context: Context = requireContext()
             val mainActivity = activity as MainActivity
-            val key = context.getString(R.string.PrefKey_NotificationTime)
-            val preference: ThemedTimePickerPreference = (findPreference(key)
-                as ThemedTimePickerPreference?)!!
+            val key: String = context.getString(R.string.PrefKey_NotificationTime)
+            val preference: ThemedTimePickerPreference = findPreference(key)!!
 
             preference.themePainter = mainActivity.themePainter
             preference.setOnPreferenceChangeListener { _, valueBoxed ->
@@ -240,6 +249,23 @@ class SettingsFragment : Fragment() {
                     ScheduleNoteNotificationArguments(
                         enabledNotifications = true,
                         notificationTime = value))
+                true
+            }
+        }
+
+        private fun setupFirstDayOfWeekPreference() {
+            val mainActivity = activity as MainActivity
+            val key: String = mainActivity.getString(R.string.PrefKey_FirstDayOfWeek)
+            val preference: ThemedSimpleListPreference = findPreference(key)!!
+
+            preference.themePainter = mainActivity.themePainter
+            val defaultValue = WeekFields.of(Locale.getDefault()).firstDayOfWeek.value.toString()
+            preference.setDefaultValue(defaultValue)
+            preference.summary = mainActivity.settingsReader.firstDayOfWeek.toLocalizedString(mainActivity)
+
+            preference.setOnPreferenceChangeListener { _, valueBoxed ->
+                val value = valueBoxed as String
+                preference.summary = DayOfWeek.of(value.toInt()).toLocalizedString(mainActivity)
                 true
             }
         }

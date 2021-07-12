@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.widget.TextView
 import androidx.preference.PreferenceViewHolder
 import com.skydoves.colorpickerpreference.ColorPickerPreference
+import com.sztorm.notecalendar.ThemePaintable
 import com.sztorm.notecalendar.ThemePainter
 import com.sztorm.notecalendar.ThemeValues
 
@@ -37,6 +38,6 @@ class ThemedColorPickerPreference: ColorPickerPreference, ThemePaintable {
         val colorBoxGradient = colorBox.background as GradientDrawable
 
         title.setTextColor(themeValues.textColor)
-        colorBoxGradient.setStroke(outlineSize, themeValues.textColor)
+        colorBoxGradient.setStroke(outlineSize, outlineColor)
     }
 }

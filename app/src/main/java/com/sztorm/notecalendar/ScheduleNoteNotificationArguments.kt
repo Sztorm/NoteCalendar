@@ -1,5 +1,7 @@
 package com.sztorm.notecalendar
 
+import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference
+
 data class ScheduleNoteNotificationArguments(
     val enabledNotifications: Boolean? = null,
     val note: NoteData? = null,

@@ -2,11 +2,12 @@ package com.sztorm.notecalendar.themedpreferences
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
 import android.widget.TextView
 import androidx.preference.PreferenceViewHolder
 import com.google.android.material.button.MaterialButton
 import com.sztorm.notecalendar.*
+import com.sztorm.notecalendar.timepickerpreference.TimePickerDialog
+import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference
 
 class ThemedTimePickerPreference : TimePickerPreference, ThemePaintable {
     private lateinit var mThemePainter: ThemePainter
@@ -31,20 +32,18 @@ class ThemedTimePickerPreference : TimePickerPreference, ThemePaintable {
     override fun createTimePickerDialog(): TimePickerDialog {
         val dialog: TimePickerDialog = super.createTimePickerDialog()
 
-        dialog.addOnViewCreatedListener(object : TimePickerDialog.OnViewCreatedListener {
-            override fun onViewCreated(view: View) {
-                val themeValues: ThemeValues = themePainter.values
-                val titleHeader: TextView = view.findViewById(R.id.lblTitle)
-                val positiveButton: MaterialButton = view.findViewById(R.id.btnPositive)
-                val negativeButton: MaterialButton = view.findViewById(R.id.btnNegative)
+        dialog.addOnViewCreatedListener { view ->
+            val themeValues: ThemeValues = themePainter.values
+            val titleHeader: TextView = view.findViewById(R.id.lblTitle)
+            val positiveButton: MaterialButton = view.findViewById(R.id.btnPositive)
+            val negativeButton: MaterialButton = view.findViewById(R.id.btnNegative)
 
-                view.setBackgroundColor(themeValues.backgroundColor)
-                titleHeader.setTextColor(themeValues.textColor)
-                themePainter.paintTimePicker(dialog.picker)
-                themePainter.paintDialogButton(positiveButton)
-                themePainter.paintDialogButton(negativeButton)
-            }
-        })
+            view.setBackgroundColor(themeValues.backgroundColor)
+            titleHeader.setTextColor(themeValues.textColor)
+            themePainter.paintTimePicker(dialog.picker)
+            themePainter.paintDialogButton(positiveButton)
+            themePainter.paintDialogButton(negativeButton)
+        }
         return dialog
     }
 

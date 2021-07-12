@@ -189,4 +189,18 @@
 
     </com.sztorm.notecalendar.themedpreferences.ThemedPreferenceCategory>
 
+    <com.sztorm.notecalendar.themedpreferences.ThemedPreferenceCategory
+        android:key="@string/PrefKey_CategoryOther"
+        android:title="@string/Settings_Header_Other">
+
+        <com.sztorm.notecalendar.themedpreferences.ThemedSimpleListPreference
+            android:key="@string/PrefKey_FirstDayOfWeek"
+            android:title="@string/Settings_FirstDayOfWeek"
+            android:entries="@array/Settings_FirstDayOfWeek_Entries"
+            android:entryValues="@array/Settings_FirstDayOfWeek_Values">
+
+        </com.sztorm.notecalendar.themedpreferences.ThemedSimpleListPreference>
+
+    </com.sztorm.notecalendar.themedpreferences.ThemedPreferenceCategory>
+
 </PreferenceScreen >

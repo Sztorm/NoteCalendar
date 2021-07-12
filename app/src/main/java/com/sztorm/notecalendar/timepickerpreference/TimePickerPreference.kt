@@ -1,4 +1,4 @@
-package com.sztorm.notecalendar
+package com.sztorm.notecalendar.timepickerpreference
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -11,7 +11,9 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceManager
 import androidx.preference.PreferenceViewHolder
 import com.google.android.material.timepicker.TimeFormat
-import com.sztorm.notecalendar.TimePickerPreference.Time.Companion.asTime
+import com.sztorm.notecalendar.MainActivity
+import com.sztorm.notecalendar.R
+import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference.Time.Companion.asTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -56,6 +58,7 @@ open class TimePickerPreference : Preference, View.OnClickListener {
 
     companion object {
         val DEFAULT_TIME_RAW: Int = Time.asInt(hour = 8, minute = 0)
+        val DEFAULT_TIME: Time = DEFAULT_TIME_RAW.asTime()
     }
 
     private val formatter: DateTimeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)

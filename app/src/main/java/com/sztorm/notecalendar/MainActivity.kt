@@ -3,19 +3,15 @@
 package com.sztorm.notecalendar
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
 import com.orm.SchemaGenerator
 import com.orm.SugarContext
 import com.orm.SugarDb
-import com.skydoves.colorpickerview.preference.ColorPickerPreferenceManager
-import com.sztorm.notecalendar.TimePickerPreference.Time.Companion.asTime
-import com.sztorm.notecalendar.helpers.ColorPickerPreferenceManagerHelper.Companion.getThemeColors
 import com.sztorm.notecalendar.repositories.NoteRepository
+import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference
 import kotlinx.android.synthetic.main.activity_main.*
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -48,12 +44,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fragmentSetter: FragmentSetter
     private lateinit var currentFragmentType: MainFragmentType
     private lateinit var mThemePainter: ThemePainter
+    private lateinit var mSettingsReader: SettingsReader
     private var mViewedDate: LocalDate = LocalDate.now()
     val noteRepository = NoteRepository()
     val viewedDate: LocalDate
         get() = mViewedDate
     val themePainter: ThemePainter
         get() = mThemePainter
+    val settingsReader: SettingsReader
+        get() = mSettingsReader
     
     private fun initDatabase() {
         SugarContext.init(this)
@@ -104,10 +103,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val themeValues: ThemeValues = ColorPickerPreferenceManager
-            .getInstance(this)
-            .getThemeColors(this)
-        mThemePainter = ThemePainter(themeValues)
+        mSettingsReader = SettingsReader(this)
+        mThemePainter = ThemePainter(mSettingsReader.themeValues)
         fragmentSetter = FragmentSetter(supportFragmentManager, R.id.mainFragmentContainer)
         setTheme()
         initDatabase()
@@ -158,16 +155,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun scheduleNoteNotification(args: ScheduleNoteNotificationArguments) {
-        val preferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val enabledNotifications = args.enabledNotifications ?: preferences.getBoolean(
-                getString(R.string.PrefKey_EnableNotifications), false)
+        val enabledNotifications: Boolean = args.enabledNotifications ?:
+            mSettingsReader.enabledNotifications
 
         if (!enabledNotifications) {
             return
         }
-        val notificationTime = args.notificationTime ?: preferences
-            .getInt(getString(R.string.PrefKey_NotificationTime), TimePickerPreference.DEFAULT_TIME_RAW)
-            .asTime()
+        val notificationTime: TimePickerPreference.Time = args.notificationTime ?:
+            mSettingsReader.notificationTime
         val currentDateTime = LocalDateTime.now()
         var notificationDateTime = LocalDateTime.of(
             currentDateTime.toLocalDate(), notificationTime.toLocalTime())
@@ -175,7 +170,8 @@ class MainActivity : AppCompatActivity() {
         if (notificationTime.toLocalTime() <= currentDateTime.toLocalTime()) {
             notificationDateTime = notificationDateTime.plusDays(1)
         }
-        val note: NoteData? = args.note ?: noteRepository.getByDate(notificationDateTime.toLocalDate())
+        val note: NoteData? = args.note ?:
+            noteRepository.getByDate(notificationDateTime.toLocalDate())
 
         if (note === null) {
             return

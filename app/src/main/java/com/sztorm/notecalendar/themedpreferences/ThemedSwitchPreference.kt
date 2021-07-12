@@ -7,19 +7,15 @@ import android.widget.Switch
 import android.widget.TextView
 import androidx.preference.PreferenceViewHolder
 import androidx.preference.SwitchPreference
+import com.sztorm.notecalendar.ThemePaintable
 import com.sztorm.notecalendar.ThemePainter
 
 class ThemedSwitchPreference: SwitchPreference, ThemePaintable {
-    private lateinit var mThemePainter: ThemePainter
 
     /**
      * [themePainter] must be set before can be get.
      */
-    override var themePainter: ThemePainter
-        get() = mThemePainter
-        set(value) {
-            mThemePainter = value
-        }
+    override lateinit var themePainter: ThemePainter
 
     constructor(context: Context) : super(context)
 

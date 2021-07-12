@@ -56,7 +56,7 @@ class DayNoteAddFragment : Fragment() {
         themePainter.paintButton(mView.btnNoteAddText)
         themePainter.paintButton(mView.btnNoteSave)
         themePainter.paintButton(mView.btnNoteCancel)
-        themePainter.paintTextView(mView.txtNoteAdd)
+        themePainter.paintEditText(mView.txtNoteAdd)
     }
 
     override fun onCreateView(
