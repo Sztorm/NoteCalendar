@@ -12,7 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NoteCalendar">
 
-        <activity android:name="com.sztorm.notecalendar.MainActivity">
+        <activity
+            android:name="com.sztorm.notecalendar.MainActivity"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

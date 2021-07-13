@@ -3,6 +3,7 @@ package com.sztorm.notecalendar
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.DrawableContainer.DrawableContainerState
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
@@ -22,6 +23,14 @@ import kotlinx.android.synthetic.main.calendar_week_day_bar.view.*
 import picker.ugurtekbas.com.Picker.Picker
 
 class ThemePainter(val values: ThemeValues) {
+    // Changing text cursor, select handles programmatically is allowed from API >= 29, so caching
+    // modified shared drawables may help to maintain drawables with changed color in lower API
+    // levels.
+    private lateinit var textCursor: Drawable
+    private lateinit var textSelectHandleMiddle: Drawable
+    private lateinit var textSelectHandleLeft: Drawable
+    private lateinit var textSelectHandleRight: Drawable
+
     fun paintWeekDayItem(view: View) {
         val selector = view.context
             .getDrawableCompat(R.drawable.selector_week_day)!!
@@ -94,29 +103,26 @@ class ThemePainter(val values: ThemeValues) {
     }
 
     fun paintEditText(editText: EditText) {
+        textCursor = editText.context
+            .getDrawableCompat(R.drawable.cursor_edit_text)!!
+            .wrapCompat()
+        textSelectHandleMiddle = editText.context
+            .getDrawableCompat(R.drawable.text_select_handle_middle)!!
+            .wrapCompat()
+        textSelectHandleLeft = editText.context
+            .getDrawableCompat(R.drawable.text_select_handle_left)!!
+            .wrapCompat()
+        textSelectHandleRight = editText.context
+            .getDrawableCompat(R.drawable.text_select_handle_right)!!
+            .wrapCompat()
+
+        textCursor.setTint(values.secondaryColor)
+        textSelectHandleMiddle.setTint(values.secondaryColor)
+        textSelectHandleLeft.setTint(values.secondaryColor)
+        textSelectHandleRight.setTint(values.secondaryColor)
         editText.setTextColor(values.noteTextColor)
         editText.background.setTint(values.secondaryColor)
         editText.highlightColor = values.textHighlightColor
-
-        editText.context
-            .getDrawableCompat(R.drawable.cursor_edit_text)!!
-            .wrapCompat()
-            .setTint(values.secondaryColor)
-
-        editText.context
-            .getDrawableCompat(R.drawable.text_select_handle_middle)!!
-            .wrapCompat()
-            .setTint(values.secondaryColor)
-
-        editText.context
-            .getDrawableCompat(R.drawable.text_select_handle_left)!!
-            .wrapCompat()
-            .setTint(values.secondaryColor)
-
-        editText.context
-            .getDrawableCompat(R.drawable.text_select_handle_right)!!
-            .wrapCompat()
-            .setTint(values.secondaryColor)
     }
 
     fun paintCalendarDayView(

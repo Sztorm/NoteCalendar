@@ -1,7 +1,6 @@
 package com.sztorm.notecalendar.themedpreferences
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.widget.TextView
 import androidx.core.graphics.ColorUtils
@@ -30,7 +29,7 @@ class ThemedSimpleListPreference : SimpleListPreference, ThemePaintable {
         val summary: TextView = holder.findViewById(android.R.id.summary) as TextView
 
         title.setTextColor(themeValues.textColor)
-        summary.setTextColor(ColorUtils.blendARGB(themeValues.textColor, Color.WHITE, 0.3f))
+        summary.setTextColor(ColorUtils.setAlphaComponent(themeValues.textColor, 210))
     }
 
     override fun setupDialogBuilder() = ThemedSimpleListDialog.Builder(themePainter)

@@ -73,6 +73,7 @@ class MonthFragment : Fragment() {
 
         setDayOfWeekBarText(firstDayOfWeek)
         themePainter.paintCaledarDayOfWeekBar(mView.layoutDayOfWeekBar)
+        mView.lblMonthAndYear.setTextColor(themePainter.values.textColor)
 
         calendarView.dayBinder = dayBinder
         calendarView.setup(startMonth, endMonth, firstDayOfWeek)
