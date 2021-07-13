@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         handleNavigationButtonClickEvent(btnViewMonth, MonthFragment)
         handleNavigationButtonClickEvent(btnViewSettings, SettingsFragment)
         setMainFragmentOnCreate()
-        scheduleNoteNotification(ScheduleNoteNotificationArguments())
+        tryScheduleNoteNotification(ScheduleNoteNotificationArguments())
     }
 
     fun <T, TCreator> setMainFragment(
@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun scheduleNoteNotification(args: ScheduleNoteNotificationArguments) {
+    fun tryScheduleNoteNotification(args: ScheduleNoteNotificationArguments) {
         val enabledNotifications: Boolean = args.enabledNotifications ?:
             mSettingsReader.enabledNotifications
 
@@ -176,9 +176,27 @@ class MainActivity : AppCompatActivity() {
         if (note === null) {
             return
         }
+        if (note.date != notificationDateTime.toLocalDate().toString()) {
+            return
+        }
         val notificationData = NoteNotificationData(note, notificationDateTime)
 
         NoteNotificationManager.scheduleNotification(this, notificationData)
+    }
+
+    fun tryCancelScheduledNotification(noteDate: LocalDate) {
+        val notificationTime: TimePickerPreference.Time = mSettingsReader.notificationTime
+        val currentDateTime = LocalDateTime.now()
+        var notificationDateTime = LocalDateTime.of(
+            currentDateTime.toLocalDate(), notificationTime.toLocalTime())
+
+        if (notificationTime.toLocalTime() <= currentDateTime.toLocalTime()) {
+            notificationDateTime = notificationDateTime.plusDays(1)
+        }
+        if (notificationDateTime.toLocalDate() != noteDate) {
+            return
+        }
+        NoteNotificationManager.cancelScheduledNotification(this)
     }
 
     fun <T, TCreator> restart(startingMainFragment: TCreator)

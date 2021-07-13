@@ -226,7 +226,7 @@ class SettingsFragment : Fragment() {
             preference.setOnPreferenceChangeListener { _, valueBoxed ->
                 val value = valueBoxed as Boolean
                 if (value) {
-                    mainActivity.scheduleNoteNotification(
+                    mainActivity.tryScheduleNoteNotification(
                         ScheduleNoteNotificationArguments(enabledNotifications = true))
                 }
                 else {
@@ -245,7 +245,7 @@ class SettingsFragment : Fragment() {
             preference.themePainter = mainActivity.themePainter
             preference.setOnPreferenceChangeListener { _, valueBoxed ->
                 val value = valueBoxed as TimePickerPreference.Time
-                mainActivity.scheduleNoteNotification(
+                mainActivity.tryScheduleNoteNotification(
                     ScheduleNoteNotificationArguments(
                         enabledNotifications = true,
                         notificationTime = value))
