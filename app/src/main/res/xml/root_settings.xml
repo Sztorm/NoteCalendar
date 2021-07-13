@@ -203,4 +203,8 @@
 
     </com.sztorm.notecalendar.themedpreferences.ThemedPreferenceCategory>
 
+    <com.sztorm.notecalendar.themedpreferences.ThemedPreference
+        android:key="@string/PrefKey_Licenses"
+        app:title="@string/Settings_Licenses"/>
+
 </PreferenceScreen >

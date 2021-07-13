@@ -69,4 +69,5 @@
     <string name="Settings_EnableNotifications">Włącz powiadomienia</string>
     <string name="Settings_NotificationTime">Czas powiadomienia</string>
     <string name="Settings_FirstDayOfWeek">Pierwszy dzień tygodnia</string>
+    <string name="Settings_Licenses">Licencje</string>
 </resources>

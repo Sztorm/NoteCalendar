@@ -1,6 +1,7 @@
 package com.sztorm.notecalendar
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.button.MaterialButton
 import com.skydoves.colorpickerview.flag.BubbleFlag
 import com.skydoves.colorpickerview.flag.FlagMode
@@ -23,6 +25,7 @@ import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference
 import java.time.DayOfWeek
 import java.time.temporal.WeekFields
 import java.util.*
+
 
 /**
  * [Fragment] which represents settings of the application.
@@ -79,6 +82,7 @@ class SettingsFragment : Fragment() {
             setupEnableNotificationsPreference()
             setupNotificationTimePreference()
             setupFirstDayOfWeekPreference()
+            setupLicensesPreference()
         }
 
         private fun setupCategoryPreferences() {
@@ -266,6 +270,18 @@ class SettingsFragment : Fragment() {
             preference.setOnPreferenceChangeListener { _, valueBoxed ->
                 val value = valueBoxed as String
                 preference.summary = DayOfWeek.of(value.toInt()).toLocalizedString(mainActivity)
+                true
+            }
+        }
+
+        private fun setupLicensesPreference() {
+            val mainActivity = activity as MainActivity
+            val key: String = mainActivity.getString(R.string.PrefKey_Licenses)
+            val preference: ThemedPreference = findPreference(key)!!
+            preference.themePainter = mainActivity.themePainter
+
+            preference.setOnPreferenceClickListener {
+                startActivity(Intent(mainActivity, OssLicensesMenuActivity::class.java))
                 true
             }
         }
