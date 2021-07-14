@@ -63,8 +63,8 @@ class ThemePainter(val values: ThemeValues) {
         window.statusBarColor = values.primaryColor
     }
 
-    fun paintNote(view: View) {
-        val note: LayerDrawable = view.context
+    fun paintNote(noteHolder: View) {
+        val note: LayerDrawable = noteHolder.context
             .getDrawableCompat(R.drawable.bg_note)!!
             .wrapCompat() as LayerDrawable
 
@@ -74,7 +74,7 @@ class ThemePainter(val values: ThemeValues) {
         note.findDrawableByLayerId(R.id.layerNoteSecondary)
             .setTint(values.noteColorVariant)
 
-        view.background = note
+        noteHolder.background = note
     }
 
     fun paintButton(button: MaterialButton) {

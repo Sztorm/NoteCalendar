@@ -5,11 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.sztorm.notecalendar.helpers.ViewHelper.Companion.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_day_note_add.*
 import kotlinx.android.synthetic.main.fragment_day_note_add.view.*
+import kotlinx.android.synthetic.main.fragment_day_note_add.view.layoutNoteBottom
+import kotlinx.android.synthetic.main.fragment_day_note_add.view.layoutNoteUpper
 
 /**
  * A simple [Fragment] subclass.
@@ -27,17 +28,19 @@ class DayNoteAddFragment : Fragment() {
     }
 
     private fun handleBtnNoteAddTextClickEvent() = mView.btnNoteAddText.setOnClickListener {
-        mView.btnNoteAddText.isVisible = false
-        mView.layoutSaveCancelNote.isVisible = true
-        mView.txtNoteAdd.isVisible = true
+        mView.btnNoteAddText.visibility = View.GONE
+        mView.btnNoteSave.visibility = View.VISIBLE
+        mView.btnNoteCancel.visibility = View.VISIBLE
+        mView.txtNoteAdd.visibility = View.VISIBLE
     }
 
     private fun handleBtnNoteCancelClickEvent() = mView.btnNoteCancel.setOnClickListener {
         txtNoteAdd.text.clear()
 
-        mView.txtNoteAdd.isVisible = false
-        mView.layoutSaveCancelNote.isVisible = false
-        mView.btnNoteAddText.isVisible = true
+        mView.txtNoteAdd.visibility = View.GONE
+        mView.btnNoteSave.visibility = View.INVISIBLE
+        mView.btnNoteCancel.visibility = View.INVISIBLE
+        mView.btnNoteAddText.visibility = View.VISIBLE
         mView.hideKeyboard()
     }
 
@@ -52,7 +55,9 @@ class DayNoteAddFragment : Fragment() {
 
     private fun setTheme() {
         val themePainter: ThemePainter = mainActivity.themePainter
-        themePainter.paintNote(mView)
+
+        mView.layoutNoteBottom.setBackgroundColor(themePainter.values.noteColor)
+        themePainter.paintNote(mView.layoutNoteUpper)
         themePainter.paintButton(mView.btnNoteAddText)
         themePainter.paintButton(mView.btnNoteSave)
         themePainter.paintButton(mView.btnNoteCancel)

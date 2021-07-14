@@ -32,7 +32,6 @@ class FragmentSetter(
         val transaction = fragmentManager.beginTransaction()
         transaction.setCustomAnimations(resAnimIn, resAnimOut)
         transaction.replace(fragmentContainerID, fragment)
-        transaction.disallowAddToBackStack()
         transaction.commit()
     }
 

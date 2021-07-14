@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/bg_note"
     tools:context=".DayNoteFragment">
 
     <LinearLayout
-        android:id="@+id/layoutEditDeleteNote"
+        android:id="@+id/layoutNoteUpper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="68dp"
         android:orientation="horizontal"
-        android:layout_marginStart="10dp"
-        android:layout_marginVertical="10dp">
+        android:background="@drawable/bg_note">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnNoteEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginVertical="10dp"
             app:icon="@drawable/icon_edit"
             style="@style/Widget.App.Button.OutlinedButton.IconOnly" />
 
@@ -28,43 +28,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
+            android:layout_marginVertical="10dp"
             app:icon="@drawable/icon_delete"
             style="@style/Widget.App.Button.OutlinedButton.IconOnly" />
-
-    </LinearLayout>
-
-    <ScrollView
-        android:id="@+id/layoutLblNote"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="13.7dp">
-        <TextView
-            android:id="@+id/lblNote"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:gravity="start|top"
-            android:textSize="24sp"
-            android:textColor="?attr/colorText"
-            tools:text="This is text for testing purposes.\n1\n2" />
-    </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/layoutSaveCancelNote"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp">
 
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.MaterialComponents.Button.Icon"
             android:id="@+id/btnNoteEditSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginVertical="10dp"
             android:text="@string/Save"
+            android:visibility="gone"
             app:icon="@drawable/icon_add"
             app:iconGravity="textStart"/>
 
@@ -73,24 +49,58 @@
             android:id="@+id/btnNoteEditCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginVertical="10dp"
             android:text="@string/Cancel"
+            android:visibility="gone"
             app:icon="@drawable/icon_cancel"
-            app:iconGravity="textStart"
-            android:layout_marginStart="5dp"/>
+            app:iconGravity="textStart" />
+
     </LinearLayout>
 
-    <EditText
-        style="@style/EditText"
-        android:id="@+id/txtNoteEdit"
-        android:visibility="gone"
+    <ScrollView
+        android:id="@+id/layoutNoteBottom"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:gravity="start|top"
-        android:inputType="textMultiLine"
-        android:textSize="24sp"
-        android:layout_marginHorizontal="10dp"
-        android:importantForAutofill="no"
-        tools:ignore="LabelFor" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="67dp"
+        android:background="?attr/colorNote">
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/lblNote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="13.7dp"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:fontFamily="sans-serif"
+            android:gravity="start|top"
+            android:textColor="?attr/colorText"
+            android:textSize="24sp"
+            tools:text="This is text for testing purposes.\n1\n2" />
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/layoutNoteEditBottom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="67dp"
+        android:background="?attr/colorNote"
+        android:visibility="gone" >
+
+        <EditText
+            style="@style/EditText"
+            android:id="@+id/txtNoteEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:ems="10"
+            android:gravity="start|top"
+            android:inputType="textMultiLine"
+            android:textSize="24sp"
+            android:fontFamily="sans-serif"
+            android:importantForAutofill="no"
+            tools:ignore="LabelFor" />
+    </LinearLayout>
+
+
+</FrameLayout>

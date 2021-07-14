@@ -1,64 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/bg_note"
     tools:context=".DayNoteAddFragment">
 
-    <com.google.android.material.button.MaterialButton
-        style="@style/Widget.MaterialComponents.Button.Icon"
-        android:id="@+id/btnNoteAddText"
+    <LinearLayout
+        android:id="@+id/layoutNoteUpper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/AddText"
-        app:icon="@drawable/icon_add"
-        app:iconGravity="textStart"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="90dp"/>
-
-    <LinearLayout android:layout_width="match_parent"
-        android:id="@+id/layoutSaveCancelNote"
-        android:visibility="gone"
-        android:layout_height="wrap_content"
+        android:layout_height="68dp"
         android:orientation="horizontal"
-        android:layout_marginStart="10dp"
-        android:layout_marginVertical="10dp">
+        android:background="@drawable/bg_note" >
 
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.MaterialComponents.Button.Icon"
             android:id="@+id/btnNoteSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginVertical="10dp"
             android:text="@string/Save"
+            android:visibility="invisible"
             app:icon="@drawable/icon_add"
-            app:iconGravity="textStart"/>
+            app:iconGravity="textStart" />
 
         <com.google.android.material.button.MaterialButton
             style="@style/Widget.MaterialComponents.Button.Icon"
             android:id="@+id/btnNoteCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginVertical="10dp"
             android:text="@string/Cancel"
+            android:visibility="invisible"
             app:icon="@drawable/icon_cancel"
-            app:iconGravity="textStart"
-            android:layout_marginStart="5dp"/>
+            app:iconGravity="textStart" />
+
     </LinearLayout>
 
-    <EditText
-        style="@style/EditText"
-        android:id="@+id/txtNoteAdd"
-        android:visibility="gone"
+    <LinearLayout
+        android:id="@+id/layoutNoteBottom"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:gravity="start|top"
-        android:inputType="textMultiLine"
-        android:textSize="24sp"
-        android:layout_marginHorizontal="10dp"
-        android:importantForAutofill="no"
-        tools:ignore="LabelFor" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="67dp"
+        android:orientation="vertical"
+        android:background="?attr/colorNote">
 
-</LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            android:id="@+id/btnNoteAddText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/AddText"
+            app:icon="@drawable/icon_add"
+            app:iconGravity="textStart"
+            android:layout_marginHorizontal="10dp"/>
+
+        <EditText
+            style="@style/EditText"
+            android:id="@+id/txtNoteAdd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:ems="10"
+            android:gravity="start|top"
+            android:inputType="textMultiLine"
+            android:textSize="24sp"
+            android:fontFamily="sans-serif"
+            android:importantForAutofill="no"
+            android:visibility="gone"
+            tools:ignore="LabelFor" />
+
+    </LinearLayout>
+
+</FrameLayout>
