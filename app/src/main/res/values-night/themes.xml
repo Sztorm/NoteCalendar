@@ -1,24 +1,24 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Theme.NoteCalendar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/primary_dark</item>
+        <item name="colorPrimaryVariant">@color/primary_dark</item>
+        <item name="colorOnPrimary">@color/black_cool</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/secondary_dark</item>
+        <item name="colorSecondaryVariant">@color/secondary_dark</item>
+        <item name="colorOnSecondary">@color/white_cool</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
+        <!-- Customize your theme here. -->
         <item name="colorText">@color/white_cool</item>
         <item name="colorNoteText">@color/white_cool</item>
         <item name="colorBackground">@color/background_dark</item>
         <item name="colorNote">@color/note_dark_primary</item>
         <item name="colorNoteVariant">@color/note_dark_secondary</item>
-        <item name="colorInactiveItem">@color/item_inactive_light</item>
-        <item name="colorInactiveItemVariant">@color/item_inactive_dark</item>
+        <item name="colorInactiveItem">@color/inactive_dark</item>
+        <item name="colorInactiveItemVariant">@color/inactive_variant_dark</item>
         <item name="colorButtonText">@color/white_cool</item>
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/teal_200</item>
-        <item name="colorPrimaryVariant">@color/teal_500</item>
-        <item name="colorOnPrimary">@color/black_cool</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/purple_200</item>
-        <item name="colorSecondaryVariant">@color/purple_700</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
-        <!-- Customize your theme here. -->
     </style>
 </resources>

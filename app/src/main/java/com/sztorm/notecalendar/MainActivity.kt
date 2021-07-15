@@ -43,16 +43,16 @@ class MainActivity : AppCompatActivity() {
         R.id.btnViewDay, R.id.btnViewWeek, R.id.btnViewMonth, R.id.btnViewSettings)
     private lateinit var fragmentSetter: FragmentSetter
     private lateinit var currentFragmentType: MainFragmentType
-    private lateinit var mThemePainter: ThemePainter
-    private lateinit var mSettingsReader: SettingsReader
+    private var mThemePainter: ThemePainter? = null
+    private var mSettingsReader: SettingsReader? = null
     private var mViewedDate: LocalDate = LocalDate.now()
     val noteRepository = NoteRepository()
     val viewedDate: LocalDate
         get() = mViewedDate
     val themePainter: ThemePainter
-        get() = mThemePainter
+        get() = mThemePainter ?: ThemePainter(settingsReader.themeValues)
     val settingsReader: SettingsReader
-        get() = mSettingsReader
+        get() = mSettingsReader ?: SettingsReader(this)
     
     private fun initDatabase() {
         SugarContext.init(this)
@@ -61,13 +61,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setTheme() {
-        val themeValues: ThemeValues = mThemePainter.values
+        val themePainter: ThemePainter = themePainter
+        val themeValues: ThemeValues = themePainter.values
 
-        mThemePainter.paintWindowStatusBar(window)
-        mThemePainter.paintNavigationButton(btnViewMonth)
-        mThemePainter.paintNavigationButton(btnViewWeek)
-        mThemePainter.paintNavigationButton(btnViewDay)
-        mThemePainter.paintNavigationButton(btnViewSettings)
+        themePainter.paintWindowStatusBar(window)
+        themePainter.paintNavigationButton(btnViewMonth)
+        themePainter.paintNavigationButton(btnViewWeek)
+        themePainter.paintNavigationButton(btnViewDay)
+        themePainter.paintNavigationButton(btnViewSettings)
         mainActivityView.setBackgroundColor(themeValues.backgroundColor)
     }
 
@@ -104,7 +105,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         mSettingsReader = SettingsReader(this)
-        mThemePainter = ThemePainter(mSettingsReader.themeValues)
+        mThemePainter = ThemePainter(mSettingsReader!!.themeValues)
         fragmentSetter = FragmentSetter(supportFragmentManager, R.id.mainFragmentContainer)
         setTheme()
         initDatabase()
@@ -156,13 +157,13 @@ class MainActivity : AppCompatActivity() {
 
     fun tryScheduleNoteNotification(args: ScheduleNoteNotificationArguments) {
         val enabledNotifications: Boolean = args.enabledNotifications ?:
-            mSettingsReader.enabledNotifications
+            settingsReader.enabledNotifications
 
         if (!enabledNotifications) {
             return
         }
         val notificationTime: TimePickerPreference.Time = args.notificationTime ?:
-            mSettingsReader.notificationTime
+            settingsReader.notificationTime
         val currentDateTime = LocalDateTime.now()
         var notificationDateTime = LocalDateTime.of(
             currentDateTime.toLocalDate(), notificationTime.toLocalTime())
@@ -185,7 +186,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun tryCancelScheduledNotification(noteDate: LocalDate) {
-        val notificationTime: TimePickerPreference.Time = mSettingsReader.notificationTime
+        val notificationTime: TimePickerPreference.Time = settingsReader.notificationTime
         val currentDateTime = LocalDateTime.now()
         var notificationDateTime = LocalDateTime.of(
             currentDateTime.toLocalDate(), notificationTime.toLocalTime())

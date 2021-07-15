@@ -1,6 +1,7 @@
 package com.sztorm.notecalendar.helpers
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.util.TypedValue
 import androidx.annotation.AttrRes
@@ -10,7 +11,6 @@ import androidx.core.content.ContextCompat
 
 class ContextHelper {
     companion object {
-
         @ColorInt
         fun Context.getColorFromAttr(@AttrRes attrColor: Int): Int {
             val typedValue = TypedValue()
@@ -23,5 +23,9 @@ class ContextHelper {
 
         fun Context.getDrawableCompat(@DrawableRes id: Int): Drawable?
             = ContextCompat.getDrawable(this, id)
+
+        val Context.isDarkThemeEnabled: Boolean
+            get() = (this.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
+                 Configuration.UI_MODE_NIGHT_YES
     }
 }

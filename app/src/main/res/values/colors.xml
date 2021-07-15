@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="note_light_primary">#EFAF4F</color>
-    <color name="note_light_secondary">#F3BC6B</color>
-    <color name="note_dark_primary">#5D1E95</color>
-    <color name="note_dark_secondary">#7636A6</color>
-    <color name="item_inactive_light">#999A9A9A</color>
-    <color name="item_inactive_dark">#99494949</color>
+    <color name="primary_light">#BD9842</color>
+    <color name="primary_dark">#E95A00</color>
+    <color name="secondary_light">#4200A7</color>
+    <color name="secondary_dark">#FF0042</color>
+    <color name="note_light_primary">#3DECA6</color>
+    <color name="note_light_secondary">#69EBB7</color>
+    <color name="note_dark_primary">#2B274A</color>
+    <color name="note_dark_secondary">#37325B</color>
+    <color name="inactive_light">#666666</color>
+    <color name="inactive_variant_light">#BABABA</color>
+    <color name="inactive_dark">#5C5C68</color>
+    <color name="inactive_variant_dark">#33333D</color>
     <color name="background_light">#FFFFFF</color>
-    <color name="background_dark">#141414</color>
+    <color name="background_dark">#1C1C22</color>
     <color name="black_cool">#252525</color>
     <color name="white_cool">#F1F1F1</color>
-    <color name="purple_200">#6D2FFF</color>
-    <color name="purple_500">#5500CD</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_500">#04AC9B</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
 </resources>

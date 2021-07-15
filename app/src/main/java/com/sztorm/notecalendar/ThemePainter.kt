@@ -18,6 +18,7 @@ import androidx.core.graphics.ColorUtils
 import com.google.android.material.button.MaterialButton
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getDrawableCompat
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getPixelsFromDip
+import com.sztorm.notecalendar.helpers.ContextHelper.Companion.isDarkThemeEnabled
 import com.sztorm.notecalendar.helpers.DrawableHelper.Companion.wrapCompat
 import kotlinx.android.synthetic.main.calendar_week_day_bar.view.*
 import picker.ugurtekbas.com.Picker.Picker
@@ -132,6 +133,7 @@ class ThemePainter(val values: ThemeValues) {
         isToday: Boolean,
         hasNote: Boolean) {
         val background: GradientDrawable = (textView.background.mutate() as GradientDrawable)
+        val isDarkThemeEnabled: Boolean = textView.context.isDarkThemeEnabled
         var strokeColor: Int = Color.TRANSPARENT
         var strokeWidth = 0
         var textColor: Int = values.textColor
@@ -142,7 +144,8 @@ class ThemePainter(val values: ThemeValues) {
 
             if (hasNote) {
                 strokeWidth = textView.context.getPixelsFromDip(4f).toInt()
-                strokeColor = ColorUtils.setAlphaComponent(values.noteColor, 255/3)
+                strokeColor = ColorUtils.setAlphaComponent(
+                    if (isDarkThemeEnabled) values.noteColorVariant else values.noteColor, 255/3)
             }
             if (isToday) {
                 textColor = ColorUtils.setAlphaComponent(values.secondaryColor, 255/3)
@@ -155,7 +158,7 @@ class ThemePainter(val values: ThemeValues) {
         }
         if (hasNote) {
             strokeWidth = textView.context.getPixelsFromDip(4f).toInt()
-            strokeColor = values.noteColor
+            strokeColor = if (isDarkThemeEnabled) values.noteColorVariant else values.noteColor
         }
         if (isToday) {
             textColor = values.secondaryColor
