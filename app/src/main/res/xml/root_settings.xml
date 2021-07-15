@@ -160,6 +160,10 @@
             app:preference_dialog_positive="@string/Confirm"
             app:preference_dialog_title="@string/ColorPicker" />
 
+        <com.sztorm.notecalendar.themedpreferences.ThemedPreference
+            android:key="@string/PrefKey_SetDefaultTheme"
+            app:title="@string/Settings_SetDefaultTheme"/>
+
     </com.sztorm.notecalendar.themedpreferences.ThemedPreferenceCategory>
 
     <com.sztorm.notecalendar.themedpreferences.ThemedPreferenceCategory

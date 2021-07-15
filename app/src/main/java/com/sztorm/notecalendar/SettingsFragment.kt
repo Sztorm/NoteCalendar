@@ -18,6 +18,7 @@ import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.button.MaterialButton
 import com.skydoves.colorpickerview.flag.BubbleFlag
 import com.skydoves.colorpickerview.flag.FlagMode
+import com.skydoves.colorpickerview.preference.ColorPickerPreferenceManager
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getColorFromAttr
 import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedString
 import com.sztorm.notecalendar.themedpreferences.*
@@ -25,7 +26,6 @@ import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference
 import java.time.DayOfWeek
 import java.time.temporal.WeekFields
 import java.util.*
-
 
 /**
  * [Fragment] which represents settings of the application.
@@ -78,11 +78,20 @@ class SettingsFragment : Fragment() {
             setPreferencesFromResource(R.xml.root_settings, rootKey)
             setupCategoryPreferences()
             setupColorPickerPreferences()
+            setupSetDefaultThemePreference()
             setupDeleteAllNotesPreference()
             setupEnableNotificationsPreference()
             setupNotificationTimePreference()
             setupFirstDayOfWeekPreference()
             setupLicensesPreference()
+        }
+
+        private fun <T> setPreferenceThemePainter(
+            themePainter: ThemePainter, @StringRes prefKeyStringResId: Int)
+                where T : ThemePaintable, T: Preference {
+            val context: Context = requireContext()
+            val preference: T = (findPreference(context.getString(prefKeyStringResId)) as T?)!!
+            preference.themePainter = themePainter
         }
 
         private fun setupCategoryPreferences() {
@@ -102,14 +111,6 @@ class SettingsFragment : Fragment() {
             for (i in COLOR_ATTR_IDS.indices) {
                 setupColorPickerPreference(COLOR_PREF_KEY_IDS[i], COLOR_ATTR_IDS[i])
             }
-        }
-
-        private fun <T> setPreferenceThemePainter(
-            themePainter: ThemePainter, @StringRes prefKeyStringResId: Int)
-            where T : ThemePaintable, T: Preference {
-            val context: Context = requireContext()
-            val preference: T = (findPreference(context.getString(prefKeyStringResId)) as T?)!!
-            preference.themePainter = themePainter
         }
 
         private fun setColorPickerPreferenceTheme(preference: ThemedColorPickerPreference) {
@@ -170,6 +171,29 @@ class SettingsFragment : Fragment() {
                 if (isPositiveBtnClicked) {
                     (activity as MainActivity).restart(SettingsFragment)
                 }
+            }
+        }
+
+        private fun setupSetDefaultThemePreference() {
+            val context: Context = requireContext()
+            val key: String = context.getString(R.string.PrefKey_SetDefaultTheme)
+            val preference: ThemedPreference = findPreference(key)!!
+            preference.themePainter = (activity as MainActivity).themePainter
+
+            preference.setOnPreferenceClickListener {
+                val colorPickerPreferenceManager = ColorPickerPreferenceManager.getInstance(context)
+                val ctx = requireContext()
+
+                for (i in COLOR_PREF_KEY_IDS.indices) {
+                    val colPickerKey: String = ctx.getString(COLOR_PREF_KEY_IDS[i])
+                    val defaultColor: Int = ctx.getColorFromAttr(COLOR_ATTR_IDS[i])
+                    val colPickerPref: ThemedColorPickerPreference = findPreference(colPickerKey)!!
+
+                    colPickerPref.saveColor(defaultColor)
+                    colorPickerPreferenceManager.setColor(colPickerKey, defaultColor)
+                }
+                (activity as MainActivity).restart(SettingsFragment)
+                true
             }
         }
 

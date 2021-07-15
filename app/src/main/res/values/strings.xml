@@ -62,6 +62,7 @@
     <string name="Settings_Header_Notifications">Notifications</string>
     <string name="Settings_Header_Notes">Notes</string>
     <string name="Settings_Header_Other">Other</string>
+    <string name="Settings_SetDefaultTheme">Set default theme</string>
     <string name="Settings_DeleteNotesDateRange">Delete notes from date range</string>
     <string name="Settings_DeleteAllNotes">Delete all notes</string>
     <string name="Settings_DeleteAllNotes_Alert_Title">Delete all notes?</string>
@@ -81,6 +82,7 @@
     <string name="PrefKey_BackgroundColor" translatable="false">PrefKey_BackgroundColor</string>
     <string name="PrefKey_NoteColor" translatable="false">PrefKey_NoteColor</string>
     <string name="PrefKey_NoteColorVariant" translatable="false">PrefKey_NoteColorVariant</string>
+    <string name="PrefKey_SetDefaultTheme" translatable="false">PrefKey_SetDefaultTheme</string>
     <string name="PrefKey_CategoryNotes" translatable="false">PrefKey_CategoryNotes</string>
     <string name="PrefKey_DeleteAllNotes" translatable="false">PrefKey_DeleteAllNotes</string>
     <string name="PrefKey_CategoryNotifications" translatable="false">PrefKey_CategoryNotifications</string>

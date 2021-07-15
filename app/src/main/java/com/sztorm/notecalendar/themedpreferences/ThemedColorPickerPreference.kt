@@ -4,8 +4,11 @@ import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.widget.TextView
+import androidx.annotation.ColorInt
+import androidx.core.content.edit
 import androidx.preference.PreferenceViewHolder
 import com.skydoves.colorpickerpreference.ColorPickerPreference
+import com.skydoves.colorpickerview.ColorEnvelope
 import com.sztorm.notecalendar.ThemePaintable
 import com.sztorm.notecalendar.ThemePainter
 import com.sztorm.notecalendar.ThemeValues
@@ -39,5 +42,12 @@ class ThemedColorPickerPreference: ColorPickerPreference, ThemePaintable {
 
         title.setTextColor(themeValues.textColor)
         colorBoxGradient.setStroke(outlineSize, outlineColor)
+    }
+
+    fun saveColor(@ColorInt color: Int) {
+        notifyColorChanged(ColorEnvelope(color))
+        preferenceManager.sharedPreferences.edit {
+            putInt(key, color)
+        }
     }
 }

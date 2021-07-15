@@ -62,6 +62,7 @@
     <string name="Settings_Header_Notifications">Powiadomienia</string>
     <string name="Settings_Header_Notes">Notatki</string>
     <string name="Settings_Header_Other">Inne</string>
+    <string name="Settings_SetDefaultTheme">Ustaw domyślny motyw</string>
     <string name="Settings_DeleteNotesDateRange">Usuń notatki z okresu</string>
     <string name="Settings_DeleteAllNotes">Usuń wszystkie notatki</string>
     <string name="Settings_DeleteAllNotes_Alert_Title">Usunąć wszystkie notatki?</string>
