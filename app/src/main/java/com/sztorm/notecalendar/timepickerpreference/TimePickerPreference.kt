@@ -14,6 +14,7 @@ import com.google.android.material.timepicker.TimeFormat
 import com.sztorm.notecalendar.MainActivity
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference.Time.Companion.asTime
+import com.sztorm.timepicker.PickedTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -103,7 +104,8 @@ open class TimePickerPreference : Preference, View.OnClickListener {
         val dialog = createTimePickerDialog()
 
         dialog.addOnPositiveButtonClickListener {
-            val preferenceValue = Time(dialog.picker.currentHour, dialog.picker.currentMin)
+            val time: PickedTime = dialog.picker.time
+            val preferenceValue = Time(time.hour, time.minute)
 
             sharedPrefs.edit {
                 putInt(key, preferenceValue.asInt())

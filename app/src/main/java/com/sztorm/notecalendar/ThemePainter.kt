@@ -10,18 +10,15 @@ import android.graphics.drawable.LayerDrawable
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import android.widget.EditText
-import android.widget.RadioButton
-import android.widget.Switch
-import android.widget.TextView
+import android.widget.*
 import androidx.core.graphics.ColorUtils
 import com.google.android.material.button.MaterialButton
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getDrawableCompat
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getPixelsFromDip
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.isDarkThemeEnabled
 import com.sztorm.notecalendar.helpers.DrawableHelper.Companion.wrapCompat
+import com.sztorm.timepicker.TwoStepTimePicker
 import kotlinx.android.synthetic.main.calendar_week_day_bar.view.*
-import picker.ugurtekbas.com.Picker.Picker
 
 class ThemePainter(val values: ThemeValues) {
     // Changing text cursor, select handles programmatically is allowed from API >= 29, so caching
@@ -193,10 +190,12 @@ class ThemePainter(val values: ThemeValues) {
         radio.buttonTintList = values.radioButtonTintList
     }
 
-    fun paintTimePicker(picker: Picker) {
-        picker.setCanvasColor(values.backgroundColor)
-        picker.setClockColor(ColorUtils.setAlphaComponent(values.secondaryColor, 64))
-        picker.setTextColor(values.textColor)
-        picker.setDialColor(values.secondaryColor)
+    fun paintTimePicker(picker: TwoStepTimePicker) {
+        picker.canvasColor = values.backgroundColor
+        picker.clockFaceColor = values.backgroundColor
+        picker.trackColor = values.textColor
+        picker.pointerColor = values.secondaryColor
+        picker.textColor = values.textColor
+        picker.pickedTextColor = values.secondaryColor
     }
 }

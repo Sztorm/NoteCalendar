@@ -11,7 +11,7 @@ import com.google.android.material.timepicker.TimeFormat
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.eventsubjects.*
 import com.sztorm.notecalendar.helpers.DialogFragmentHelper.Companion.setMaximumWidth
-import picker.ugurtekbas.com.Picker.Picker
+import com.sztorm.timepicker.TwoStepTimePicker
 
 open class TimePickerDialog(
     private val positiveBtnSubject: PositiveButtonClickSubjectImpl = PositiveButtonClickSubjectImpl(),
@@ -25,19 +25,19 @@ open class TimePickerDialog(
         DialogCancelSubject by dialogCancelSubject,
         DialogDismissSubject by dialogDismissSubject,
         ViewCreatedSubject by viewCreatedSubject {
-    private lateinit var mPicker: Picker
+    private lateinit var mPicker: TwoStepTimePicker
     private var mTitle: CharSequence? = null
     private var mHour: Int = 0
     private var mMinute: Int = 0
-    private var mTimeFormat: Boolean = false
+    private var is24Hour: Boolean = false
 
-    val picker: Picker
+    val picker: TwoStepTimePicker
         get() = mPicker
     val title: CharSequence?
         get() = mTitle
     val timeFormat: Int
         @TimeFormat
-        get() = if (mTimeFormat) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
+        get() = if (is24Hour) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
 
     override fun onStart() {
         super.onStart()
@@ -54,8 +54,8 @@ open class TimePickerDialog(
         val positiveButton: MaterialButton = root.findViewById(R.id.btnPositive)
         val negativeButton: MaterialButton = root.findViewById(R.id.btnNegative)
         mPicker = root.findViewById(R.id.timePicker)
-        mPicker.setHourFormat(mTimeFormat)
         mPicker.setTime(mHour, mMinute)
+        mPicker.is24Hour = is24Hour
         mPicker.isEnabled = true
 
         if (mTitle === null) {
@@ -98,7 +98,7 @@ open class TimePickerDialog(
         private var hour = 0
         private var minute = 0
         private var titleText: CharSequence? = null
-        private var timeFormat: Boolean = false
+        private var is24Hour: Boolean = false
 
         fun setHour(@IntRange(from = 0, to = 23) hour: Int): Builder {
             this.hour = hour
@@ -111,7 +111,7 @@ open class TimePickerDialog(
         }
 
         fun setTimeFormat(@TimeFormat format: Int): Builder {
-            timeFormat = format == TimeFormat.CLOCK_24H
+            is24Hour = format == TimeFormat.CLOCK_24H
             return this
         }
 
@@ -129,7 +129,7 @@ open class TimePickerDialog(
                 val result = TimePickerDialog()
                 result.mHour = options.hour
                 result.mMinute = options.minute
-                result.mTimeFormat = options.timeFormat
+                result.is24Hour = options.is24Hour
                 result.mTitle = options.titleText
 
                 return result

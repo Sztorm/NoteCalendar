@@ -20,17 +20,20 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Time picker" />
 
-    <picker.ugurtekbas.com.Picker.Picker
+    <com.sztorm.timepicker.TwoStepTimePicker
         android:id="@+id/timePicker"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        app:canvasColor="?attr/colorBackground"
-        app:dialRadius="100dp"
-        app:hourFormat="false"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lblTitle"
+        app:canvasColor="?attr/colorBackground"
+        app:clockFaceColor="?attr/colorBackground"
+        app:trackColor="?attr/colorText"
+        app:pickedTextColor="?attr/colorSecondary"
+        app:pointerColor="?attr/colorSecondary"
         app:textColor="?attr/colorText"
-        app:trackSize="20dp" />
+        app:pointerRadius="23dp"
+        app:trackSize="10dp" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnNegative"
