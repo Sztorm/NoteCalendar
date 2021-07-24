@@ -6,11 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.sztorm.notecalendar.databinding.FragmentDayNoteAddBinding
 import com.sztorm.notecalendar.helpers.ViewHelper.Companion.hideKeyboard
-import kotlinx.android.synthetic.main.fragment_day_note_add.*
-import kotlinx.android.synthetic.main.fragment_day_note_add.view.*
-import kotlinx.android.synthetic.main.fragment_day_note_add.view.layoutNoteBottom
-import kotlinx.android.synthetic.main.fragment_day_note_add.view.layoutNoteUpper
 
 /**
  * A simple [Fragment] subclass.
@@ -18,7 +15,7 @@ import kotlinx.android.synthetic.main.fragment_day_note_add.view.layoutNoteUpper
  * fragment.
  */
 class DayNoteAddFragment : Fragment() {
-    private lateinit var mView: View
+    private lateinit var binding: FragmentDayNoteAddBinding
     private lateinit var mainActivity: MainActivity
     private lateinit var dayFragment: DayFragment
 
@@ -27,27 +24,27 @@ class DayNoteAddFragment : Fragment() {
         mainActivity = activity as MainActivity
     }
 
-    private fun handleBtnNoteAddTextClickEvent() = mView.btnNoteAddText.setOnClickListener {
-        mView.btnNoteAddText.visibility = View.GONE
-        mView.btnNoteSave.visibility = View.VISIBLE
-        mView.btnNoteCancel.visibility = View.VISIBLE
-        mView.txtNoteAdd.visibility = View.VISIBLE
+    private fun handleBtnNoteAddTextClickEvent() = binding.btnNoteAddText.setOnClickListener {
+        binding.btnNoteAddText.visibility = View.GONE
+        binding.btnNoteSave.visibility = View.VISIBLE
+        binding.btnNoteCancel.visibility = View.VISIBLE
+        binding.txtNoteAdd.visibility = View.VISIBLE
     }
 
-    private fun handleBtnNoteCancelClickEvent() = mView.btnNoteCancel.setOnClickListener {
-        txtNoteAdd.text.clear()
+    private fun handleBtnNoteCancelClickEvent() = binding.btnNoteCancel.setOnClickListener {
+        binding.txtNoteAdd.text.clear()
 
-        mView.txtNoteAdd.visibility = View.GONE
-        mView.btnNoteSave.visibility = View.INVISIBLE
-        mView.btnNoteCancel.visibility = View.INVISIBLE
-        mView.btnNoteAddText.visibility = View.VISIBLE
-        mView.hideKeyboard()
+        binding.txtNoteAdd.visibility = View.GONE
+        binding.btnNoteSave.visibility = View.INVISIBLE
+        binding.btnNoteCancel.visibility = View.INVISIBLE
+        binding.btnNoteAddText.visibility = View.VISIBLE
+        binding.root.hideKeyboard()
     }
 
-    private fun handleBtnNoteSaveClickEvent() = mView.btnNoteSave.setOnClickListener {
+    private fun handleBtnNoteSaveClickEvent() = binding.btnNoteSave.setOnClickListener {
         val noteData = NoteData(
-            mainActivity.viewedDate.toString(),
-            txtNoteAdd.text.toString())
+            date = mainActivity.viewedDate.toString(),
+            text = binding.txtNoteAdd.text.toString())
         mainActivity.noteRepository.add(noteData)
         mainActivity.tryScheduleNoteNotification(ScheduleNoteNotificationArguments(note = noteData))
         dayFragment.setFragment(DayNoteFragment.createInstance(dayFragment, noteData))
@@ -56,25 +53,25 @@ class DayNoteAddFragment : Fragment() {
     private fun setTheme() {
         val themePainter: ThemePainter = mainActivity.themePainter
 
-        mView.layoutNoteBottom.setBackgroundColor(themePainter.values.noteColor)
-        themePainter.paintNote(mView.layoutNoteUpper)
-        themePainter.paintButton(mView.btnNoteAddText)
-        themePainter.paintButton(mView.btnNoteSave)
-        themePainter.paintButton(mView.btnNoteCancel)
-        themePainter.paintEditText(mView.txtNoteAdd)
+        binding.layoutNoteBottom.setBackgroundColor(themePainter.values.noteColor)
+        themePainter.paintNote(binding.layoutNoteUpper)
+        themePainter.paintButton(binding.btnNoteAddText)
+        themePainter.paintButton(binding.btnNoteSave)
+        themePainter.paintButton(binding.btnNoteCancel)
+        themePainter.paintEditText(binding.txtNoteAdd)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        mView = inflater.inflate(R.layout.fragment_day_note_add, container, false)
+        binding = FragmentDayNoteAddBinding.inflate(inflater, container, false)
         setTheme()
         handleBtnNoteAddTextClickEvent()
         handleBtnNoteCancelClickEvent()
         handleBtnNoteSaveClickEvent()
 
-        return mView
+        return binding.root
     }
 
     companion object : DayNoteAddCreator {

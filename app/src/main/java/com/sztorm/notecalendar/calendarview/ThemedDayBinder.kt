@@ -7,6 +7,7 @@ import com.kizitonwose.calendarview.ui.DayBinder
 import com.sztorm.notecalendar.MainActivity
 import com.sztorm.notecalendar.NoteData
 import com.sztorm.notecalendar.ThemePainter
+import com.sztorm.notecalendar.databinding.CalendarDayBinding
 import java.time.LocalDate
 import java.time.Month
 
@@ -16,7 +17,7 @@ class ThemedDayBinder(val mainActivity: MainActivity): DayBinder<DayViewContaine
     private var cachedNotesMonth: Month = mainActivity.viewedDate.month
     private val today = LocalDate.now()
 
-    override fun create(view: View) = DayViewContainer(view, mainActivity)
+    override fun create(view: View) = DayViewContainer(CalendarDayBinding.bind(view), mainActivity)
 
     override fun bind(container: DayViewContainer, day: CalendarDay) {
         val themePainter: ThemePainter = mainActivity.themePainter
@@ -35,6 +36,6 @@ class ThemedDayBinder(val mainActivity: MainActivity): DayBinder<DayViewContaine
             isInMonth = day.owner == DayOwner.THIS_MONTH,
             isSelected = viewedDate == day.date,
             isToday = today == day.date,
-            hasNote = cachedMonthNotesList.any({ n -> n.date == day.date.toString() }))
+            hasNote = cachedMonthNotesList.any { n -> n.date == day.date.toString() })
     }
 }

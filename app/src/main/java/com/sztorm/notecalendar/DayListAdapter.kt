@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.fragment_week_day.view.*
+import com.sztorm.notecalendar.databinding.FragmentWeekDayBinding
 import java.time.LocalDate
 
 class DayListAdapter(
@@ -16,10 +16,10 @@ class DayListAdapter(
         RecyclerView.Adapter<DayListAdapter.ViewHolder>() {
     var onItemClick: ((DayItem) -> Unit)? = null
 
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
-        val dayOfMonthLabel: TextView = view.lblWeekDayOfMonth
-        val dayOfWeekLabel: TextView = view.lblWeekDayOfWeek
-        val layout: LinearLayout = view.layoutDayWeek
+    inner class ViewHolder(binding: FragmentWeekDayBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+        val dayOfMonthLabel: TextView = binding.lblWeekDayOfMonth
+        val dayOfWeekLabel: TextView = binding.lblWeekDayOfWeek
+        val layout: LinearLayout = binding.layoutDayWeek
         var dataPosition: Int = -1
 
         override fun onClick(view: View) {
@@ -28,10 +28,10 @@ class DayListAdapter(
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(viewGroup.context)
-                .inflate(R.layout.fragment_week_day, viewGroup, false)
+        val inflater = LayoutInflater.from(viewGroup.context)
+        val binding = FragmentWeekDayBinding.inflate(inflater, viewGroup, false)
 
-        return ViewHolder(view)
+        return ViewHolder(binding)
     }
 
     private fun areRepresentingTheSameDay(dateA: LocalDate, dateB: LocalDate): Boolean

@@ -13,12 +13,12 @@ import android.view.WindowManager
 import android.widget.*
 import androidx.core.graphics.ColorUtils
 import com.google.android.material.button.MaterialButton
+import com.sztorm.notecalendar.databinding.CalendarWeekDayBarBinding
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getDrawableCompat
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getPixelsFromDip
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.isDarkThemeEnabled
 import com.sztorm.notecalendar.helpers.DrawableHelper.Companion.wrapCompat
 import com.sztorm.timepicker.TwoStepTimePicker
-import kotlinx.android.synthetic.main.calendar_week_day_bar.view.*
 
 class ThemePainter(val values: ThemeValues) {
     // Changing text cursor, select handles programmatically is allowed from API >= 29, so caching
@@ -169,15 +169,15 @@ class ThemePainter(val values: ThemeValues) {
         textView.setTextColor(textColor)
     }
 
-    fun paintCaledarDayOfWeekBar(bar: View) {
-        bar.setBackgroundColor(values.secondaryColor)
-        bar.lblFirstDay.setTextColor(values.buttonTextColor)
-        bar.lblSecondDay.setTextColor(values.buttonTextColor)
-        bar.lblThirdDay.setTextColor(values.buttonTextColor)
-        bar.lblFourthDay.setTextColor(values.buttonTextColor)
-        bar.lblFifthDay.setTextColor(values.buttonTextColor)
-        bar.lblSixthDay.setTextColor(values.buttonTextColor)
-        bar.lblSeventhDay.setTextColor(values.buttonTextColor)
+    fun paintCaledarDayOfWeekBar(weekDayBinding: CalendarWeekDayBarBinding) {
+        weekDayBinding.root.setBackgroundColor(values.secondaryColor)
+        weekDayBinding.lblFirstDay.setTextColor(values.buttonTextColor)
+        weekDayBinding.lblSecondDay.setTextColor(values.buttonTextColor)
+        weekDayBinding.lblThirdDay.setTextColor(values.buttonTextColor)
+        weekDayBinding.lblFourthDay.setTextColor(values.buttonTextColor)
+        weekDayBinding.lblFifthDay.setTextColor(values.buttonTextColor)
+        weekDayBinding.lblSixthDay.setTextColor(values.buttonTextColor)
+        weekDayBinding.lblSeventhDay.setTextColor(values.buttonTextColor)
     }
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")

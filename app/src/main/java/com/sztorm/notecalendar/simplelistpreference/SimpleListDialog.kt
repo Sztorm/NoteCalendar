@@ -9,7 +9,7 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.button.MaterialButton
-import com.sztorm.notecalendar.R
+import com.sztorm.notecalendar.databinding.FragmentSimpleListDialogBinding
 import com.sztorm.notecalendar.eventsubjects.*
 import com.sztorm.notecalendar.helpers.DialogFragmentHelper.Companion.setMaximumWidth
 
@@ -94,18 +94,15 @@ open class SimpleListDialog(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val root = layoutInflater.inflate(R.layout.fragment_simple_list_dialog, container) as ViewGroup
-        val lblTitle: TextView = root.findViewById(R.id.lblTitle)
-        val layoutList: ListView = root.findViewById(R.id.layoutList)
-        val btnPositive: MaterialButton = root.findViewById(R.id.btnPositive)
-        val btnNegative: MaterialButton = root.findViewById(R.id.btnNegative)
+        val binding = FragmentSimpleListDialogBinding
+            .inflate(layoutInflater, container, false)
 
-        handleTitle(lblTitle)
-        handleList(layoutList)
-        handlePositiveButton(btnPositive)
-        handleNegativeButton(btnNegative)
+        handleTitle(binding.lblTitle)
+        handleList(binding.layoutList)
+        handlePositiveButton(binding.btnPositive)
+        handleNegativeButton(binding.btnNegative)
 
-        return root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

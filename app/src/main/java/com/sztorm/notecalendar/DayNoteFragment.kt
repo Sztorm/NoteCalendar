@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.sztorm.notecalendar.databinding.FragmentDayNoteBinding
 import com.sztorm.notecalendar.helpers.ViewHelper.Companion.hideKeyboard
-import kotlinx.android.synthetic.main.fragment_day_note.view.*
 import java.time.LocalDate
 
 /**
@@ -16,7 +16,7 @@ import java.time.LocalDate
  * create an instance of this fragment.
  */
 class DayNoteFragment : Fragment() {
-    private lateinit var mView: View
+    private lateinit var binding: FragmentDayNoteBinding
     private lateinit var mainActivity: MainActivity
     private lateinit var dayFragment: DayFragment
     private var note: NoteData? = null
@@ -27,34 +27,34 @@ class DayNoteFragment : Fragment() {
     }
 
     private fun setEditMode() {
-        mView.btnNoteEditSave.visibility = View.VISIBLE
-        mView.btnNoteEditCancel.visibility = View.VISIBLE
-        mView.btnNoteEditText.visibility = View.GONE
-        mView.btnNoteDeleteText.visibility = View.GONE
-        mView.layoutNoteEditBottom.visibility = View.VISIBLE
-        mView.layoutNoteBottom.visibility = View.GONE
+        binding.btnNoteEditSave.visibility = View.VISIBLE
+        binding.btnNoteEditCancel.visibility = View.VISIBLE
+        binding.btnNoteEditText.visibility = View.GONE
+        binding.btnNoteDeleteText.visibility = View.GONE
+        binding.layoutNoteEditBottom.visibility = View.VISIBLE
+        binding.layoutNoteBottom.visibility = View.GONE
     }
 
     private fun setViewMode() {
-        mView.btnNoteEditSave.visibility = View.GONE
-        mView.btnNoteEditCancel.visibility = View.GONE
-        mView.btnNoteEditText.visibility = View.VISIBLE
-        mView.btnNoteDeleteText.visibility = View.VISIBLE
-        mView.layoutNoteEditBottom.visibility = View.GONE
-        mView.layoutNoteBottom.visibility = View.VISIBLE
+        binding.btnNoteEditSave.visibility = View.GONE
+        binding.btnNoteEditCancel.visibility = View.GONE
+        binding.btnNoteEditText.visibility = View.VISIBLE
+        binding.btnNoteDeleteText.visibility = View.VISIBLE
+        binding.layoutNoteEditBottom.visibility = View.GONE
+        binding.layoutNoteBottom.visibility = View.VISIBLE
     }
 
-    private fun handleBtnNoteEditTextClickEvent() = mView.btnNoteEditText.setOnClickListener {
-        mView.txtNoteEdit.text.clear()
+    private fun handleBtnNoteEditTextClickEvent() = binding.btnNoteEditText.setOnClickListener {
+        binding.txtNoteEdit.text.clear()
 
         if (note !== null) {
-            mView.txtNoteEdit.text.append(note?.text)
+            binding.txtNoteEdit.text.append(note?.text)
         }
         setEditMode()
     }
 
-    private fun handleBtnNoteEditSaveClickEvent() = mView.btnNoteEditSave.setOnClickListener {
-        val editedText: String = mView.txtNoteEdit.text.toString()
+    private fun handleBtnNoteEditSaveClickEvent() = binding.btnNoteEditSave.setOnClickListener {
+        val editedText: String = binding.txtNoteEdit.text.toString()
         val editedNote: NoteData? = mainActivity.noteRepository.getByDate(mainActivity.viewedDate)
 
         if (editedNote != null) {
@@ -64,19 +64,19 @@ class DayNoteFragment : Fragment() {
             note = editedNote
             mainActivity.tryScheduleNoteNotification(ScheduleNoteNotificationArguments(note = note))
         }
-        mView.lblNote.text = editedText
+        binding.lblNote.text = editedText
 
         setViewMode()
-        mView.hideKeyboard()
+        binding.root.hideKeyboard()
     }
 
-    private fun handleBtnNoteEditCancelClickEvent() = mView.btnNoteEditCancel.setOnClickListener {
+    private fun handleBtnNoteEditCancelClickEvent() = binding.btnNoteEditCancel.setOnClickListener {
         setViewMode()
-        mView.txtNoteEdit.text.clear()
-        mView.hideKeyboard()
+        binding.txtNoteEdit.text.clear()
+        binding.root.hideKeyboard()
     }
 
-    private fun handleBtnNoteDeleteTextClickEvent() = mView.btnNoteDeleteText.setOnClickListener {
+    private fun handleBtnNoteDeleteTextClickEvent() = binding.btnNoteDeleteText.setOnClickListener {
         val possibleNote: NoteData? = note
 
         if (possibleNote !== null) {
@@ -90,21 +90,21 @@ class DayNoteFragment : Fragment() {
         val themePainter: ThemePainter = mainActivity.themePainter
         val noteColor: Int = themePainter.values.noteColor
 
-        mView.layoutNoteEditBottom.setBackgroundColor(noteColor)
-        mView.layoutNoteBottom.setBackgroundColor(noteColor)
-        mView.lblNote.setTextColor(themePainter.values.noteTextColor)
-        themePainter.paintNote(mView.layoutNoteUpper)
-        themePainter.paintOutlinedButton(mView.btnNoteEditText)
-        themePainter.paintOutlinedButton(mView.btnNoteDeleteText)
-        themePainter.paintButton(mView.btnNoteEditSave)
-        themePainter.paintButton(mView.btnNoteEditCancel)
-        themePainter.paintEditText(mView.txtNoteEdit)
+        binding.layoutNoteEditBottom.setBackgroundColor(noteColor)
+        binding.layoutNoteBottom.setBackgroundColor(noteColor)
+        binding.lblNote.setTextColor(themePainter.values.noteTextColor)
+        themePainter.paintNote(binding.layoutNoteUpper)
+        themePainter.paintOutlinedButton(binding.btnNoteEditText)
+        themePainter.paintOutlinedButton(binding.btnNoteDeleteText)
+        themePainter.paintButton(binding.btnNoteEditSave)
+        themePainter.paintButton(binding.btnNoteEditCancel)
+        themePainter.paintEditText(binding.txtNoteEdit)
     }
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        mView = inflater.inflate(R.layout.fragment_day_note, container, false)
-        mView.lblNote.text = note?.text
+        binding = FragmentDayNoteBinding.inflate(inflater, container, false)
+        binding.lblNote.text = note?.text
 
         setTheme()
         handleBtnNoteEditTextClickEvent()
@@ -112,7 +112,7 @@ class DayNoteFragment : Fragment() {
         handleBtnNoteEditCancelClickEvent()
         handleBtnNoteDeleteTextClickEvent()
 
-        return mView
+        return binding.root
     }
 
     companion object : DayNoteCreator {

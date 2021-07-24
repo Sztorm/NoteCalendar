@@ -1,26 +1,21 @@
 package com.sztorm.notecalendar
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.sztorm.notecalendar.helpers.DateHelper.Companion.seventhDayOfWeek
+import com.sztorm.notecalendar.databinding.FragmentWeekBinding
 import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedString
-import kotlinx.android.synthetic.main.fragment_week.view.*
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.temporal.WeekFields
-import java.util.*
 import kotlin.collections.ArrayDeque
 
 class WeekFragment : Fragment() {
-    private lateinit var mView: View
+    private lateinit var binding: FragmentWeekBinding
     private lateinit var adapter: DayListAdapter
     private lateinit var mainActivity: MainActivity
     private lateinit var textColors: WeekDayTextColors
@@ -35,14 +30,14 @@ class WeekFragment : Fragment() {
             if (!recyclerView.canScrollVertically(directionDown)) {
                 val firstVisiblePos: Int = llm.findFirstVisibleItemPosition()
 
-                loadNextDayItems(mView, LOADED_DAY_ITEMS_COUNT)
+                loadNextDayItems(binding.root, LOADED_DAY_ITEMS_COUNT)
                 adapter.notifyDataSetChanged()
                 recyclerView.scrollToPosition(firstVisiblePos - LOADED_DAY_ITEMS_COUNT)
             }
             else if (!recyclerView.canScrollVertically(directionUp)) {
                 val lastVisiblePos: Int = llm.findLastVisibleItemPosition()
 
-                loadPrevDayItems(mView, LOADED_DAY_ITEMS_COUNT)
+                loadPrevDayItems(binding.root, LOADED_DAY_ITEMS_COUNT)
                 adapter.notifyDataSetChanged()
                 recyclerView.scrollToPosition(lastVisiblePos + LOADED_DAY_ITEMS_COUNT)
             }
@@ -123,20 +118,20 @@ class WeekFragment : Fragment() {
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View {
-        mView = inflater.inflate(R.layout.fragment_week, container, false)
+        binding = FragmentWeekBinding.inflate(inflater, container, false)
         setTheme()
-        initDayItems(mView, CACHED_DAY_ITEMS_COUNT)
+        initDayItems(binding.root, CACHED_DAY_ITEMS_COUNT)
         adapter = DayListAdapter(dayItems, mainActivity, textColors)
         adapter.onItemClick = {
             mainActivity.setMainFragment(DayFragment, date = it.date)
         }
-        val recyclerView: RecyclerView = mView.weekDayFragmentContainer
-        recyclerView.layoutManager = LinearLayoutManager(mView.context)
+        val recyclerView: RecyclerView = binding.weekDayFragmentContainer
+        recyclerView.layoutManager = LinearLayoutManager(binding.root.context)
         recyclerView.adapter = adapter
         recyclerView.addOnScrollListener(WeekDayOnScrollListener())
         recyclerView.scrollToPosition(CACHED_DAY_ITEMS_COUNT / 2)
 
-        return mView
+        return binding.root
     }
 
     companion object : MainFragmentCreator<WeekFragment> {

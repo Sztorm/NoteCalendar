@@ -1,5 +1,6 @@
 package com.sztorm.notecalendar
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
@@ -9,9 +10,9 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.sztorm.notecalendar.databinding.FragmentDayBinding
 import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedString
 import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedStringGenitiveCase
-import kotlinx.android.synthetic.main.fragment_day.view.*
 import java.time.LocalDate
 
 /**
@@ -21,8 +22,8 @@ import java.time.LocalDate
  */
 @RequiresApi(Build.VERSION_CODES.O)
 class DayFragment : Fragment() {
+    private lateinit var binding: FragmentDayBinding
     private lateinit var fragmentSetter: FragmentSetter
-    private lateinit var mView: View
     private lateinit var mainActivity: MainActivity
 
     override fun onAttach(context: Context) {
@@ -36,18 +37,19 @@ class DayFragment : Fragment() {
     }
 
     private fun setLabelsText(date: LocalDate) {
-        mView.lblDayOfMonth.text = date.dayOfMonth.toString()
-        mView.lblDayOfWeek.text = date.dayOfWeek.toLocalizedString(mView.context)
-        mView.lblMonth.text = date.month.toLocalizedStringGenitiveCase(mView.context)
+        binding.lblDayOfMonth.text = date.dayOfMonth.toString()
+        binding.lblDayOfWeek.text = date.dayOfWeek.toLocalizedString(mainActivity)
+        binding.lblMonth.text = date.month.toLocalizedStringGenitiveCase(mainActivity)
     }
 
-    private fun handleBtnNoteAddClickEvent() = mView.btnNoteAdd.setOnClickListener {
-        mView.btnNoteAdd.isVisible = false
+    private fun handleBtnNoteAddClickEvent() = binding.btnNoteAdd.setOnClickListener {
+        binding.btnNoteAdd.isVisible = false
         fragmentSetter.setFragment(DayNoteAddFragment.createInstance(this))
     }
 
-    private fun handleTouchEvent() = mView.setOnTouchListener(
-        object : OnSwipeTouchListener(mView.context) {
+    @SuppressLint("ClickableViewAccessibility")
+    private fun handleTouchEvent() = binding.root.setOnTouchListener(
+        object : OnSwipeTouchListener(binding.root.context) {
 
         override fun onSwipeLeft() {
             val date: LocalDate = mainActivity.viewedDate.plusDays(1)
@@ -66,10 +68,10 @@ class DayFragment : Fragment() {
         val themePainter: ThemePainter = mainActivity.themePainter
         val themeValues: ThemeValues = themePainter.values
 
-        themePainter.paintButton(mView.btnNoteAdd)
-        mView.lblDayOfMonth.setTextColor(themeValues.textColor)
-        mView.lblDayOfWeek.setTextColor(themeValues.textColor)
-        mView.lblMonth.setTextColor(themeValues.textColor)
+        themePainter.paintButton(binding.btnNoteAdd)
+        binding.lblDayOfMonth.setTextColor(themeValues.textColor)
+        binding.lblDayOfWeek.setTextColor(themeValues.textColor)
+        binding.lblMonth.setTextColor(themeValues.textColor)
     }
 
     override fun onCreateView(
@@ -81,25 +83,24 @@ class DayFragment : Fragment() {
             R.id.dayNoteFragmentContainer,
             R.anim.anim_in_note,
             R.anim.anim_out_note)
-        mView = inflater.inflate(R.layout.fragment_day, container, false)
+        binding = FragmentDayBinding.inflate(inflater, container, false)
         setTheme()
 
         val viewedDate: LocalDate = mainActivity.viewedDate
         val possibleNote: NoteData? = mainActivity.noteRepository.getByDate(viewedDate)
 
         if (possibleNote == null) {
-            mView.btnNoteAdd.isVisible = true
+            binding.btnNoteAdd.isVisible = true
         }
         else {
-            mView.btnNoteAdd.isVisible = false
+            binding.btnNoteAdd.isVisible = false
             fragmentSetter.setFragment(
                 DayNoteFragment.createInstance(this, possibleNote))
         }
-
         handleTouchEvent()
         handleBtnNoteAddClickEvent()
         setLabelsText(viewedDate)
-        return mView
+        return binding.root
     }
 
     companion object : MainFragmentCreator<DayFragment> {

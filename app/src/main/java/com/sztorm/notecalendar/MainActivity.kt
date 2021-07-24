@@ -10,9 +10,9 @@ import androidx.fragment.app.Fragment
 import com.orm.SchemaGenerator
 import com.orm.SugarContext
 import com.orm.SugarDb
+import com.sztorm.notecalendar.databinding.ActivityMainBinding
 import com.sztorm.notecalendar.repositories.NoteRepository
 import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference
-import kotlinx.android.synthetic.main.activity_main.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
 
     private val mainButtonResourceIds: IntArray = intArrayOf(
         R.id.btnViewDay, R.id.btnViewWeek, R.id.btnViewMonth, R.id.btnViewSettings)
+    private lateinit var binding: ActivityMainBinding
     private lateinit var fragmentSetter: FragmentSetter
     private lateinit var currentFragmentType: MainFragmentType
     private var mThemePainter: ThemePainter? = null
@@ -65,11 +66,11 @@ class MainActivity : AppCompatActivity() {
         val themeValues: ThemeValues = themePainter.values
 
         themePainter.paintWindowStatusBar(window)
-        themePainter.paintNavigationButton(btnViewMonth)
-        themePainter.paintNavigationButton(btnViewWeek)
-        themePainter.paintNavigationButton(btnViewDay)
-        themePainter.paintNavigationButton(btnViewSettings)
-        mainActivityView.setBackgroundColor(themeValues.backgroundColor)
+        themePainter.paintNavigationButton(binding.btnViewMonth)
+        themePainter.paintNavigationButton(binding.btnViewWeek)
+        themePainter.paintNavigationButton(binding.btnViewDay)
+        themePainter.paintNavigationButton(binding.btnViewSettings)
+        binding.root.setBackgroundColor(themeValues.backgroundColor)
     }
 
     private fun <T, TCreator> handleNavigationButtonClickEvent(
@@ -102,17 +103,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         mSettingsReader = SettingsReader(this)
         mThemePainter = ThemePainter(mSettingsReader!!.themeValues)
         fragmentSetter = FragmentSetter(supportFragmentManager, R.id.mainFragmentContainer)
         setTheme()
         initDatabase()
-        handleNavigationButtonClickEvent(btnViewDay, DayFragment)
-        handleNavigationButtonClickEvent(btnViewWeek, WeekFragment)
-        handleNavigationButtonClickEvent(btnViewMonth, MonthFragment)
-        handleNavigationButtonClickEvent(btnViewSettings, SettingsFragment)
+        handleNavigationButtonClickEvent(binding.btnViewDay, DayFragment)
+        handleNavigationButtonClickEvent(binding.btnViewWeek, WeekFragment)
+        handleNavigationButtonClickEvent(binding.btnViewMonth, MonthFragment)
+        handleNavigationButtonClickEvent(binding.btnViewSettings, SettingsFragment)
         setMainFragmentOnCreate()
         tryScheduleNoteNotification(ScheduleNoteNotificationArguments())
     }
@@ -127,7 +129,7 @@ class MainActivity : AppCompatActivity() {
             mViewedDate = date
         }
         currentFragmentType = fragmentCreator.fragmentType
-        navigation.check(mainButtonResourceIds[currentFragmentType.ordinal])
+        binding.navigation.check(mainButtonResourceIds[currentFragmentType.ordinal])
         fragmentSetter.setFragment(fragmentCreator, resAnimIn, resAnimOut)
     }
 
@@ -140,7 +142,7 @@ class MainActivity : AppCompatActivity() {
             mViewedDate = date
         }
         currentFragmentType = mainFragmentType
-        navigation.check(mainButtonResourceIds[mainFragmentType.ordinal])
+        binding.navigation.check(mainButtonResourceIds[mainFragmentType.ordinal])
 
         when (mainFragmentType) {
             DayFragment.fragmentType -> fragmentSetter.setFragment(

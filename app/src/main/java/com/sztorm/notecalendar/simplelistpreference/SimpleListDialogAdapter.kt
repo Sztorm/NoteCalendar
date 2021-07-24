@@ -6,30 +6,30 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.sztorm.notecalendar.R
+import com.sztorm.notecalendar.databinding.FragmentSimpleListDialogItemBinding
 
 class SimpleListDialogAdapter(context: Context, entries: Array<CharSequence>, checkedPosition: Int = -1) :
     ArrayAdapter<CharSequence>(context, R.layout.fragment_simple_list_dialog_item, entries) {
-    private val inflater = context
-        .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     private var checkedItemPosition: Int = checkedPosition
     private var checkedRadio: RadioButton? = null
     var onItemClickListener: ((item: CharSequence?, position: Int) -> Unit)? = null
     var onCreateViewHolderListener: ((holder: ViewHolder) -> Unit)? = null
 
-    inner class ViewHolder(view: View) {
-        val itemRadio: RadioButton = view.findViewById(R.id.radioItem)
-        val itemLabel: TextView = view.findViewById(R.id.lblItem)
-        val itemLayout: LinearLayout = view as LinearLayout
+    inner class ViewHolder(binding: FragmentSimpleListDialogItemBinding) {
+        val itemRadio: RadioButton = binding.radioItem
+        val itemLabel: TextView = binding.lblItem
+        val itemLayout: LinearLayout = binding.root
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val resultView: View
+        val binding: FragmentSimpleListDialogItemBinding
         val holder: ViewHolder
 
         if (convertView === null) {
-            resultView = inflater
-                .inflate(R.layout.fragment_simple_list_dialog_item, parent, false)
-            holder = ViewHolder(resultView)
+            val inflater = LayoutInflater.from(parent.context)
+            binding = FragmentSimpleListDialogItemBinding.inflate(inflater, parent, false)
+            holder = ViewHolder(binding)
+
             val clickListener = View.OnClickListener {
                 checkedRadio?.isChecked = false
                 checkedItemPosition = position
@@ -50,14 +50,14 @@ class SimpleListDialogAdapter(context: Context, entries: Array<CharSequence>, ch
             }
             onCreateViewHolderListener?.invoke(holder)
 
-            resultView.tag = holder
+            binding.root.tag = holder
         }
         else {
-            resultView = convertView
-            holder = resultView.tag as ViewHolder
+            binding = FragmentSimpleListDialogItemBinding.bind(convertView)
+            holder = binding.root.tag as ViewHolder
         }
         holder.itemLabel.text = getItem(position)
 
-        return resultView
+        return binding.root
     }
 }
