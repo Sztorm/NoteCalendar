@@ -2,12 +2,10 @@ package com.sztorm.notecalendar
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.sztorm.notecalendar.databinding.FragmentDayBinding
@@ -20,7 +18,6 @@ import java.time.LocalDate
  * Use the [DayFragment.createInstance] factory method to
  * create an instance of this fragment.
  */
-@RequiresApi(Build.VERSION_CODES.O)
 class DayFragment : Fragment() {
     private lateinit var binding: FragmentDayBinding
     private lateinit var fragmentSetter: FragmentSetter

@@ -13,11 +13,11 @@
         <gradient 
             android:startY="50.00002"
             android:startX="0"
-            android:endY="50.00002"
-            android:endX="100"
+            android:endY="0"
+            android:endX="100.54166"
             android:type="linear"
             android:tileMode="clamp">
-          <item android:offset="0" android:color="#FFA70034"/>
+          <item android:offset="0" android:color="#FFB6005C"/>
           <item android:offset="1" android:color="#FFFC6E0B"/>
         </gradient>
       </aapt:attr>

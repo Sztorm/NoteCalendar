@@ -10,7 +10,6 @@ import com.kizitonwose.calendarview.CalendarView
 import com.sztorm.notecalendar.calendarview.ThemedDayBinder
 import com.sztorm.notecalendar.databinding.CalendarWeekDayBarBinding
 import com.sztorm.notecalendar.databinding.FragmentMonthBinding
-import com.sztorm.notecalendar.databinding.FragmentWeekDayBinding
 import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedAbbreviatedString
 import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedString
 import java.time.DayOfWeek

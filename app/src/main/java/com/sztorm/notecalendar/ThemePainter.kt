@@ -1,23 +1,20 @@
 package com.sztorm.notecalendar
 
-import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.drawable.Drawable
+import android.graphics.drawable.*
 import android.graphics.drawable.DrawableContainer.DrawableContainerState
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.LayerDrawable
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.*
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.graphics.ColorUtils
 import com.google.android.material.button.MaterialButton
 import com.sztorm.notecalendar.databinding.CalendarWeekDayBarBinding
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getDrawableCompat
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getPixelsFromDip
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.isDarkThemeEnabled
-import com.sztorm.notecalendar.helpers.DrawableHelper.Companion.wrapCompat
 import com.sztorm.timepicker.TwoStepTimePicker
 
 class ThemePainter(val values: ThemeValues) {
@@ -30,9 +27,7 @@ class ThemePainter(val values: ThemeValues) {
     private lateinit var textSelectHandleRight: Drawable
 
     fun paintWeekDayItem(view: View) {
-        val selector = view.context
-            .getDrawableCompat(R.drawable.selector_week_day)!!
-            .wrapCompat()
+        val selector = view.context.getDrawableCompat(R.drawable.selector_week_day)!!
         val selectorStates = (selector.constantState as DrawableContainerState).children
         val selectorPressed = selectorStates[0] as GradientDrawable
         val width = view.context.getPixelsFromDip(3f).toInt()
@@ -42,9 +37,7 @@ class ThemePainter(val values: ThemeValues) {
     }
 
     fun paintSelectedWeekDayItem(view: View) {
-        val selector = view.context
-            .getDrawableCompat(R.drawable.selector_week_day_selected)!!
-            .wrapCompat()
+        val selector = view.context.getDrawableCompat(R.drawable.selector_week_day_selected)!!
         val selectorStates = (selector.constantState as DrawableContainerState).children
         val selectorPressed = selectorStates[0] as GradientDrawable
         val selectorUnpressed = selectorStates[1] as GradientDrawable
@@ -62,15 +55,9 @@ class ThemePainter(val values: ThemeValues) {
     }
 
     fun paintNote(noteHolder: View) {
-        val note: LayerDrawable = noteHolder.context
-            .getDrawableCompat(R.drawable.bg_note)!!
-            .wrapCompat() as LayerDrawable
-
-        note.findDrawableByLayerId(R.id.layerNotePrimary)
-            .setTint(values.noteColor)
-
-        note.findDrawableByLayerId(R.id.layerNoteSecondary)
-            .setTint(values.noteColorVariant)
+        val note = noteHolder.context.getDrawableCompat(R.drawable.bg_note)!! as LayerDrawable
+        note.getDrawable(0).setTint(values.noteColor)
+        note.getDrawable(1).setTint(values.noteColorVariant)
 
         noteHolder.background = note
     }
@@ -103,24 +90,21 @@ class ThemePainter(val values: ThemeValues) {
     fun paintEditText(editText: EditText) {
         textCursor = editText.context
             .getDrawableCompat(R.drawable.cursor_edit_text)!!
-            .wrapCompat()
         textSelectHandleMiddle = editText.context
             .getDrawableCompat(R.drawable.text_select_handle_middle)!!
-            .wrapCompat()
         textSelectHandleLeft = editText.context
             .getDrawableCompat(R.drawable.text_select_handle_left)!!
-            .wrapCompat()
         textSelectHandleRight = editText.context
             .getDrawableCompat(R.drawable.text_select_handle_right)!!
-            .wrapCompat()
 
         textCursor.setTint(values.secondaryColor)
         textSelectHandleMiddle.setTint(values.secondaryColor)
         textSelectHandleLeft.setTint(values.secondaryColor)
         textSelectHandleRight.setTint(values.secondaryColor)
         editText.setTextColor(values.noteTextColor)
-        editText.background.setTint(values.secondaryColor)
+        editText.backgroundTintList = ColorStateList.valueOf(values.secondaryColor)
         editText.highlightColor = values.textHighlightColor
+        editText.invalidate()
     }
 
     fun paintCalendarDayView(
@@ -180,8 +164,7 @@ class ThemePainter(val values: ThemeValues) {
         weekDayBinding.lblSeventhDay.setTextColor(values.buttonTextColor)
     }
 
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
-    fun paintSwitch(switch: Switch) {
+    fun paintSwitch(switch: SwitchCompat) {
         switch.thumbTintList = values.switchThumbColorStateList
         switch.trackTintList = values.switchTrackColorStateList
     }

@@ -1,26 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--suppress ALL -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/layerNotePrimary">
-        <vector
-            android:width="100dp"
-            android:height="50dp"
-            android:viewportWidth="100"
-            android:viewportHeight="50">
-            <path
-                android:pathData="M0,0 L0,50 L100,50 L100,48 L82,0 z"
-                android:fillColor="?attr/colorNote"/>
-        </vector>
+    <item
+        android:id="@+id/layer0"
+        android:drawable="@drawable/bg_note_layer0">
     </item>
-    <item android:id="@+id/layerNoteSecondary">
-        <vector
-            android:width="100dp"
-            android:height="50dp"
-            android:viewportWidth="100"
-            android:viewportHeight="50">
-            <path
-                android:pathData="M82,0 L82,48 L100,48 z"
-                android:fillColor="?attr/colorNoteVariant"/>
-        </vector>
+    <item
+        android:id="@+id/layer1"
+        android:drawable="@drawable/bg_note_layer1">
     </item>
 </layer-list>

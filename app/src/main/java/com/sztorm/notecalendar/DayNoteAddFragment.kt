@@ -42,6 +42,7 @@ class DayNoteAddFragment : Fragment() {
     }
 
     private fun handleBtnNoteSaveClickEvent() = binding.btnNoteSave.setOnClickListener {
+        binding.root.hideKeyboard()
         val noteData = NoteData(
             date = mainActivity.viewedDate.toString(),
             text = binding.txtNoteAdd.text.toString())

@@ -2,7 +2,6 @@ package com.sztorm.notecalendar
 
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import androidx.annotation.ColorInt
 import androidx.core.graphics.ColorUtils
 import com.sztorm.notecalendar.helpers.ColorStateListHelper
@@ -63,12 +62,12 @@ class ThemeValues(
     val switchThumbColorStateList: ColorStateList = ColorStateListHelper
         .createToggleColorStateList(
             checkedColor = secondaryColor,
-            uncheckedColor = ColorUtils.setAlphaComponent(inactiveItemColor, 255))
+            uncheckedColor = inactiveItemColor)
 
     val switchTrackColorStateList: ColorStateList = ColorStateListHelper
         .createToggleColorStateList(
-            checkedColor = secondaryColor,
-            uncheckedColor = inactiveItemColor)
+            checkedColor = ColorUtils.setAlphaComponent(secondaryColor, 128),
+            uncheckedColor = ColorUtils.setAlphaComponent(inactiveItemColor, 128))
 
     val dayViewButtonColorStateList: ColorStateList = ColorStateListHelper
         .createClickableButtonColorStateList(

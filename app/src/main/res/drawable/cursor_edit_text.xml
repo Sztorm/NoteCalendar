@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" >
-    <size android:width="2dp" />
-    <solid android:color="?attr/colorSecondary" />
-</shape>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="2dp"
+    android:height="5dp"
+    android:viewportWidth="100.0"
+    android:viewportHeight="100.0">
+
+    <path android:pathData="M0,0 L0,100 L100,100 L 100,0 Z"
+        android:fillColor="?attr/colorSecondary"/>
+</vector>

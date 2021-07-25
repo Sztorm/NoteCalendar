@@ -8,6 +8,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import java.time.LocalDateTime
 import java.util.*
+import com.sztorm.notecalendar.helpers.AlarmManagerHelper.Companion.setExactAndAllowWhileIdleCompat
 
 class NoteNotificationManager {
     companion object {
@@ -68,7 +69,8 @@ class NoteNotificationManager {
             calendar[Calendar.SECOND] = 0
 
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alarmManager.setExactAndAllowWhileIdle(
+
+            alarmManager.setExactAndAllowWhileIdleCompat(
                 AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
         }
 

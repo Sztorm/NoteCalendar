@@ -1,12 +1,12 @@
 package com.sztorm.notecalendar.themedpreferences
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.Switch
 import android.widget.TextView
+import androidx.appcompat.widget.SwitchCompat
 import androidx.preference.PreferenceViewHolder
 import androidx.preference.SwitchPreference
+import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.ThemePaintable
 import com.sztorm.notecalendar.ThemePainter
 
@@ -25,14 +25,21 @@ class ThemedSwitchPreference: SwitchPreference, ThemePaintable {
     constructor(context: Context, attributeSet: AttributeSet, defStyle: Int) :
             super(context, attributeSet, defStyle)
 
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    init {
+        widgetLayoutResource = R.layout.preference_themed_switch_widget
+    }
+
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
 
-        val title: TextView = holder.findViewById(android.R.id.title) as TextView
-        val switch = holder.itemView.findViewById(android.R.id.switch_widget) as Switch
+        val title = holder.findViewById(android.R.id.title) as TextView
+        val switch: SwitchCompat = holder.itemView.findViewById(R.id.switchWidget)
+
+        switch.setOnCheckedChangeListener { _, isChecked ->
+            this.isChecked = isChecked
+        }
         title.setTextColor(themePainter.values.textColor)
         themePainter.paintSwitch(switch)
-
+        isChecked = getPersistedBoolean(false)
     }
 }
