@@ -7,55 +7,60 @@
     android:orientation="vertical"
     tools:context=".DayFragment">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/lblDayOfMonth"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="110dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.44"
         android:textColor="?attr/colorText"
-        tools:text="8"
-        tools:ignore="SpUsage" />
+        android:textAlignment="center"
+        android:maxLines="1"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMaxTextSize="300dp"
+        tools:text="8" />
 
     <TextView
         android:id="@+id/lblMonth"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.18"
         android:textColor="?attr/colorText"
+        android:textAlignment="center"
         android:maxLines="1"
-        tools:text="October"
-        tools:ignore="SpUsage"/>
+        app:autoSizeTextType="uniform"
+        tools:text="October" />
 
     <TextView
         android:id="@+id/lblDayOfWeek"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textSize="30dp"
-        android:textColor="?attr/colorText"
-        android:maxLines="1"
-        tools:text="Monday"
-        tools:ignore="SpUsage"/>
-
-    <com.google.android.material.button.MaterialButton
-        style="@style/Widget.MaterialComponents.Button.Icon"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/AddNote"
-        app:icon="@drawable/icon_note_add"
-        app:iconGravity="textStart"
-        android:id="@+id/btnNoteAdd"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="5dp"/>
+        android:layout_height="0dp"
+        android:layout_weight="0.10"
+        android:textColor="?attr/colorText"
+        android:textAlignment="center"
+        android:maxLines="1"
+        app:autoSizeTextType="uniform"
+        tools:text="Monday" />
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="vertical"
         android:layout_marginHorizontal="10dp"
         android:layout_marginVertical="10dp"
-        android:id="@+id/dayNoteFragmentContainer"/>
+        android:id="@+id/dayNoteFragmentContainer" >
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.Icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/AddNote"
+            app:icon="@drawable/icon_note_add"
+            app:iconGravity="textStart"
+            android:id="@+id/btnNoteAdd"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="5dp"/>
+
+    </FrameLayout>
 
 </LinearLayout>
