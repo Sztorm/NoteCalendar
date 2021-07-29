@@ -7,15 +7,15 @@ Minimum Android version: 5.0 (Lollipop, API level 21)
 
 ## Screenshots
 
-<img src="assets/pic-01.png" alt="note calendar picture 1" width=270 height=555> <img src="assets/pic-10.png" alt="note calendar picture 10" width=270 height=555>
+<img src="assets/pic-01.png" alt="note calendar picture 1" width=270 height=555> <img src="assets/pic-02.png" alt="note calendar picture 2" width=270 height=555>
 
-<img src="assets/pic-02.png" alt="note calendar picture 2" width=270 height=555> <img src="assets/pic-06.png" alt="note calendar picture 6" width=270 height=555>
+<img src="assets/pic-03.png" alt="note calendar picture 3" width=270 height=555> <img src="assets/pic-04.png" alt="note calendar picture 4" width=270 height=555>
 
-<img src="assets/pic-03.png" alt="note calendar picture 3" width=270 height=555> <img src="assets/pic-07.png" alt="note calendar picture 7" width=270 height=555>
+<img src="assets/pic-05.png" alt="note calendar picture 5" width=270 height=555> <img src="assets/pic-06.png" alt="note calendar picture 6" width=270 height=555>
 
-<img src="assets/pic-04.png" alt="note calendar picture 4" width=270 height=555> <img src="assets/pic-08.png" alt="note calendar picture 8" width=270 height=555>
+<img src="assets/pic-07.png" alt="note calendar picture 7" width=270 height=555> <img src="assets/pic-08.png" alt="note calendar picture 8" width=270 height=555>
 
-<img src="assets/pic-05.png" alt="note calendar picture 5" width=270 height=555> <img src="assets/pic-09.png" alt="note calendar picture 9" width=270 height=555>
+<img src="assets/pic-09.png" alt="note calendar picture 9" width=270 height=555> <img src="assets/pic-10.png" alt="note calendar picture 10" width=270 height=555>
 
 ## Possibilities
 
@@ -30,13 +30,13 @@ Application offers notifications which can be enabled to remind about a note cre
 given time. For example you can set notification time to time before your alarm clock time in order
 to wake up and read note with something important to do.
 
-## Settings
-
 Application settings include:
 
  * Theming
-    * Total of 10 modifiable colors that affect each application component
-    * Easy way to revert color changes to default
+    * Setting custom theme which includes 10 modifiable colors
+    * Setting light theme
+    * Setting dark theme
+    * Setting default theme based on system settings
  * Notes deletion
  * Notifications management
     * Enabling or disabling
