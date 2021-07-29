@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.sztorm.notecalendar.databinding.FragmentDayBinding
 import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedString
 import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedStringGenitiveCase
+import com.sztorm.notecalendar.repositories.NoteRepository
 import java.time.LocalDate
 
 /**
@@ -84,7 +85,7 @@ class DayFragment : Fragment() {
         setTheme()
 
         val viewedDate: LocalDate = mainActivity.viewedDate
-        val possibleNote: NoteData? = mainActivity.noteRepository.getByDate(viewedDate)
+        val possibleNote: NoteData? = NoteRepository.getByDate(viewedDate)
 
         if (possibleNote == null) {
             binding.btnNoteAdd.isVisible = true

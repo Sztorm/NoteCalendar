@@ -62,7 +62,12 @@
     <string name="Settings_Header_Notifications">Notifications</string>
     <string name="Settings_Header_Notes">Notes</string>
     <string name="Settings_Header_Other">Other</string>
+    <string name="Settings_Header_CustomTheme">Custom theme</string>
+    <string name="Settings_SetCustomTheme">Set custom theme</string>
+    <string name="Settings_SetLightTheme">Set light theme</string>
+    <string name="Settings_SetDarkTheme">Set dark theme</string>
     <string name="Settings_SetDefaultTheme">Set default theme</string>
+    <string name="Settings_Summary_SetDefaultTheme">Sets theme based on system settings. If system does not support theming then light theme is set.</string>
     <string name="Settings_DeleteNotesDateRange">Delete notes from date range</string>
     <string name="Settings_DeleteAllNotes">Delete all notes</string>
     <string name="Settings_DeleteAllNotes_Alert_Title">Delete all notes?</string>
@@ -72,6 +77,7 @@
     <string name="Settings_FirstDayOfWeek">First day of week</string>
     <string name="Settings_Licenses">Licenses</string>
     <string name="PrefKey_CategoryTheme" translatable="false">PrefKey_CategoryTheme</string>
+    <string name="PrefKey_HeaderCustomTheme" translatable="false">PrefKey_HeaderCustomTheme</string>
     <string name="PrefKey_PrimaryColor" translatable="false">PrefKey_PrimaryColor</string>
     <string name="PrefKey_SecondaryColor" translatable="false">PrefKey_SecondaryColor</string>
     <string name="PrefKey_InactiveItemColor" translatable="false">PrefKey_InactiveItemColor</string>
@@ -82,6 +88,9 @@
     <string name="PrefKey_BackgroundColor" translatable="false">PrefKey_BackgroundColor</string>
     <string name="PrefKey_NoteColor" translatable="false">PrefKey_NoteColor</string>
     <string name="PrefKey_NoteColorVariant" translatable="false">PrefKey_NoteColorVariant</string>
+    <string name="PrefKey_SetCustomTheme" translatable="false">PrefKey_SetCustomTheme</string>
+    <string name="PrefKey_SetLightTheme" translatable="false">PrefKey_SetLightTheme</string>
+    <string name="PrefKey_SetDarkTheme" translatable="false">PrefKey_SetDarkTheme</string>
     <string name="PrefKey_SetDefaultTheme" translatable="false">PrefKey_SetDefaultTheme</string>
     <string name="PrefKey_CategoryNotes" translatable="false">PrefKey_CategoryNotes</string>
     <string name="PrefKey_DeleteAllNotes" translatable="false">PrefKey_DeleteAllNotes</string>

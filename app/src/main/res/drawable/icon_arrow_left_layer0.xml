@@ -1,0 +1,5 @@
+<ripple android:color="#55FFFFFF"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/bg_circle"/>
+</ripple>

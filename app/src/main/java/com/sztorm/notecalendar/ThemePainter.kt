@@ -56,10 +56,18 @@ class ThemePainter(val values: ThemeValues) {
 
     fun paintNote(noteHolder: View) {
         val note = noteHolder.context.getDrawableCompat(R.drawable.bg_note)!! as LayerDrawable
+
         note.getDrawable(0).setTint(values.noteColor)
         note.getDrawable(1).setTint(values.noteColorVariant)
 
         noteHolder.background = note
+    }
+
+    fun paintBackArrowIcon(iconView: ImageView) {
+        val icon: LayerDrawable = iconView.drawable as LayerDrawable
+
+        icon.getDrawable(0).setTintList(values.backArrowIconRippleColorStateList)
+        icon.getDrawable(1).setTint(values.textColor)
     }
 
     fun paintButton(button: MaterialButton) {

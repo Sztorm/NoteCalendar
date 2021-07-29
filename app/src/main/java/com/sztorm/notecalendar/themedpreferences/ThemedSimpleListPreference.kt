@@ -29,7 +29,7 @@ class ThemedSimpleListPreference : SimpleListPreference, ThemePaintable {
         val summary: TextView = holder.findViewById(android.R.id.summary) as TextView
 
         title.setTextColor(themeValues.textColor)
-        summary.setTextColor(ColorUtils.setAlphaComponent(themeValues.textColor, 210))
+        summary.setTextColor(themeValues.summaryTextColor)
     }
 
     override fun setupDialogBuilder() = ThemedSimpleListDialog.Builder(themePainter)

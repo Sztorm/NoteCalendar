@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.sztorm.notecalendar.databinding.FragmentDayNoteBinding
 import com.sztorm.notecalendar.helpers.ViewHelper.Companion.hideKeyboard
+import com.sztorm.notecalendar.repositories.NoteRepository
 import java.time.LocalDate
 
 /**
@@ -55,7 +56,7 @@ class DayNoteFragment : Fragment() {
 
     private fun handleBtnNoteEditSaveClickEvent() = binding.btnNoteEditSave.setOnClickListener {
         val editedText: String = binding.txtNoteEdit.text.toString()
-        val editedNote: NoteData? = mainActivity.noteRepository.getByDate(mainActivity.viewedDate)
+        val editedNote: NoteData? = NoteRepository.getByDate(mainActivity.viewedDate)
 
         if (editedNote != null) {
             editedNote.date = mainActivity.viewedDate.toString()
@@ -80,7 +81,7 @@ class DayNoteFragment : Fragment() {
         val possibleNote: NoteData? = note
 
         if (possibleNote !== null) {
-            mainActivity.noteRepository.delete(possibleNote)
+            NoteRepository.delete(possibleNote)
             mainActivity.tryCancelScheduledNotification(LocalDate.parse(possibleNote.date))
         }
         dayFragment.setFragment(DayNoteAddFragment.createInstance(dayFragment))

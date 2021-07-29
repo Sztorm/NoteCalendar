@@ -62,7 +62,12 @@
     <string name="Settings_Header_Notifications">Powiadomienia</string>
     <string name="Settings_Header_Notes">Notatki</string>
     <string name="Settings_Header_Other">Inne</string>
+    <string name="Settings_Header_CustomTheme">Własny motyw</string>
+    <string name="Settings_SetCustomTheme">Ustaw własny motyw</string>
+    <string name="Settings_SetLightTheme">Ustaw jasny motyw</string>
+    <string name="Settings_SetDarkTheme">Ustaw ciemny motyw</string>
     <string name="Settings_SetDefaultTheme">Ustaw domyślny motyw</string>
+    <string name="Settings_Summary_SetDefaultTheme">Ustawia motyw według ustawień systemu. Jeśli system nie wspiera motywów, to zostanie ustawiony jasny motyw.</string>
     <string name="Settings_DeleteNotesDateRange">Usuń notatki z okresu</string>
     <string name="Settings_DeleteAllNotes">Usuń wszystkie notatki</string>
     <string name="Settings_DeleteAllNotes_Alert_Title">Usunąć wszystkie notatki?</string>

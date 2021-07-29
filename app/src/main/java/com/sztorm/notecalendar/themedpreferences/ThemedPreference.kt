@@ -7,6 +7,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import com.sztorm.notecalendar.ThemePaintable
 import com.sztorm.notecalendar.ThemePainter
+import com.sztorm.notecalendar.ThemeValues
 
 class ThemedPreference: Preference, ThemePaintable {
     /**
@@ -24,8 +25,12 @@ class ThemedPreference: Preference, ThemePaintable {
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-
+        val themeValues: ThemeValues = themePainter.values
         val title: TextView = holder.findViewById(android.R.id.title) as TextView
-        title.setTextColor(themePainter.values.textColor)
+        val summary: TextView = holder.findViewById(android.R.id.summary) as TextView
+
+        title.setTextColor(themeValues.textColor)
+        summary.setTextColor(themeValues.summaryTextColor)
+        icon?.setTint(themeValues.secondaryColor)
     }
 }

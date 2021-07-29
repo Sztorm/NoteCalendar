@@ -15,6 +15,7 @@ import com.sztorm.notecalendar.ThemeValues
 
 class ThemedColorPickerPreference: ColorPickerPreference, ThemePaintable {
     private lateinit var mThemePainter: ThemePainter
+    private var colorBoxColor: Int? = null
 
     /**
      * [themePainter] must be set before can be get.
@@ -39,9 +40,20 @@ class ThemedColorPickerPreference: ColorPickerPreference, ThemePaintable {
         val themeValues: ThemeValues = mThemePainter.values
         val title: TextView = holder.findViewById(android.R.id.title) as TextView
         val colorBoxGradient = colorBox.background as GradientDrawable
+        val colorBoxColor: Int? = colorBoxColor
 
         title.setTextColor(themeValues.textColor)
+
+        if (colorBoxColor !== null) {
+            colorBoxGradient.setColor(colorBoxColor)
+        }
         colorBoxGradient.setStroke(outlineSize, outlineColor)
+    }
+
+    fun setColorBoxColor(
+        @ColorInt color: Int, @ColorInt outlineColor: Int = themePainter.values.textColor) {
+        colorBoxColor = color
+        this.outlineColor = outlineColor
     }
 
     fun saveColor(@ColorInt color: Int) {

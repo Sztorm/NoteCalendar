@@ -8,11 +8,12 @@ import com.sztorm.notecalendar.MainActivity
 import com.sztorm.notecalendar.NoteData
 import com.sztorm.notecalendar.ThemePainter
 import com.sztorm.notecalendar.databinding.CalendarDayBinding
+import com.sztorm.notecalendar.repositories.NoteRepository
 import java.time.LocalDate
 import java.time.Month
 
 class ThemedDayBinder(val mainActivity: MainActivity): DayBinder<DayViewContainer> {
-    private var cachedMonthNotesList: List<NoteData> = mainActivity.noteRepository.getByMonth(
+    private var cachedMonthNotesList: List<NoteData> = NoteRepository.getByMonth(
         mainActivity.viewedDate.month)
     private var cachedNotesMonth: Month = mainActivity.viewedDate.month
     private val today = LocalDate.now()
@@ -28,7 +29,7 @@ class ThemedDayBinder(val mainActivity: MainActivity): DayBinder<DayViewContaine
 
         if (day.date.month != cachedNotesMonth) {
             cachedNotesMonth = day.date.month
-            cachedMonthNotesList = mainActivity.noteRepository.getByMonth(cachedNotesMonth)
+            cachedMonthNotesList = NoteRepository.getByMonth(cachedNotesMonth)
         }
 
         themePainter.paintCalendarDayView(

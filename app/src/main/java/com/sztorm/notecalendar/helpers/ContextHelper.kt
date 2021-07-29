@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 
@@ -17,6 +18,9 @@ class ContextHelper {
             this.theme.resolveAttribute(attrColor, typedValue, true)
             return typedValue.data
         }
+
+        @ColorInt
+        fun Context.getColorCompat(@ColorRes id: Int): Int = ContextCompat.getColor(this, id)
 
         fun Context.getPixelsFromDip(dp: Float): Float = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics)

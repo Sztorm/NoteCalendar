@@ -19,6 +19,7 @@ class ThemeValues(
     @ColorInt val backgroundColor: Int) {
     val textHighlightColor: Int = ColorUtils.setAlphaComponent(secondaryColor, 255/3)
     val inactiveTextColor: Int = ColorUtils.setAlphaComponent(textColor, 255/3)
+    val summaryTextColor: Int = ColorUtils.setAlphaComponent(textColor, 210)
     val buttonRippleColorStateList: ColorStateList = ColorStateListHelper
         .createRippleColorStateList(
             color = ColorUtils.setAlphaComponent(primaryColor, 255/10))
@@ -83,4 +84,9 @@ class ThemeValues(
         .createClickableButtonColorStateList(
             pressedColor = inactiveItemColor,
             unpressedColor = secondaryColor)
+
+    val backArrowIconRippleColorStateList: ColorStateList = ColorStateListHelper
+        .createClickableButtonColorStateList(
+            pressedColor = ColorUtils.setAlphaComponent(textColor, 255 / 7),
+            unpressedColor = Color.TRANSPARENT)
 }

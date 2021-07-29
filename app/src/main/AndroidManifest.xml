@@ -3,7 +3,7 @@
     package="com.sztorm.notecalendar">
 
     <application
-        android:name="com.orm.SugarApp"
+        android:name="com.sztorm.notecalendar.NoteCalendarApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/icon_launcher"

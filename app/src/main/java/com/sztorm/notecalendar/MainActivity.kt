@@ -19,8 +19,8 @@ import java.time.LocalDateTime
 class MainActivity : AppCompatActivity() {
     companion object {
         private const val BUNDLE_KEY_MAIN_FRAGMENT_TYPE = "MainFragmentType"
+        private const val BUNDLE_KEY_SETTINGS_FRAGMENT_TYPE = "SettingsFragmentType"
     }
-
     enum class MainFragmentType {
         DAY_FRAGMENT,
         WEEK_FRAGMENT,
@@ -47,19 +47,12 @@ class MainActivity : AppCompatActivity() {
     private var mThemePainter: ThemePainter? = null
     private var mSettingsReader: SettingsReader? = null
     private var mViewedDate: LocalDate = LocalDate.now()
-    val noteRepository = NoteRepository()
     val viewedDate: LocalDate
         get() = mViewedDate
     val themePainter: ThemePainter
         get() = mThemePainter ?: ThemePainter(settingsReader.themeValues)
     val settingsReader: SettingsReader
         get() = mSettingsReader ?: SettingsReader(this)
-    
-    private fun initDatabase() {
-        SugarContext.init(this)
-        val schemaGenerator = SchemaGenerator(this)
-        schemaGenerator.createDatabase(SugarDb(this).db)
-    }
 
     private fun setTheme() {
         val themePainter: ThemePainter = themePainter
@@ -90,15 +83,24 @@ class MainActivity : AppCompatActivity() {
 
         if (bundle === null) {
             setMainFragment(DayFragment)
+            return
         }
-        else {
-            val fragmentTypeOrdinal: Int = bundle.getInt(
-                BUNDLE_KEY_MAIN_FRAGMENT_TYPE, MainFragmentType.DAY_FRAGMENT.ordinal)
+        val mainFragmentTypeOrdinal: Int = bundle.getInt(
+            BUNDLE_KEY_MAIN_FRAGMENT_TYPE, MainFragmentType.DAY_FRAGMENT.ordinal)
 
-            setMainFragment(MainFragmentType.from(fragmentTypeOrdinal),
+        if (mainFragmentTypeOrdinal == MainFragmentType.SETTINGS_FRAGMENT.ordinal) {
+            val settingsFragmentTypeOrdinal: Int = bundle.getInt(
+                BUNDLE_KEY_SETTINGS_FRAGMENT_TYPE, SettingsFragment.SettingsFragmentType.ROOT.ordinal)
+
+            setMainFragment(MainFragmentType.SETTINGS_FRAGMENT,
+                SettingsFragment.SettingsFragmentType.from(settingsFragmentTypeOrdinal),
                 resAnimIn = R.anim.anim_immediate,
                 resAnimOut = R.anim.anim_immediate)
+            return
         }
+        setMainFragment(MainFragmentType.from(mainFragmentTypeOrdinal),
+            resAnimIn = R.anim.anim_immediate,
+            resAnimOut = R.anim.anim_immediate)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,7 +112,6 @@ class MainActivity : AppCompatActivity() {
         mThemePainter = ThemePainter(mSettingsReader!!.themeValues)
         fragmentSetter = FragmentSetter(supportFragmentManager, R.id.mainFragmentContainer)
         setTheme()
-        initDatabase()
         handleNavigationButtonClickEvent(binding.btnViewDay, DayFragment)
         handleNavigationButtonClickEvent(binding.btnViewWeek, WeekFragment)
         handleNavigationButtonClickEvent(binding.btnViewMonth, MonthFragment)
@@ -135,6 +136,8 @@ class MainActivity : AppCompatActivity() {
 
     fun setMainFragment(
         mainFragmentType: MainFragmentType,
+        settingsFragmentType: SettingsFragment.SettingsFragmentType
+            = SettingsFragment.SettingsFragmentType.ROOT,
         resAnimIn: Int = R.anim.anim_in,
         resAnimOut: Int = R.anim.anim_out,
         date: LocalDate = mViewedDate) {
@@ -152,7 +155,7 @@ class MainActivity : AppCompatActivity() {
             MonthFragment.fragmentType -> fragmentSetter.setFragment(
                 MonthFragment, resAnimIn, resAnimOut)
             SettingsFragment.fragmentType -> fragmentSetter.setFragment(
-                SettingsFragment, resAnimIn, resAnimOut)
+                SettingsFragment.createInstance(settingsFragmentType), resAnimIn, resAnimOut)
             else -> fragmentSetter.setFragment(DayFragment)
         }
     }
@@ -174,7 +177,7 @@ class MainActivity : AppCompatActivity() {
             notificationDateTime = notificationDateTime.plusDays(1)
         }
         val note: NoteData? = args.note ?:
-            noteRepository.getByDate(notificationDateTime.toLocalDate())
+            NoteRepository.getByDate(notificationDateTime.toLocalDate())
 
         if (note === null) {
             return
@@ -202,11 +205,7 @@ class MainActivity : AppCompatActivity() {
         NoteNotificationManager.cancelScheduledNotification(this)
     }
 
-    fun <T, TCreator> restart(startingMainFragment: TCreator)
-            where T : Fragment, TCreator : MainFragmentCreator<T> {
-        val bundle = Bundle()
-        bundle.putInt(BUNDLE_KEY_MAIN_FRAGMENT_TYPE, startingMainFragment.fragmentType.ordinal)
-
+    private fun restart(bundle: Bundle) {
         val intent = Intent(applicationContext, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
         intent.putExtras(bundle)
@@ -214,5 +213,23 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
         overridePendingTransition(0, 0)
         finish()
+    }
+
+    fun <T, TCreator> restart(startingMainFragment: TCreator)
+            where T : Fragment, TCreator : MainFragmentCreator<T> {
+        val bundle = Bundle()
+        bundle.putInt(BUNDLE_KEY_MAIN_FRAGMENT_TYPE, startingMainFragment.fragmentType.ordinal)
+
+        restart(bundle)
+    }
+
+    fun <T, TCreator> restart(startingSettingsFragment: TCreator)
+            where T : Fragment, TCreator : SettingsFragmentCreator<T> {
+        val bundle = Bundle()
+        bundle.putInt(BUNDLE_KEY_MAIN_FRAGMENT_TYPE, MainFragmentType.SETTINGS_FRAGMENT.ordinal)
+        bundle.putInt(
+            BUNDLE_KEY_SETTINGS_FRAGMENT_TYPE, startingSettingsFragment.fragmentType.ordinal)
+
+        restart(bundle)
     }
 }

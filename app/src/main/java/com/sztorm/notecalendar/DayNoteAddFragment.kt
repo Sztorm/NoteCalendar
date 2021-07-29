@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.sztorm.notecalendar.databinding.FragmentDayNoteAddBinding
 import com.sztorm.notecalendar.helpers.ViewHelper.Companion.hideKeyboard
+import com.sztorm.notecalendar.repositories.NoteRepository
 
 /**
  * A simple [Fragment] subclass.
@@ -46,7 +47,7 @@ class DayNoteAddFragment : Fragment() {
         val noteData = NoteData(
             date = mainActivity.viewedDate.toString(),
             text = binding.txtNoteAdd.text.toString())
-        mainActivity.noteRepository.add(noteData)
+        NoteRepository.add(noteData)
         mainActivity.tryScheduleNoteNotification(ScheduleNoteNotificationArguments(note = noteData))
         dayFragment.setFragment(DayNoteFragment.createInstance(dayFragment, noteData))
     }

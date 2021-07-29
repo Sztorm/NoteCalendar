@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/layer0"
+        android:drawable="@drawable/icon_arrow_left_layer0">
+    </item>
+    <item
+        android:id="@+id/layer1"
+        android:top="10dp"
+        android:bottom="10dp"
+        android:right="10dp"
+        android:left="10dp"
+        android:drawable="@drawable/icon_arrow_left_layer1">
+    </item>
+</layer-list>
