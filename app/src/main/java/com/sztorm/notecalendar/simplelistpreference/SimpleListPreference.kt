@@ -87,7 +87,7 @@ open class SimpleListPreference: Preference, View.OnClickListener {
             sharedPrefs.edit {
                 putString(key, mValue?.toString())
             }
-            onPreferenceChangeListener.onPreferenceChange(this, mValue)
+            onPreferenceChangeListener?.onPreferenceChange(this, mValue)
         }
         dialog.show(activity.supportFragmentManager, null)
     }

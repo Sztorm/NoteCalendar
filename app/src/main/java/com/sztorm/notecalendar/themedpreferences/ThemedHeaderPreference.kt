@@ -39,7 +39,7 @@ class ThemedHeaderPreference: Preference, ThemePaintable {
         iconView.minimumHeight = context.getPixelsFromDip(iconSizeDip).toInt()
         iconView.minimumWidth = context.getPixelsFromDip(iconSizeDip).toInt()
         iconView.setOnClickListener {
-            onPreferenceClickListener.onPreferenceClick(this)
+            onPreferenceClickListener?.onPreferenceClick(this)
         }
 
         themePainter.paintBackArrowIcon(iconView)

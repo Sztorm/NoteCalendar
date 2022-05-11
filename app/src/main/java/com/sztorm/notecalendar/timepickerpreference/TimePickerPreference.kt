@@ -110,7 +110,7 @@ open class TimePickerPreference : Preference, View.OnClickListener {
             sharedPrefs.edit {
                 putInt(key, preferenceValue.asInt())
             }
-            onPreferenceChangeListener.onPreferenceChange(this, preferenceValue)
+            onPreferenceChangeListener?.onPreferenceChange(this, preferenceValue)
 
             val timeValue = v.findViewById(R.id.timeValue) as TextView
             timeValue.text = formatter.format(preferenceValue.toLocalTime())

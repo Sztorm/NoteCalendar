@@ -58,7 +58,7 @@ class ThemedColorPickerPreference: ColorPickerPreference, ThemePaintable {
 
     fun saveColor(@ColorInt color: Int) {
         notifyColorChanged(ColorEnvelope(color))
-        preferenceManager.sharedPreferences.edit {
+        preferenceManager.sharedPreferences?.edit {
             putInt(key, color)
         }
     }
