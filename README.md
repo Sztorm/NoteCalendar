@@ -42,7 +42,11 @@ Application settings include:
     * Enabling or disabling
     * Setting notification time
  * Setting first day of week
- 
+
+## Privacy Policy
+
+NoteCalendar does not collect, transmit, distribute or sell your data.
+
 ## License
 
 *NoteCalendar* is licensed under the MIT license.
