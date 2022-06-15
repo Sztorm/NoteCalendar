@@ -1,15 +1,14 @@
 package com.sztorm.notecalendar
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceFragmentCompat
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.button.MaterialButton
+import com.mikepenz.aboutlibraries.LibsBuilder
 import com.skydoves.colorpickerview.preference.ColorPickerPreferenceManager
 import com.sztorm.notecalendar.helpers.PreferenceFragmentCompatHelper.Companion.setPreferenceThemePainter
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getColorCompat
@@ -258,9 +257,12 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
         val key: String = mainActivity.getString(R.string.PrefKey_Licenses)
         val preference: ThemedPreference = findPreference(key)!!
         preference.themePainter = mainActivity.themePainter
-
         preference.setOnPreferenceClickListener {
-            startActivity(Intent(mainActivity, OssLicensesMenuActivity::class.java))
+            startActivity(LibsBuilder()
+                .withActivityTitle(mainActivity.getString(R.string.Settings_Licenses))
+                .withEdgeToEdge(true)
+                .withSearchEnabled(true)
+                .intent(mainActivity))
             true
         }
     }
