@@ -5,6 +5,8 @@ quick way to reach each of them.
 
 Minimum Android version: 5.0 (Lollipop, API level 21)
 
+[Google Play](https://play.google.com/store/apps/details?id=com.sztorm.notecalendar)
+
 ## Screenshots
 
 <img src="assets/pic-01.png" alt="note calendar picture 1" width=270 height=555> <img src="assets/pic-02.png" alt="note calendar picture 2" width=270 height=555>
@@ -42,13 +44,11 @@ Application settings include:
     * Enabling or disabling
     * Setting notification time
  * Setting first day of week
-
-## Privacy Policy
-
-NoteCalendar does not collect, transmit, distribute or sell your data.
-
+ 
 ## License
 
 *NoteCalendar* is licensed under the MIT license.
 
 [More about license](LICENSE)
+
+[Privacy Policy](PRIVACY-POLICY.md)
