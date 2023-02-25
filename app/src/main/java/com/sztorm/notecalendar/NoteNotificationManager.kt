@@ -77,7 +77,10 @@ class NoteNotificationManager {
         fun cancelScheduledNotification(context: Context) {
             val notificationIntent = Intent(context, NoteNotificationReceiver::class.java)
             val pendingIntent: PendingIntent = PendingIntent.getBroadcast(
-                context, NOTIFICATION_ID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+                context,
+                NOTIFICATION_ID,
+                notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(pendingIntent)
         }
