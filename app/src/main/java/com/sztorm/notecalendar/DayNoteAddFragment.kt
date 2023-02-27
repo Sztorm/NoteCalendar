@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.sztorm.notecalendar.databinding.FragmentDayNoteAddBinding
 import com.sztorm.notecalendar.helpers.ViewHelper.Companion.hideKeyboard
 import com.sztorm.notecalendar.repositories.NoteRepository
+import timber.log.Timber
 
 /**
  * A simple [Fragment] subclass.
@@ -48,7 +49,10 @@ class DayNoteAddFragment : Fragment() {
             date = mainActivity.viewedDate.toString(),
             text = binding.txtNoteAdd.text.toString())
         NoteRepository.add(noteData)
-        mainActivity.tryScheduleNoteNotification(ScheduleNoteNotificationArguments(note = noteData))
+        if (mainActivity.tryScheduleNoteNotification(
+                ScheduleNoteNotificationArguments(note = noteData))) {
+            Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification after note save")
+        }
         dayFragment.setFragment(DayNoteFragment.createInstance(dayFragment, noteData))
     }
 

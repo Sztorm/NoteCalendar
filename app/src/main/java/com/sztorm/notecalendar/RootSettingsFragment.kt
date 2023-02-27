@@ -17,6 +17,7 @@ import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedString
 import com.sztorm.notecalendar.repositories.NoteRepository
 import com.sztorm.notecalendar.themedpreferences.*
 import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference
+import timber.log.Timber
 import java.time.DayOfWeek
 import java.time.temporal.WeekFields
 import java.util.*
@@ -209,11 +210,14 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
         preference.setOnPreferenceChangeListener { _, valueBoxed ->
             val value = valueBoxed as Boolean
             if (value) {
-                mainActivity.tryScheduleNoteNotification(
-                    ScheduleNoteNotificationArguments(enabledNotifications = true))
+                if (mainActivity.tryScheduleNoteNotification(
+                        ScheduleNoteNotificationArguments(enabledNotifications = true))) {
+                    Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification when \"Enable notifications\" setting was set to true")
+                }
             }
             else {
                 NoteNotificationManager.cancelScheduledNotification(mainActivity)
+                Timber.i("${LogTags.NOTIFICATIONS} Canceled notification when \"Enable notifications\" setting was set to false")
             }
             true
         }
@@ -227,11 +231,11 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
         preference.themePainter = mainActivity.themePainter
         preference.setOnPreferenceChangeListener { _, valueBoxed ->
             val value = valueBoxed as TimePickerPreference.Time
-
-            mainActivity.tryScheduleNoteNotification(
+            if (mainActivity.tryScheduleNoteNotification(
                 ScheduleNoteNotificationArguments(
-                    enabledNotifications = true,
-                    notificationTime = value))
+                    enabledNotifications = true, notificationTime = value))) {
+                Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification when \"Notification time\" setting changed")
+            }
             true
         }
     }

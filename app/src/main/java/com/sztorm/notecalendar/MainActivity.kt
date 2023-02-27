@@ -7,12 +7,10 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.orm.SchemaGenerator
-import com.orm.SugarContext
-import com.orm.SugarDb
 import com.sztorm.notecalendar.databinding.ActivityMainBinding
 import com.sztorm.notecalendar.repositories.NoteRepository
 import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -117,7 +115,9 @@ class MainActivity : AppCompatActivity() {
         handleNavigationButtonClickEvent(binding.btnViewMonth, MonthFragment)
         handleNavigationButtonClickEvent(binding.btnViewSettings, SettingsFragment)
         setMainFragmentOnCreate()
-        tryScheduleNoteNotification(ScheduleNoteNotificationArguments())
+        if (tryScheduleNoteNotification(ScheduleNoteNotificationArguments())) {
+            Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification upon MainActivity creation")
+        }
     }
 
     fun <T, TCreator> setMainFragment(
@@ -160,12 +160,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun tryScheduleNoteNotification(args: ScheduleNoteNotificationArguments) {
+    fun tryScheduleNoteNotification(args: ScheduleNoteNotificationArguments): Boolean {
         val enabledNotifications: Boolean = args.enabledNotifications ?:
             settingsReader.enabledNotifications
 
         if (!enabledNotifications) {
-            return
+            return false
         }
         val notificationTime: TimePickerPreference.Time = args.notificationTime ?:
             settingsReader.notificationTime
@@ -180,17 +180,18 @@ class MainActivity : AppCompatActivity() {
             NoteRepository.getByDate(notificationDateTime.toLocalDate())
 
         if (note === null) {
-            return
+            return false
         }
         if (note.date != notificationDateTime.toLocalDate().toString()) {
-            return
+            return false
         }
         val notificationData = NoteNotificationData(note, notificationDateTime)
 
         NoteNotificationManager.scheduleNotification(this, notificationData)
+        return true
     }
 
-    fun tryCancelScheduledNotification(noteDate: LocalDate) {
+    fun tryCancelScheduledNotification(noteDate: LocalDate): Boolean {
         val notificationTime: TimePickerPreference.Time = settingsReader.notificationTime
         val currentDateTime = LocalDateTime.now()
         var notificationDateTime = LocalDateTime.of(
@@ -200,9 +201,10 @@ class MainActivity : AppCompatActivity() {
             notificationDateTime = notificationDateTime.plusDays(1)
         }
         if (notificationDateTime.toLocalDate() != noteDate) {
-            return
+            return false
         }
         NoteNotificationManager.cancelScheduledNotification(this)
+        return true
     }
 
     private fun restart(bundle: Bundle) {

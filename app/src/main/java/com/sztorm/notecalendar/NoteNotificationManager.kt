@@ -26,10 +26,18 @@ class NoteNotificationManager {
                 channel.lightColor = Color.BLUE
                 channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
 
-                val notificationManager: NotificationManager? = context.getSystemService(NotificationManager::class.java)
+                val notificationManager: NotificationManager? = context
+                    .getSystemService(NotificationManager::class.java)
                 notificationManager?.createNotificationChannel(channel)
             }
             return NOTIFICATION_CHANNEL_ID_NAME
+        }
+
+        private fun getPendingIntentUpdateFlags(): Int {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            }
+            return PendingIntent.FLAG_UPDATE_CURRENT
         }
 
         private fun buildNotification(context: Context, note: NoteData): Notification {
@@ -40,7 +48,7 @@ class NoteNotificationManager {
 
             val intent = Intent(context, MainActivity::class.java)
             val activity: PendingIntent = PendingIntent.getActivity(
-                context, NOTIFICATION_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+                context, NOTIFICATION_ID, intent, getPendingIntentUpdateFlags())
             val builder = NotificationCompat.Builder(context, channel)
                 .setContentTitle(context.getString(R.string.Notification_Note_Title))
                 .setContentText(note.text)
@@ -59,7 +67,8 @@ class NoteNotificationManager {
                 .putExtra(NoteNotificationReceiver.NOTIFICATION_EXTRA, notification)
 
             val pendingIntent = PendingIntent.getBroadcast(
-                context, NOTIFICATION_ID, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+                context, NOTIFICATION_ID, notificationIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT or getPendingIntentUpdateFlags())
 
             val calendar = Calendar.getInstance()
             calendar[Calendar.YEAR] = dateTime.year
@@ -80,7 +89,7 @@ class NoteNotificationManager {
                 context,
                 NOTIFICATION_ID,
                 notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+                getPendingIntentUpdateFlags())
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(pendingIntent)
         }

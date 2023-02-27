@@ -5,10 +5,12 @@
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switchWidget"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:id="@+id/switchWidget"
+        android:focusable="false"
+        android:clickable="false"
         android:checked="false" />
 
 </FrameLayout>

@@ -10,6 +10,7 @@ import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.ThemePaintable
 import com.sztorm.notecalendar.ThemePainter
 
+@Suppress("unused")
 class ThemedSwitchPreference: SwitchPreference, ThemePaintable {
 
     /**
@@ -31,15 +32,16 @@ class ThemedSwitchPreference: SwitchPreference, ThemePaintable {
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-
         val title = holder.findViewById(android.R.id.title) as TextView
         val switch: SwitchCompat = holder.itemView.findViewById(R.id.switchWidget)
+        val settingIsChecked = getPersistedBoolean(false)
 
         switch.setOnCheckedChangeListener { _, isChecked ->
             this.isChecked = isChecked
         }
         title.setTextColor(themePainter.values.textColor)
         themePainter.paintSwitch(switch)
-        isChecked = getPersistedBoolean(false)
+        isChecked = settingIsChecked
+        switch.isChecked = settingIsChecked
     }
 }

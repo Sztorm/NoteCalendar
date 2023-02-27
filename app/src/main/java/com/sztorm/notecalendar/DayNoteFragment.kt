@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.sztorm.notecalendar.databinding.FragmentDayNoteBinding
 import com.sztorm.notecalendar.helpers.ViewHelper.Companion.hideKeyboard
 import com.sztorm.notecalendar.repositories.NoteRepository
+import timber.log.Timber
 import java.time.LocalDate
 
 /**
@@ -63,7 +64,10 @@ class DayNoteFragment : Fragment() {
             editedNote.text = editedText
             editedNote.save()
             note = editedNote
-            mainActivity.tryScheduleNoteNotification(ScheduleNoteNotificationArguments(note = note))
+            if (mainActivity.tryScheduleNoteNotification(
+                    ScheduleNoteNotificationArguments(note = note))) {
+                Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification after note edit")
+            }
         }
         binding.lblNote.text = editedText
 
@@ -82,7 +86,9 @@ class DayNoteFragment : Fragment() {
 
         if (possibleNote !== null) {
             NoteRepository.delete(possibleNote)
-            mainActivity.tryCancelScheduledNotification(LocalDate.parse(possibleNote.date))
+            if (mainActivity.tryCancelScheduledNotification(LocalDate.parse(possibleNote.date))) {
+                Timber.i("${LogTags.NOTIFICATIONS} Canceled notification after note deletion")
+            }
         }
         dayFragment.setFragment(DayNoteAddFragment.createInstance(dayFragment))
     }
