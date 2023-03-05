@@ -1,11 +1,13 @@
-# NoteCalendar
+<img src="./assets/icon.png" align="right" width="150px">
+<h1>NoteCalendar</h1>
 
 *Note Calendar* is a simple offline app which allows to manage notes for different days and offers a
 quick way to reach each of them.
 
 Minimum Android version: 5.0 (Lollipop, API level 21)
 
-[Google Play](https://play.google.com/store/apps/details?id=com.sztorm.notecalendar)
+[<img alt="Get it on Google Play" height="80" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png">](https://play.google.com/store/apps/details?id=com.sztorm.notecalendar)
+[<img alt="Get it on IzzyOnDroid" height="80" src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png">](https://apt.izzysoft.de/fdroid/index/apk/com.sztorm.notecalendar)
 
 ## Screenshots
 
@@ -34,17 +36,17 @@ to wake up and read note with something important to do.
 
 Application settings include:
 
- * Theming
-    * Setting custom theme which includes 10 modifiable colors
-    * Setting light theme
-    * Setting dark theme
-    * Setting default theme based on system settings
- * Notes deletion
- * Notifications management
-    * Enabling or disabling
-    * Setting notification time
- * Setting first day of week
- 
+* Theming
+   * Setting custom theme which includes 10 modifiable colors
+   * Setting light theme
+   * Setting dark theme
+   * Setting default theme based on system settings
+* Notes deletion
+* Notifications management
+   * Enabling or disabling
+   * Setting notification time
+* Setting first day of week
+
 ## License
 
 *NoteCalendar* is licensed under the MIT license.
