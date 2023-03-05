@@ -4,28 +4,9 @@ import android.content.Context
 import com.sztorm.notecalendar.R
 import java.time.DayOfWeek
 import java.time.Month
-import java.time.temporal.WeekFields
 
 class DateHelper {
     companion object {
-        val WeekFields.secondDayOfWeek: DayOfWeek
-            get() = firstDayOfWeek + 1
-
-        val WeekFields.thirdDayOfWeek: DayOfWeek
-            get() = firstDayOfWeek + 2
-
-        val WeekFields.fourthDayOfWeek: DayOfWeek
-            get() = firstDayOfWeek + 3
-
-        val WeekFields.fifthDayOfWeek: DayOfWeek
-            get() = firstDayOfWeek + 4
-
-        val WeekFields.sixthDayOfWeek: DayOfWeek
-            get() = firstDayOfWeek + 5
-
-        val WeekFields.seventhDayOfWeek: DayOfWeek
-            get() = firstDayOfWeek + 6
-
         fun DayOfWeek.toLocalizedString(context: Context): String = when (this.value) {
             1 -> context.getString(R.string.lblDayOfWeek_Monday)
             2 -> context.getString(R.string.lblDayOfWeek_Tuesday)
