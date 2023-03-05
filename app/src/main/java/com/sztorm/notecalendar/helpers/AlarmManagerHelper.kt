@@ -7,16 +7,25 @@ import android.os.Build
 class AlarmManagerHelper private constructor() {
     companion object {
         /**
-         * Calls [AlarmManager.setExact] for API level < 23 (M) and
-         * [AlarmManager.setExactAndAllowWhileIdle] for the rest.
+         * API level 31 (S) and greater: Checks if [AlarmManager.canScheduleExactAlarms] then calls
+         * [AlarmManager.setExactAndAllowWhileIdle].
+         *
+         * API level 23 (M) and greater: Calls [AlarmManager.setExactAndAllowWhileIdle].
+         *
+         * Lower API levels: Calls [AlarmManager.setExact].
          **/
         fun AlarmManager.setExactAndAllowWhileIdleCompat(
-            type: Int, triggerAtMillis: Long, operation: PendingIntent)
-                = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            setExact(type, triggerAtMillis,operation)
-        }
-        else {
-            setExactAndAllowWhileIdle(type, triggerAtMillis, operation)
+            type: Int, triggerAtMillis: Long, operation: PendingIntent
+        ) {
+            when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ->
+                if (canScheduleExactAlarms()) {
+                    setExactAndAllowWhileIdle(type, triggerAtMillis, operation)
+                }
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ->
+                    setExactAndAllowWhileIdle(type, triggerAtMillis, operation)
+                else -> setExact(type, triggerAtMillis, operation)
+            }
         }
     }
 }

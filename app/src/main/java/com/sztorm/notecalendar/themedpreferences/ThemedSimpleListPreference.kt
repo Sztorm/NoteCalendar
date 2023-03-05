@@ -3,11 +3,11 @@ package com.sztorm.notecalendar.themedpreferences
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.TextView
-import androidx.core.graphics.ColorUtils
 import androidx.preference.PreferenceViewHolder
 import com.sztorm.notecalendar.*
 import com.sztorm.notecalendar.simplelistpreference.SimpleListPreference
 
+@Suppress("unused")
 class ThemedSimpleListPreference : SimpleListPreference, ThemePaintable {
     /**
      * [themePainter] must be set before can be get.

@@ -6,18 +6,19 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import com.sztorm.notecalendar.helpers.AlarmManagerHelper.Companion.setExactAndAllowWhileIdleCompat
 import java.time.LocalDateTime
 import java.util.*
-import com.sztorm.notecalendar.helpers.AlarmManagerHelper.Companion.setExactAndAllowWhileIdleCompat
 
 class NoteNotificationManager {
     companion object {
         const val NOTIFICATION_ID: Int = 1
+        @Suppress("MemberVisibilityCanBePrivate")
         const val NOTIFICATION_CHANNEL_ID_NAME = "note-notification-channel"
 
         private fun getOrCreateNotificationChannel(
-            context: Context, name: String, description: String): String {
-
+            context: Context, name: String, description: String
+        ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val importance = NotificationManager.IMPORTANCE_LOW
                 val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID_NAME, name, importance)
@@ -30,26 +31,34 @@ class NoteNotificationManager {
                     .getSystemService(NotificationManager::class.java)
                 notificationManager?.createNotificationChannel(channel)
             }
-            return NOTIFICATION_CHANNEL_ID_NAME
         }
 
-        private fun getPendingIntentUpdateFlags(): Int {
+        private fun getIntentUpdateCurrentFlags(): Int {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 return PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             }
             return PendingIntent.FLAG_UPDATE_CURRENT
         }
 
+        private fun getIntentCancelCurrentFlags(): Int {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            }
+            return PendingIntent.FLAG_CANCEL_CURRENT
+        }
+
         private fun buildNotification(context: Context, note: NoteData): Notification {
-            val channel = getOrCreateNotificationChannel(
+            getOrCreateNotificationChannel(
                 context,
                 context.getString(R.string.Notification_Note_ChannelName),
-                context.getString(R.string.Notification_Note_ChannelDescription))
-
+                context.getString(R.string.Notification_Note_ChannelDescription)
+            )
             val intent = Intent(context, MainActivity::class.java)
+                .addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
             val activity: PendingIntent = PendingIntent.getActivity(
-                context, NOTIFICATION_ID, intent, getPendingIntentUpdateFlags())
-            val builder = NotificationCompat.Builder(context, channel)
+                context, NOTIFICATION_ID, intent, getIntentCancelCurrentFlags()
+            )
+            val builder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID_NAME)
                 .setContentTitle(context.getString(R.string.Notification_Note_Title))
                 .setContentText(note.text)
                 .setAutoCancel(true)
@@ -65,22 +74,22 @@ class NoteNotificationManager {
             val notification: Notification = buildNotification(context, note)
             val notificationIntent = Intent(context, NoteNotificationReceiver::class.java)
                 .putExtra(NoteNotificationReceiver.NOTIFICATION_EXTRA, notification)
-
             val pendingIntent = PendingIntent.getBroadcast(
-                context, NOTIFICATION_ID, notificationIntent,
-                PendingIntent.FLAG_CANCEL_CURRENT or getPendingIntentUpdateFlags())
-
+                context, NOTIFICATION_ID, notificationIntent, getIntentCancelCurrentFlags()
+            )
             val calendar = Calendar.getInstance()
             calendar[Calendar.YEAR] = dateTime.year
             calendar[Calendar.DAY_OF_YEAR] = dateTime.dayOfYear
             calendar[Calendar.HOUR_OF_DAY] = dateTime.hour
             calendar[Calendar.MINUTE] = dateTime.minute
             calendar[Calendar.SECOND] = 0
-
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            AppPermissionManager
+                .requestScheduleNotificationPermissionsIfNeeded(context as MainActivity)
 
             alarmManager.setExactAndAllowWhileIdleCompat(
-                AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+                AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent
+            )
         }
 
         fun cancelScheduledNotification(context: Context) {
@@ -89,7 +98,8 @@ class NoteNotificationManager {
                 context,
                 NOTIFICATION_ID,
                 notificationIntent,
-                getPendingIntentUpdateFlags())
+                getIntentUpdateCurrentFlags()
+            )
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(pendingIntent)
         }

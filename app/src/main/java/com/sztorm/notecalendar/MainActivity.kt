@@ -43,14 +43,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fragmentSetter: FragmentSetter
     private lateinit var currentFragmentType: MainFragmentType
     private var mThemePainter: ThemePainter? = null
-    private var mSettingsReader: SettingsReader? = null
+    private var mSettingsIO: SettingsIO? = null
     private var mViewedDate: LocalDate = LocalDate.now()
+    private val settingsIO: SettingsIO
+        get() = mSettingsIO ?: SettingsIO(this)
     val viewedDate: LocalDate
         get() = mViewedDate
     val themePainter: ThemePainter
         get() = mThemePainter ?: ThemePainter(settingsReader.themeValues)
-    val settingsReader: SettingsReader
-        get() = mSettingsReader ?: SettingsReader(this)
+    val settingsReader: ISettingsReader
+        get() = settingsIO
 
     private fun setTheme() {
         val themePainter: ThemePainter = themePainter
@@ -106,8 +108,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mSettingsReader = SettingsReader(this)
-        mThemePainter = ThemePainter(mSettingsReader!!.themeValues)
+        mSettingsIO = SettingsIO(this)
+        mThemePainter = ThemePainter(mSettingsIO!!.themeValues)
         fragmentSetter = FragmentSetter(supportFragmentManager, R.id.mainFragmentContainer)
         setTheme()
         handleNavigationButtonClickEvent(binding.btnViewDay, DayFragment)
@@ -117,6 +119,20 @@ class MainActivity : AppCompatActivity() {
         setMainFragmentOnCreate()
         if (tryScheduleNoteNotification(ScheduleNoteNotificationArguments())) {
             Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification upon MainActivity creation")
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (settingsReader.enabledNotifications &&
+            !AppPermissionManager.areScheduleNotificationPermissionsGrantedOnRequest(
+                requestCode, grantResults)
+        ) {
+            settingsIO.enabledNotifications = false
         }
     }
 
