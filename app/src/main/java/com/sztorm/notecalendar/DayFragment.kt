@@ -24,10 +24,7 @@ class DayFragment : Fragment() {
         mainActivity = activity as MainActivity
     }
 
-    fun <T, TCreator> setFragment (fragment: T)
-        where T : Fragment, TCreator : InstanceCreator<T> {
-        fragmentSetter.setFragment(fragment)
-    }
+    fun setFragment(fragment: Fragment) = fragmentSetter.setFragment(fragment)
 
     private fun setLabelsText(date: LocalDate) {
         binding.lblDayOfMonth.text = date.dayOfMonth.toString()
@@ -37,27 +34,26 @@ class DayFragment : Fragment() {
 
     private fun handleBtnNoteAddClickEvent() = binding.btnNoteAdd.setOnClickListener {
         binding.btnNoteAdd.isVisible = false
-        fragmentSetter.setFragment(DayNoteAddFragment.createInstance(this))
+        fragmentSetter.setFragment(DayNoteAddFragment(this))
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun handleTouchEvent() = binding.root.setOnTouchListener(
         object : OnSwipeTouchListener(binding.root.context) {
+            override fun onSwipeLeft() {
+                mainActivity.viewedDate = mainActivity.viewedDate.plusDays(1)
+                mainActivity.setMainFragment(
+                    MainFragmentType.DAY, R.anim.anim_in_left, R.anim.anim_out_left
+                )
+            }
 
-        override fun onSwipeLeft() {
-            mainActivity.viewedDate = mainActivity.viewedDate.plusDays(1)
-            mainActivity.setMainFragment(
-                MainFragmentType.DAY, R.anim.anim_in_left, R.anim.anim_out_left
-            )
-        }
-
-        override fun onSwipeRight() {
-            mainActivity.viewedDate = mainActivity.viewedDate.minusDays(1)
-            mainActivity.setMainFragment(
-                MainFragmentType.DAY, R.anim.anim_in_right, R.anim.anim_out_right
-            )
-        }
-    })
+            override fun onSwipeRight() {
+                mainActivity.viewedDate = mainActivity.viewedDate.minusDays(1)
+                mainActivity.setMainFragment(
+                    MainFragmentType.DAY, R.anim.anim_in_right, R.anim.anim_out_right
+                )
+            }
+        })
 
     private fun setTheme() {
         val themePainter: ThemePainter = mainActivity.themePainter
@@ -77,7 +73,8 @@ class DayFragment : Fragment() {
             childFragmentManager,
             R.id.dayNoteFragmentContainer,
             R.anim.anim_in_note,
-            R.anim.anim_out_note)
+            R.anim.anim_out_note
+        )
         binding = FragmentDayBinding.inflate(inflater, container, false)
         setTheme()
 
@@ -86,15 +83,14 @@ class DayFragment : Fragment() {
 
         if (possibleNote == null) {
             binding.btnNoteAdd.isVisible = true
-        }
-        else {
+        } else {
             binding.btnNoteAdd.isVisible = false
-            fragmentSetter.setFragment(
-                DayNoteFragment.createInstance(this, possibleNote))
+            fragmentSetter.setFragment(DayNoteFragment(this, possibleNote))
         }
         handleTouchEvent()
         handleBtnNoteAddClickEvent()
         setLabelsText(viewedDate)
+
         return binding.root
     }
 }

@@ -12,16 +12,11 @@ import com.sztorm.notecalendar.repositories.NoteRepository
 import timber.log.Timber
 import java.time.LocalDate
 
-/**
- * A simple [Fragment] subclass.
- * Use the [DayNoteFragment.createInstance] factory method to
- * create an instance of this fragment.
- */
-class DayNoteFragment : Fragment() {
+class DayNoteFragment(
+    private val dayFragment: DayFragment, private var note: NoteData?
+) : Fragment() {
     private lateinit var binding: FragmentDayNoteBinding
     private lateinit var mainActivity: MainActivity
-    private lateinit var dayFragment: DayFragment
-    private var note: NoteData? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -65,7 +60,9 @@ class DayNoteFragment : Fragment() {
             editedNote.save()
             note = editedNote
             if (mainActivity.tryScheduleNoteNotification(
-                    ScheduleNoteNotificationArguments(note = note))) {
+                    ScheduleNoteNotificationArguments(note = note)
+                )
+            ) {
                 Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification after note edit")
             }
         }
@@ -90,7 +87,7 @@ class DayNoteFragment : Fragment() {
                 Timber.i("${LogTags.NOTIFICATIONS} Canceled notification after note deletion")
             }
         }
-        dayFragment.setFragment(DayNoteAddFragment.createInstance(dayFragment))
+        dayFragment.setFragment(DayNoteAddFragment(dayFragment))
     }
 
     private fun setTheme() {
@@ -109,7 +106,8 @@ class DayNoteFragment : Fragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
         binding = FragmentDayNoteBinding.inflate(inflater, container, false)
         binding.lblNote.text = note?.text
 
@@ -121,21 +119,4 @@ class DayNoteFragment : Fragment() {
 
         return binding.root
     }
-
-    companion object : DayNoteCreator {
-        @JvmStatic
-        override fun createInstance(): DayNoteFragment = DayNoteFragment()
-
-        @JvmStatic
-        override fun createInstance(dayFragment: DayFragment, note: NoteData): DayNoteFragment {
-            val result = DayNoteFragment()
-            result.dayFragment = dayFragment
-            result.note = note
-            return result
-        }
-    }
-}
-
-interface DayNoteCreator: InstanceCreator<DayNoteFragment> {
-    fun createInstance(dayFragment: DayFragment, note: NoteData): DayNoteFragment
 }
