@@ -14,11 +14,6 @@ import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedStringGen
 import com.sztorm.notecalendar.repositories.NoteRepository
 import java.time.LocalDate
 
-/**
- * [Fragment] which represents day with notes etc in calendar.
- * Use the [DayFragment.createInstance] factory method to
- * create an instance of this fragment.
- */
 class DayFragment : Fragment() {
     private lateinit var binding: FragmentDayBinding
     private lateinit var fragmentSetter: FragmentSetter
@@ -50,15 +45,17 @@ class DayFragment : Fragment() {
         object : OnSwipeTouchListener(binding.root.context) {
 
         override fun onSwipeLeft() {
-            val date: LocalDate = mainActivity.viewedDate.plusDays(1)
+            mainActivity.viewedDate = mainActivity.viewedDate.plusDays(1)
             mainActivity.setMainFragment(
-                DayFragment, R.anim.anim_in_left, R.anim.anim_out_left, date)
+                MainFragmentType.DAY, R.anim.anim_in_left, R.anim.anim_out_left
+            )
         }
 
         override fun onSwipeRight() {
-            val date: LocalDate = mainActivity.viewedDate.minusDays(1)
+            mainActivity.viewedDate = mainActivity.viewedDate.minusDays(1)
             mainActivity.setMainFragment(
-                DayFragment, R.anim.anim_in_right, R.anim.anim_out_right, date)
+                MainFragmentType.DAY, R.anim.anim_in_right, R.anim.anim_out_right
+            )
         }
     })
 
@@ -99,14 +96,5 @@ class DayFragment : Fragment() {
         handleBtnNoteAddClickEvent()
         setLabelsText(viewedDate)
         return binding.root
-    }
-
-    companion object : MainFragmentCreator<DayFragment> {
-        @JvmStatic
-        override fun createInstance(): DayFragment = DayFragment()
-
-        @JvmStatic
-        override val fragmentType: MainActivity.MainFragmentType
-                = MainActivity.MainFragmentType.DAY_FRAGMENT
     }
 }

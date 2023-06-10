@@ -1,12 +1,12 @@
 package com.sztorm.notecalendar
 
+import android.content.Context
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import androidx.annotation.AttrRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.button.MaterialButton
 import com.skydoves.colorpickerview.ColorPickerView
@@ -17,14 +17,8 @@ import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getColorFromAttr
 import com.sztorm.notecalendar.themedpreferences.ThemedColorPickerPreference
 import com.sztorm.notecalendar.themedpreferences.ThemedHeaderPreference
 
-/**
- * [Fragment] which represents custom theme settings part of the application settings.
- *
- * Use the [CustomThemeSettingsFragment.createInstance] factory method to
- * create an instance of this fragment.
- **/
 class CustomThemeSettingsFragment : PreferenceFragmentCompat() {
-    companion object : CustomThemeSettingsCreator {
+    companion object {
         val COLOR_PREF_KEY_IDS: IntArray = intArrayOf(
             R.string.PrefKey_PrimaryColor,
             R.string.PrefKey_SecondaryColor,
@@ -37,7 +31,6 @@ class CustomThemeSettingsFragment : PreferenceFragmentCompat() {
             R.string.PrefKey_NoteTextColor,
             R.string.PrefKey_BackgroundColor
         )
-
         val COLOR_ATTR_IDS: IntArray = intArrayOf(
             R.attr.colorPrimary,
             R.attr.colorSecondary,
@@ -50,7 +43,6 @@ class CustomThemeSettingsFragment : PreferenceFragmentCompat() {
             R.attr.colorText,
             R.attr.colorBackground
         )
-
         val DARK_THEME_COLOR_IDS: IntArray = intArrayOf(
             R.color.primary_dark,
             R.color.secondary_dark,
@@ -63,7 +55,6 @@ class CustomThemeSettingsFragment : PreferenceFragmentCompat() {
             R.color.white_cool,
             R.color.background_dark
         )
-
         val LIGHT_THEME_COLOR_IDS: IntArray = intArrayOf(
             R.color.primary_light,
             R.color.secondary_light,
@@ -76,22 +67,14 @@ class CustomThemeSettingsFragment : PreferenceFragmentCompat() {
             R.color.black_cool,
             R.color.background_light
         )
-
-        override val fragmentType: SettingsFragment.SettingsFragmentType
-            get() = SettingsFragment.SettingsFragmentType.CUSTOM_THEME
-
-        override fun createInstance(
-            settingsFragment: SettingsFragment): CustomThemeSettingsFragment {
-            val result = CustomThemeSettingsFragment()
-            result.settingsFragment = settingsFragment
-
-            return result
-        }
-
-        override fun createInstance() = CustomThemeSettingsFragment()
     }
 
-    private lateinit var settingsFragment: SettingsFragment
+    private lateinit var mainActivity: MainActivity
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mainActivity = activity as MainActivity
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.custom_theme_settings, rootKey)
@@ -106,9 +89,7 @@ class CustomThemeSettingsFragment : PreferenceFragmentCompat() {
 
         preference.themePainter = mainActivity.themePainter
         preference.setOnPreferenceClickListener {
-            settingsFragment.setFragment(
-                RootSettingsFragment.createInstance(settingsFragment),
-                SettingsFragment.SettingsFragmentType.ROOT)
+            mainActivity.setMainFragment(MainFragmentType.ROOT_SETTINGS)
             true
         }
     }
@@ -181,12 +162,8 @@ class CustomThemeSettingsFragment : PreferenceFragmentCompat() {
         }
         colorPickerDialog.setOnDismissListener {
             if (isPositiveBtnClicked) {
-                (activity as MainActivity).restart(CustomThemeSettingsFragment)
+                mainActivity.restart(MainFragmentType.CUSTOM_THEME_SETTINGS)
             }
         }
     }
-}
-
-interface CustomThemeSettingsCreator: SettingsFragmentCreator<CustomThemeSettingsFragment> {
-    fun createInstance(settingsFragment: SettingsFragment): CustomThemeSettingsFragment
 }

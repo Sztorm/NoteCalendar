@@ -10,13 +10,14 @@ import com.sztorm.notecalendar.databinding.FragmentWeekDayBinding
 import java.time.LocalDate
 
 class DayListAdapter(
-        private val dayItems: List<DayItem>,
-        private val mainActivity: MainActivity,
-        private val textColors: WeekDayTextColors) :
-        RecyclerView.Adapter<DayListAdapter.ViewHolder>() {
+    private val dayItems: List<DayItem>,
+    private val mainActivity: MainActivity,
+    private val textColors: WeekDayTextColors
+) : RecyclerView.Adapter<DayListAdapter.ViewHolder>() {
     var onItemClick: ((DayItem) -> Unit)? = null
 
-    inner class ViewHolder(binding: FragmentWeekDayBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+    inner class ViewHolder(binding: FragmentWeekDayBinding)
+        : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
         val dayOfMonthLabel: TextView = binding.lblWeekDayOfMonth
         val dayOfWeekLabel: TextView = binding.lblWeekDayOfWeek
         val layout: LinearLayout = binding.layoutDayWeek
@@ -34,9 +35,6 @@ class DayListAdapter(
         return ViewHolder(binding)
     }
 
-    private fun areRepresentingTheSameDay(dateA: LocalDate, dateB: LocalDate): Boolean
-        = dateA.year == dateB.year && dateA.dayOfYear == dateB.dayOfYear
-
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val dayItem: DayItem = dayItems[position]
         val dayOfMonthTextColor: Int = textColors.getTextColorOf(dayItem.date.dayOfWeek)
@@ -50,7 +48,7 @@ class DayListAdapter(
         viewHolder.dayOfWeekLabel.setTextColor(dayOfWeekTextColor)
         viewHolder.layout.setOnClickListener(viewHolder)
 
-        if (areRepresentingTheSameDay(viewedDate, dayItem.date)) {
+        if (viewedDate == dayItem.date) {
             mainActivity.themePainter.paintSelectedWeekDayItem(viewHolder.layout)
         }
         else {

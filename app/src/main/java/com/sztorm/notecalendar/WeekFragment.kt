@@ -1,5 +1,8 @@
+@file:Suppress("SameParameterValue")
+
 package com.sztorm.notecalendar
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,7 +24,8 @@ class WeekFragment : Fragment() {
     private lateinit var textColors: WeekDayTextColors
     private val dayItems: ArrayDeque<DayItem> = ArrayDeque(initialCapacity = CACHED_DAY_ITEMS_COUNT)
 
-    inner class WeekDayOnScrollListener: RecyclerView.OnScrollListener() {
+    inner class WeekDayOnScrollListener : RecyclerView.OnScrollListener() {
+        @SuppressLint("NotifyDataSetChanged")
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             val llm = recyclerView.layoutManager as LinearLayoutManager
             val directionDown = 1
@@ -123,9 +127,10 @@ class WeekFragment : Fragment() {
         initDayItems(binding.root, CACHED_DAY_ITEMS_COUNT)
         adapter = DayListAdapter(dayItems, mainActivity, textColors)
         adapter.onItemClick = {
-            mainActivity.setMainFragment(DayFragment, date = it.date)
+            mainActivity.viewedDate = it.date
+            mainActivity.setMainFragment(MainFragmentType.DAY)
         }
-        val recyclerView: RecyclerView = binding.weekDayFragmentContainer
+        val recyclerView: RecyclerView = binding.root
         recyclerView.layoutManager = LinearLayoutManager(binding.root.context)
         recyclerView.adapter = adapter
         recyclerView.addOnScrollListener(WeekDayOnScrollListener())
@@ -134,15 +139,8 @@ class WeekFragment : Fragment() {
         return binding.root
     }
 
-    companion object : MainFragmentCreator<WeekFragment> {
+    companion object {
         private const val CACHED_DAY_ITEMS_COUNT: Int = 45
         private const val LOADED_DAY_ITEMS_COUNT: Int = 30
-
-        @JvmStatic
-        override fun createInstance(): WeekFragment = WeekFragment()
-
-        @JvmStatic
-        override val fragmentType: MainActivity.MainFragmentType
-                = MainActivity.MainFragmentType.WEEK_FRAGMENT
     }
 }

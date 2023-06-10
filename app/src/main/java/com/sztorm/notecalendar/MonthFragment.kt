@@ -16,10 +16,6 @@ import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MonthFragment.createInstance] factory method to create an instance of this fragment.
- */
 class MonthFragment : Fragment() {
     private lateinit var binding: FragmentMonthBinding
     private lateinit var mainActivity: MainActivity
@@ -89,14 +85,7 @@ class MonthFragment : Fragment() {
         return binding.root
     }
 
-    companion object : MainFragmentCreator<MonthFragment> {
+    companion object {
         private const val HALF_CACHED_MONTH_COUNT: Long = 10
-
-        @JvmStatic
-        override fun createInstance(): MonthFragment = MonthFragment()
-
-        @JvmStatic
-        override val fragmentType: MainActivity.MainFragmentType
-                = MainActivity.MainFragmentType.MONTH_FRAGMENT
     }
 }

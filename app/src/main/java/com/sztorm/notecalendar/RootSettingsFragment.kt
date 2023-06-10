@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.button.MaterialButton
 import com.mikepenz.aboutlibraries.LibsBuilder
@@ -22,28 +21,13 @@ import java.time.DayOfWeek
 import java.time.temporal.WeekFields
 import java.util.*
 
-/**
- * [Fragment] which represents root settings part of the application settings.
- *
- * Use the [RootSettingsFragment.createInstance] factory method to
- * create an instance of this fragment.
- **/
 class RootSettingsFragment : PreferenceFragmentCompat() {
-    companion object : RootSettingsCreator {
-        override val fragmentType: SettingsFragment.SettingsFragmentType
-            get() = SettingsFragment.SettingsFragmentType.ROOT
+    private lateinit var mainActivity: MainActivity
 
-        override fun createInstance(settingsFragment: SettingsFragment): RootSettingsFragment {
-            val result = RootSettingsFragment()
-            result.settingsFragment = settingsFragment
-
-            return result
-        }
-
-        override fun createInstance() = RootSettingsFragment()
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mainActivity = activity as MainActivity
     }
-
-    private lateinit var settingsFragment: SettingsFragment
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_settings, rootKey)
@@ -79,9 +63,7 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
 
         preference.themePainter = mainActivity.themePainter
         preference.setOnPreferenceClickListener {
-            settingsFragment.setFragment(
-                CustomThemeSettingsFragment.createInstance(settingsFragment),
-                SettingsFragment.SettingsFragmentType.CUSTOM_THEME)
+            mainActivity.setMainFragment(MainFragmentType.CUSTOM_THEME_SETTINGS)
             true
         }
     }
@@ -103,7 +85,7 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
 
                 colorPickerPreferenceManager.setColor(colPickerKey, lightThemeColor)
             }
-            mainActivity.restart(SettingsFragment)
+            mainActivity.restart(MainFragmentType.ROOT_SETTINGS)
             true
         }
     }
@@ -125,7 +107,7 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
 
                 colorPickerPreferenceManager.setColor(colPickerKey, darkThemeColor)
             }
-            mainActivity.restart(SettingsFragment)
+            mainActivity.restart(MainFragmentType.ROOT_SETTINGS)
             true
         }
     }
@@ -147,7 +129,7 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
 
                 colorPickerPreferenceManager.setColor(colPickerKey, defaultColor)
             }
-            mainActivity.restart(SettingsFragment)
+            mainActivity.restart(MainFragmentType.ROOT_SETTINGS)
             true
         }
     }
@@ -270,8 +252,4 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
             true
         }
     }
-}
-
-interface RootSettingsCreator: SettingsFragmentCreator<RootSettingsFragment> {
-    fun createInstance(settingsFragment: SettingsFragment): RootSettingsFragment
 }
