@@ -120,8 +120,8 @@ class MainActivity : AppCompatActivity() {
     ) {
         val navigation: MaterialButtonToggleGroup = binding.navigation
 
-        if (navigation.checkedButtonId != mainButtonResourceIds[mainFragmentType.ordinal]) {
-            navigation.check(mainButtonResourceIds[mainFragmentType.ordinal])
+        if (navigation.checkedButtonId != MAIN_BUTTON_RESOURCE_IDS[mainFragmentType.ordinal]) {
+            navigation.check(MAIN_BUTTON_RESOURCE_IDS[mainFragmentType.ordinal])
         }
         currentFragmentType = mainFragmentType
         fragmentSetter.setFragment(mainFragmentType.createFragment(), resAnimIn, resAnimOut)
@@ -140,17 +140,13 @@ class MainActivity : AppCompatActivity() {
         var notificationDateTime = LocalDateTime.of(
             currentDateTime.toLocalDate(), notificationTime.toLocalTime()
         )
-
         if (notificationTime.toLocalTime() <= currentDateTime.toLocalTime()) {
             notificationDateTime = notificationDateTime.plusDays(1)
         }
         val note: NoteData? =
             args.note ?: NoteRepository.getByDate(notificationDateTime.toLocalDate())
 
-        if (note === null) {
-            return false
-        }
-        if (note.date != notificationDateTime.toLocalDate().toString()) {
+        if (note === null || note.date != notificationDateTime.toLocalDate().toString()) {
             return false
         }
         val notificationData = NoteNotificationData(note, notificationDateTime)
@@ -191,8 +187,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val BUNDLE_KEY_MAIN_FRAGMENT_TYPE = "MainFragmentType"
-
-        private val mainButtonResourceIds: IntArray = intArrayOf(
+        private val MAIN_BUTTON_RESOURCE_IDS: IntArray = intArrayOf(
             R.id.btnViewDay,
             R.id.btnViewWeek,
             R.id.btnViewMonth,

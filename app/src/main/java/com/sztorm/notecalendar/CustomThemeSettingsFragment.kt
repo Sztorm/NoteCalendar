@@ -18,57 +18,6 @@ import com.sztorm.notecalendar.themedpreferences.ThemedColorPickerPreference
 import com.sztorm.notecalendar.themedpreferences.ThemedHeaderPreference
 
 class CustomThemeSettingsFragment : PreferenceFragmentCompat() {
-    companion object {
-        val COLOR_PREF_KEY_IDS: IntArray = intArrayOf(
-            R.string.PrefKey_PrimaryColor,
-            R.string.PrefKey_SecondaryColor,
-            R.string.PrefKey_InactiveItemColor,
-            R.string.PrefKey_InactiveItemColorVariant,
-            R.string.PrefKey_NoteColor,
-            R.string.PrefKey_NoteColorVariant,
-            R.string.PrefKey_TextColor,
-            R.string.PrefKey_ButtonTextColor,
-            R.string.PrefKey_NoteTextColor,
-            R.string.PrefKey_BackgroundColor
-        )
-        val COLOR_ATTR_IDS: IntArray = intArrayOf(
-            R.attr.colorPrimary,
-            R.attr.colorSecondary,
-            R.attr.colorInactiveItem,
-            R.attr.colorInactiveItemVariant,
-            R.attr.colorNote,
-            R.attr.colorNoteVariant,
-            R.attr.colorText,
-            R.attr.colorButtonText,
-            R.attr.colorText,
-            R.attr.colorBackground
-        )
-        val DARK_THEME_COLOR_IDS: IntArray = intArrayOf(
-            R.color.primary_dark,
-            R.color.secondary_dark,
-            R.color.inactive_dark,
-            R.color.inactive_variant_dark,
-            R.color.note_dark_primary,
-            R.color.note_dark_secondary,
-            R.color.white_cool,
-            R.color.white_cool,
-            R.color.white_cool,
-            R.color.background_dark
-        )
-        val LIGHT_THEME_COLOR_IDS: IntArray = intArrayOf(
-            R.color.primary_light,
-            R.color.secondary_light,
-            R.color.inactive_light,
-            R.color.inactive_variant_light,
-            R.color.note_light_primary,
-            R.color.note_light_secondary,
-            R.color.black_cool,
-            R.color.white_cool,
-            R.color.black_cool,
-            R.color.background_light
-        )
-    }
-
     private lateinit var mainActivity: MainActivity
 
     override fun onAttach(context: Context) {
@@ -165,5 +114,56 @@ class CustomThemeSettingsFragment : PreferenceFragmentCompat() {
                 mainActivity.restart(MainFragmentType.CUSTOM_THEME_SETTINGS)
             }
         }
+    }
+
+    companion object {
+        val COLOR_PREF_KEY_IDS: IntArray = intArrayOf(
+            R.string.PrefKey_PrimaryColor,
+            R.string.PrefKey_SecondaryColor,
+            R.string.PrefKey_InactiveItemColor,
+            R.string.PrefKey_InactiveItemColorVariant,
+            R.string.PrefKey_NoteColor,
+            R.string.PrefKey_NoteColorVariant,
+            R.string.PrefKey_TextColor,
+            R.string.PrefKey_ButtonTextColor,
+            R.string.PrefKey_NoteTextColor,
+            R.string.PrefKey_BackgroundColor
+        )
+        val COLOR_ATTR_IDS: IntArray = intArrayOf(
+            R.attr.colorPrimary,
+            R.attr.colorSecondary,
+            R.attr.colorInactiveItem,
+            R.attr.colorInactiveItemVariant,
+            R.attr.colorNote,
+            R.attr.colorNoteVariant,
+            R.attr.colorText,
+            R.attr.colorButtonText,
+            R.attr.colorText,
+            R.attr.colorBackground
+        )
+        val DARK_THEME_COLOR_IDS: IntArray = intArrayOf(
+            R.color.primary_dark,
+            R.color.secondary_dark,
+            R.color.inactive_dark,
+            R.color.inactive_variant_dark,
+            R.color.note_dark_primary,
+            R.color.note_dark_secondary,
+            R.color.white_cool,
+            R.color.white_cool,
+            R.color.white_cool,
+            R.color.background_dark
+        )
+        val LIGHT_THEME_COLOR_IDS: IntArray = intArrayOf(
+            R.color.primary_light,
+            R.color.secondary_light,
+            R.color.inactive_light,
+            R.color.inactive_variant_light,
+            R.color.note_light_primary,
+            R.color.note_light_secondary,
+            R.color.black_cool,
+            R.color.white_cool,
+            R.color.black_cool,
+            R.color.background_light
+        )
     }
 }
