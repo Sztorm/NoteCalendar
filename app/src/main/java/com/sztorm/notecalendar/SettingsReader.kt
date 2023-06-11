@@ -4,7 +4,7 @@ import androidx.annotation.ColorInt
 import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference
 import java.time.DayOfWeek
 
-interface ISettingsReader {
+interface SettingsReader {
     val primaryColor: Int
     val secondaryColor: Int
     val inactiveItemColor: Int

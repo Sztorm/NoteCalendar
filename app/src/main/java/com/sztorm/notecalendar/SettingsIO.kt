@@ -15,7 +15,7 @@ import java.time.DayOfWeek
 import java.time.temporal.WeekFields
 import java.util.*
 
-class SettingsIO(private val context: Context) : ISettingsReader {
+class SettingsIO(private val context: Context) : SettingsReader {
     private val preferences: SharedPreferences = PreferenceManager
         .getDefaultSharedPreferences(context)
     private val colorPickerPreferenceManager = ColorPickerPreferenceManager.getInstance(context)

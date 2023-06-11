@@ -3,6 +3,7 @@ package com.sztorm.notecalendar
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.sztorm.notecalendar.databinding.ActivityMainBinding
@@ -37,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             }
             return result
         }
-    val settingsReader: ISettingsReader
+    val settingsReader: SettingsReader
         get() = settingsIO
 
     private fun setTheme() {
@@ -58,6 +59,19 @@ class MainActivity : AppCompatActivity() {
                 fragmentSetter.setFragment(fragmentType.createFragment())
             }
         }
+
+    private fun setBackButtonPressListener() {
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (currentFragmentType == MainFragmentType.CUSTOM_THEME_SETTINGS) {
+                    setMainFragment(MainFragmentType.ROOT_SETTINGS)
+                } else {
+                    finish()
+                }
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, callback)
+    }
 
     private fun setMainFragmentOnCreate() {
         val bundle: Bundle? = intent.extras
@@ -90,6 +104,7 @@ class MainActivity : AppCompatActivity() {
         setNavigationButtonClickListener(binding.btnViewWeek, MainFragmentType.WEEK)
         setNavigationButtonClickListener(binding.btnViewMonth, MainFragmentType.MONTH)
         setNavigationButtonClickListener(binding.btnViewSettings, MainFragmentType.ROOT_SETTINGS)
+        setBackButtonPressListener()
         setMainFragmentOnCreate()
         if (tryScheduleNoteNotification(ScheduleNoteNotificationArguments())) {
             Timber.i(
