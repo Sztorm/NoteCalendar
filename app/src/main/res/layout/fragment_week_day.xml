@@ -10,7 +10,8 @@
     android:layout_marginHorizontal="10dp"
     android:layout_weight="1"
     android:transitionGroup="true"
-    android:background="@drawable/selector_week_day" >
+    android:background="@drawable/selector_week_day"
+    android:scrollbars="none" >
 
     <TextView
         android:id="@+id/lblWeekDayOfMonth"
@@ -20,8 +21,9 @@
         android:padding="10dp"
         android:textSize="30sp"
         android:textAlignment="center"
-        tools:text="8"
-        android:textColor="?attr/colorText" />
+        android:textColor="?attr/colorText"
+        android:scrollbars="none"
+        tools:text="8" />
 
     <TextView
         android:id="@+id/lblWeekDayOfWeek"
@@ -29,7 +31,8 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:textSize="30sp"
-        tools:text="Monday"
-        android:textColor="?attr/colorText" />
+        android:textColor="?attr/colorText"
+        android:scrollbars="none"
+        tools:text="Monday" />
 
 </LinearLayout>

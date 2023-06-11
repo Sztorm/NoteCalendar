@@ -6,7 +6,7 @@
     android:layout_height="0dp"
     android:layout_weight="1"
     android:orientation="vertical"
-    android:scrollbarSize="0dp"
+    android:scrollbars="none"
     tools:context=".WeekFragment">
 
 </androidx.recyclerview.widget.RecyclerView>

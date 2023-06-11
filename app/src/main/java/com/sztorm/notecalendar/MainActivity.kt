@@ -41,15 +41,14 @@ class MainActivity : AppCompatActivity() {
         get() = settingsIO
 
     private fun setTheme() {
-        val themePainter: ThemePainter = themePainter
-        val themeValues: ThemeValues = themePainter.values
-
-        themePainter.paintWindowStatusBar(window)
-        themePainter.paintNavigationButton(binding.btnViewMonth)
-        themePainter.paintNavigationButton(binding.btnViewWeek)
-        themePainter.paintNavigationButton(binding.btnViewDay)
-        themePainter.paintNavigationButton(binding.btnViewSettings)
-        binding.root.setBackgroundColor(themeValues.backgroundColor)
+        themePainter.apply {
+            paintWindowStatusBar(window)
+            paintNavigationButton(binding.btnViewMonth)
+            paintNavigationButton(binding.btnViewWeek)
+            paintNavigationButton(binding.btnViewDay)
+            paintNavigationButton(binding.btnViewSettings)
+            paintBackground(binding.root)
+        }
     }
 
     private fun setNavigationButtonClickListener(button: Button, fragmentType: MainFragmentType) =

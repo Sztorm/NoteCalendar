@@ -172,6 +172,10 @@ class ThemePainter(val values: ThemeValues) {
         weekDayBinding.lblSeventhDay.setTextColor(values.buttonTextColor)
     }
 
+    fun paintBackground(view: View) {
+        view.setBackgroundColor(values.backgroundColor)
+    }
+
     fun paintSwitch(switch: SwitchCompat) {
         switch.thumbTintList = values.switchThumbColorStateList
         switch.trackTintList = values.switchTrackColorStateList

@@ -57,7 +57,6 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun setupSetCustomThemeSettingsPreference() {
-        val mainActivity = activity as MainActivity
         val key: String = mainActivity.getString(R.string.PrefKey_SetCustomTheme)
         val preference: ThemedPreference = findPreference(key)!!
 
@@ -69,7 +68,6 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun setupSetLightThemePreference() {
-        val mainActivity = activity as MainActivity
         val key: String = mainActivity.getString(R.string.PrefKey_SetLightTheme)
         val preference: ThemedPreference = findPreference(key)!!
 
@@ -91,7 +89,6 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun setupSetDarkThemePreference() {
-        val mainActivity = activity as MainActivity
         val key: String = mainActivity.getString(R.string.PrefKey_SetDarkTheme)
         val preference: ThemedPreference = findPreference(key)!!
 
@@ -113,7 +110,6 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun setupSetDefaultThemePreference() {
-        val mainActivity = activity as MainActivity
         val key: String = mainActivity.getString(R.string.PrefKey_SetDefaultTheme)
         val preference: ThemedPreference = findPreference(key)!!
 
@@ -184,7 +180,6 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
 
     private fun setupEnableNotificationsPreference() {
         val context: Context = requireContext()
-        val mainActivity = activity as MainActivity
         val key: String = context.getString(R.string.PrefKey_EnableNotifications)
         val preference: ThemedSwitchPreference = findPreference(key)!!
 
@@ -206,7 +201,6 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun setupNotificationTimePreference() {
-        val mainActivity = activity as MainActivity
         val key: String = mainActivity.getString(R.string.PrefKey_NotificationTime)
         val preference: ThemedTimePickerPreference = findPreference(key)!!
 
@@ -223,7 +217,6 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun setupFirstDayOfWeekPreference() {
-        val mainActivity = activity as MainActivity
         val key: String = mainActivity.getString(R.string.PrefKey_FirstDayOfWeek)
         val preference: ThemedSimpleListPreference = findPreference(key)!!
         val defaultValue = WeekFields.of(Locale.getDefault()).firstDayOfWeek.value.toString()
@@ -239,7 +232,6 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun setupLicensesPreference() {
-        val mainActivity = activity as MainActivity
         val key: String = mainActivity.getString(R.string.PrefKey_Licenses)
         val preference: ThemedPreference = findPreference(key)!!
         preference.themePainter = mainActivity.themePainter
