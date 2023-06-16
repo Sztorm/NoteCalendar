@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.sztorm.notecalendar.databinding.FragmentDayBinding
 import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedString
@@ -24,7 +23,41 @@ class DayFragment : Fragment() {
         mainActivity = activity as MainActivity
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        fragmentSetter = FragmentSetter(
+            childFragmentManager,
+            R.id.dayNoteFragmentContainer,
+            R.anim.anim_in_note,
+            R.anim.anim_out_note
+        )
+        binding = FragmentDayBinding.inflate(inflater, container, false)
+        val viewedDate: LocalDate = mainActivity.viewedDate
+
+        setTheme()
+        setNoteFragmentOnCreate(viewedDate)
+        setTouchListener()
+        setLabelsText(viewedDate)
+
+        return binding.root
+    }
+
     fun setFragment(fragment: Fragment) = fragmentSetter.setFragment(fragment)
+
+    private fun setNoteFragmentOnCreate(date: LocalDate) {
+        val possibleNote: NoteData? = NoteRepository.getByDate(date)
+
+        if (possibleNote == null) {
+            fragmentSetter.setFragment(
+                DayNoteEmptyFragment(this),
+                resAnimIn = R.anim.anim_immediate,
+                resAnimOut = R.anim.anim_immediate
+            )
+        } else {
+            fragmentSetter.setFragment(DayNoteFragment(this, possibleNote))
+        }
+    }
 
     private fun setLabelsText(date: LocalDate) {
         binding.lblDayOfMonth.text = date.dayOfMonth.toString()
@@ -32,13 +65,8 @@ class DayFragment : Fragment() {
         binding.lblMonth.text = date.month.toLocalizedStringGenitiveCase(mainActivity)
     }
 
-    private fun handleBtnNoteAddClickEvent() = binding.btnNoteAdd.setOnClickListener {
-        binding.btnNoteAdd.isVisible = false
-        fragmentSetter.setFragment(DayNoteAddFragment(this))
-    }
-
     @SuppressLint("ClickableViewAccessibility")
-    private fun handleTouchEvent() = binding.root.setOnTouchListener(
+    private fun setTouchListener() = binding.root.setOnTouchListener(
         object : OnSwipeTouchListener(binding.root.context) {
             override fun onSwipeLeft() {
                 mainActivity.viewedDate = mainActivity.viewedDate.plusDays(1)
@@ -59,38 +87,8 @@ class DayFragment : Fragment() {
         val themePainter: ThemePainter = mainActivity.themePainter
         val themeValues: ThemeValues = themePainter.values
 
-        themePainter.paintButton(binding.btnNoteAdd)
         binding.lblDayOfMonth.setTextColor(themeValues.textColor)
         binding.lblDayOfWeek.setTextColor(themeValues.textColor)
         binding.lblMonth.setTextColor(themeValues.textColor)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        fragmentSetter = FragmentSetter(
-            childFragmentManager,
-            R.id.dayNoteFragmentContainer,
-            R.anim.anim_in_note,
-            R.anim.anim_out_note
-        )
-        binding = FragmentDayBinding.inflate(inflater, container, false)
-        setTheme()
-
-        val viewedDate: LocalDate = mainActivity.viewedDate
-        val possibleNote: NoteData? = NoteRepository.getByDate(viewedDate)
-
-        if (possibleNote == null) {
-            binding.btnNoteAdd.isVisible = true
-        } else {
-            binding.btnNoteAdd.isVisible = false
-            fragmentSetter.setFragment(DayNoteFragment(this, possibleNote))
-        }
-        handleTouchEvent()
-        handleBtnNoteAddClickEvent()
-        setLabelsText(viewedDate)
-
-        return binding.root
     }
 }

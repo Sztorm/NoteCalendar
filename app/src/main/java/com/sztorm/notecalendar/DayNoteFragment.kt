@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.sztorm.notecalendar.databinding.FragmentDayNoteBinding
 import com.sztorm.notecalendar.helpers.ViewHelper.Companion.hideKeyboard
+import com.sztorm.notecalendar.helpers.ViewHelper.Companion.showKeyboard
 import com.sztorm.notecalendar.repositories.NoteRepository
 import timber.log.Timber
 import java.time.LocalDate
@@ -23,34 +24,55 @@ class DayNoteFragment(
         mainActivity = activity as MainActivity
     }
 
-    private fun setEditMode() {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentDayNoteBinding.inflate(inflater, container, false)
+        binding.lblNote.text = note?.text
+
+        setTheme()
+        setBtnNoteEditTextClickListener()
+        setBtnNoteEditSaveClickListener()
+        setBtnNoteEditCancelClickListener()
+        setBtnNoteDeleteTextClickListener()
+
+        return binding.root
+    }
+
+    private fun setEditUI() {
         binding.btnNoteEditSave.visibility = View.VISIBLE
         binding.btnNoteEditCancel.visibility = View.VISIBLE
         binding.btnNoteEditText.visibility = View.GONE
         binding.btnNoteDeleteText.visibility = View.GONE
+        binding.spacerCenter.visibility = View.GONE
+        binding.spacerEnd.visibility = View.GONE
         binding.layoutNoteEditBottom.visibility = View.VISIBLE
         binding.layoutNoteBottom.visibility = View.GONE
     }
 
-    private fun setViewMode() {
+    private fun setViewUI() {
         binding.btnNoteEditSave.visibility = View.GONE
         binding.btnNoteEditCancel.visibility = View.GONE
         binding.btnNoteEditText.visibility = View.VISIBLE
         binding.btnNoteDeleteText.visibility = View.VISIBLE
+        binding.spacerCenter.visibility = View.VISIBLE
+        binding.spacerEnd.visibility = View.VISIBLE
         binding.layoutNoteEditBottom.visibility = View.GONE
         binding.layoutNoteBottom.visibility = View.VISIBLE
     }
 
-    private fun handleBtnNoteEditTextClickEvent() = binding.btnNoteEditText.setOnClickListener {
+    private fun setBtnNoteEditTextClickListener() = binding.btnNoteEditText.setOnClickListener {
         binding.txtNoteEdit.text.clear()
 
         if (note !== null) {
             binding.txtNoteEdit.text.append(note?.text)
         }
-        setEditMode()
+        setEditUI()
+        binding.txtNoteEdit.requestFocus()
+        binding.txtNoteEdit.showKeyboard()
     }
 
-    private fun handleBtnNoteEditSaveClickEvent() = binding.btnNoteEditSave.setOnClickListener {
+    private fun setBtnNoteEditSaveClickListener() = binding.btnNoteEditSave.setOnClickListener {
         val editedText: String = binding.txtNoteEdit.text.toString()
         val editedNote: NoteData? = NoteRepository.getByDate(mainActivity.viewedDate)
 
@@ -68,17 +90,17 @@ class DayNoteFragment(
         }
         binding.lblNote.text = editedText
 
-        setViewMode()
+        setViewUI()
         binding.root.hideKeyboard()
     }
 
-    private fun handleBtnNoteEditCancelClickEvent() = binding.btnNoteEditCancel.setOnClickListener {
-        setViewMode()
+    private fun setBtnNoteEditCancelClickListener() = binding.btnNoteEditCancel.setOnClickListener {
+        setViewUI()
         binding.txtNoteEdit.text.clear()
         binding.root.hideKeyboard()
     }
 
-    private fun handleBtnNoteDeleteTextClickEvent() = binding.btnNoteDeleteText.setOnClickListener {
+    private fun setBtnNoteDeleteTextClickListener() = binding.btnNoteDeleteText.setOnClickListener {
         val possibleNote: NoteData? = note
 
         if (possibleNote !== null) {
@@ -87,7 +109,7 @@ class DayNoteFragment(
                 Timber.i("${LogTags.NOTIFICATIONS} Canceled notification after note deletion")
             }
         }
-        dayFragment.setFragment(DayNoteAddFragment(dayFragment))
+        dayFragment.setFragment(DayNoteEmptyFragment(dayFragment))
     }
 
     private fun setTheme() {
@@ -103,20 +125,5 @@ class DayNoteFragment(
         themePainter.paintButton(binding.btnNoteEditSave)
         themePainter.paintButton(binding.btnNoteEditCancel)
         themePainter.paintEditText(binding.txtNoteEdit)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentDayNoteBinding.inflate(inflater, container, false)
-        binding.lblNote.text = note?.text
-
-        setTheme()
-        handleBtnNoteEditTextClickEvent()
-        handleBtnNoteEditSaveClickEvent()
-        handleBtnNoteEditCancelClickEvent()
-        handleBtnNoteDeleteTextClickEvent()
-
-        return binding.root
     }
 }

@@ -10,5 +10,10 @@ class ViewHelper {
             val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(this.windowToken, 0)
         }
+
+        fun View.showKeyboard(delayMillis: Long = 100) = postDelayed({
+            val imm = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(this, 0)
+        }, delayMillis)
     }
 }

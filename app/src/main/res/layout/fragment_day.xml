@@ -48,19 +48,6 @@
         android:orientation="vertical"
         android:layout_marginHorizontal="10dp"
         android:layout_marginVertical="10dp"
-        android:id="@+id/dayNoteFragmentContainer" >
-
-        <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.Icon"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/AddNote"
-            app:icon="@drawable/icon_note_add"
-            app:iconGravity="textStart"
-            android:id="@+id/btnNoteAdd"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="5dp"/>
-
-    </FrameLayout>
+        android:id="@+id/dayNoteFragmentContainer" />
 
 </LinearLayout>

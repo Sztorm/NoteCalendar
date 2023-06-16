@@ -2,8 +2,9 @@
     <string name="app_name">Note Calendar</string>
     <string name="Save">Save</string>
     <string name="Cancel">Cancel</string>
-    <string name="AddText">Add text</string>
     <string name="AddNote">Add note</string>
+    <string name="EditNote">Edit note</string>
+    <string name="DeleteNote">Delete note</string>
     <string name="Confirm">OK</string>
     <string name="SetDefault">Set default</string>
     <string name="ColorPicker">Color picker</string>

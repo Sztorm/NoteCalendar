@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -22,7 +23,6 @@
             android:layout_marginStart="10dp"
             android:layout_marginVertical="10dp"
             android:text="@string/Save"
-            android:visibility="invisible"
             app:icon="@drawable/icon_add"
             app:iconGravity="textStart" />
 
@@ -34,7 +34,6 @@
             android:layout_marginStart="5dp"
             android:layout_marginVertical="10dp"
             android:text="@string/Cancel"
-            android:visibility="invisible"
             app:icon="@drawable/icon_cancel"
             app:iconGravity="textStart" />
 
@@ -48,16 +47,6 @@
         android:orientation="vertical"
         android:background="?attr/colorNote">
 
-        <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.Icon"
-            android:id="@+id/btnNoteAddText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/AddText"
-            app:icon="@drawable/icon_add"
-            app:iconGravity="textStart"
-            android:layout_marginHorizontal="10dp"/>
-
         <EditText
             style="@style/EditText"
             android:id="@+id/txtNoteAdd"
@@ -70,7 +59,6 @@
             android:textSize="24sp"
             android:fontFamily="sans-serif"
             android:importantForAutofill="no"
-            android:visibility="gone"
             tools:ignore="LabelFor" />
 
     </LinearLayout>
