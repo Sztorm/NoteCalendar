@@ -18,7 +18,7 @@ class DayNoteAddFragment(private val dayFragment: DayFragment) : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        mainActivity = activity as MainActivity
+        mainActivity = context as MainActivity
     }
 
     override fun onCreateView(
@@ -28,10 +28,15 @@ class DayNoteAddFragment(private val dayFragment: DayFragment) : Fragment() {
         setTheme()
         setBtnNoteCancelClickListener()
         setBtnNoteSaveClickListener()
-        binding.txtNoteAdd.requestFocus()
-        binding.txtNoteAdd.showKeyboard()
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.txtNoteAdd.requestFocus()
+        binding.txtNoteAdd.showKeyboard()
     }
 
     private fun setBtnNoteCancelClickListener() = binding.btnNoteCancel.setOnClickListener {
