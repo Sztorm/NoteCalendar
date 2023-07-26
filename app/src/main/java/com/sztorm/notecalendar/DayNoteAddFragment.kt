@@ -12,9 +12,14 @@ import com.sztorm.notecalendar.helpers.ViewHelper.Companion.showKeyboard
 import com.sztorm.notecalendar.repositories.NoteRepository
 import timber.log.Timber
 
-class DayNoteAddFragment(private val dayFragment: DayFragment) : Fragment() {
+class DayNoteAddFragment() : Fragment() {
     private lateinit var binding: FragmentDayNoteAddBinding
     private lateinit var mainActivity: MainActivity
+    private lateinit var dayFragment: DayFragment
+
+    constructor(dayFragment: DayFragment) : this() {
+        this.dayFragment = dayFragment
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

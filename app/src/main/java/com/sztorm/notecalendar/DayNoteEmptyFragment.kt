@@ -8,9 +8,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.sztorm.notecalendar.databinding.FragmentDayNoteEmptyBinding
 
-class DayNoteEmptyFragment(private val dayFragment: DayFragment) : Fragment() {
+class DayNoteEmptyFragment() : Fragment() {
     private lateinit var binding: FragmentDayNoteEmptyBinding
     private lateinit var mainActivity: MainActivity
+    private lateinit var dayFragment: DayFragment
+
+    constructor(dayFragment: DayFragment) : this() {
+        this.dayFragment = dayFragment
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

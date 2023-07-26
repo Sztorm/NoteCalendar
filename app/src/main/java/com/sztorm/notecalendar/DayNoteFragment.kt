@@ -13,11 +13,16 @@ import com.sztorm.notecalendar.repositories.NoteRepository
 import timber.log.Timber
 import java.time.LocalDate
 
-class DayNoteFragment(
-    private val dayFragment: DayFragment, private var note: NoteData?
-) : Fragment() {
+class DayNoteFragment() : Fragment() {
     private lateinit var binding: FragmentDayNoteBinding
     private lateinit var mainActivity: MainActivity
+    private lateinit var dayFragment: DayFragment
+    private var note: NoteData? = null
+
+    constructor(dayFragment: DayFragment, note: NoteData?) : this() {
+        this.dayFragment = dayFragment
+        this.note = note
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
