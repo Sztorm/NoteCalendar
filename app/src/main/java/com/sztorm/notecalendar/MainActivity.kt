@@ -1,5 +1,6 @@
 package com.sztorm.notecalendar
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -176,7 +177,6 @@ class MainActivity : AppCompatActivity() {
         var notificationDateTime = LocalDateTime.of(
             currentDateTime.toLocalDate(), notificationTime.toLocalTime()
         )
-
         if (notificationTime.toLocalTime() <= currentDateTime.toLocalTime()) {
             notificationDateTime = notificationDateTime.plusDays(1)
         }
@@ -184,6 +184,7 @@ class MainActivity : AppCompatActivity() {
             return false
         }
         NoteNotificationManager.cancelScheduledNotification(this)
+
         return true
     }
 
@@ -194,9 +195,9 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(applicationContext, MainActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             .putExtras(bundle)
+        val options = ActivityOptions.makeCustomAnimation(baseContext, 0, 0)
 
-        startActivity(intent)
-        overridePendingTransition(0, 0)
+        startActivity(intent, options.toBundle())
         finish()
     }
 

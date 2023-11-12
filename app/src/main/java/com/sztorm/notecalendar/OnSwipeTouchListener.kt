@@ -11,7 +11,8 @@ import kotlin.math.abs
 open class OnSwipeTouchListener(
     ctx: Context?,
     val swipeThreshold: Int = 100,
-    val swipeVelocityThreshold: Int = 100) : OnTouchListener {
+    val swipeVelocityThreshold: Int = 100
+) : OnTouchListener {
     private val gestureDetector: GestureDetector
 
     private inner class GestureListener : SimpleOnGestureListener() {
@@ -20,32 +21,32 @@ open class OnSwipeTouchListener(
         }
 
         override fun onFling(
-            me1: MotionEvent, me2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
-            var result = false
-            try {
-                val diffY = me2.y - me1.y
-                val diffX = me2.x - me1.x
-                if (abs(diffX) > abs(diffY)) {
-                    if (abs(diffX) > swipeThreshold && abs(velocityX) > swipeVelocityThreshold) {
-                        if (diffX > 0) {
-                            onSwipeRight()
-                        } else {
-                            onSwipeLeft()
-                        }
-                        result = true
-                    }
-                } else if (abs(diffY) > swipeThreshold && abs(velocityY) > swipeVelocityThreshold) {
-                    if (diffY > 0) {
-                        onSwipeBottom()
-                    } else {
-                        onSwipeTop()
-                    }
-                    result = true
-                }
-            } catch (exception: Exception) {
-                exception.printStackTrace()
+            me1: MotionEvent?, me2: MotionEvent, velocityX: Float, velocityY: Float
+        ): Boolean {
+            if (me1 == null) {
+                return false
             }
-            return result
+            val diffY: Float = me2.y - me1.y
+            val diffX: Float = me2.x - me1.x
+
+            if (abs(diffX) > abs(diffY)) {
+                if (abs(diffX) > swipeThreshold && abs(velocityX) > swipeVelocityThreshold) {
+                    if (diffX > 0) {
+                        onSwipeRight()
+                    } else {
+                        onSwipeLeft()
+                    }
+                    return true
+                }
+            } else if (abs(diffY) > swipeThreshold && abs(velocityY) > swipeVelocityThreshold) {
+                if (diffY > 0) {
+                    onSwipeBottom()
+                } else {
+                    onSwipeTop()
+                }
+                return true
+            }
+            return false
         }
     }
 

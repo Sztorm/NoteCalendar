@@ -6,54 +6,47 @@ plugins {
 }
 
 android {
-    compileSdkVersion 33
-
     defaultConfig {
         applicationId "com.sztorm.notecalendar"
+        compileSdk 34
         minSdkVersion 21
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode 6
         versionName "1.0.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildFeatures {
         viewBinding true
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
     compileOptions {
         coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
     dependencies {
-        coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
+        coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
     }
-
     kotlinOptions {
         jvmTarget = '1.8'
     }
     namespace 'com.sztorm.notecalendar'
-
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.core:core-ktx:1.12.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.preference:preference-ktx:1.2.0'
+    implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation "androidx.cardview:cardview:1.0.0"
-    implementation "androidx.recyclerview:recyclerview:1.3.1"
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation "androidx.recyclerview:recyclerview:1.3.2"
+    implementation 'com.google.android.material:material:1.10.0'
     implementation 'com.mikepenz:aboutlibraries-core:10.3.0'
     implementation 'com.mikepenz:aboutlibraries:10.3.0'
     implementation 'com.github.satyan:sugar:1.5'
