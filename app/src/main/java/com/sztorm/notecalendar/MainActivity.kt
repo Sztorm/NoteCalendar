@@ -78,7 +78,9 @@ class MainActivity : AppCompatActivity() {
         val bundle: Bundle? = intent.extras
 
         if (bundle === null) {
-            setMainFragment(MainFragmentType.DAY)
+            setMainFragment(
+                settingsIO.getStartingView(StartingViewType.DAY_VIEW).toMainFragmentType()
+            )
             return
         }
         val mainFragmentTypeOrdinal: Int = bundle.getInt(

@@ -108,6 +108,12 @@ class SettingsIO(private val context: Context) : SettingsReader {
             putString(context.getString(R.string.PrefKey_FirstDayOfWeek), value.ordinal.toString())
         }
 
+    override var startingView: StartingViewType
+        get() = getStartingView(default = StartingViewType.DAY_VIEW)
+        set(value) = preferences.edit {
+            putString(context.getString(R.string.PrefKey_StartingView), value.ordinal.toString())
+        }
+
     override val themeValues: ThemeValues
         get() = ThemeValues(
             primaryColor,
@@ -190,9 +196,15 @@ class SettingsIO(private val context: Context) : SettingsReader {
 
     override fun getFirstDayOfWeek(default: DayOfWeek): DayOfWeek {
         val key: String = context.getString(R.string.PrefKey_FirstDayOfWeek)
+        val value: Int = preferences.getString(key, null)?.toInt() ?: default.value
 
-        return DayOfWeek.of(
-            preferences.getString(key, default.value.toString())!!.toInt()
-        )
+        return DayOfWeek.of(value)
+    }
+
+    override fun getStartingView(default: StartingViewType): StartingViewType {
+        val key: String = context.getString(R.string.PrefKey_StartingView)
+        val value: Int = preferences.getString(key, null)?.toInt() ?: default.ordinal
+
+        return StartingViewType.from(value)
     }
 }

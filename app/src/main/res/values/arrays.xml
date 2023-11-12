@@ -18,4 +18,14 @@
         <item>6</item>
         <item>7</item>
     </string-array>
+    <string-array name="Settings_StartingView_Entries">
+        <item>@string/DayView</item>
+        <item>@string/WeekView</item>
+        <item>@string/MonthView</item>
+    </string-array>
+    <string-array name="Settings_StartingView_Values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
 </resources>

@@ -101,4 +101,9 @@
     <string name="PrefKey_CategoryOther" translatable="false">PrefKey_CategoryOther</string>
     <string name="PrefKey_FirstDayOfWeek" translatable="false">PrefKey_FirstDayOfWeek</string>
     <string name="PrefKey_Licenses" translatable="false">PrefKey_Licenses</string>
+    <string name="DayView">Day view</string>
+    <string name="WeekView">Week view</string>
+    <string name="MonthView">Month view</string>
+    <string name="Settings_StartingView">Starting view</string>
+    <string name="PrefKey_StartingView" translatable="false">PrefKey_StartingView</string>
 </resources>

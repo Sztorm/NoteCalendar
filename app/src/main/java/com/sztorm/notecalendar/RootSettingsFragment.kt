@@ -40,6 +40,7 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
         setupEnableNotificationsPreference()
         setupNotificationTimePreference()
         setupFirstDayOfWeekPreference()
+        setupStartingViewPreference()
         setupLicensesPreference()
     }
 
@@ -47,19 +48,22 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
         val themePainter: ThemePainter = (activity as MainActivity).themePainter
 
         setPreferenceThemePainter<ThemedPreferenceCategory>(
-            themePainter, R.string.PrefKey_CategoryTheme)
+            themePainter, R.string.PrefKey_CategoryTheme
+        )
         setPreferenceThemePainter<ThemedPreferenceCategory>(
-            themePainter, R.string.PrefKey_CategoryNotes)
+            themePainter, R.string.PrefKey_CategoryNotes
+        )
         setPreferenceThemePainter<ThemedPreferenceCategory>(
-            themePainter, R.string.PrefKey_CategoryNotifications)
+            themePainter, R.string.PrefKey_CategoryNotifications
+        )
         setPreferenceThemePainter<ThemedPreferenceCategory>(
-            themePainter, R.string.PrefKey_CategoryOther)
+            themePainter, R.string.PrefKey_CategoryOther
+        )
     }
 
     private fun setupSetCustomThemeSettingsPreference() {
         val key: String = mainActivity.getString(R.string.PrefKey_SetCustomTheme)
         val preference: ThemedPreference = findPreference(key)!!
-
         preference.themePainter = mainActivity.themePainter
         preference.setOnPreferenceClickListener {
             mainActivity.setMainFragment(MainFragmentType.CUSTOM_THEME_SETTINGS)
@@ -70,17 +74,17 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
     private fun setupSetLightThemePreference() {
         val key: String = mainActivity.getString(R.string.PrefKey_SetLightTheme)
         val preference: ThemedPreference = findPreference(key)!!
-
         preference.themePainter = mainActivity.themePainter
         preference.setOnPreferenceClickListener {
             val colorPickerPreferenceManager = ColorPickerPreferenceManager.getInstance(context)
 
             for (i in CustomThemeSettingsFragment.COLOR_PREF_KEY_IDS.indices) {
                 val colPickerKey: String = mainActivity.getString(
-                    CustomThemeSettingsFragment.COLOR_PREF_KEY_IDS[i])
+                    CustomThemeSettingsFragment.COLOR_PREF_KEY_IDS[i]
+                )
                 val lightThemeColor: Int = mainActivity.getColorCompat(
-                    CustomThemeSettingsFragment.LIGHT_THEME_COLOR_IDS[i])
-
+                    CustomThemeSettingsFragment.LIGHT_THEME_COLOR_IDS[i]
+                )
                 colorPickerPreferenceManager.setColor(colPickerKey, lightThemeColor)
             }
             mainActivity.restart(MainFragmentType.ROOT_SETTINGS)
@@ -91,17 +95,17 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
     private fun setupSetDarkThemePreference() {
         val key: String = mainActivity.getString(R.string.PrefKey_SetDarkTheme)
         val preference: ThemedPreference = findPreference(key)!!
-
         preference.themePainter = mainActivity.themePainter
         preference.setOnPreferenceClickListener {
             val colorPickerPreferenceManager = ColorPickerPreferenceManager.getInstance(context)
 
             for (i in CustomThemeSettingsFragment.COLOR_PREF_KEY_IDS.indices) {
                 val colPickerKey: String = mainActivity.getString(
-                    CustomThemeSettingsFragment.COLOR_PREF_KEY_IDS[i])
+                    CustomThemeSettingsFragment.COLOR_PREF_KEY_IDS[i]
+                )
                 val darkThemeColor: Int = mainActivity.getColorCompat(
-                    CustomThemeSettingsFragment.DARK_THEME_COLOR_IDS[i])
-
+                    CustomThemeSettingsFragment.DARK_THEME_COLOR_IDS[i]
+                )
                 colorPickerPreferenceManager.setColor(colPickerKey, darkThemeColor)
             }
             mainActivity.restart(MainFragmentType.ROOT_SETTINGS)
@@ -112,17 +116,17 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
     private fun setupSetDefaultThemePreference() {
         val key: String = mainActivity.getString(R.string.PrefKey_SetDefaultTheme)
         val preference: ThemedPreference = findPreference(key)!!
-
         preference.themePainter = mainActivity.themePainter
         preference.setOnPreferenceClickListener {
             val colorPickerPreferenceManager = ColorPickerPreferenceManager.getInstance(context)
 
             for (i in CustomThemeSettingsFragment.COLOR_PREF_KEY_IDS.indices) {
                 val colPickerKey: String = mainActivity.getString(
-                    CustomThemeSettingsFragment.COLOR_PREF_KEY_IDS[i])
+                    CustomThemeSettingsFragment.COLOR_PREF_KEY_IDS[i]
+                )
                 val defaultColor: Int = mainActivity.getColorFromAttr(
-                    CustomThemeSettingsFragment.COLOR_ATTR_IDS[i])
-
+                    CustomThemeSettingsFragment.COLOR_ATTR_IDS[i]
+                )
                 colorPickerPreferenceManager.setColor(colPickerKey, defaultColor)
             }
             mainActivity.restart(MainFragmentType.ROOT_SETTINGS)
@@ -131,23 +135,24 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun setConfirmationPreferenceTheme(
-        preference: ThemedConfirmationPreference,
-        title: String,
-        message: String) {
+        preference: ThemedConfirmationPreference, title: String, message: String
+    ) {
         val themePainter: ThemePainter = preference.themePainter
         val confirmationDialog: AlertDialog = preference.confirmationDialog
         val titleSpan = SpannableString(title)
         val messageSpan = SpannableString(message)
 
         titleSpan.setSpan(
-            ForegroundColorSpan(themePainter.values.textColor), 0, title.length, 0)
+            ForegroundColorSpan(themePainter.values.textColor), 0, title.length, 0
+        )
         messageSpan.setSpan(
-            ForegroundColorSpan(themePainter.values.textColor), 0, message.length, 0)
-
+            ForegroundColorSpan(themePainter.values.textColor), 0, message.length, 0
+        )
         confirmationDialog.setTitle(titleSpan)
         confirmationDialog.setMessage(messageSpan)
         confirmationDialog.window!!.decorView.setBackgroundColor(
-            themePainter.values.backgroundColor)
+            themePainter.values.backgroundColor
+        )
     }
 
     private fun setupDeleteAllNotesPreference() {
@@ -157,7 +162,6 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
         val title: String = context.getString(R.string.Settings_DeleteAllNotes_Alert_Title)
         val message: String = context.getString(R.string.Settings_DeleteAllNotes_Alert_Message)
         val confirmationDialog: AlertDialog = preference.confirmationDialog
-
         preference.themePainter = (activity as MainActivity).themePainter
         setConfirmationPreferenceTheme(preference, title, message)
 
@@ -170,7 +174,6 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
 
             themePainter.paintDialogButton(positiveButton)
             themePainter.paintDialogButton(negativeButton)
-
             positiveButton.setOnClickListener {
                 NoteRepository.deleteAll()
                 confirmationDialog.dismiss()
@@ -188,11 +191,12 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
             val value = valueBoxed as Boolean
             if (value) {
                 if (mainActivity.tryScheduleNoteNotification(
-                        ScheduleNoteNotificationArguments(enabledNotifications = true))) {
+                        ScheduleNoteNotificationArguments(enabledNotifications = true)
+                    )
+                ) {
                     Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification when \"Enable notifications\" setting was set to true")
                 }
-            }
-            else {
+            } else {
                 NoteNotificationManager.cancelScheduledNotification(mainActivity)
                 Timber.i("${LogTags.NOTIFICATIONS} Canceled notification when \"Enable notifications\" setting was set to false")
             }
@@ -203,13 +207,15 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
     private fun setupNotificationTimePreference() {
         val key: String = mainActivity.getString(R.string.PrefKey_NotificationTime)
         val preference: ThemedTimePickerPreference = findPreference(key)!!
-
         preference.themePainter = mainActivity.themePainter
         preference.setOnPreferenceChangeListener { _, valueBoxed ->
             val value = valueBoxed as TimePickerPreference.Time
             if (mainActivity.tryScheduleNoteNotification(
-                ScheduleNoteNotificationArguments(
-                    enabledNotifications = true, notificationTime = value))) {
+                    ScheduleNoteNotificationArguments(
+                        enabledNotifications = true, notificationTime = value
+                    )
+                )
+            ) {
                 Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification when \"Notification time\" setting changed")
             }
             true
@@ -220,13 +226,27 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
         val key: String = mainActivity.getString(R.string.PrefKey_FirstDayOfWeek)
         val preference: ThemedSimpleListPreference = findPreference(key)!!
         val defaultValue = WeekFields.of(Locale.getDefault()).firstDayOfWeek.value.toString()
-
         preference.themePainter = mainActivity.themePainter
         preference.setDefaultValue(defaultValue)
-        preference.summary = mainActivity.settingsReader.firstDayOfWeek.toLocalizedString(mainActivity)
+        preference.summary =
+            mainActivity.settingsReader.firstDayOfWeek.toLocalizedString(mainActivity)
         preference.setOnPreferenceChangeListener { pref, valueBoxed ->
             val value = valueBoxed as String
             pref.summary = DayOfWeek.of(value.toInt()).toLocalizedString(mainActivity)
+            true
+        }
+    }
+
+    private fun setupStartingViewPreference() {
+        val key: String = mainActivity.getString(R.string.PrefKey_StartingView)
+        val preference: ThemedSimpleListPreference = findPreference(key)!!
+        preference.themePainter = mainActivity.themePainter
+        preference.setDefaultValue("0")
+        preference.summary =
+            mainActivity.settingsReader.startingView.toLocalizedString(mainActivity)
+        preference.setOnPreferenceChangeListener { pref, valueBoxed ->
+            val value = valueBoxed as String
+            pref.summary = StartingViewType.from(value.toInt()).toLocalizedString(mainActivity)
             true
         }
     }
@@ -236,11 +256,13 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
         val preference: ThemedPreference = findPreference(key)!!
         preference.themePainter = mainActivity.themePainter
         preference.setOnPreferenceClickListener {
-            startActivity(LibsBuilder()
-                .withActivityTitle(mainActivity.getString(R.string.Settings_Licenses))
-                .withEdgeToEdge(true)
-                .withSearchEnabled(true)
-                .intent(mainActivity))
+            startActivity(
+                LibsBuilder()
+                    .withActivityTitle(mainActivity.getString(R.string.Settings_Licenses))
+                    .withEdgeToEdge(true)
+                    .withSearchEnabled(true)
+                    .intent(mainActivity)
+            )
             true
         }
     }

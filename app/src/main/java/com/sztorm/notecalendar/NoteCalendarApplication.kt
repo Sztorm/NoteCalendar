@@ -6,7 +6,6 @@ import com.orm.SugarContext
 import com.orm.SugarDb
 import timber.log.Timber
 
-
 class NoteCalendarApplication : Application() {
     private fun initDatabase() {
         SugarContext.init(this)

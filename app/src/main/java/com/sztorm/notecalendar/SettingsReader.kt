@@ -18,29 +18,44 @@ interface SettingsReader {
     val notificationTime: TimePickerPreference.Time
     val enabledNotifications: Boolean
     val firstDayOfWeek: DayOfWeek
+    val startingView: StartingViewType
     val themeValues: ThemeValues
 
     @ColorInt
     fun getPrimaryColor(@ColorInt default: Int): Int
+
     @ColorInt
     fun getSecondaryColor(@ColorInt default: Int): Int
+
     @ColorInt
     fun getInactiveItemColor(@ColorInt default: Int): Int
+
     @ColorInt
     fun getInactiveItemColorVariant(@ColorInt default: Int): Int
+
     @ColorInt
     fun getNoteColor(@ColorInt default: Int): Int
+
     @ColorInt
     fun getNoteColorVariant(@ColorInt default: Int): Int
+
     @ColorInt
     fun getTextColor(@ColorInt default: Int): Int
+
     @ColorInt
     fun getButtonTextColor(@ColorInt default: Int): Int
+
     @ColorInt
     fun getNoteTextColor(@ColorInt default: Int): Int
+
     @ColorInt
     fun getBackgroundColor(@ColorInt default: Int): Int
+
     fun getEnabledNotifications(default: Boolean): Boolean
+
     fun getNotificationTime(default: TimePickerPreference.Time): TimePickerPreference.Time
+
     fun getFirstDayOfWeek(default: DayOfWeek): DayOfWeek
+
+    fun getStartingView(default: StartingViewType): StartingViewType
 }

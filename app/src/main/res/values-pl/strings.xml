@@ -77,4 +77,8 @@
     <string name="Settings_NotificationTime">Czas powiadomienia</string>
     <string name="Settings_FirstDayOfWeek">Pierwszy dzień tygodnia</string>
     <string name="Settings_Licenses">Licencje</string>
+    <string name="DayView">Widok dnia</string>
+    <string name="WeekView">Widok tygodnia</string>
+    <string name="MonthView">Widok miesiąca</string>
+    <string name="Settings_StartingView">Widok początkowy</string>
 </resources>

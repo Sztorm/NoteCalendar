@@ -21,14 +21,13 @@ enum class MainFragmentType {
             { CustomThemeSettingsFragment() }
         )
 
-        fun from(ordinal: Int) =
-            try {
-                VALUES[ordinal]
-            } catch (e: IndexOutOfBoundsException) {
-                throw IllegalArgumentException(
-                    "Value is out of range of enum ordinals. The " +
-                            "value must be in [0, 4] range."
-                )
-            }
+        fun from(ordinal: Int) = try {
+            VALUES[ordinal]
+        } catch (e: IndexOutOfBoundsException) {
+            throw IllegalArgumentException(
+                "Value is out of range of enum ordinals. The " +
+                        "value must be in [0, 4] range."
+            )
+        }
     }
 }
