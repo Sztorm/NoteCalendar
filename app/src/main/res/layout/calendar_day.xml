@@ -9,4 +9,5 @@
     android:layout_margin="6dp"
     android:gravity="center"
     android:textSize="16sp"
+    android:longClickable="true"
     tools:text="22" />

@@ -17,6 +17,11 @@ class DayFragment : Fragment() {
     private lateinit var binding: FragmentDayBinding
     private lateinit var fragmentSetter: FragmentSetter
     private lateinit var mainActivity: MainActivity
+    private var postInitArgs: Arguments? = null
+
+    fun postInit(args: Arguments?) {
+        postInitArgs = args
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -50,13 +55,16 @@ class DayFragment : Fragment() {
 
         if (possibleNote == null) {
             fragmentSetter.setFragment(
-                DayNoteEmptyFragment(this),
+                DayNoteEmptyFragment(this, postInitArgs),
                 resAnimIn = R.anim.anim_immediate,
                 resAnimOut = R.anim.anim_immediate
             )
         } else {
-            fragmentSetter.setFragment(DayNoteFragment(this, possibleNote))
+            fragmentSetter.setFragment(
+                DayNoteFragment(this, possibleNote, postInitArgs)
+            )
         }
+        postInitArgs = null
     }
 
     private fun setLabelsText(date: LocalDate) {
@@ -92,3 +100,5 @@ class DayFragment : Fragment() {
         binding.lblMonth.setTextColor(themeValues.textColor)
     }
 }
+
+object CreateOrEditNoteRequest : Arguments

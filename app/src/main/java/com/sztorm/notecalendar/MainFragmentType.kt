@@ -9,16 +9,16 @@ enum class MainFragmentType {
     ROOT_SETTINGS,
     CUSTOM_THEME_SETTINGS;
 
-    fun createFragment(): Fragment = CREATORS[ordinal]()
+    fun createFragment(args: Arguments? = null): Fragment = CREATORS[ordinal](args)
 
     companion object {
         private val VALUES: Array<MainFragmentType> = values()
-        private val CREATORS: Array<() -> Fragment> = arrayOf(
-            { DayFragment() },
-            { WeekFragment() },
-            { MonthFragment() },
-            { RootSettingsFragment() },
-            { CustomThemeSettingsFragment() }
+        private val CREATORS: Array<(args: Arguments?) -> Fragment> = arrayOf(
+            { args -> DayFragment().apply { postInit(args) } },
+            { args -> WeekFragment().apply { postInit(args) }  },
+            { args -> MonthFragment().apply { postInit(args) }  },
+            { args -> RootSettingsFragment().apply { postInit(args) }  },
+            { args -> CustomThemeSettingsFragment().apply { postInit(args) }  }
         )
 
         fun from(ordinal: Int) = try {
@@ -31,3 +31,5 @@ enum class MainFragmentType {
         }
     }
 }
+
+interface Arguments

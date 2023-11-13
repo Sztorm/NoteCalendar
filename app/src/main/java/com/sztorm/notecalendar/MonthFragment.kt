@@ -22,6 +22,9 @@ class MonthFragment : Fragment() {
     private lateinit var startMonth: YearMonth
     private lateinit var endMonth: YearMonth
 
+    @Suppress("UNUSED_PARAMETER")
+    fun postInit(args: Arguments?) {}
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = activity as MainActivity

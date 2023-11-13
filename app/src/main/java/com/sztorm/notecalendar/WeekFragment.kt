@@ -24,30 +24,8 @@ class WeekFragment : Fragment() {
     private lateinit var textColors: WeekDayTextColors
     private val dayItems: ArrayDeque<DayItem> = ArrayDeque(initialCapacity = CACHED_DAY_ITEMS_COUNT)
 
-    inner class WeekDayOnScrollListener : RecyclerView.OnScrollListener() {
-        @SuppressLint("NotifyDataSetChanged")
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            val llm = recyclerView.layoutManager as LinearLayoutManager
-            val directionDown = 1
-            val directionUp: Int = -1
-
-            if (!recyclerView.canScrollVertically(directionDown)) {
-                val firstVisiblePos: Int = llm.findFirstVisibleItemPosition()
-
-                loadNextDayItems(binding.root, LOADED_DAY_ITEMS_COUNT)
-                adapter.notifyDataSetChanged()
-                recyclerView.scrollToPosition(firstVisiblePos - LOADED_DAY_ITEMS_COUNT)
-            }
-            else if (!recyclerView.canScrollVertically(directionUp)) {
-                val lastVisiblePos: Int = llm.findLastVisibleItemPosition()
-
-                loadPrevDayItems(binding.root, LOADED_DAY_ITEMS_COUNT)
-                adapter.notifyDataSetChanged()
-                recyclerView.scrollToPosition(lastVisiblePos + LOADED_DAY_ITEMS_COUNT)
-            }
-            super.onScrolled(recyclerView, dx, dy)
-        }
-    }
+    @Suppress("UNUSED_PARAMETER")
+    fun postInit(args: Arguments?) {}
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -142,5 +120,30 @@ class WeekFragment : Fragment() {
     companion object {
         private const val CACHED_DAY_ITEMS_COUNT: Int = 45
         private const val LOADED_DAY_ITEMS_COUNT: Int = 30
+    }
+
+    inner class WeekDayOnScrollListener : RecyclerView.OnScrollListener() {
+        @SuppressLint("NotifyDataSetChanged")
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            val llm = recyclerView.layoutManager as LinearLayoutManager
+            val directionDown = 1
+            val directionUp: Int = -1
+
+            if (!recyclerView.canScrollVertically(directionDown)) {
+                val firstVisiblePos: Int = llm.findFirstVisibleItemPosition()
+
+                loadNextDayItems(binding.root, LOADED_DAY_ITEMS_COUNT)
+                adapter.notifyDataSetChanged()
+                recyclerView.scrollToPosition(firstVisiblePos - LOADED_DAY_ITEMS_COUNT)
+            }
+            else if (!recyclerView.canScrollVertically(directionUp)) {
+                val lastVisiblePos: Int = llm.findLastVisibleItemPosition()
+
+                loadPrevDayItems(binding.root, LOADED_DAY_ITEMS_COUNT)
+                adapter.notifyDataSetChanged()
+                recyclerView.scrollToPosition(lastVisiblePos + LOADED_DAY_ITEMS_COUNT)
+            }
+            super.onScrolled(recyclerView, dx, dy)
+        }
     }
 }

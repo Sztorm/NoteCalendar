@@ -12,9 +12,14 @@ class DayNoteEmptyFragment() : Fragment() {
     private lateinit var binding: FragmentDayNoteEmptyBinding
     private lateinit var mainActivity: MainActivity
     private lateinit var dayFragment: DayFragment
+    private var isAddRequested: Boolean = false
 
-    constructor(dayFragment: DayFragment) : this() {
+    constructor(dayFragment: DayFragment, args: Arguments? = null) : this() {
         this.dayFragment = dayFragment
+
+        if (args is CreateOrEditNoteRequest) {
+            isAddRequested = true
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -29,6 +34,10 @@ class DayNoteEmptyFragment() : Fragment() {
         setTheme()
         setBtnNoteAddClickListener()
 
+        if (isAddRequested) {
+            dayFragment.setFragment(DayNoteAddFragment(dayFragment))
+            isAddRequested = false
+        }
         return binding.root
     }
 

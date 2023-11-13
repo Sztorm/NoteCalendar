@@ -18,10 +18,15 @@ class DayNoteFragment() : Fragment() {
     private lateinit var mainActivity: MainActivity
     private lateinit var dayFragment: DayFragment
     private var note: NoteData? = null
+    private var isEditRequested: Boolean = false
 
-    constructor(dayFragment: DayFragment, note: NoteData?) : this() {
+    constructor(dayFragment: DayFragment, note: NoteData?, args: Arguments? = null) : this() {
         this.dayFragment = dayFragment
         this.note = note
+
+        if (args is CreateOrEditNoteRequest) {
+            isEditRequested = true
+        }
     }
 
     override fun onAttach(context: Context) {
@@ -44,7 +49,21 @@ class DayNoteFragment() : Fragment() {
         return binding.root
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        if (isEditRequested) {
+            setEditUI()
+            isEditRequested = false
+        }
+    }
+
     private fun setEditUI() {
+        binding.txtNoteEdit.text.clear()
+
+        if (note !== null) {
+            binding.txtNoteEdit.text.append(note?.text)
+        }
         binding.btnNoteEditSave.visibility = View.VISIBLE
         binding.btnNoteEditCancel.visibility = View.VISIBLE
         binding.btnNoteEditText.visibility = View.GONE
@@ -53,6 +72,8 @@ class DayNoteFragment() : Fragment() {
         binding.spacerEnd.visibility = View.GONE
         binding.layoutNoteEditBottom.visibility = View.VISIBLE
         binding.layoutNoteBottom.visibility = View.GONE
+        binding.txtNoteEdit.requestFocus()
+        binding.txtNoteEdit.showKeyboard()
     }
 
     private fun setViewUI() {
@@ -64,17 +85,12 @@ class DayNoteFragment() : Fragment() {
         binding.spacerEnd.visibility = View.VISIBLE
         binding.layoutNoteEditBottom.visibility = View.GONE
         binding.layoutNoteBottom.visibility = View.VISIBLE
+        binding.txtNoteEdit.text.clear()
+        binding.root.hideKeyboard()
     }
 
     private fun setBtnNoteEditTextClickListener() = binding.btnNoteEditText.setOnClickListener {
-        binding.txtNoteEdit.text.clear()
-
-        if (note !== null) {
-            binding.txtNoteEdit.text.append(note?.text)
-        }
         setEditUI()
-        binding.txtNoteEdit.requestFocus()
-        binding.txtNoteEdit.showKeyboard()
     }
 
     private fun setBtnNoteEditSaveClickListener() = binding.btnNoteEditSave.setOnClickListener {
@@ -96,13 +112,10 @@ class DayNoteFragment() : Fragment() {
         binding.lblNote.text = editedText
 
         setViewUI()
-        binding.root.hideKeyboard()
     }
 
     private fun setBtnNoteEditCancelClickListener() = binding.btnNoteEditCancel.setOnClickListener {
         setViewUI()
-        binding.txtNoteEdit.text.clear()
-        binding.root.hideKeyboard()
     }
 
     private fun setBtnNoteDeleteTextClickListener() = binding.btnNoteDeleteText.setOnClickListener {

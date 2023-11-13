@@ -134,7 +134,8 @@ class MainActivity : AppCompatActivity() {
     fun setMainFragment(
         mainFragmentType: MainFragmentType,
         resAnimIn: Int = R.anim.anim_in,
-        resAnimOut: Int = R.anim.anim_out
+        resAnimOut: Int = R.anim.anim_out,
+        args: Arguments? = null
     ) {
         val navigation: MaterialButtonToggleGroup = binding.navigation
 
@@ -142,7 +143,7 @@ class MainActivity : AppCompatActivity() {
             navigation.check(MAIN_BUTTON_RESOURCE_IDS[mainFragmentType.ordinal])
         }
         currentFragmentType = mainFragmentType
-        fragmentSetter.setFragment(mainFragmentType.createFragment(), resAnimIn, resAnimOut)
+        fragmentSetter.setFragment(mainFragmentType.createFragment(args), resAnimIn, resAnimOut)
     }
 
     fun tryScheduleNoteNotification(args: ScheduleNoteNotificationArguments): Boolean {
