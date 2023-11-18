@@ -22,17 +22,14 @@ import java.time.temporal.WeekFields
 import java.util.*
 
 class RootSettingsFragment : PreferenceFragmentCompat() {
-    private lateinit var mainActivity: MainActivity
+    private val mainActivity: MainActivity
+        get() = activity as MainActivity
 
     @Suppress("UNUSED_PARAMETER")
     fun postInit(args: Arguments?) {}
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mainActivity = activity as MainActivity
-    }
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        mainActivity.initManagers()
         setPreferencesFromResource(R.xml.root_settings, rootKey)
         setupCategoryPreferences()
         setupSetCustomThemeSettingsPreference()
@@ -193,14 +190,17 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
         preference.setOnPreferenceChangeListener { _, valueBoxed ->
             val value = valueBoxed as Boolean
             if (value) {
-                if (mainActivity.tryScheduleNoteNotification(
-                        ScheduleNoteNotificationArguments(enabledNotifications = true)
+                if (mainActivity.notificationManager.tryScheduleNotification(
+                        ScheduleNoteNotificationArguments(
+                            grantPermissions = true,
+                            enabledNotifications = true
+                        )
                     )
                 ) {
                     Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification when \"Enable notifications\" setting was set to true")
                 }
             } else {
-                NoteNotificationManager.cancelScheduledNotification(mainActivity)
+                mainActivity.notificationManager.cancelScheduledNotification()
                 Timber.i("${LogTags.NOTIFICATIONS} Canceled notification when \"Enable notifications\" setting was set to false")
             }
             true
@@ -213,10 +213,13 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
         preference.themePainter = mainActivity.themePainter
         preference.setOnPreferenceChangeListener { _, valueBoxed ->
             val value = valueBoxed as TimePickerPreference.Time
-            if (mainActivity.tryScheduleNoteNotification(
+
+            if (mainActivity.notificationManager.tryScheduleNotification(
                     ScheduleNoteNotificationArguments(
-                        enabledNotifications = true, notificationTime = value
-                    )
+                        grantPermissions = true,
+                        enabledNotifications = true,
+                        notificationTime = value
+                    ),
                 )
             ) {
                 Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification when \"Notification time\" setting changed")
@@ -232,7 +235,7 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
         preference.themePainter = mainActivity.themePainter
         preference.setDefaultValue(defaultValue)
         preference.summary =
-            mainActivity.settingsReader.firstDayOfWeek.toLocalizedString(mainActivity)
+            mainActivity.settings.firstDayOfWeek.toLocalizedString(mainActivity)
         preference.setOnPreferenceChangeListener { pref, valueBoxed ->
             val value = valueBoxed as String
             pref.summary = DayOfWeek.of(value.toInt()).toLocalizedString(mainActivity)
@@ -246,7 +249,7 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
         preference.themePainter = mainActivity.themePainter
         preference.setDefaultValue("0")
         preference.summary =
-            mainActivity.settingsReader.startingView.toLocalizedString(mainActivity)
+            mainActivity.settings.startingView.toLocalizedString(mainActivity)
         preference.setOnPreferenceChangeListener { pref, valueBoxed ->
             val value = valueBoxed as String
             pref.summary = StartingViewType.from(value.toInt()).toLocalizedString(mainActivity)

@@ -12,7 +12,7 @@ class NoteNotificationReceiver : BroadcastReceiver() {
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notification: Notification = intent.getParcelableExtraCompat(
             NOTIFICATION_EXTRA, Notification::class.java)!!
-        manager.notify(NoteNotificationManager.NOTIFICATION_ID, notification)
+        manager.notify(AppNotificationManager.NOTIFICATION_ID, notification)
     }
 
     companion object {

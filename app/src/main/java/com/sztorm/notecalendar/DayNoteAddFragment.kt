@@ -53,11 +53,11 @@ class DayNoteAddFragment() : Fragment() {
     private fun setBtnNoteSaveClickListener() = binding.btnNoteSave.setOnClickListener {
         binding.root.hideKeyboard()
         val noteData = NoteData(
-            date = mainActivity.viewedDate.toString(),
+            date = mainActivity.sharedData.viewedDate.toString(),
             text = binding.txtNoteAdd.text.toString()
         )
         NoteRepository.add(noteData)
-        if (mainActivity.tryScheduleNoteNotification(
+        if (mainActivity.notificationManager.tryScheduleNotification(
                 ScheduleNoteNotificationArguments(note = noteData)
             )
         ) {

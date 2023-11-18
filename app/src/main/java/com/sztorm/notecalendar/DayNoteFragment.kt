@@ -95,14 +95,14 @@ class DayNoteFragment() : Fragment() {
 
     private fun setBtnNoteEditSaveClickListener() = binding.btnNoteEditSave.setOnClickListener {
         val editedText: String = binding.txtNoteEdit.text.toString()
-        val editedNote: NoteData? = NoteRepository.getByDate(mainActivity.viewedDate)
+        val editedNote: NoteData? = NoteRepository.getByDate(mainActivity.sharedData.viewedDate)
 
         if (editedNote != null) {
-            editedNote.date = mainActivity.viewedDate.toString()
+            editedNote.date = mainActivity.sharedData.viewedDate.toString()
             editedNote.text = editedText
             editedNote.save()
             note = editedNote
-            if (mainActivity.tryScheduleNoteNotification(
+            if (mainActivity.notificationManager.tryScheduleNotification(
                     ScheduleNoteNotificationArguments(note = note)
                 )
             ) {
@@ -123,7 +123,9 @@ class DayNoteFragment() : Fragment() {
 
         if (possibleNote !== null) {
             NoteRepository.delete(possibleNote)
-            if (mainActivity.tryCancelScheduledNotification(LocalDate.parse(possibleNote.date))) {
+            if (mainActivity.notificationManager
+                    .tryCancelScheduledNotification(LocalDate.parse(possibleNote.date))
+            ) {
                 Timber.i("${LogTags.NOTIFICATIONS} Canceled notification after note deletion")
             }
         }

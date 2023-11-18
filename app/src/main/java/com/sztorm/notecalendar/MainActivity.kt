@@ -7,40 +7,28 @@ import android.widget.Button
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButtonToggleGroup
+import com.sztorm.notecalendar.NoteCalendarApplication.Companion.BUNDLE_KEY_MAIN_FRAGMENT_TYPE
 import com.sztorm.notecalendar.databinding.ActivityMainBinding
-import com.sztorm.notecalendar.repositories.NoteRepository
-import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference
 import timber.log.Timber
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var fragmentSetter: FragmentSetter
     private lateinit var currentFragmentType: MainFragmentType
+    private var _settings: AppSettings? = null
+    private var _permissionManager: AppPermissionManager? = null
+    private var _notificationManager: AppNotificationManager? = null
     private var _themePainter: ThemePainter? = null
-    private var _settingsIO: SettingsIO? = null
-    private val settingsIO: SettingsIO
-        get() {
-            val result = _settingsIO ?: SettingsIO(this)
-
-            if (_settingsIO == null) {
-                _settingsIO = result
-            }
-            return result
-        }
-    var viewedDate: LocalDate = LocalDate.now()
+    val sharedData = AppSharedData(viewedDate = LocalDate.now())
+    val settings: AppSettings
+        get() = _settings!!
+    val permissionManager: AppPermissionManager
+        get() = _permissionManager!!
+    val notificationManager: AppNotificationManager
+        get() = _notificationManager!!
     val themePainter: ThemePainter
-        get() {
-            val result = _themePainter ?: ThemePainter(settingsReader.themeValues)
-
-            if (_themePainter == null) {
-                _themePainter = result
-            }
-            return result
-        }
-    val settingsReader: SettingsReader
-        get() = settingsIO
+        get() = _themePainter!!
 
     private fun setTheme() {
         themePainter.apply {
@@ -79,7 +67,7 @@ class MainActivity : AppCompatActivity() {
 
         if (bundle === null) {
             setMainFragment(
-                settingsIO.getStartingView(StartingViewType.DAY_VIEW).toMainFragmentType()
+                settings.getStartingView(StartingViewType.DAY_VIEW).toMainFragmentType()
             )
             return
         }
@@ -93,15 +81,19 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
+    fun initManagers() {
+        _settings = _settings ?: AppSettings(this)
+        _permissionManager = _permissionManager ?: AppPermissionManager(this)
+        _notificationManager = _notificationManager ?: AppNotificationManager(this)
+        _themePainter = _themePainter ?: ThemePainter(settings.themeValues)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        val settingsIO = SettingsIO(this)
-        _settingsIO = settingsIO
-        _themePainter = ThemePainter(settingsIO.themeValues)
         fragmentSetter = FragmentSetter(supportFragmentManager, R.id.mainFragmentContainer)
+        setContentView(binding.root)
+        initManagers()
         setTheme()
         setNavigationButtonClickListener(binding.btnViewDay, MainFragmentType.DAY)
         setNavigationButtonClickListener(binding.btnViewWeek, MainFragmentType.WEEK)
@@ -109,7 +101,7 @@ class MainActivity : AppCompatActivity() {
         setNavigationButtonClickListener(binding.btnViewSettings, MainFragmentType.ROOT_SETTINGS)
         setBackButtonPressListener()
         setMainFragmentOnCreate()
-        if (tryScheduleNoteNotification(ScheduleNoteNotificationArguments())) {
+        if (notificationManager.tryScheduleNotification(ScheduleNoteNotificationArguments())) {
             Timber.i(
                 "${LogTags.NOTIFICATIONS} Scheduled notification upon MainActivity creation"
             )
@@ -117,18 +109,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (settingsReader.enabledNotifications &&
-            !AppPermissionManager.areScheduleNotificationPermissionsGrantedOnRequest(
-                requestCode, grantResults
-            )
-        ) {
-            settingsIO.enabledNotifications = false
-        }
+        permissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     fun setMainFragment(
@@ -146,51 +130,6 @@ class MainActivity : AppCompatActivity() {
         fragmentSetter.setFragment(mainFragmentType.createFragment(args), resAnimIn, resAnimOut)
     }
 
-    fun tryScheduleNoteNotification(args: ScheduleNoteNotificationArguments): Boolean {
-        val enabledNotifications: Boolean =
-            args.enabledNotifications ?: settingsReader.enabledNotifications
-
-        if (!enabledNotifications) {
-            return false
-        }
-        val notificationTime: TimePickerPreference.Time =
-            args.notificationTime ?: settingsReader.notificationTime
-        val currentDateTime = LocalDateTime.now()
-        var notificationDateTime = LocalDateTime.of(
-            currentDateTime.toLocalDate(), notificationTime.toLocalTime()
-        )
-        if (notificationTime.toLocalTime() <= currentDateTime.toLocalTime()) {
-            notificationDateTime = notificationDateTime.plusDays(1)
-        }
-        val note: NoteData? =
-            args.note ?: NoteRepository.getByDate(notificationDateTime.toLocalDate())
-
-        if (note === null || note.date != notificationDateTime.toLocalDate().toString()) {
-            return false
-        }
-        val notificationData = NoteNotificationData(note, notificationDateTime)
-
-        NoteNotificationManager.scheduleNotification(this, notificationData)
-        return true
-    }
-
-    fun tryCancelScheduledNotification(noteDate: LocalDate): Boolean {
-        val notificationTime: TimePickerPreference.Time = settingsReader.notificationTime
-        val currentDateTime = LocalDateTime.now()
-        var notificationDateTime = LocalDateTime.of(
-            currentDateTime.toLocalDate(), notificationTime.toLocalTime()
-        )
-        if (notificationTime.toLocalTime() <= currentDateTime.toLocalTime()) {
-            notificationDateTime = notificationDateTime.plusDays(1)
-        }
-        if (notificationDateTime.toLocalDate() != noteDate) {
-            return false
-        }
-        NoteNotificationManager.cancelScheduledNotification(this)
-
-        return true
-    }
-
     fun restart(startingMainFragment: MainFragmentType) {
         val bundle = Bundle()
         bundle.putInt(BUNDLE_KEY_MAIN_FRAGMENT_TYPE, startingMainFragment.ordinal)
@@ -205,7 +144,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val BUNDLE_KEY_MAIN_FRAGMENT_TYPE = "MainFragmentType"
         private val MAIN_BUTTON_RESOURCE_IDS: IntArray = intArrayOf(
             R.id.btnViewDay,
             R.id.btnViewWeek,

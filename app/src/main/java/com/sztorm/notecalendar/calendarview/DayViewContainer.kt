@@ -8,18 +8,18 @@ import com.sztorm.notecalendar.MainActivity
 import com.sztorm.notecalendar.MainFragmentType
 import com.sztorm.notecalendar.databinding.CalendarDayBinding
 
-class DayViewContainer(binding: CalendarDayBinding, mainActivity: MainActivity) :
+class DayViewContainer(binding: CalendarDayBinding, val mainActivity: MainActivity) :
     ViewContainer(binding.root) {
     private lateinit var day: CalendarDay
     val textView: TextView = binding.cvDayText
 
     init {
         binding.root.setOnClickListener {
-            mainActivity.viewedDate = day.date
+            mainActivity.sharedData.viewedDate = day.date
             mainActivity.setMainFragment(MainFragmentType.DAY)
         }
         binding.root.setOnLongClickListener {
-            mainActivity.viewedDate = day.date
+            mainActivity.sharedData.viewedDate = day.date
             mainActivity.setMainFragment(MainFragmentType.DAY, args = CreateOrEditNoteRequest)
             true
         }

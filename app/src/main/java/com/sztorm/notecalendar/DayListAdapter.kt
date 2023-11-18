@@ -39,7 +39,7 @@ class DayListAdapter(
         val dayItem: DayItem = dayItems[position]
         val dayOfMonthTextColor: Int = textColors.getTextColorOf(dayItem.date.dayOfWeek)
         val dayOfWeekTextColor: Int = mainActivity.themePainter.values.textColor
-        val viewedDate: LocalDate = mainActivity.viewedDate
+        val viewedDate: LocalDate = mainActivity.sharedData.viewedDate
 
         viewHolder.dataPosition = position
         viewHolder.dayOfMonthLabel.text = dayItem.dayOfMonth

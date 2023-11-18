@@ -59,11 +59,11 @@ class MonthFragment : Fragment() {
         binding = FragmentMonthBinding.inflate(inflater, container, false)
         val themePainter: ThemePainter = mainActivity.themePainter
         val calendarView: CalendarView = binding.calendarView
-        val viewedDate: LocalDate = mainActivity.viewedDate
+        val viewedDate: LocalDate = mainActivity.sharedData.viewedDate
         val currentSelectedMonth: YearMonth = YearMonth.of(viewedDate.year, viewedDate.month)
         startMonth = currentSelectedMonth.minusMonths(HALF_CACHED_MONTH_COUNT)
         endMonth = currentSelectedMonth.plusMonths(HALF_CACHED_MONTH_COUNT)
-        val firstDayOfWeek: DayOfWeek = mainActivity.settingsReader.firstDayOfWeek
+        val firstDayOfWeek: DayOfWeek = mainActivity.settings.firstDayOfWeek
         val dayBinder = ThemedDayBinder(mainActivity)
         val weekDayBinding = CalendarWeekDayBarBinding.bind(binding.layoutDayOfWeekBar.root)
 

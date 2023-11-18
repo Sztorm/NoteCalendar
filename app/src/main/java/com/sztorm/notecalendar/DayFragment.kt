@@ -38,7 +38,7 @@ class DayFragment : Fragment() {
             R.anim.anim_out_note
         )
         binding = FragmentDayBinding.inflate(inflater, container, false)
-        val viewedDate: LocalDate = mainActivity.viewedDate
+        val viewedDate: LocalDate = mainActivity.sharedData.viewedDate
 
         setTheme()
         setNoteFragmentOnCreate(viewedDate)
@@ -77,14 +77,16 @@ class DayFragment : Fragment() {
     private fun setTouchListener() = binding.root.setOnTouchListener(
         object : OnSwipeTouchListener(binding.root.context) {
             override fun onSwipeLeft() {
-                mainActivity.viewedDate = mainActivity.viewedDate.plusDays(1)
+                val sharedData = mainActivity.sharedData
+                sharedData.viewedDate = sharedData.viewedDate.plusDays(1)
                 mainActivity.setMainFragment(
                     MainFragmentType.DAY, R.anim.anim_in_left, R.anim.anim_out_left
                 )
             }
 
             override fun onSwipeRight() {
-                mainActivity.viewedDate = mainActivity.viewedDate.minusDays(1)
+                val sharedData = mainActivity.sharedData
+                sharedData.viewedDate = sharedData.viewedDate.minusDays(1)
                 mainActivity.setMainFragment(
                     MainFragmentType.DAY, R.anim.anim_in_right, R.anim.anim_out_right
                 )

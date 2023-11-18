@@ -33,7 +33,7 @@ class WeekFragment : Fragment() {
     }
 
     private fun initDayItems(view: View, count: Int) {
-        var date: LocalDate = mainActivity.viewedDate.minusDays(count / 2L)
+        var date: LocalDate = mainActivity.sharedData.viewedDate.minusDays(count / 2L)
 
         for (i: Int in 0..count) {
             val dayItem = DayItem(
@@ -81,7 +81,7 @@ class WeekFragment : Fragment() {
     private fun setTheme() {
         val themePainter: ThemePainter = mainActivity.themePainter
         val themeValues: ThemeValues = themePainter.values
-        val firstDayOfWeek: DayOfWeek = mainActivity.settingsReader.firstDayOfWeek
+        val firstDayOfWeek: DayOfWeek = mainActivity.settings.firstDayOfWeek
         val seventhDayOfWeek: DayOfWeek = firstDayOfWeek - 1
         val sixthDayOfWeek: DayOfWeek = firstDayOfWeek - 2
         val colors = IntArray(size = 7)
@@ -105,7 +105,7 @@ class WeekFragment : Fragment() {
         initDayItems(binding.root, CACHED_DAY_ITEMS_COUNT)
         adapter = DayListAdapter(dayItems, mainActivity, textColors)
         adapter.onItemClick = {
-            mainActivity.viewedDate = it.date
+            mainActivity.sharedData.viewedDate = it.date
             mainActivity.setMainFragment(MainFragmentType.DAY)
         }
         val recyclerView: RecyclerView = binding.root

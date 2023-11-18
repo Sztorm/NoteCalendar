@@ -7,6 +7,12 @@ import com.orm.SugarDb
 import timber.log.Timber
 
 class NoteCalendarApplication : Application() {
+    private fun initDebugLogger() {
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
+        }
+    }
+
     private fun initDatabase() {
         SugarContext.init(this)
 
@@ -14,20 +20,18 @@ class NoteCalendarApplication : Application() {
         schemaGenerator.createDatabase(SugarDb(this).db)
     }
 
-    private fun initDebugLogger() {
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        }
-    }
-
     override fun onCreate() {
         super.onCreate()
-        initDatabase()
         initDebugLogger()
+        initDatabase()
     }
 
     override fun onTerminate() {
         SugarContext.terminate()
         super.onTerminate()
+    }
+
+    companion object {
+        const val BUNDLE_KEY_MAIN_FRAGMENT_TYPE = "MainFragmentType"
     }
 }

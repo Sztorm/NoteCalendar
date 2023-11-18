@@ -14,16 +14,16 @@ import java.time.Month
 
 class ThemedDayBinder(val mainActivity: MainActivity) : DayBinder<DayViewContainer> {
     private var cachedMonthNotesList: List<NoteData> = NoteRepository.getByMonth(
-        mainActivity.viewedDate.month
+        mainActivity.sharedData.viewedDate.month
     )
-    private var cachedNotesMonth: Month = mainActivity.viewedDate.month
+    private var cachedNotesMonth: Month = mainActivity.sharedData.viewedDate.month
     private val today = LocalDate.now()
 
     override fun create(view: View) = DayViewContainer(CalendarDayBinding.bind(view), mainActivity)
 
     override fun bind(container: DayViewContainer, day: CalendarDay) {
         val themePainter: ThemePainter = mainActivity.themePainter
-        val viewedDate: LocalDate = mainActivity.viewedDate
+        val viewedDate: LocalDate = mainActivity.sharedData.viewedDate
         val textView = container.textView
         container.reinit(day)
         textView.text = day.date.dayOfMonth.toString()
