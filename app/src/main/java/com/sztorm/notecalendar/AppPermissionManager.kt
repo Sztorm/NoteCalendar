@@ -4,13 +4,11 @@ package com.sztorm.notecalendar
 
 import android.app.Activity
 import android.app.AlarmManager
-import android.app.Application.ActivityLifecycleCallbacks
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
-import android.os.Bundle
 import android.provider.Settings
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
@@ -41,18 +39,18 @@ class AppPermissionManager(val mainActivity: MainActivity) {
     fun isGranted(permissionCode: AppPermissionCode): Boolean {
         val permissions: Array<out String> = permissionCode.getPermissionArray()
 
-        return when(permissionCode) {
+        return when (permissionCode) {
             AppPermissionCode.NOTIFICATIONS -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     val alarmManager =
                         mainActivity.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
                     alarmManager.canScheduleExactAlarms() && permissions.all { isGranted(it) }
-                }
-                else {
+                } else {
                     permissions.all { isGranted(it) }
                 }
             }
+
             else -> permissions.all { isGranted(it) }
         }
     }
@@ -68,10 +66,10 @@ class AppPermissionManager(val mainActivity: MainActivity) {
         when (permissionCode) {
             AppPermissionCode.NOTIFICATIONS -> {
                 when {
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE -> {
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
                         if (onResult == null) {
                             val alarmManager = mainActivity
-                                    .getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                                .getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
                             if (!alarmManager.canScheduleExactAlarms()) {
                                 requestSettingsActivity(
@@ -114,11 +112,11 @@ class AppPermissionManager(val mainActivity: MainActivity) {
                     }
                 }
             }
+
             else -> {
                 if (permissions.isEmpty()) {
                     return
-                }
-                else {
+                } else {
                     if (onResult != null) {
                         requestPermissionCallbacksByCode[permissionCode.value].add(onResult)
                     }
@@ -148,26 +146,13 @@ class AppPermissionManager(val mainActivity: MainActivity) {
 
 private class RequestSettingCallback(
     val onResult: (isSuccess: Boolean) -> Unit
-) : ActivityLifecycleCallbacks {
-    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) { }
-
-    override fun onActivityStarted(activity: Activity) { }
-
+) : DefaultActivityLifecycleCallbacks {
     @RequiresApi(Build.VERSION_CODES.S)
     override fun onActivityResumed(activity: Activity) {
         activity.unregisterActivityLifecycleCallbacks(this)
         val alarmManager = activity.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        if (!alarmManager.canScheduleExactAlarms()) {
-            onResult(alarmManager.canScheduleExactAlarms())
-        }
+        onResult(alarmManager.canScheduleExactAlarms())
     }
-
-    override fun onActivityPaused(activity: Activity) { }
-
-    override fun onActivityStopped(activity: Activity) { }
-
-    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) { }
-
-    override fun onActivityDestroyed(activity: Activity) { }
 }
+

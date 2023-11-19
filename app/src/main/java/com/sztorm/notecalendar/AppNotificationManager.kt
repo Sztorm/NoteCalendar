@@ -79,8 +79,7 @@ class AppNotificationManager(val mainActivity: MainActivity) {
         val enabledNotifications: Boolean =
             args.enabledNotifications ?: settings.enabledNotifications
 
-        if (!enabledNotifications)
-        {
+        if (!enabledNotifications) {
             Timber.i("${LogTags.NOTIFICATIONS} Scheduling failed beacuse notifications are disabled.")
             return false
         }
@@ -93,8 +92,7 @@ class AppNotificationManager(val mainActivity: MainActivity) {
                 ) { isSuccess ->
                     if (isSuccess) {
                         tryScheduleNotification(args.copy(grantPermissions = false))
-                    }
-                    else {
+                    } else {
                         mainActivity.settings.enabledNotifications = false
                         Timber.i("${LogTags.NOTIFICATIONS} Scheduling failed beacuse notifications permissions are denied (request permission callback).")
                     }
@@ -109,13 +107,14 @@ class AppNotificationManager(val mainActivity: MainActivity) {
         val notificationTime: TimePickerPreference.Time =
             args.notificationTime ?: settings.notificationTime
         val currentDateTime = LocalDateTime.now()
-        val notificationDateTime = if ((notificationTime.toLocalTime() <= currentDateTime.toLocalTime())) {
-            LocalDateTime.of(
-                currentDateTime.toLocalDate().plusDays(1), notificationTime.toLocalTime()
-            )
-        } else {
-            LocalDateTime.of(currentDateTime.toLocalDate(), notificationTime.toLocalTime())
-        }
+        val notificationDateTime =
+            if ((notificationTime.toLocalTime() <= currentDateTime.toLocalTime())) {
+                LocalDateTime.of(
+                    currentDateTime.toLocalDate().plusDays(1), notificationTime.toLocalTime()
+                )
+            } else {
+                LocalDateTime.of(currentDateTime.toLocalDate(), notificationTime.toLocalTime())
+            }
         val note: NoteData? =
             args.note ?: NoteRepository.getByDate(notificationDateTime.toLocalDate())
 

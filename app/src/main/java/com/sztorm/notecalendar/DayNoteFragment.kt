@@ -11,6 +11,7 @@ import com.sztorm.notecalendar.helpers.ViewHelper.Companion.hideKeyboard
 import com.sztorm.notecalendar.helpers.ViewHelper.Companion.showKeyboard
 import com.sztorm.notecalendar.repositories.NoteRepository
 import timber.log.Timber
+import java.time.LocalDate
 
 class DayNoteFragment() : Fragment() {
     private lateinit var binding: FragmentDayNoteBinding
@@ -122,8 +123,14 @@ class DayNoteFragment() : Fragment() {
 
         if (note == null) {
             dayFragment.setFragment(DayNoteEmptyFragment(dayFragment))
-        }
-        else {
+        } else {
+            NoteRepository.delete(note)
+
+            if (mainActivity.notificationManager
+                    .tryCancelScheduledNotification(LocalDate.parse(note.date))
+            ) {
+                Timber.i("${LogTags.NOTIFICATIONS} Canceled notification after note deletion")
+            }
             dayFragment.setFragment(DayNoteEmptyFragment(dayFragment, UndoNoteDeleteOption(note)))
         }
     }
