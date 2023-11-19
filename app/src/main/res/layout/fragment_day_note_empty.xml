@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
     tools:context=".DayNoteEmptyFragment">
 
@@ -11,7 +11,7 @@
         android:id="@+id/btnNoteAdd"
         style="@style/Widget.MaterialComponents.Button.Icon"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginHorizontal="10dp"
         android:layout_marginTop="5dp"
         android:layout_weight="1"
@@ -23,12 +23,12 @@
         android:id="@+id/btnUndoDeletion"
         style="@style/Widget.MaterialComponents.Button.Icon"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginHorizontal="10dp"
         android:layout_marginTop="5dp"
         android:layout_weight="1"
         android:text="@string/UndoDeletion"
-        android:visibility="gone"
+        android:visibility="visible"
         app:icon="@drawable/icon_undo"
         app:iconGravity="textStart" />
 
