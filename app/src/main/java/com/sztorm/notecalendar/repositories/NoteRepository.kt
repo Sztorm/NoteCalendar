@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.sztorm.notecalendar.repositories
 
 import com.orm.SugarRecord
@@ -25,7 +27,8 @@ class NoteRepository {
 
         fun getByDate(date: LocalDate): NoteData? {
             val records: List<NoteData> = SugarRecord.find(
-                NoteData::class.java, "date = ?", date.toString())
+                NoteData::class.java, "date = ?", date.toString()
+            )
 
             return if (records.isNotEmpty()) records[0] else null
         }
@@ -44,7 +47,8 @@ class NoteRepository {
                 .append("-%")
 
             return SugarRecord.find(
-                NoteData::class.java, "date LIKE ?", argBuilder.toString())
+                NoteData::class.java, "date LIKE ?", argBuilder.toString()
+            )
         }
 
         fun getAll(): List<NoteData> = SugarRecord.listAll(NoteData::class.java)

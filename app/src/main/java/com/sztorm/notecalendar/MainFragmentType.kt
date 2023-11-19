@@ -15,10 +15,10 @@ enum class MainFragmentType {
         private val VALUES: Array<MainFragmentType> = values()
         private val CREATORS: Array<(args: Arguments?) -> Fragment> = arrayOf(
             { args -> DayFragment().apply { postInit(args) } },
-            { args -> WeekFragment().apply { postInit(args) }  },
-            { args -> MonthFragment().apply { postInit(args) }  },
-            { args -> RootSettingsFragment().apply { postInit(args) }  },
-            { args -> CustomThemeSettingsFragment().apply { postInit(args) }  }
+            { args -> WeekFragment().apply { postInit(args) } },
+            { args -> MonthFragment().apply { postInit(args) } },
+            { args -> RootSettingsFragment().apply { postInit(args) } },
+            { args -> CustomThemeSettingsFragment().apply { postInit(args) } }
         )
 
         fun from(ordinal: Int) = try {
@@ -31,5 +31,3 @@ enum class MainFragmentType {
         }
     }
 }
-
-interface Arguments

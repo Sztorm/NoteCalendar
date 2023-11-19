@@ -81,4 +81,5 @@
     <string name="WeekView">Widok tygodnia</string>
     <string name="MonthView">Widok miesiąca</string>
     <string name="Settings_StartingView">Widok początkowy</string>
+    <string name="UndoDeletion">Cofnij usunięcie</string>
 </resources>

@@ -13,7 +13,8 @@ import timber.log.Timber
 import java.time.LocalDate
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
+        private set
     private lateinit var fragmentSetter: FragmentSetter
     private lateinit var currentFragmentType: MainFragmentType
     private var _settings: AppSettings? = null

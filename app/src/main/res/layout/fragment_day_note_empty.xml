@@ -1,22 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     tools:context=".DayNoteEmptyFragment">
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnNoteAdd"
         style="@style/Widget.MaterialComponents.Button.Icon"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_weight="1"
         android:text="@string/AddNote"
         app:icon="@drawable/icon_note_add"
-        app:iconGravity="textStart"
-        android:id="@+id/btnNoteAdd"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="5dp"/>
+        app:iconGravity="textStart" />
 
-</FrameLayout>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnUndoDeletion"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_weight="1"
+        android:text="@string/UndoDeletion"
+        android:visibility="gone"
+        app:icon="@drawable/icon_undo"
+        app:iconGravity="textStart" />
+
+</LinearLayout>

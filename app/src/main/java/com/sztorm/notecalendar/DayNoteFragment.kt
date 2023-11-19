@@ -11,7 +11,6 @@ import com.sztorm.notecalendar.helpers.ViewHelper.Companion.hideKeyboard
 import com.sztorm.notecalendar.helpers.ViewHelper.Companion.showKeyboard
 import com.sztorm.notecalendar.repositories.NoteRepository
 import timber.log.Timber
-import java.time.LocalDate
 
 class DayNoteFragment() : Fragment() {
     private lateinit var binding: FragmentDayNoteBinding
@@ -119,17 +118,14 @@ class DayNoteFragment() : Fragment() {
     }
 
     private fun setBtnNoteDeleteTextClickListener() = binding.btnNoteDeleteText.setOnClickListener {
-        val possibleNote: NoteData? = note
+        val note: NoteData? = this.note
 
-        if (possibleNote !== null) {
-            NoteRepository.delete(possibleNote)
-            if (mainActivity.notificationManager
-                    .tryCancelScheduledNotification(LocalDate.parse(possibleNote.date))
-            ) {
-                Timber.i("${LogTags.NOTIFICATIONS} Canceled notification after note deletion")
-            }
+        if (note == null) {
+            dayFragment.setFragment(DayNoteEmptyFragment(dayFragment))
         }
-        dayFragment.setFragment(DayNoteEmptyFragment(dayFragment))
+        else {
+            dayFragment.setFragment(DayNoteEmptyFragment(dayFragment, UndoNoteDeleteOption(note)))
+        }
     }
 
     private fun setTheme() {

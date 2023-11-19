@@ -17,7 +17,10 @@ class DayFragment : Fragment() {
     private lateinit var binding: FragmentDayBinding
     private lateinit var fragmentSetter: FragmentSetter
     private lateinit var mainActivity: MainActivity
+    private lateinit var _swipeListener: SwipeListener
     private var postInitArgs: Arguments? = null
+    val swipeListener: SwipeListener
+        get() = _swipeListener
 
     fun postInit(args: Arguments?) {
         postInitArgs = args
@@ -38,6 +41,7 @@ class DayFragment : Fragment() {
             R.anim.anim_out_note
         )
         binding = FragmentDayBinding.inflate(inflater, container, false)
+        _swipeListener = SwipeListener(mainActivity, binding.root.context)
         val viewedDate: LocalDate = mainActivity.sharedData.viewedDate
 
         setTheme()
@@ -74,24 +78,7 @@ class DayFragment : Fragment() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun setTouchListener() = binding.root.setOnTouchListener(
-        object : OnSwipeTouchListener(binding.root.context) {
-            override fun onSwipeLeft() {
-                val sharedData = mainActivity.sharedData
-                sharedData.viewedDate = sharedData.viewedDate.plusDays(1)
-                mainActivity.setMainFragment(
-                    MainFragmentType.DAY, R.anim.anim_in_left, R.anim.anim_out_left
-                )
-            }
-
-            override fun onSwipeRight() {
-                val sharedData = mainActivity.sharedData
-                sharedData.viewedDate = sharedData.viewedDate.minusDays(1)
-                mainActivity.setMainFragment(
-                    MainFragmentType.DAY, R.anim.anim_in_right, R.anim.anim_out_right
-                )
-            }
-        })
+    private fun setTouchListener() = binding.root.setOnTouchListener(_swipeListener)
 
     private fun setTheme() {
         val themePainter: ThemePainter = mainActivity.themePainter
@@ -101,6 +88,26 @@ class DayFragment : Fragment() {
         binding.lblDayOfWeek.setTextColor(themeValues.textColor)
         binding.lblMonth.setTextColor(themeValues.textColor)
     }
-}
 
-object CreateOrEditNoteRequest : Arguments
+    class SwipeListener(
+        private val mainActivity: MainActivity, context: Context
+    ) : OnSwipeListener(context) {
+        override fun onSwipeLeft() {
+            super.onSwipeLeft()
+            val sharedData = mainActivity.sharedData
+            sharedData.viewedDate = sharedData.viewedDate.plusDays(1)
+            mainActivity.setMainFragment(
+                MainFragmentType.DAY, R.anim.anim_in_left, R.anim.anim_out_left
+            )
+        }
+
+        override fun onSwipeRight() {
+            super.onSwipeRight()
+            val sharedData = mainActivity.sharedData
+            sharedData.viewedDate = sharedData.viewedDate.minusDays(1)
+            mainActivity.setMainFragment(
+                MainFragmentType.DAY, R.anim.anim_in_right, R.anim.anim_out_right
+            )
+        }
+    }
+}
