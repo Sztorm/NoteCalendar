@@ -23,8 +23,7 @@ enum class StartingViewType {
             VALUES[ordinal]
         } catch (e: IndexOutOfBoundsException) {
             throw IllegalArgumentException(
-                "Value is out of range of enum ordinals. The " +
-                        "value must be in [0, 4] range."
+                "Value is out of range of enum ordinals. The value must be in [0, 3] range."
             )
         }
     }
