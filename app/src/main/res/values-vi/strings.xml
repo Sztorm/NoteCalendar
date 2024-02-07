@@ -1,0 +1,110 @@
+<resources>
+    <string name="app_name">Note Calendar</string>
+    <string name="Save">Lưu</string>
+    <string name="Cancel">Hủy</string>
+    <string name="AddNote">Thêm ghi chú</string>
+    <string name="EditNote">Chỉnh sửa ghi chú</string>
+    <string name="DeleteNote">Xóa ghi chú</string>
+    <string name="UndoDeletion">Hoàn tác xóa</string>
+    <string name="Confirm">OK</string>
+    <string name="SetDefault">Đặt mặc định</string>
+    <string name="ColorPicker">Bộ chọn màu</string>
+    <string name="PrimaryColor">Màu chính</string>
+    <string name="SecondaryColor">Màu phụ</string>
+    <string name="InactiveItemColor">Màu mục không hoạt động</string>
+    <string name="InactiveItemColorVariant">Biến thể màu của mục không hoạt động</string>
+    <string name="TextColor">Màu văn bản</string>
+    <string name="ButtonTextColor">Màu văn bản nút</string>
+    <string name="NoteTextColor">Màu văn bản ghi chú</string>
+    <string name="BackgroundColor">Màu nền</string>
+    <string name="NoteColor">Màu ghi chú</string>
+    <string name="NoteColorVariant">Biến thể màu ghi chú</string>
+    <string name="January">Tháng Một</string>
+    <string name="February">Tháng Hai</string>
+    <string name="March">Tháng Ba</string>
+    <string name="April">Tháng Tư</string>
+    <string name="May">Tháng Năm</string>
+    <string name="June">Tháng Sáu</string>
+    <string name="July">Tháng Bảy</string>
+    <string name="August">Tháng Tám</string>
+    <string name="September">Tháng Chín</string>
+    <string name="October">Tháng Mười</string>
+    <string name="November">Tháng Mười Một</string>
+    <string name="December">Tháng Mười Hai</string>
+    <string name="abbreviation_Monday">T.HAI</string>
+    <string name="abbreviation_Tuesday">T.BA</string>
+    <string name="abbreviation_Wednesday">T.TƯ</string>
+    <string name="abbreviation_Thursday">T.NĂM</string>
+    <string name="abbreviation_Friday">T.SÁU</string>
+    <string name="abbreviation_Saturday">T.BẢY</string>
+    <string name="abbreviation_Sunday">C.NHẬT </string>
+    <string name="lblMonth_January">Tháng Một</string>
+    <string name="lblMonth_February">Tháng Hai</string>
+    <string name="lblMonth_March">Tháng Ba</string>
+    <string name="lblMonth_April">Tháng Tư</string>
+    <string name="lblMonth_May">Tháng Năm</string>
+    <string name="lblMonth_June">Tháng Sáu</string>
+    <string name="lblMonth_July">Tháng Bảy</string>
+    <string name="lblMonth_August">Tháng Tám</string>
+    <string name="lblMonth_September">Tháng Chín</string>
+    <string name="lblMonth_October">Tháng Mười</string>
+    <string name="lblMonth_November">Tháng Mười Một</string>
+    <string name="lblMonth_December">Tháng Mười Hai</string>
+    <string name="lblDayOfWeek_Monday">Thứ Hai</string>
+    <string name="lblDayOfWeek_Tuesday">Thứ Ba</string>
+    <string name="lblDayOfWeek_Wednesday">Thứ Tư</string>
+    <string name="lblDayOfWeek_Thursday">Thứ Năm</string>
+    <string name="lblDayOfWeek_Friday">Thứ Sáu</string>
+    <string name="lblDayOfWeek_Saturday">Thứ Bảy</string>
+    <string name="lblDayOfWeek_Sunday">Chủ Nhật</string>
+    <string name="Notification_Note_Title">Ghi chú hôm nay</string>
+    <string name="Notification_Note_ChannelName">Ghi chú</string>
+    <string name="Notification_Note_ChannelDescription">Thông báo về ghi chú đã lưu hàng ngày.</string>
+    <string name="Settings_Header_Theme">Chủ đề</string>
+    <string name="Settings_Header_Notifications">Thông báo</string>
+    <string name="Settings_Header_Notes">Ghi chú</string>
+    <string name="Settings_Header_Other">Khác</string>
+    <string name="Settings_Header_CustomTheme">Chủ đề tùy chỉnh</string>
+    <string name="Settings_SetCustomTheme">Đặt chủ đề tùy chỉnh</string>
+    <string name="Settings_SetLightTheme">Đặt chủ đề sáng</string>
+    <string name="Settings_SetDarkTheme">Đặt chủ đề tối</string>
+    <string name="Settings_SetDefaultTheme">Đặt chủ đề mặc định</string>
+    <string name="Settings_Summary_SetDefaultTheme">Đặt chủ đề dựa trên cài đặt hệ thống. Nếu hệ thống không hỗ trợ chủ đề thì chủ đề sáng sẽ được đặt.</string>
+    <string name="Settings_DeleteNotesDateRange">Xóa ghi chú khỏi phạm vi ngày</string>
+    <string name="Settings_DeleteAllNotes">Xóa tất cả ghi chú</string>
+    <string name="Settings_DeleteAllNotes_Alert_Title">Xóa tất cả ghi chú?</string>
+    <string name="Settings_DeleteAllNotes_Alert_Message">Hành động này sẽ xóa tất cả dữ liệu ghi chú. Bạn có muốn tiếp tục?</string>
+    <string name="Settings_EnableNotifications">Bật thông báo</string>
+    <string name="Settings_NotificationTime">Thời gian thông báo</string>
+    <string name="Settings_FirstDayOfWeek">Ngày đầu tuần</string>
+    <string name="Settings_Licenses">Giấy phép</string>
+    <string name="Settings_StartingView">Xem bắt đầu</string>
+    <string name="DayView">Xem theo ngày</string>
+    <string name="WeekView">Xem theo tuần</string>
+    <string name="MonthView">Xem theo tháng</string>
+    <string name="PrefKey_CategoryTheme" translatable="false">PrefKey_CategoryTheme</string>
+    <string name="PrefKey_HeaderCustomTheme" translatable="false">PrefKey_HeaderCustomTheme</string>
+    <string name="PrefKey_PrimaryColor" translatable="false">PrefKey_PrimaryColor</string>
+    <string name="PrefKey_SecondaryColor" translatable="false">PrefKey_SecondaryColor</string>
+    <string name="PrefKey_InactiveItemColor" translatable="false">PrefKey_InactiveItemColor</string>
+    <string name="PrefKey_InactiveItemColorVariant" translatable="false">PrefKey_InactiveItemColorVariant</string>
+    <string name="PrefKey_TextColor" translatable="false">PrefKey_TextColor</string>
+    <string name="PrefKey_ButtonTextColor" translatable="false">PrefKey_ButtonTextColor</string>
+    <string name="PrefKey_NoteTextColor" translatable="false">PrefKey_NoteTextColor</string>
+    <string name="PrefKey_BackgroundColor" translatable="false">PrefKey_BackgroundColor</string>
+    <string name="PrefKey_NoteColor" translatable="false">PrefKey_NoteColor</string>
+    <string name="PrefKey_NoteColorVariant" translatable="false">PrefKey_NoteColorVariant</string>
+    <string name="PrefKey_SetCustomTheme" translatable="false">PrefKey_SetCustomTheme</string>
+    <string name="PrefKey_SetLightTheme" translatable="false">PrefKey_SetLightTheme</string>
+    <string name="PrefKey_SetDarkTheme" translatable="false">PrefKey_SetDarkTheme</string>
+    <string name="PrefKey_SetDefaultTheme" translatable="false">PrefKey_SetDefaultTheme</string>
+    <string name="PrefKey_CategoryNotes" translatable="false">PrefKey_CategoryNotes</string>
+    <string name="PrefKey_DeleteAllNotes" translatable="false">PrefKey_DeleteAllNotes</string>
+    <string name="PrefKey_CategoryNotifications" translatable="false">PrefKey_CategoryNotifications</string>
+    <string name="PrefKey_EnableNotifications" translatable="false">PrefKey_EnableNotifications</string>
+    <string name="PrefKey_NotificationTime" translatable="false">PrefKey_NotificationTime</string>
+    <string name="PrefKey_CategoryOther" translatable="false">PrefKey_CategoryOther</string>
+    <string name="PrefKey_FirstDayOfWeek" translatable="false">PrefKey_FirstDayOfWeek</string>
+    <string name="PrefKey_Licenses" translatable="false">PrefKey_Licenses</string>
+    <string name="PrefKey_StartingView" translatable="false">PrefKey_StartingView</string>
+</resources>
