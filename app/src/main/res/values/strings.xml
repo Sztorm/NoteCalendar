@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Note Calendar</string>
     <string name="Save">Save</string>
@@ -74,7 +75,7 @@
     <string name="Settings_DeleteAllNotes">Delete all notes</string>
     <string name="Settings_DeleteAllNotes_Alert_Title">Delete all notes?</string>
     <string name="Settings_DeleteAllNotes_Alert_Message">This action will delete all notes data. Do you want to continue?</string>
-    <string name="Settings_EnableNotifications">Enable notifications</string>
+    <string name="Settings_EnableNotifications">Turn on notifications</string>
     <string name="Settings_NotificationTime">Notification time</string>
     <string name="Settings_FirstDayOfWeek">First day of week</string>
     <string name="Settings_Licenses">Licenses</string>
