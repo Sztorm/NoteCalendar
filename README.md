@@ -11,11 +11,11 @@ Minimum Android version: 5.0 (Lollipop, API level 21)
 
 ## Screenshots
 
-<img src="assets/pic-01.png" alt="note calendar picture 1" width=216 height=444> <img src="assets/pic-02.png" alt="note calendar picture 2" width=216 height=444> <img src="assets/pic-03.png" alt="note calendar picture 3" width=216 height=444> <img src="assets/pic-04.png" alt="note calendar picture 4" width=216 height=444>
+<img src="assets/pic-01.png" alt="note calendar picture 1" width=200 height=411> <img src="assets/pic-02.png" alt="note calendar picture 2" width=200 height=411> <img src="assets/pic-03.png" alt="note calendar picture 3" width=200 height=411> <img src="assets/pic-04.png" alt="note calendar picture 4" width=200 height=411>
 
-<img src="assets/pic-05.png" alt="note calendar picture 5" width=216 height=444> <img src="assets/pic-06.png" alt="note calendar picture 6" width=216 height=444> <img src="assets/pic-07.png" alt="note calendar picture 7" width=216 height=444> <img src="assets/pic-08.png" alt="note calendar picture 8" width=216 height=444>
+<img src="assets/pic-05.png" alt="note calendar picture 5" width=200 height=411> <img src="assets/pic-06.png" alt="note calendar picture 6" width=200 height=411> <img src="assets/pic-07.png" alt="note calendar picture 7" width=200 height=411> <img src="assets/pic-08.png" alt="note calendar picture 8" width=200 height=411>
 
-<img src="assets/pic-09.png" alt="note calendar picture 9" width=216 height=444> <img src="assets/pic-10.png" alt="note calendar picture 10" width=216 height=444>
+<img src="assets/pic-09.png" alt="note calendar picture 9" width=200 height=411> <img src="assets/pic-10.png" alt="note calendar picture 10" width=200 height=411>
 
 ## Features
 
