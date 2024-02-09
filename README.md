@@ -11,41 +11,47 @@ Minimum Android version: 5.0 (Lollipop, API level 21)
 
 ## Screenshots
 
-<img src="assets/pic-01.png" alt="note calendar picture 1" width=270 height=555> <img src="assets/pic-02.png" alt="note calendar picture 2" width=270 height=555>
+<img src="assets/pic-01.png" alt="note calendar picture 1" width=216 height=444> <img src="assets/pic-02.png" alt="note calendar picture 2" width=216 height=444> <img src="assets/pic-03.png" alt="note calendar picture 3" width=216 height=444> <img src="assets/pic-04.png" alt="note calendar picture 4" width=216 height=444>
 
-<img src="assets/pic-03.png" alt="note calendar picture 3" width=270 height=555> <img src="assets/pic-04.png" alt="note calendar picture 4" width=270 height=555>
+<img src="assets/pic-05.png" alt="note calendar picture 5" width=216 height=444> <img src="assets/pic-06.png" alt="note calendar picture 6" width=216 height=444> <img src="assets/pic-07.png" alt="note calendar picture 7" width=216 height=444> <img src="assets/pic-08.png" alt="note calendar picture 8" width=216 height=444>
 
-<img src="assets/pic-05.png" alt="note calendar picture 5" width=270 height=555> <img src="assets/pic-06.png" alt="note calendar picture 6" width=270 height=555>
+<img src="assets/pic-09.png" alt="note calendar picture 9" width=216 height=444> <img src="assets/pic-10.png" alt="note calendar picture 10" width=216 height=444>
 
-<img src="assets/pic-07.png" alt="note calendar picture 7" width=270 height=555> <img src="assets/pic-08.png" alt="note calendar picture 8" width=270 height=555>
+## Features
 
-<img src="assets/pic-09.png" alt="note calendar picture 9" width=270 height=555> <img src="assets/pic-10.png" alt="note calendar picture 10" width=270 height=555>
+* Day view
+  * This view is used to add, edit or delete note
+* Week view
+* Month view
+  * Days that constains a note are marked with a ring
+  * Day that is currently selected is marked with a solid circle
+  * Today's day is marked with a different color of text
+  * Long press on a day's number allow to quickly add or edit note for that day
+* Settings view
+  * Theming
+    * Setting custom theme which includes 10 modifiable colors
+    * Setting light theme
+    * Setting dark theme
+    * Setting default theme based on system settings
+  * Notes deletion
+  * Notifications
+    * When turned on, a notification will appear at notification time
+  * Setting first day of week
+  * Setting starting view
 
-## Possibilities
+## Translations
 
-Day tab allows to add, edit or delete note.
+Note Calendar supports the languages listed below:
+* English
+* Norwegian Bokmål
+* Polish
+* Portuguese
+* Romanian
+* Vietnamese
 
-Week tab holds a days list to quickly move to other day of the week.
+You can help with translations on https://hosted.weblate.org/projects/note-calendar/
 
-You can easily see which days contain note via month tab. If a day number is surrounded by ring then
-it contains note.
-
-Application offers notifications which can be enabled to remind about a note created for next day at
-given time. For example you can set notification time to time before your alarm clock time in order
-to wake up and read note with something important to do.
-
-Application settings include:
-
-* Theming
-   * Setting custom theme which includes 10 modifiable colors
-   * Setting light theme
-   * Setting dark theme
-   * Setting default theme based on system settings
-* Notes deletion
-* Notifications management
-   * Enabling or disabling
-   * Setting notification time
-* Setting first day of week
+However, I can not guarantee that the Hosted Weblate option will always be available
 
 ## License
 
