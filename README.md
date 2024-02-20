@@ -40,18 +40,13 @@ Minimum Android version: 5.0 (Lollipop, API level 21)
   * Setting starting view
 
 ## Translations
+<a href="https://hosted.weblate.org/engage/note-calendar/">
+<img src="https://hosted.weblate.org/widget/note-calendar/multi-auto.svg" alt="Translations state" />
+</a>
 
-Note Calendar supports the languages listed below:
-* English
-* Norwegian Bokmål
-* Polish
-* Portuguese
-* Romanian
-* Vietnamese
+You can help with translations on https://hosted.weblate.org/projects/note-calendar/.
 
-You can help with translations on https://hosted.weblate.org/projects/note-calendar/
-
-However, I can not guarantee that the Hosted Weblate option will always be available
+Accessible translation platform is available thanks to Weblate and their support for libre projects. Hosting such platform costs money, if you want to help the Weblate project, you can donate [here](https://weblate.org/pl/donate/).
 
 ## License
 
