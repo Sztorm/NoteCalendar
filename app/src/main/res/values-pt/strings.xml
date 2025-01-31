@@ -75,7 +75,7 @@
     <string name="Settings_DeleteAllNotes">Apagar todas as notas</string>
     <string name="Settings_DeleteAllNotes_Alert_Title">Eliminar todas as notas?</string>
     <string name="Settings_DeleteAllNotes_Alert_Message">Esta acção apagará a data de todas as notas. Deseja continuar?</string>
-    <string name="Settings_EnableNotifications">Ativar notificaçőes</string>
+    <string name="Settings_EnableNotifications">Ativar notificações</string>
     <string name="Settings_NotificationTime">Hora da notificaçăo</string>
     <string name="Settings_FirstDayOfWeek">Primeiro dia da semana</string>
     <string name="Settings_Licenses">Licenças</string>
