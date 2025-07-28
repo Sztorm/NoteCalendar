@@ -5,12 +5,16 @@ import android.graphics.Color
 import android.graphics.drawable.*
 import android.graphics.drawable.DrawableContainer.DrawableContainerState
 import android.view.View
+import android.view.ViewGroup
 import android.view.Window
-import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.graphics.ColorUtils
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.button.MaterialButtonToggleGroup
 import com.sztorm.notecalendar.databinding.CalendarWeekDayBarBinding
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getDrawableCompat
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getPixelsFromDip
@@ -49,9 +53,24 @@ class ThemePainter(val values: ThemeValues) {
         view.background = selector
     }
 
-    fun paintWindowStatusBar(window: Window) {
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = values.primaryColor
+    fun paintStatusBarAndSetSystemInsets(
+        window: Window, navigation: MaterialButtonToggleGroup, fragmentContainer: LinearLayout
+    ) {
+        ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { view, insets ->
+            val systemInsets = insets.getInsets(
+                WindowInsetsCompat.Type.statusBars() or WindowInsetsCompat.Type.navigationBars()
+            )
+            view.setBackgroundColor(values.primaryColor)
+            view.setPadding(0, systemInsets.top, 0, 0)
+
+            navigation.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                setMargins(systemInsets.left, 0, systemInsets.right, systemInsets.bottom)
+            }
+            fragmentContainer.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                setMargins(systemInsets.left, 0, systemInsets.right, systemInsets.bottom)
+            }
+            insets
+        }
     }
 
     fun paintNote(noteHolder: View) {
@@ -120,7 +139,8 @@ class ThemePainter(val values: ThemeValues) {
         isInMonth: Boolean,
         isSelected: Boolean,
         isToday: Boolean,
-        hasNote: Boolean) {
+        hasNote: Boolean
+    ) {
         val background: GradientDrawable = (textView.background.mutate() as GradientDrawable)
         val isDarkThemeEnabled: Boolean = textView.context.isDarkThemeEnabled
         var strokeColor: Int = Color.TRANSPARENT
@@ -134,10 +154,11 @@ class ThemePainter(val values: ThemeValues) {
             if (hasNote) {
                 strokeWidth = textView.context.getPixelsFromDip(4f).toInt()
                 strokeColor = ColorUtils.setAlphaComponent(
-                    if (isDarkThemeEnabled) values.noteColorVariant else values.noteColor, 255/3)
+                    if (isDarkThemeEnabled) values.noteColorVariant else values.noteColor, 255 / 3
+                )
             }
             if (isToday) {
-                textColor = ColorUtils.setAlphaComponent(values.secondaryColor, 255/3)
+                textColor = ColorUtils.setAlphaComponent(values.secondaryColor, 255 / 3)
             }
             background.color = backgroundColor
             background.setStroke(strokeWidth, strokeColor)

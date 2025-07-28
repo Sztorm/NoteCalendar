@@ -13,24 +13,23 @@ import android.provider.Settings
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
+import kotlin.collections.removeLast as removeLastKt
 
 class AppPermissionManager(val mainActivity: MainActivity) {
     private val requestPermissionCallbacksByCode =
-        Array<ArrayList<(isSuccess: Boolean) -> Unit>>(REQUEST_CODE_COUNT) { ArrayList() }
+        Array<ArrayList<(isSuccess: Boolean) -> Unit>>(size = 1) { ArrayList() }
 
     private fun requestPermissions(
         permissions: Array<out String>, permissionCode: AppPermissionCode
     ) = ActivityCompat.requestPermissions(mainActivity, permissions, permissionCode.value)
 
     private fun requestSettingsActivity(actionRequest: String) {
-        val appUri =
-            Uri.fromParts("package", mainActivity.packageName, null)
+        val appUri = Uri.fromParts("package", mainActivity.packageName, null)
         val requestExactAlarmPermissionIntent = Intent().apply {
             action = actionRequest
             data = appUri
         }
-        startActivity(mainActivity, requestExactAlarmPermissionIntent, null)
+        mainActivity.startActivity(requestExactAlarmPermissionIntent)
     }
 
     fun isGranted(permission: String) = ContextCompat
@@ -126,7 +125,7 @@ class AppPermissionManager(val mainActivity: MainActivity) {
         }
     }
 
-    @Suppress("UNUSED_PARAMETER")
+    @Suppress("unused")
     fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<out String>, grantResults: IntArray
     ) {
@@ -135,12 +134,8 @@ class AppPermissionManager(val mainActivity: MainActivity) {
 
         while (callbacks.isNotEmpty()) {
             callbacks.last().invoke(isSuccess)
-            callbacks.removeLast()
+            callbacks.removeLastKt()
         }
-    }
-
-    companion object {
-        private const val REQUEST_CODE_COUNT = 1
     }
 }
 
