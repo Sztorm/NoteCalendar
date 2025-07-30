@@ -1,8 +1,9 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id "com.mikepenz.aboutlibraries.plugin" version "10.3.0"
+    id 'com.mikepenz.aboutlibraries.plugin' version '10.3.0'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.compose' version '2.1.20'
 }
 
 android {
@@ -17,6 +18,7 @@ android {
     }
     buildFeatures {
         viewBinding true
+        compose true
         buildConfig = true
     }
     buildTypes {
@@ -33,8 +35,15 @@ android {
     dependencies {
         coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
     }
+    dependenciesInfo {
+        includeInApk true
+        includeInBundle true
+    }
     kotlin {
         jvmToolchain(17)
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.5.15'
     }
     namespace 'com.sztorm.notecalendar'
 }
@@ -44,6 +53,7 @@ aboutLibraries {
 }
 
 dependencies {
+    def composeBom = platform('androidx.compose:compose-bom:2025.07.00')
     implementation 'androidx.core:core-ktx:1.16.0'
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.preference:preference-ktx:1.2.1'
@@ -51,6 +61,14 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation "androidx.cardview:cardview:1.0.0"
     implementation "androidx.recyclerview:recyclerview:1.4.0"
+    implementation composeBom
+    implementation "androidx.compose.runtime:runtime"
+    implementation "androidx.compose.ui:ui"
+    implementation "androidx.compose.foundation:foundation"
+    implementation "androidx.compose.foundation:foundation-layout"
+    implementation "androidx.compose.material3:material3"
+    implementation "androidx.compose.runtime:runtime-livedata"
+    implementation "androidx.compose.ui:ui-tooling"
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'com.mikepenz:aboutlibraries-core:10.3.0'
     implementation 'com.mikepenz:aboutlibraries:10.3.0'
@@ -60,6 +78,7 @@ dependencies {
     implementation 'com.github.kizitonwose:CalendarView:1.0.4'
     implementation 'com.jakewharton.timber:timber:5.0.1'
     testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation composeBom
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 }
