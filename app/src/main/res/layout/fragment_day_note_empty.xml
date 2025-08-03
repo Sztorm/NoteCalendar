@@ -7,7 +7,7 @@
     android:orientation="horizontal"
     tools:context=".DayNoteEmptyFragment">
 
-    <com.google.android.material.button.MaterialButton
+    <!--com.google.android.material.button.MaterialButton
         android:id="@+id/btnNoteAdd"
         style="@style/Widget.MaterialComponents.Button.Icon"
         android:layout_width="0dp"
@@ -30,6 +30,11 @@
         android:text="@string/UndoDeletion"
         android:visibility="gone"
         app:icon="@drawable/icon_undo"
-        app:iconGravity="textStart" />
+        app:iconGravity="textStart" /-->
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/composeView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

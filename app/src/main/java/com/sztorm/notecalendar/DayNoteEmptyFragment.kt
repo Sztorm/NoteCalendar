@@ -1,18 +1,26 @@
 package com.sztorm.notecalendar
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import com.sztorm.notecalendar.components.ThemedButton
 import com.sztorm.notecalendar.databinding.FragmentDayNoteEmptyBinding
 import com.sztorm.notecalendar.repositories.NoteRepository
 import timber.log.Timber
 
 class DayNoteEmptyFragment() : Fragment() {
     private lateinit var binding: FragmentDayNoteEmptyBinding
-    private lateinit var mainActivity: MainActivity
     private lateinit var dayFragment: DayFragment
     private var args: Arguments? = null
 
@@ -21,63 +29,65 @@ class DayNoteEmptyFragment() : Fragment() {
         this.args = args
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mainActivity = activity as MainActivity
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentDayNoteEmptyBinding.inflate(inflater, container, false)
-        setTheme()
-        setBtnNoteAddClickListener()
-        setBtnNoteUndoDeletionClickListener()
-        handleArgs(args)
+        binding.composeView.setContent {
+            MaterialTheme {
+                DayNoteEmptyLayout(args, dayFragment, activity as MainActivity)
+            }
+        }
+        if (args is CreateOrEditNoteRequest) {
+            dayFragment.setFragment(DayNoteAddFragment(dayFragment))
+            this.args = null
+        }
 
         return binding.root
     }
-
-    private fun handleArgs(args: Arguments?) {
-        when (args) {
-            is CreateOrEditNoteRequest -> {
-                dayFragment.setFragment(DayNoteAddFragment(dayFragment))
-                this.args = null
-            }
-
-            is UndoNoteDeleteOption -> {
-                binding.btnUndoDeletion.visibility = View.VISIBLE
-            }
-        }
-    }
-
-    private fun setTheme() {
-        val themePainter: ThemePainter = mainActivity.themePainter
-        themePainter.paintButton(binding.btnNoteAdd)
-        themePainter.paintButton(binding.btnUndoDeletion)
-    }
-
-    private fun setBtnNoteAddClickListener() =
-        binding.btnNoteAdd.setOnClickListener {
-            dayFragment.setFragment(DayNoteAddFragment(dayFragment))
-        }
-
-    private fun setBtnNoteUndoDeletionClickListener() =
-        binding.btnUndoDeletion.setOnClickListener {
-            val args = this.args
-
-            if (args is UndoNoteDeleteOption) {
-                val note = args.note
-
-                NoteRepository.add(note)
-
-                if (mainActivity.notificationManager.tryScheduleNotification(
-                        ScheduleNoteNotificationArguments(note = note)
-                    )
-                ) {
-                    Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification after note save")
-                }
-                dayFragment.setFragment(DayNoteFragment(dayFragment, note))
-            }
-        }
 }
+
+@Composable
+fun DayNoteEmptyLayout(
+    args: Arguments?, dayFragment: DayFragment, mainActivity: MainActivity
+) {
+    val themeValues = mainActivity.themePainter.values
+
+    Row(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        ThemedButton(
+            onClick = { dayFragment.setFragment(DayNoteAddFragment(dayFragment)) },
+            themeValues = themeValues,
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 10.dp, top = 5.dp, end = 10.dp, bottom = 0.dp),
+            text = stringResource(R.string.AddNote),
+            icon = painterResource(R.drawable.icon_note_add)
+        )
+        if (args is UndoNoteDeleteOption) {
+            ThemedButton(
+                onClick = {
+                    val note = args.note
+
+                    NoteRepository.add(note)
+
+                    if (mainActivity.notificationManager.tryScheduleNotification(
+                            ScheduleNoteNotificationArguments(note = note)
+                        )
+                    ) {
+                        Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification after note save")
+                    }
+                    dayFragment.setFragment(DayNoteFragment(dayFragment, note))
+                },
+                themeValues = themeValues,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 10.dp, top = 5.dp, end = 10.dp, bottom = 0.dp),
+                text = stringResource(R.string.UndoDeletion),
+                icon = painterResource(R.drawable.icon_undo)
+            )
+        }
+    }
+}
+
