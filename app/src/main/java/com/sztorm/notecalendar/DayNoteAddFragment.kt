@@ -62,10 +62,7 @@ class DayNoteAddFragment() : Fragment() {
 }
 
 @Composable
-fun DayNoteAddLayout(
-    dayFragment: DayFragment,
-    mainActivity: MainActivity
-) {
+fun DayNoteAddLayout(dayFragment: DayFragment, mainActivity: MainActivity) {
     val themeValues = mainActivity.themePainter.values
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }

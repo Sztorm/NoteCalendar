@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".DayNoteFragment">
 
-    <LinearLayout
+    <!--LinearLayout
         android:id="@+id/layoutNoteUpper"
         android:layout_width="match_parent"
         android:layout_height="68dp"
@@ -113,6 +113,11 @@
             android:inputType="textMultiLine"
             android:textSize="24sp"
             tools:ignore="LabelFor" />
-    </LinearLayout>
+    </LinearLayout-->
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/composeView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </FrameLayout>
