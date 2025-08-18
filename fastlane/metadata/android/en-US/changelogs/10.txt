@@ -1,0 +1,2 @@
+* Added Norwegian Bokmål translation (thanks @comradekingu!)
+* Added Romanian translation (thanks mere!)

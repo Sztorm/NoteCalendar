@@ -1,0 +1,3 @@
+* Added Tamil translation (thanks @TamilNeram!)
+* Updated Portuguese translation (thanks J!)
+* Updated app dependencies and target SDK to 35 (Android 15)

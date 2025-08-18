@@ -1,0 +1,4 @@
+First release of Note Calendar
+ * Ability to add, edit and delete notes
+ * Three time-related tabs - day, week and month
+ * Settings tab with customizable theme, optional notifications and other settings.

@@ -1,0 +1,2 @@
+* Updated app dependencies
+* Added app build reproducibility.
