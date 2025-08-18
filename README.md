@@ -1,5 +1,7 @@
-<img src="./assets/icon.png" align="right" width="150px">
-<h1>NoteCalendar</h1>
+<p align="center">
+  <img src="./assets/icon.png" width="150px">
+</p>
+<h1 align="center">NoteCalendar</h1>
 
 *Note Calendar* is a simple offline app which allows to manage notes for different days and offers a
 quick way to reach each of them.
@@ -11,11 +13,11 @@ Minimum Android version: 5.0 (Lollipop, API level 21)
 
 ## Screenshots
 
-<img src="assets/pic-01.png" alt="note calendar picture 1" width=200 height=411> <img src="assets/pic-02.png" alt="note calendar picture 2" width=200 height=411> <img src="assets/pic-03.png" alt="note calendar picture 3" width=200 height=411> <img src="assets/pic-04.png" alt="note calendar picture 4" width=200 height=411>
+<img src="assets/01.png" alt="app screenshot 01" width=200 height=411> <img src="assets/02.png" alt="app screenshot 02" width=200 height=411> <img src="assets/03.png" alt="app screenshot 03" width=200 height=411> <img src="assets/04.png" alt="app screenshot 04" width=200 height=411>
 
-<img src="assets/pic-05.png" alt="note calendar picture 5" width=200 height=411> <img src="assets/pic-06.png" alt="note calendar picture 6" width=200 height=411> <img src="assets/pic-07.png" alt="note calendar picture 7" width=200 height=411> <img src="assets/pic-08.png" alt="note calendar picture 8" width=200 height=411>
+<img src="assets/05.png" alt="app screenshot 05" width=200 height=411> <img src="assets/06.png" alt="app screenshot 06" width=200 height=411> <img src="assets/07.png" alt="app screenshot 07" width=200 height=411> <img src="assets/08.png" alt="app screenshot 08" width=200 height=411>
 
-<img src="assets/pic-09.png" alt="note calendar picture 9" width=200 height=411> <img src="assets/pic-10.png" alt="note calendar picture 10" width=200 height=411>
+<img src="assets/09.png" alt="app screenshot 09" width=200 height=411> <img src="assets/10.png" alt="app screenshot 10" width=200 height=411>
 
 ## Features
 

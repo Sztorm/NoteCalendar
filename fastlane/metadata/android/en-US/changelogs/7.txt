@@ -1,0 +1,5 @@
+* Added starting view setting.
+* Added add/edit note action on long press on day circle in month view.
+* Added undo option when note is deleted.
+* Added monochrome icons that support Android's themed icons.
+* Updated app dependencies and target SDK to 34 (Android 14)
