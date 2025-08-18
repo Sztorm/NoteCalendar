@@ -1,5 +1,6 @@
+# NoteCalendar
+
 <img src="./assets/icon.png" align="right" width="150px">
-<h1>NoteCalendar</h1>
 
 *Note Calendar* is a simple offline app which allows to manage notes for different days and offers a
 quick way to reach each of them.
@@ -11,11 +12,11 @@ Minimum Android version: 5.0 (Lollipop, API level 21)
 
 ## Screenshots
 
-<img src="assets/pic-01.png" alt="note calendar picture 1" width=200 height=411> <img src="assets/pic-02.png" alt="note calendar picture 2" width=200 height=411> <img src="assets/pic-03.png" alt="note calendar picture 3" width=200 height=411> <img src="assets/pic-04.png" alt="note calendar picture 4" width=200 height=411>
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/01.png" alt="app screenshot 01" width=200 height=411> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/02.png" alt="app screenshot 02" width=200 height=411> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/03.png" alt="app screenshot 03" width=200 height=411> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/04.png" alt="app screenshot 04" width=200 height=411>
 
-<img src="assets/pic-05.png" alt="note calendar picture 5" width=200 height=411> <img src="assets/pic-06.png" alt="note calendar picture 6" width=200 height=411> <img src="assets/pic-07.png" alt="note calendar picture 7" width=200 height=411> <img src="assets/pic-08.png" alt="note calendar picture 8" width=200 height=411>
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/05.png" alt="app screenshot 05" width=200 height=411> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/06.png" alt="app screenshot 06" width=200 height=411> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/07.png" alt="app screenshot 07" width=200 height=411> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/08.png" alt="app screenshot 08" width=200 height=411>
 
-<img src="assets/pic-09.png" alt="note calendar picture 9" width=200 height=411> <img src="assets/pic-10.png" alt="note calendar picture 10" width=200 height=411>
+<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/09.png" alt="app screenshot 09" width=200 height=411> <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/10.png" alt="app screenshot 10" width=200 height=411>
 
 ## Features
 
