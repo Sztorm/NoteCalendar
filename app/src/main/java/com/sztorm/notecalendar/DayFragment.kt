@@ -19,8 +19,8 @@ class DayFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
     private lateinit var _swipeListener: SwipeListener
     private var postInitArgs: Arguments? = null
-    val swipeListener: SwipeListener
-        get() = _swipeListener
+    var note: NoteData? = null
+    var undoNote: NoteData? = null
 
     fun postInit(args: Arguments?) {
         postInitArgs = args
@@ -52,22 +52,15 @@ class DayFragment : Fragment() {
         return binding.root
     }
 
-    fun setFragment(fragment: Fragment) = fragmentSetter.setFragment(fragment)
-
     private fun setNoteFragmentOnCreate(date: LocalDate) {
-        val possibleNote: NoteData? = NoteRepository.getByDate(date)
+        val note: NoteData? = NoteRepository.getByDate(date)
+        this.note = note
 
-        if (possibleNote == null) {
-            fragmentSetter.setFragment(
-                DayNoteEmptyFragment(this, postInitArgs),
-                resAnimIn = R.anim.anim_immediate,
-                resAnimOut = R.anim.anim_immediate
-            )
-        } else {
-            fragmentSetter.setFragment(
-                DayNoteFragment(this, possibleNote, postInitArgs)
-            )
-        }
+        fragmentSetter.setFragment(
+            DayNoteFragment(this, postInitArgs),
+            resAnimIn = R.anim.anim_immediate,
+            resAnimOut = R.anim.anim_immediate
+        )
         postInitArgs = null
     }
 
