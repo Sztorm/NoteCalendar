@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
             BUNDLE_KEY_MAIN_FRAGMENT_TYPE, MainFragmentType.DAY.ordinal
         )
         setMainFragment(
-            MainFragmentType.from(mainFragmentTypeOrdinal),
+            MainFragmentType.entries[mainFragmentTypeOrdinal],
             resAnimIn = R.anim.anim_immediate,
             resAnimOut = R.anim.anim_immediate
         )
