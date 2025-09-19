@@ -25,9 +25,6 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
     private val mainActivity: MainActivity
         get() = activity as MainActivity
 
-    @Suppress("UNUSED_PARAMETER")
-    fun postInit(args: Arguments?) {}
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         mainActivity.initManagers()
         setPreferencesFromResource(R.xml.root_settings, rootKey)
@@ -252,7 +249,7 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
             mainActivity.settings.startingView.toLocalizedString(mainActivity)
         preference.setOnPreferenceChangeListener { pref, valueBoxed ->
             val value = valueBoxed as String
-            pref.summary = StartingViewType.from(value.toInt()).toLocalizedString(mainActivity)
+            pref.summary = StartingViewType.entries[value.toInt()].toLocalizedString(mainActivity)
             true
         }
     }

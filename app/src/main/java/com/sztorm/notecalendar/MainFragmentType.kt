@@ -14,10 +14,10 @@ enum class MainFragmentType {
     companion object {
         private val CREATORS: Array<(args: Arguments?) -> Fragment> = arrayOf(
             { args -> DayFragment(args) },
-            { args -> WeekFragment().apply { postInit(args) } },
-            { args -> MonthFragment().apply { postInit(args) } },
-            { args -> RootSettingsFragment().apply { postInit(args) } },
-            { args -> CustomThemeSettingsFragment().apply { postInit(args) } }
+            { args -> WeekFragment() },
+            { args -> MonthFragment() },
+            { args -> RootSettingsFragment() },
+            { args -> CustomThemeSettingsFragment() }
         )
     }
 }

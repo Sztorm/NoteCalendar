@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sztorm.notecalendar.databinding.FragmentWeekBinding
 import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedString
-import java.time.DayOfWeek
 import java.time.LocalDate
 import kotlin.collections.ArrayDeque
 
@@ -21,11 +20,7 @@ class WeekFragment : Fragment() {
     private lateinit var binding: FragmentWeekBinding
     private lateinit var adapter: DayListAdapter
     private lateinit var mainActivity: MainActivity
-    private lateinit var textColors: WeekDayTextColors
     private val dayItems: ArrayDeque<DayItem> = ArrayDeque(initialCapacity = CACHED_DAY_ITEMS_COUNT)
-
-    @Suppress("UNUSED_PARAMETER")
-    fun postInit(args: Arguments?) {}
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -35,11 +30,12 @@ class WeekFragment : Fragment() {
     private fun initDayItems(view: View, count: Int) {
         var date: LocalDate = mainActivity.sharedData.viewedDate.minusDays(count / 2L)
 
-        for (i: Int in 0..count) {
+        (0..count).forEach { i ->
             val dayItem = DayItem(
                 date,
                 date.dayOfMonth.toString(),
-                date.dayOfWeek.toLocalizedString(view.context))
+                date.dayOfWeek.toLocalizedString(view.context)
+            )
 
             dayItems.addLast(dayItem)
             date = date.plusDays(1)
@@ -49,13 +45,14 @@ class WeekFragment : Fragment() {
     private fun loadNextDayItems(view: View, count: Int) {
         var nextDate: LocalDate = dayItems.last().date
 
-        for (i: Int in 0..count) {
+        (0..count).forEach { i ->
             nextDate = nextDate.plusDays(1)
 
             val dayItem = DayItem(
-                    nextDate,
-                    nextDate.dayOfMonth.toString(),
-                    nextDate.dayOfWeek.toLocalizedString(view.context))
+                nextDate,
+                nextDate.dayOfMonth.toString(),
+                nextDate.dayOfWeek.toLocalizedString(view.context)
+            )
 
             dayItems.removeFirst()
             dayItems.addLast(dayItem)
@@ -65,45 +62,28 @@ class WeekFragment : Fragment() {
     private fun loadPrevDayItems(view: View, count: Int) {
         var prevDate: LocalDate = dayItems.first().date
 
-        for (i: Int in 0..count) {
+        (0..count).forEach { i ->
             prevDate = prevDate.minusDays(1)
 
             val dayItem = DayItem(
-                    prevDate,
-                    prevDate.dayOfMonth.toString(),
-                    prevDate.dayOfWeek.toLocalizedString(view.context))
+                prevDate,
+                prevDate.dayOfMonth.toString(),
+                prevDate.dayOfWeek.toLocalizedString(view.context)
+            )
 
             dayItems.removeLast()
             dayItems.addFirst(dayItem)
         }
     }
 
-    private fun setTheme() {
-        val themePainter: ThemePainter = mainActivity.themePainter
-        val themeValues: ThemeValues = themePainter.values
-        val firstDayOfWeek: DayOfWeek = mainActivity.settings.firstDayOfWeek
-        val seventhDayOfWeek: DayOfWeek = firstDayOfWeek - 1
-        val sixthDayOfWeek: DayOfWeek = firstDayOfWeek - 2
-        val colors = IntArray(size = 7)
-
-        for (i in 0..6) {
-            colors[i] = when(i + 1) {
-                seventhDayOfWeek.value -> themeValues.primaryColor
-                sixthDayOfWeek.value -> themeValues.secondaryColor
-                else -> themeValues.textColor
-            }
-        }
-        textColors = WeekDayTextColors.of(colors)
-    }
-
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         binding = FragmentWeekBinding.inflate(inflater, container, false)
-        setTheme()
         initDayItems(binding.root, CACHED_DAY_ITEMS_COUNT)
-        adapter = DayListAdapter(dayItems, mainActivity, textColors)
+        adapter = DayListAdapter(dayItems, mainActivity)
         adapter.onItemClick = {
             mainActivity.sharedData.viewedDate = it.date
             mainActivity.setMainFragment(MainFragmentType.DAY)
@@ -135,8 +115,7 @@ class WeekFragment : Fragment() {
                 loadNextDayItems(binding.root, LOADED_DAY_ITEMS_COUNT)
                 adapter.notifyDataSetChanged()
                 recyclerView.scrollToPosition(firstVisiblePos - LOADED_DAY_ITEMS_COUNT)
-            }
-            else if (!recyclerView.canScrollVertically(directionUp)) {
+            } else if (!recyclerView.canScrollVertically(directionUp)) {
                 val lastVisiblePos: Int = llm.findLastVisibleItemPosition()
 
                 loadPrevDayItems(binding.root, LOADED_DAY_ITEMS_COUNT)

@@ -12,12 +12,11 @@ import java.time.LocalDate
 class DayListAdapter(
     private val dayItems: List<DayItem>,
     private val mainActivity: MainActivity,
-    private val textColors: WeekDayTextColors
 ) : RecyclerView.Adapter<DayListAdapter.ViewHolder>() {
     var onItemClick: ((DayItem) -> Unit)? = null
 
-    inner class ViewHolder(binding: FragmentWeekDayBinding)
-        : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+    inner class ViewHolder(binding: FragmentWeekDayBinding) : RecyclerView.ViewHolder(binding.root),
+        View.OnClickListener {
         val dayOfMonthLabel: TextView = binding.lblWeekDayOfMonth
         val dayOfWeekLabel: TextView = binding.lblWeekDayOfWeek
         val layout: LinearLayout = binding.layoutDayWeek
@@ -36,11 +35,14 @@ class DayListAdapter(
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+        val themePainter = mainActivity.themePainter
+        val themeValues = mainActivity.themePainter.values
         val dayItem: DayItem = dayItems[position]
-        val dayOfMonthTextColor: Int = textColors.getTextColorOf(dayItem.date.dayOfWeek)
-        val dayOfWeekTextColor: Int = mainActivity.themePainter.values.textColor
+        val dayOfMonthTextColor: Int = themeValues.getTextColorOf(
+            dayItem.date.dayOfWeek, mainActivity.settings.firstDayOfWeek
+        )
+        val dayOfWeekTextColor: Int = themeValues.textColor
         val viewedDate: LocalDate = mainActivity.sharedData.viewedDate
-
         viewHolder.dataPosition = position
         viewHolder.dayOfMonthLabel.text = dayItem.dayOfMonth
         viewHolder.dayOfMonthLabel.setTextColor(dayOfMonthTextColor)
@@ -49,10 +51,9 @@ class DayListAdapter(
         viewHolder.layout.setOnClickListener(viewHolder)
 
         if (viewedDate == dayItem.date) {
-            mainActivity.themePainter.paintSelectedWeekDayItem(viewHolder.layout)
-        }
-        else {
-            mainActivity.themePainter.paintWeekDayItem(viewHolder.layout)
+            themePainter.paintSelectedWeekDayItem(viewHolder.layout)
+        } else {
+            themePainter.paintWeekDayItem(viewHolder.layout)
         }
     }
 

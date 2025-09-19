@@ -14,17 +14,5 @@ enum class StartingViewType {
         else -> "Error"
     }
 
-    fun toMainFragmentType() = MainFragmentType.from(ordinal)
-
-    companion object {
-        private val VALUES: Array<StartingViewType> = values()
-
-        fun from(ordinal: Int) = try {
-            VALUES[ordinal]
-        } catch (e: IndexOutOfBoundsException) {
-            throw IllegalArgumentException(
-                "Value is out of range of enum ordinals. The value must be in [0, 3] range."
-            )
-        }
-    }
+    fun toMainFragmentType() = MainFragmentType.entries[ordinal]
 }
