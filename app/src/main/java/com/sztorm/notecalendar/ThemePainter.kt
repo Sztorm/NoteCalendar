@@ -3,7 +3,6 @@ package com.sztorm.notecalendar
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.*
-import android.graphics.drawable.DrawableContainer.DrawableContainerState
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
@@ -30,29 +29,6 @@ class ThemePainter(val values: ThemeValues) {
     private lateinit var textSelectHandleLeft: Drawable
     private lateinit var textSelectHandleRight: Drawable
 
-    fun paintWeekDayItem(view: View) {
-        val selector = view.context.getDrawableCompat(R.drawable.selector_week_day)!!
-        val selectorStates = (selector.constantState as DrawableContainerState).children
-        val selectorPressed = selectorStates[0] as GradientDrawable
-        val width = view.context.getPixelsFromDip(3f).toInt()
-
-        selectorPressed.setStroke(width, values.secondaryColor)
-        view.background = selector
-    }
-
-    fun paintSelectedWeekDayItem(view: View) {
-        val selector = view.context.getDrawableCompat(R.drawable.selector_week_day_selected)!!
-        val selectorStates = (selector.constantState as DrawableContainerState).children
-        val selectorPressed = selectorStates[0] as GradientDrawable
-        val selectorUnpressed = selectorStates[1] as GradientDrawable
-        val width = view.context.getPixelsFromDip(3f).toInt()
-
-        selectorPressed.setStroke(width, values.secondaryColor)
-        selectorUnpressed.setStroke(width, values.primaryColor)
-
-        view.background = selector
-    }
-
     fun paintStatusBarAndSetSystemInsets(
         window: Window, navigation: MaterialButtonToggleGroup, fragmentContainer: LinearLayout
     ) {
@@ -73,15 +49,6 @@ class ThemePainter(val values: ThemeValues) {
         }
     }
 
-    fun paintNote(noteHolder: View) {
-        val note = noteHolder.context.getDrawableCompat(R.drawable.bg_note)!! as LayerDrawable
-
-        note.getDrawable(0).setTint(values.noteColor)
-        note.getDrawable(1).setTint(values.noteColorVariant)
-
-        noteHolder.background = note
-    }
-
     fun paintBackArrowIcon(iconView: ImageView) {
         val icon: LayerDrawable = iconView.drawable as LayerDrawable
 
@@ -89,23 +56,10 @@ class ThemePainter(val values: ThemeValues) {
         icon.getDrawable(1).setTint(values.textColor)
     }
 
-    fun paintButton(button: MaterialButton) {
-        button.setTextColor(values.buttonTextColor)
-        button.iconTint = values.buttonIconColorStateList
-        button.backgroundTintList = values.buttonBackgroundColorStateList
-        button.rippleColor = values.buttonRippleColorStateList
-    }
-
     fun paintNavigationButton(button: MaterialButton) {
         button.strokeColor = values.navigationButtonStrokeColorStateList
         button.iconTint = values.navigationButtonIconColorStateList
         button.backgroundTintList = values.navigationButtonBackgroundColorStateList
-        button.rippleColor = values.buttonRippleColorStateList
-    }
-
-    fun paintOutlinedButton(button: MaterialButton) {
-        button.strokeColor = values.outlinedButtonStrokeColorStateList
-        button.iconTint = values.outlinedButtonIconColorStateList
         button.rippleColor = values.buttonRippleColorStateList
     }
 

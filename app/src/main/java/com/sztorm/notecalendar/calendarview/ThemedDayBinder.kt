@@ -9,14 +9,15 @@ import com.sztorm.notecalendar.NoteData
 import com.sztorm.notecalendar.ThemePainter
 import com.sztorm.notecalendar.databinding.CalendarDayBinding
 import com.sztorm.notecalendar.repositories.NoteRepository
+import com.sztorm.notecalendar.yearMonth
 import java.time.LocalDate
-import java.time.Month
+import java.time.YearMonth
 
 class ThemedDayBinder(val mainActivity: MainActivity) : DayBinder<DayViewContainer> {
-    private var cachedMonthNotesList: List<NoteData> = NoteRepository.getByMonth(
-        mainActivity.sharedData.viewedDate.month
+    private var cachedMonthNotesList: List<NoteData> = NoteRepository.getByYearMonth(
+        mainActivity.sharedData.viewedDate.yearMonth
     )
-    private var cachedNotesMonth: Month = mainActivity.sharedData.viewedDate.month
+    private var cachedNotesYearMonth: YearMonth = mainActivity.sharedData.viewedDate.yearMonth
     private val today = LocalDate.now()
 
     override fun create(view: View) = DayViewContainer(CalendarDayBinding.bind(view), mainActivity)
@@ -28,9 +29,9 @@ class ThemedDayBinder(val mainActivity: MainActivity) : DayBinder<DayViewContain
         container.reinit(day)
         textView.text = day.date.dayOfMonth.toString()
 
-        if (day.date.month != cachedNotesMonth) {
-            cachedNotesMonth = day.date.month
-            cachedMonthNotesList = NoteRepository.getByMonth(cachedNotesMonth)
+        if (day.date.yearMonth != cachedNotesYearMonth) {
+            cachedNotesYearMonth = day.date.yearMonth
+            cachedMonthNotesList = NoteRepository.getByYearMonth(cachedNotesYearMonth)
         }
 
         themePainter.paintCalendarDayView(

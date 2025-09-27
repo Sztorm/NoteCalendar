@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.sztorm.notecalendar.NoteCalendarApplication.Companion.BUNDLE_KEY_MAIN_FRAGMENT_TYPE
-import com.sztorm.notecalendar.helpers.AlarmManagerHelper.Companion.setExactAndAllowWhileIdleCompat
 import com.sztorm.notecalendar.repositories.NoteRepository
 import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference
 import timber.log.Timber
