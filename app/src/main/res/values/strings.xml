@@ -108,4 +108,5 @@
     <string name="PrefKey_FirstDayOfWeek" translatable="false">PrefKey_FirstDayOfWeek</string>
     <string name="PrefKey_Licenses" translatable="false">PrefKey_Licenses</string>
     <string name="PrefKey_StartingView" translatable="false">PrefKey_StartingView</string>
+    <string name="Today">Today</string>
 </resources>

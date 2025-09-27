@@ -83,4 +83,5 @@
     <string name="DayView">Widok dnia</string>
     <string name="WeekView">Widok tygodnia</string>
     <string name="MonthView">Widok miesiąca</string>
+    <string name="Today">Dzisiaj</string>
 </resources>
