@@ -542,4 +542,9 @@ fun DayNoteLayout(
             )
         }
     }
+    LaunchedEffect(noteState.value) {
+        if (noteState.value == DayNoteState.Editing) {
+            focusRequester.requestFocus()
+        }
+    }
 }
