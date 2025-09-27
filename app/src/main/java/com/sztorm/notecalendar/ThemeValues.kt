@@ -19,6 +19,11 @@ class ThemeValues(
     @ColorInt val noteTextColor: Int,
     @ColorInt val backgroundColor: Int
 ) {
+    val selectBackgroundColor: Int =
+        if (ColorUtils.calculateLuminance(backgroundColor) < 0.5) 0x40ffffff
+        else 0x40000000
+    val backgroundColorVariant: Int = ColorUtils.blendARGB(
+        backgroundColor, 0xffffffff.toInt(), 0.06f) // TODO: make it modifiable from settigns
     val textHighlightColor: Int = ColorUtils.setAlphaComponent(secondaryColor, 255 / 3)
     val inactiveTextColor: Int = ColorUtils.setAlphaComponent(textColor, 255 / 3)
     val summaryTextColor: Int = ColorUtils.setAlphaComponent(textColor, 210)
