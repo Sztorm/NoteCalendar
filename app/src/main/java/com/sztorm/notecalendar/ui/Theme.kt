@@ -11,6 +11,7 @@ import com.sztorm.notecalendar.ThemeValues
 @Composable
 fun AppTheme(themeValues: ThemeValues, content: @Composable () -> Unit) {
     MaterialTheme(
+        colorScheme = themeValues.colorScheme,
         typography = Typography,
     ) {
         CompositionLocalProvider(

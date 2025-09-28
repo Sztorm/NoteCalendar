@@ -2,7 +2,9 @@ package com.sztorm.notecalendar
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import androidx.compose.ui.graphics.Color as CColor
 import androidx.annotation.ColorInt
+import androidx.compose.material3.darkColorScheme
 import androidx.core.graphics.ColorUtils
 import com.sztorm.notecalendar.helpers.ColorStateListHelper
 import java.time.DayOfWeek
@@ -19,6 +21,10 @@ class ThemeValues(
     @ColorInt val noteTextColor: Int,
     @ColorInt val backgroundColor: Int
 ) {
+    val colorScheme = darkColorScheme().copy(
+        background = CColor(backgroundColor),
+        surface = CColor(backgroundColor)
+    )
     val selectBackgroundColor: Int =
         if (ColorUtils.calculateLuminance(backgroundColor) < 0.5) 0x40ffffff
         else 0x40000000

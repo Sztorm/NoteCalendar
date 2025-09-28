@@ -34,7 +34,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setTheme() {
         themePainter.apply {
-            paintStatusBarAndSetSystemInsets(window, binding.navigation, binding.mainFragmentContainer)
+            paintStatusBarAndSetSystemInsets(
+                window,
+                binding.navigation,
+                binding.mainFragmentContainer
+            )
             paintNavigationButton(binding.btnViewMonth)
             paintNavigationButton(binding.btnViewWeek)
             paintNavigationButton(binding.btnViewDay)
