@@ -14,21 +14,11 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
-import com.sztorm.notecalendar.databinding.CalendarWeekDayBarBinding
-import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getDrawableCompat
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getPixelsFromDip
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.isDarkThemeEnabled
 import com.sztorm.timepicker.TwoStepTimePicker
 
 class ThemePainter(val values: ThemeValues) {
-    // Changing text cursor, select handles programmatically is allowed from API >= 29, so caching
-    // modified shared drawables may help to maintain drawables with changed color in lower API
-    // levels.
-    private lateinit var textCursor: Drawable
-    private lateinit var textSelectHandleMiddle: Drawable
-    private lateinit var textSelectHandleLeft: Drawable
-    private lateinit var textSelectHandleRight: Drawable
-
     fun paintStatusBarAndSetSystemInsets(
         window: Window, navigation: MaterialButtonToggleGroup, fragmentContainer: LinearLayout
     ) {
@@ -66,26 +56,6 @@ class ThemePainter(val values: ThemeValues) {
     fun paintDialogButton(button: MaterialButton) {
         button.setTextColor(values.primaryColor)
         button.rippleColor = values.alertButtonRippleColorStateList
-    }
-
-    fun paintEditText(editText: EditText) {
-        textCursor = editText.context
-            .getDrawableCompat(R.drawable.cursor_edit_text)!!
-        textSelectHandleMiddle = editText.context
-            .getDrawableCompat(R.drawable.text_select_handle_middle)!!
-        textSelectHandleLeft = editText.context
-            .getDrawableCompat(R.drawable.text_select_handle_left)!!
-        textSelectHandleRight = editText.context
-            .getDrawableCompat(R.drawable.text_select_handle_right)!!
-
-        textCursor.setTint(values.secondaryColor)
-        textSelectHandleMiddle.setTint(values.secondaryColor)
-        textSelectHandleLeft.setTint(values.secondaryColor)
-        textSelectHandleRight.setTint(values.secondaryColor)
-        editText.setTextColor(values.noteTextColor)
-        editText.backgroundTintList = ColorStateList.valueOf(values.secondaryColor)
-        editText.highlightColor = values.textHighlightColor
-        editText.invalidate()
     }
 
     fun paintCalendarDayView(
@@ -134,17 +104,6 @@ class ThemePainter(val values: ThemeValues) {
         background.color = backgroundColor
         background.setStroke(strokeWidth, strokeColor)
         textView.setTextColor(textColor)
-    }
-
-    fun paintCaledarDayOfWeekBar(weekDayBinding: CalendarWeekDayBarBinding) {
-        weekDayBinding.root.setBackgroundColor(values.secondaryColor)
-        weekDayBinding.lblFirstDay.setTextColor(values.buttonTextColor)
-        weekDayBinding.lblSecondDay.setTextColor(values.buttonTextColor)
-        weekDayBinding.lblThirdDay.setTextColor(values.buttonTextColor)
-        weekDayBinding.lblFourthDay.setTextColor(values.buttonTextColor)
-        weekDayBinding.lblFifthDay.setTextColor(values.buttonTextColor)
-        weekDayBinding.lblSixthDay.setTextColor(values.buttonTextColor)
-        weekDayBinding.lblSeventhDay.setTextColor(values.buttonTextColor)
     }
 
     fun paintBackground(view: View) {

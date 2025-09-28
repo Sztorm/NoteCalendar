@@ -9,6 +9,8 @@ import androidx.compose.foundation.lazy.LazyListState
 import java.time.LocalDate
 import java.time.Month
 import java.time.YearMonth
+import java.time.format.TextStyle
+import java.util.Locale
 
 val Int.isEven
     get() = (this and 1) == 0
@@ -39,6 +41,9 @@ val LocalDate.yearMonth: YearMonth
 operator fun YearMonth.component1() = year
 
 operator fun YearMonth.component2(): Month = month
+
+fun YearMonth.getDisplayName(style: TextStyle, locale: Locale) =
+    "${month.getDisplayName(style, locale)} $year"
 
 /**
  * API level 31 (S) and greater: Checks if [AlarmManager.canScheduleExactAlarms] then calls
