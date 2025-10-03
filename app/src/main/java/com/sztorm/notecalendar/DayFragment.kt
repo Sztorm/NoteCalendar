@@ -1,7 +1,5 @@
 package com.sztorm.notecalendar
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,10 +13,15 @@ import androidx.compose.animation.core.updateTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,6 +36,7 @@ import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -62,8 +66,11 @@ import com.sztorm.notecalendar.databinding.FragmentDayBinding
 import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedString
 import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedStringGenitiveCase
 import com.sztorm.notecalendar.repositories.NoteRepository
+import com.sztorm.notecalendar.ui.AppTheme
 import timber.log.Timber
 import java.time.LocalDate
+import kotlin.math.absoluteValue
+import kotlin.math.sign
 
 enum class DayNoteState {
     Empty,
@@ -80,10 +87,7 @@ enum class DayNoteTransitionState {
 
 class DayFragment : Fragment {
     private lateinit var binding: FragmentDayBinding
-    private lateinit var swipeListener: SwipeListener
     private val initArgs: Arguments?
-    var note: NoteData? = null
-    var undoNote: NoteData? = null
 
     constructor() : super() {
         initArgs = null
@@ -97,54 +101,88 @@ class DayFragment : Fragment {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         val mainActivity = activity as MainActivity
-        note = NoteRepository.getByDate(mainActivity.sharedData.viewedDate)
         binding = FragmentDayBinding.inflate(inflater, container, false)
         binding.composeView.setContent {
             MaterialTheme {
-                DayLayout(this, mainActivity, initArgs)
+                AppTheme(mainActivity.themePainter.values) {
+                    Surface(modifier = Modifier.fillMaxSize()) {
+                        DayLayout(mainActivity, initArgs)
+                    }
+                }
             }
         }
-        swipeListener = SwipeListener(mainActivity, binding.root.context)
-        @SuppressLint("ClickableViewAccessibility")
-        binding.root.setOnTouchListener(swipeListener)
-
         return binding.root
-    }
-
-    class SwipeListener(
-        private val mainActivity: MainActivity, context: Context
-    ) : OnSwipeListener(context) {
-        override fun onSwipeLeft() {
-            super.onSwipeLeft()
-            val sharedData = mainActivity.sharedData
-            sharedData.viewedDate = sharedData.viewedDate.plusDays(1)
-            mainActivity.setMainFragment(
-                MainFragmentType.DAY, R.anim.anim_in_left, R.anim.anim_out_left
-            )
-        }
-
-        override fun onSwipeRight() {
-            super.onSwipeRight()
-            val sharedData = mainActivity.sharedData
-            sharedData.viewedDate = sharedData.viewedDate.minusDays(1)
-            mainActivity.setMainFragment(
-                MainFragmentType.DAY, R.anim.anim_in_right, R.anim.anim_out_right
-            )
-        }
     }
 }
 
 @Composable
 fun DayLayout(
-    dayFragment: DayFragment,
     mainActivity: MainActivity,
     args: Arguments? = null
 ) {
-    val date: LocalDate = mainActivity.sharedData.viewedDate
+    var prevDate: LocalDate by remember { mutableStateOf(mainActivity.sharedData.viewedDate) }
+    var startDate: LocalDate by remember { mutableStateOf(prevDate) }
+
+    AnimatedContent(
+        targetState = startDate,
+        transitionSpec = {
+            when {
+                prevDate > startDate -> slideInHorizontally(
+                    animationSpec = tween(durationMillis = 400),
+                    initialOffsetX = { -it }
+                ) togetherWith slideOutHorizontally(
+                    animationSpec = tween(durationMillis = 400),
+                    targetOffsetX = { it }
+                )
+
+                else -> slideInHorizontally(
+                    animationSpec = tween(durationMillis = 400),
+                    initialOffsetX = { it }
+                ) togetherWith slideOutHorizontally(
+                    animationSpec = tween(durationMillis = 400),
+                    targetOffsetX = { -it }
+                )
+            }
+        }
+    ) { targetState ->
+        DayPageLayout(
+            draggableModifier = Modifier.draggable(
+                orientation = Orientation.Horizontal,
+                state = rememberDraggableState { },
+                onDragStopped = { velocity ->
+                    if (velocity.absoluteValue > 0.5) {
+                        prevDate = startDate
+                        startDate = startDate.minusDays(velocity.sign.toLong())
+                        mainActivity.sharedData.viewedDate = startDate
+                    }
+                }
+            ),
+            mainActivity = mainActivity,
+            date = targetState,
+            args = args,
+        )
+    }
+}
+
+@Composable
+fun DayPageLayout(
+    modifier: Modifier = Modifier,
+    draggableModifier: Modifier = Modifier,
+    mainActivity: MainActivity,
+    date: LocalDate,
+    args: Arguments? = null
+) {
+    LaunchedEffect(Unit) {
+        mainActivity.sharedData.viewedDate = date
+    }
+    var noteState = remember {
+        mutableStateOf(NoteRepository.getByDate(date))
+    }
+    var undoNoteState: MutableState<NoteData?> = remember { mutableStateOf(null) }
     val themeValues: ThemeValues = mainActivity.themePainter.values
-    val noteState = remember {
+    val dayNoteState = remember {
         mutableStateOf(
-            when (Pair(dayFragment.note != null, args is CreateOrEditNoteRequest)) {
+            when (Pair(noteState.value != null, args is CreateOrEditNoteRequest)) {
                 Pair(true, true) -> DayNoteState.Editing
                 Pair(true, false) -> DayNoteState.Reading
                 Pair(false, true) -> DayNoteState.Adding
@@ -152,52 +190,59 @@ fun DayLayout(
             }
         )
     }
-    val noteTransitionState = when (noteState.value) {
+    val noteTransitionState = when (dayNoteState.value) {
         DayNoteState.Empty -> DayNoteTransitionState.Empty
         DayNoteState.Adding -> DayNoteTransitionState.Adding
         else -> DayNoteTransitionState.Reading
     }
     val focusRequester = remember { FocusRequester() }
-    Column {
-        BasicText(
-            text = date.dayOfMonth.toString(),
-            style = LocalTextStyle.current.copy(
-                color = Color(themeValues.textColor),
-                textAlign = TextAlign.Center,
-            ),
-            autoSize = TextAutoSize.StepBased(maxFontSize = 300.sp, stepSize = 0.1.sp),
-            maxLines = 1,
-            modifier = Modifier
+
+    Column(modifier = modifier) {
+        Column(
+            modifier = draggableModifier
                 .fillMaxWidth()
-                .weight(0.44f)
-                .padding(5.dp)
-        )
-        BasicText(
-            text = date.month.toLocalizedStringGenitiveCase(mainActivity),
-            style = LocalTextStyle.current.copy(
-                color = Color(themeValues.textColor),
-                textAlign = TextAlign.Center,
-            ),
-            autoSize = TextAutoSize.StepBased(stepSize = 0.1.sp),
-            maxLines = 1,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.18f)
-                .padding(5.dp)
-        )
-        BasicText(
-            text = date.dayOfWeek.toLocalizedString(mainActivity),
-            style = LocalTextStyle.current.copy(
-                color = Color(themeValues.textColor),
-                textAlign = TextAlign.Center,
-            ),
-            autoSize = TextAutoSize.StepBased(stepSize = 0.1.sp),
-            maxLines = 1,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.10f)
-                .padding(5.dp)
-        )
+                .weight(0.72f)
+        ) {
+            BasicText(
+                text = date.dayOfMonth.toString(),
+                style = LocalTextStyle.current.copy(
+                    color = Color(themeValues.textColor),
+                    textAlign = TextAlign.Center,
+                ),
+                autoSize = TextAutoSize.StepBased(maxFontSize = 300.sp, stepSize = 0.1.sp),
+                maxLines = 1,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.44f)
+                    .padding(5.dp)
+            )
+            BasicText(
+                text = date.month.toLocalizedStringGenitiveCase(mainActivity),
+                style = LocalTextStyle.current.copy(
+                    color = Color(themeValues.textColor),
+                    textAlign = TextAlign.Center,
+                ),
+                autoSize = TextAutoSize.StepBased(stepSize = 0.1.sp),
+                maxLines = 1,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.18f)
+                    .padding(5.dp)
+            )
+            BasicText(
+                text = date.dayOfWeek.toLocalizedString(mainActivity),
+                style = LocalTextStyle.current.copy(
+                    color = Color(themeValues.textColor),
+                    textAlign = TextAlign.Center,
+                ),
+                autoSize = TextAutoSize.StepBased(stepSize = 0.1.sp),
+                maxLines = 1,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.10f)
+                    .padding(5.dp)
+            )
+        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -249,28 +294,32 @@ fun DayLayout(
                 when (targetState) {
                     DayNoteTransitionState.Empty -> {
                         DayNoteEmptyLayout(
-                            dayFragment,
-                            mainActivity,
-                            noteState
+                            draggableModifier = draggableModifier,
+                            mainActivity = mainActivity,
+                            dayNoteState = dayNoteState,
+                            noteState = noteState,
+                            undoNoteState = undoNoteState
                         )
                     }
 
                     DayNoteTransitionState.Reading -> {
                         DayNoteLayout(
-                            dayFragment,
                             mainActivity,
                             focusRequester,
+                            dayNoteState,
                             noteState,
+                            undoNoteState,
                             modifier = Modifier.graphicsLayer(scaleY = inScaleY)
                         )
                     }
 
                     DayNoteTransitionState.Adding -> {
                         DayNoteAddLayout(
-                            dayFragment,
                             mainActivity,
                             focusRequester,
+                            dayNoteState,
                             noteState,
+                            undoNoteState,
                             modifier = Modifier.graphicsLayer(scaleY = inScaleY)
                         )
                     }
@@ -282,60 +331,67 @@ fun DayLayout(
 
 @Composable
 fun DayNoteEmptyLayout(
-    dayFragment: DayFragment,
+    modifier: Modifier = Modifier,
+    draggableModifier: Modifier,
     mainActivity: MainActivity,
-    noteState: MutableState<DayNoteState>,
-    modifier: Modifier = Modifier
+    dayNoteState: MutableState<DayNoteState>,
+    noteState: MutableState<NoteData?>,
+    undoNoteState: MutableState<NoteData?>,
 ) {
     val themeValues = mainActivity.themePainter.values
-    Row(
-        modifier = modifier.fillMaxSize()
-    ) {
-        ThemedButton(
-            onClick = { noteState.value = DayNoteState.Adding },
-            themeValues = themeValues,
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 10.dp, top = 5.dp, end = 10.dp, bottom = 0.dp),
-            text = stringResource(R.string.AddNote),
-            icon = painterResource(R.drawable.icon_note_add)
-        )
-        val undoNote = dayFragment.undoNote
 
-        if (undoNote != null) {
+    Column(modifier = modifier.fillMaxSize()) {
+        Row(
+            modifier = modifier.fillMaxWidth()
+        ) {
             ThemedButton(
-                onClick = {
-                    val note = undoNote
-                    dayFragment.undoNote = null
-
-                    NoteRepository.add(note)
-
-                    if (mainActivity.notificationManager.tryScheduleNotification(
-                            ScheduleNoteNotificationArguments(note = note)
-                        )
-                    ) {
-                        Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification after note save")
-                    }
-                    dayFragment.note = note
-                    noteState.value = DayNoteState.Reading
-                },
+                onClick = { dayNoteState.value = DayNoteState.Adding },
                 themeValues = themeValues,
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 10.dp, top = 5.dp, end = 10.dp, bottom = 0.dp),
-                text = stringResource(R.string.UndoDeletion),
-                icon = painterResource(R.drawable.icon_undo)
+                text = stringResource(R.string.AddNote),
+                icon = painterResource(R.drawable.icon_note_add)
             )
+            val undoNote = undoNoteState.value
+
+            if (undoNote != null) {
+                ThemedButton(
+                    onClick = {
+                        val note = undoNote
+                        undoNoteState.value = null
+
+                        NoteRepository.add(note)
+
+                        if (mainActivity.notificationManager.tryScheduleNotification(
+                                ScheduleNoteNotificationArguments(note = note)
+                            )
+                        ) {
+                            Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification after note save")
+                        }
+                        noteState.value = note
+                        dayNoteState.value = DayNoteState.Reading
+                    },
+                    themeValues = themeValues,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 10.dp, top = 5.dp, end = 10.dp, bottom = 0.dp),
+                    text = stringResource(R.string.UndoDeletion),
+                    icon = painterResource(R.drawable.icon_undo)
+                )
+            }
         }
+        Spacer(modifier = draggableModifier.fillMaxSize())
     }
 }
 
 @Composable
 fun DayNoteAddLayout(
-    dayFragment: DayFragment,
     mainActivity: MainActivity,
     focusRequester: FocusRequester,
-    noteState: MutableState<DayNoteState>,
+    dayNoteState: MutableState<DayNoteState>,
+    noteState: MutableState<NoteData?>,
+    undoNoteState: MutableState<NoteData?>,
     modifier: Modifier = Modifier
 ) {
     val themeValues = mainActivity.themePainter.values
@@ -365,9 +421,9 @@ fun DayNoteAddLayout(
                     ) {
                         Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification after note save")
                     }
-                    dayFragment.note = noteData
-                    dayFragment.undoNote = null
-                    noteState.value = DayNoteState.Reading
+                    noteState.value = noteData
+                    undoNoteState.value = null
+                    dayNoteState.value = DayNoteState.Reading
                 },
                 themeValues = themeValues,
                 modifier = Modifier
@@ -380,7 +436,7 @@ fun DayNoteAddLayout(
                 onClick = {
                     focusManager.clearFocus()
                     noteTextFieldState = TextFieldState()
-                    noteState.value = DayNoteState.Empty
+                    dayNoteState.value = DayNoteState.Empty
                 },
                 themeValues = themeValues,
                 modifier = Modifier
@@ -407,7 +463,7 @@ fun DayNoteAddLayout(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .then(if (noteState.value == DayNoteState.Empty) Modifier.focusProperties {
+                    .then(if (dayNoteState.value == DayNoteState.Empty) Modifier.focusProperties {
                         canFocus = false
                     } else Modifier)
                     .focusRequester(focusRequester)
@@ -421,16 +477,17 @@ fun DayNoteAddLayout(
 
 @Composable
 fun DayNoteLayout(
-    dayFragment: DayFragment,
     mainActivity: MainActivity,
     focusRequester: FocusRequester,
-    noteState: MutableState<DayNoteState>,
+    dayNoteState: MutableState<DayNoteState>,
+    noteState: MutableState<NoteData?>,
+    undoNoteState: MutableState<NoteData?>,
     modifier: Modifier = Modifier
 ) {
     val themeValues = mainActivity.themePainter.values
     val focusManager = LocalFocusManager.current
     var noteTextFieldState by remember {
-        mutableStateOf(TextFieldState(dayFragment.note?.text ?: ""))
+        mutableStateOf(TextFieldState(noteState.value?.text ?: ""))
     }
     ThemedNote(
         themeValues = themeValues,
@@ -441,17 +498,17 @@ fun DayNoteLayout(
                 .fillMaxWidth()
                 .height(68.dp)
         ) {
-            if (noteState.value == DayNoteState.Editing) {
+            if (dayNoteState.value == DayNoteState.Editing) {
                 ThemedButton(
                     onClick = {
-                        noteState.value = DayNoteState.Reading
+                        dayNoteState.value = DayNoteState.Reading
                         val editedNote: NoteData? = NoteRepository
                             .getByDate(mainActivity.sharedData.viewedDate)
                         if (editedNote != null) {
                             editedNote.date = mainActivity.sharedData.viewedDate.toString()
                             editedNote.text = noteTextFieldState.text.toString()
                             editedNote.save()
-                            dayFragment.note = editedNote
+                            noteState.value = editedNote
 
                             if (mainActivity.notificationManager.tryScheduleNotification(
                                     ScheduleNoteNotificationArguments(note = editedNote)
@@ -471,8 +528,8 @@ fun DayNoteLayout(
                 )
                 ThemedButton(
                     onClick = {
-                        noteState.value = DayNoteState.Reading
-                        noteTextFieldState = TextFieldState(dayFragment.note?.text ?: "")
+                        dayNoteState.value = DayNoteState.Reading
+                        noteTextFieldState = TextFieldState(noteState.value?.text ?: "")
                         focusManager.clearFocus()
                     },
                     themeValues = themeValues,
@@ -485,7 +542,7 @@ fun DayNoteLayout(
             } else {
                 ThemedIconButton(
                     onClick = {
-                        noteState.value = DayNoteState.Editing
+                        dayNoteState.value = DayNoteState.Editing
                         focusRequester.requestFocus()
                     },
                     themeValues = themeValues,
@@ -497,7 +554,7 @@ fun DayNoteLayout(
                 )
                 ThemedIconButton(
                     onClick = {
-                        val note = dayFragment.note
+                        val note = noteState.value
 
                         if (note != null) {
                             NoteRepository.delete(note)
@@ -506,9 +563,9 @@ fun DayNoteLayout(
                             ) {
                                 Timber.i("${LogTags.NOTIFICATIONS} Canceled notification after note deletion")
                             }
-                            dayFragment.undoNote = note
+                            undoNoteState.value = note
                         }
-                        noteState.value = DayNoteState.Empty
+                        dayNoteState.value = DayNoteState.Empty
                         focusManager.clearFocus()
                     },
                     themeValues = themeValues,
@@ -527,7 +584,7 @@ fun DayNoteLayout(
         ) {
             BasicTextField(
                 state = noteTextFieldState,
-                readOnly = noteState.value == DayNoteState.Reading,
+                readOnly = dayNoteState.value == DayNoteState.Reading,
                 lineLimits = TextFieldLineLimits.MultiLine(),
                 textStyle = TextStyle(
                     color = Color(themeValues.noteTextColor),
@@ -542,8 +599,8 @@ fun DayNoteLayout(
             )
         }
     }
-    LaunchedEffect(noteState.value) {
-        if (noteState.value == DayNoteState.Editing) {
+    LaunchedEffect(dayNoteState.value) {
+        if (dayNoteState.value == DayNoteState.Editing) {
             focusRequester.requestFocus()
         }
     }
