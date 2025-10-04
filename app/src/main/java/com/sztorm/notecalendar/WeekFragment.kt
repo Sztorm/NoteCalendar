@@ -7,16 +7,19 @@ import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
@@ -32,11 +35,11 @@ import com.sztorm.notecalendar.WeekViewItem.WeekViewDay
 import com.sztorm.notecalendar.WeekViewItem.WeekViewMonth
 import com.sztorm.notecalendar.components.InfiniteColumn
 import com.sztorm.notecalendar.databinding.FragmentWeekBinding
-import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedString
 import com.sztorm.notecalendar.repositories.NoteRepository
 import com.sztorm.notecalendar.ui.AppTheme
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.format.TextStyle
 import kotlin.math.min
 import kotlin.collections.removeFirst as removeFirstKt
 import kotlin.collections.removeLast as removeLastKt
@@ -51,7 +54,9 @@ class WeekFragment : Fragment() {
         binding = FragmentWeekBinding.inflate(inflater, container, false)
         binding.composeView.setContent {
             AppTheme(mainActivity.themePainter.values) {
-                WeekLayout(mainActivity)
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    WeekLayout(mainActivity)
+                }
             }
         }
         return binding.root
@@ -228,6 +233,7 @@ fun WeekLayout(mainActivity: MainActivity) {
                     )
                 }
                 Row(
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(color = backgroundColor)
@@ -245,35 +251,49 @@ fun WeekLayout(mainActivity: MainActivity) {
                         )
                         .padding(horizontal = 5.dp, vertical = 10.dp)
                 ) {
-                    val dayOfWeekText =
-                        if (item.isToday) {
+                    val dayOfWeekText = when {
+                        item.isToday -> {
                             val dayOfWeekString =
-                                item.date.dayOfWeek.toLocalizedString(mainActivity)
+                                item.date.dayOfWeek
+                                    .getDisplayName(
+                                        TextStyle.FULL_STANDALONE, java.util.Locale.getDefault()
+                                    )
+                                    .replaceFirstChar { it.uppercaseChar() }
                             val todayString =
                                 stringResource(R.string.Today).toLowerCase(Locale.current)
 
                             "$dayOfWeekString ($todayString)"
-                        } else item.date.dayOfWeek.toLocalizedString(mainActivity)
+                        }
+
+                        else -> item.date.dayOfWeek
+                            .getDisplayName(
+                                TextStyle.FULL_STANDALONE, java.util.Locale.getDefault()
+                            )
+                            .replaceFirstChar { it.uppercaseChar() }
+                    }
                     Text(
                         text = item.date.dayOfMonth.toString(),
-                        fontSize = 24.sp,
                         textAlign = TextAlign.Center,
+                        fontSize = 20.sp,
                         color = Color(dayOfMonthTextColor),
                         modifier = Modifier
-                            .width(55.dp)
+                            .fillMaxHeight()
+                            .width(50.dp)
                             .padding(end = 5.dp)
                             .drawWithCache {
+                                val stroke = Stroke(width = 3.dp.toPx())
                                 val width = size.width
                                 val height = size.height + 10.dp.toPx()
                                 val radius = min(width, height) * 0.5f
-                                val stroke = Stroke(width = 4.dp.toPx())
+                                val radiusWithStroke = radius + stroke.width * 0.5f
+                                val secondRadius = radius * 0.8f
 
                                 onDrawBehind {
                                     when {
                                         item.isSelected && item.hasNote -> {
                                             drawCircle(
                                                 color = Color(themeValues.secondaryColor),
-                                                radius = radius
+                                                radius = secondRadius
                                             )
                                             drawCircle(
                                                 color = Color(themeValues.primaryColor),
@@ -285,7 +305,7 @@ fun WeekLayout(mainActivity: MainActivity) {
                                         item.isSelected -> {
                                             drawCircle(
                                                 color = Color(themeValues.secondaryColor),
-                                                radius = radius
+                                                radius = radiusWithStroke
                                             )
                                         }
 
@@ -309,10 +329,10 @@ fun WeekLayout(mainActivity: MainActivity) {
             }
 
             is WeekViewMonth -> {
-                val (year, month) = item.yearMonth
-
                 Text(
-                    text = "${month.toLocalizedString(mainActivity)} $year",
+                    text = item.yearMonth
+                        .getDisplayName(TextStyle.FULL_STANDALONE, java.util.Locale.getDefault())
+                        .replaceFirstChar { it.uppercaseChar() },
                     fontSize = 28.sp,
                     textAlign = TextAlign.Center,
                     color = Color(themeValues.textColor),
