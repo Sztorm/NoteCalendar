@@ -10,9 +10,9 @@
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/composeView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 
-    <com.kizitonwose.calendarview.CalendarView
+    <!--com.kizitonwose.calendarview.CalendarView
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,6 +21,6 @@
         app:cv_maxRowCount="6"
         app:cv_orientation="horizontal"
         app:cv_outDateStyle="endOfRow"
-        app:cv_scrollMode="paged" />
+        app:cv_scrollMode="paged" /-->
 
 </LinearLayout>
