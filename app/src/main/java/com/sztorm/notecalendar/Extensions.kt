@@ -6,6 +6,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.os.Build
 import androidx.compose.foundation.lazy.LazyListState
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.Month
 import java.time.YearMonth
@@ -45,6 +46,30 @@ operator fun YearMonth.component2(): Month = month
 fun YearMonth.getDisplayName(style: TextStyle, locale: Locale) =
     "${month.getDisplayName(style, locale)} $year"
 
+fun YearMonth.getFirstVisibleDay(firstDayOfWeek: DayOfWeek): LocalDate {
+    val firstMonthDay = atDay(1)
+
+    return firstMonthDay.minusDays(
+        ((firstMonthDay.dayOfWeek.value - firstDayOfWeek.value + 7) % 7).toLong()
+    )
+}
+
+fun YearMonth.getLastVisibleDay(firstDayOfWeek: DayOfWeek): LocalDate {
+    val lastMonthDay = atDay(lengthOfMonth())
+
+    return lastMonthDay.plusDays(
+        (((firstDayOfWeek - 1L).value - lastMonthDay.dayOfWeek.value + 7) % 7).toLong()
+    )
+}
+
+fun YearMonth.getVisibleWeeks(firstDayOfWeek: DayOfWeek): Int {
+    val firstDay = getFirstVisibleDay(firstDayOfWeek)
+    val lastDay = getLastVisibleDay(firstDayOfWeek)
+    val days = (lastDay.toEpochDay() - firstDay.toEpochDay()).toInt() + 1
+
+    return days / 7
+}
+
 /**
  * API level 31 (S) and greater: Checks if [AlarmManager.canScheduleExactAlarms] then calls
  * [AlarmManager.setExactAndAllowWhileIdle].
@@ -61,8 +86,10 @@ fun AlarmManager.setExactAndAllowWhileIdleCompat(
             if (canScheduleExactAlarms()) {
                 setExactAndAllowWhileIdle(type, triggerAtMillis, operation)
             }
+
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ->
             setExactAndAllowWhileIdle(type, triggerAtMillis, operation)
+
         else -> setExact(type, triggerAtMillis, operation)
     }
 }
