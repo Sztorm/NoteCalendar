@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,16 +10,5 @@
         android:id="@+id/composeView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <!--com.kizitonwose.calendarview.CalendarView
-        android:id="@+id/calendarView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cv_dayViewResource="@layout/calendar_day"
-        app:cv_inDateStyle="allMonths"
-        app:cv_maxRowCount="6"
-        app:cv_orientation="horizontal"
-        app:cv_outDateStyle="endOfRow"
-        app:cv_scrollMode="paged" /-->
 
 </LinearLayout>

@@ -1,21 +1,16 @@
 package com.sztorm.notecalendar
 
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.graphics.drawable.*
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.*
 import androidx.appcompat.widget.SwitchCompat
-import androidx.core.graphics.ColorUtils
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
-import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getPixelsFromDip
-import com.sztorm.notecalendar.helpers.ContextHelper.Companion.isDarkThemeEnabled
 import com.sztorm.timepicker.TwoStepTimePicker
 
 class ThemePainter(val values: ThemeValues) {
@@ -56,54 +51,6 @@ class ThemePainter(val values: ThemeValues) {
     fun paintDialogButton(button: MaterialButton) {
         button.setTextColor(values.primaryColor)
         button.rippleColor = values.alertButtonRippleColorStateList
-    }
-
-    fun paintCalendarDayView(
-        textView: TextView,
-        isInMonth: Boolean,
-        isSelected: Boolean,
-        isToday: Boolean,
-        hasNote: Boolean
-    ) {
-        val background: GradientDrawable = (textView.background.mutate() as GradientDrawable)
-        val isDarkThemeEnabled: Boolean = textView.context.isDarkThemeEnabled
-        var strokeColor: Int = Color.TRANSPARENT
-        var strokeWidth = 0
-        var textColor: Int = values.textColor
-        var backgroundColor: ColorStateList = values.dayViewButtonColorStateList
-
-        if (!isInMonth) {
-            textColor = values.inactiveTextColor
-
-            if (hasNote) {
-                strokeWidth = textView.context.getPixelsFromDip(4f).toInt()
-                strokeColor = ColorUtils.setAlphaComponent(
-                    if (isDarkThemeEnabled) values.noteColorVariant else values.noteColor, 255 / 3
-                )
-            }
-            if (isToday) {
-                textColor = ColorUtils.setAlphaComponent(values.secondaryColor, 255 / 3)
-            }
-            background.color = backgroundColor
-            background.setStroke(strokeWidth, strokeColor)
-            textView.setTextColor(textColor)
-
-            return
-        }
-        if (hasNote) {
-            strokeWidth = textView.context.getPixelsFromDip(4f).toInt()
-            strokeColor = if (isDarkThemeEnabled) values.noteColorVariant else values.noteColor
-        }
-        if (isToday) {
-            textColor = values.secondaryColor
-        }
-        if (isSelected) {
-            textColor = values.buttonTextColor
-            backgroundColor = values.dayViewSelectedButtonColorStateList
-        }
-        background.color = backgroundColor
-        background.setStroke(strokeWidth, strokeColor)
-        textView.setTextColor(textColor)
     }
 
     fun paintBackground(view: View) {

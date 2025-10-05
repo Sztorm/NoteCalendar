@@ -12,11 +12,4 @@
         <item name="strokeWidth">2dp</item>
         <item name="strokeColor">?attr/colorInactiveItemVariant</item>
     </style>
-    <style name="EditText">
-        <item name="android:textColor">?attr/colorText</item>
-        <item name="android:textCursorDrawable">@drawable/cursor_edit_text</item>
-        <item name="android:textSelectHandle">@drawable/text_select_handle_middle</item>
-        <item name="android:textSelectHandleLeft">@drawable/text_select_handle_left</item>
-        <item name="android:textSelectHandleRight">@drawable/text_select_handle_right</item>
-    </style>
 </resources>
