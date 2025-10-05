@@ -18,6 +18,10 @@ object NoteRepository {
         note.save()
     }
 
+    fun update(note: NoteData) {
+        note.update()
+    }
+
     fun delete(note: NoteData) {
         note.delete()
     }

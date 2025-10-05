@@ -63,14 +63,14 @@ import com.sztorm.notecalendar.components.ThemedButton
 import com.sztorm.notecalendar.components.ThemedIconButton
 import com.sztorm.notecalendar.components.ThemedNote
 import com.sztorm.notecalendar.databinding.FragmentDayBinding
-import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedString
-import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedStringGenitiveCase
 import com.sztorm.notecalendar.repositories.NoteRepository
 import com.sztorm.notecalendar.ui.AppTheme
 import timber.log.Timber
 import java.time.LocalDate
+import java.util.Locale
 import kotlin.math.absoluteValue
 import kotlin.math.sign
+import java.time.format.TextStyle as JTextStyle
 
 enum class DayNoteState {
     Empty,
@@ -122,6 +122,7 @@ fun DayLayout(
 ) {
     var prevDate: LocalDate by remember { mutableStateOf(mainActivity.sharedData.viewedDate) }
     var startDate: LocalDate by remember { mutableStateOf(prevDate) }
+    var args by remember { mutableStateOf(args) }
 
     AnimatedContent(
         targetState = startDate,
@@ -151,6 +152,7 @@ fun DayLayout(
                 state = rememberDraggableState { },
                 onDragStopped = { velocity ->
                     if (velocity.absoluteValue > 0.5) {
+                        args = null
                         prevDate = startDate
                         startDate = startDate.minusDays(velocity.sign.toLong())
                         mainActivity.sharedData.viewedDate = startDate
@@ -217,7 +219,9 @@ fun DayPageLayout(
                     .padding(5.dp)
             )
             BasicText(
-                text = date.month.toLocalizedStringGenitiveCase(mainActivity),
+                text = date.month
+                    .getDisplayName(JTextStyle.FULL, Locale.getDefault())
+                    .replaceFirstChar { it.uppercaseChar() },
                 style = LocalTextStyle.current.copy(
                     color = Color(themeValues.textColor),
                     textAlign = TextAlign.Center,
@@ -230,7 +234,9 @@ fun DayPageLayout(
                     .padding(5.dp)
             )
             BasicText(
-                text = date.dayOfWeek.toLocalizedString(mainActivity),
+                text = date.dayOfWeek
+                    .getDisplayName(JTextStyle.FULL_STANDALONE, Locale.getDefault())
+                    .replaceFirstChar { it.uppercaseChar() },
                 style = LocalTextStyle.current.copy(
                     color = Color(themeValues.textColor),
                     textAlign = TextAlign.Center,
@@ -502,20 +508,18 @@ fun DayNoteLayout(
                 ThemedButton(
                     onClick = {
                         dayNoteState.value = DayNoteState.Reading
-                        val editedNote: NoteData? = NoteRepository
-                            .getByDate(mainActivity.sharedData.viewedDate)
-                        if (editedNote != null) {
-                            editedNote.date = mainActivity.sharedData.viewedDate.toString()
-                            editedNote.text = noteTextFieldState.text.toString()
-                            editedNote.save()
-                            noteState.value = editedNote
+                        val note = NoteData(
+                            date = mainActivity.sharedData.viewedDate.toString(),
+                            text = noteTextFieldState.text.toString()
+                        )
+                        NoteRepository.update(note)
+                        noteState.value = note
 
-                            if (mainActivity.notificationManager.tryScheduleNotification(
-                                    ScheduleNoteNotificationArguments(note = editedNote)
-                                )
-                            ) {
-                                Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification after note edit")
-                            }
+                        if (mainActivity.notificationManager.tryScheduleNotification(
+                                ScheduleNoteNotificationArguments(note = note)
+                            )
+                        ) {
+                            Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification after note edit")
                         }
                         focusManager.clearFocus()
                     },
