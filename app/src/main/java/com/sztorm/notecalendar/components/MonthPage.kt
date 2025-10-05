@@ -1,6 +1,7 @@
 package com.sztorm.notecalendar.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,11 +31,13 @@ fun MonthPage(
     val firstVisibleDay = yearMonth.getFirstVisibleDay(firstDayOfWeek)
     val weeks = yearMonth.getVisibleWeeks(firstDayOfWeek)
 
-    for (i in 0..<weeks) {
-        Row(modifier.fillMaxWidth()) {
-            for (j in 0..<daysInWeek) {
-                val day = firstVisibleDay.plusDays((i * daysInWeek + j).toLong())
-                dayContent(day, Modifier.weight(1f))
+    Column(modifier.fillMaxWidth()) {
+        for (i in 0..<weeks) {
+            Row {
+                for (j in 0..<daysInWeek) {
+                    val day = firstVisibleDay.plusDays((i * daysInWeek + j).toLong())
+                    dayContent(day, Modifier.weight(1f))
+                }
             }
         }
     }

@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,23 +30,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sztorm.notecalendar.components.DayOfWeekBar
+import com.sztorm.notecalendar.components.InfiniteHorizontalPager
 import com.sztorm.notecalendar.components.MonthPage
 import com.sztorm.notecalendar.databinding.FragmentMonthBinding
 import com.sztorm.notecalendar.repositories.NoteRepository
 import com.sztorm.notecalendar.ui.AppTheme
 import java.time.LocalDate
-import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
 
 class MonthFragment : Fragment() {
     private lateinit var binding: FragmentMonthBinding
-    //private lateinit var startMonth: YearMonth
-    //private lateinit var endMonth: YearMonth
-
-    //private fun isNearEdgeOfMonthRange(currentMonth: YearMonth) =
-    //    startMonth > currentMonth.minusMonths(2) ||
-    //        endMonth < currentMonth.plusMonths(2)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -58,34 +54,8 @@ class MonthFragment : Fragment() {
                 }
             }
         }
-        //val calendarView: CalendarView = binding.calendarView
-        //val viewedDate: LocalDate = mainActivity.sharedData.viewedDate
-        //val currentSelectedMonth: YearMonth = YearMonth.of(viewedDate.year, viewedDate.month)
-        //startMonth = currentSelectedMonth.minusMonths(HALF_CACHED_MONTH_COUNT)
-        //endMonth = currentSelectedMonth.plusMonths(HALF_CACHED_MONTH_COUNT)
-        //val firstDayOfWeek: DayOfWeek = mainActivity.settings.firstDayOfWeek
-        //val dayBinder = ThemedDayBinder(mainActivity)
-        //
-        //calendarView.dayBinder = dayBinder
-        //calendarView.setup(startMonth, endMonth, firstDayOfWeek)
-        //calendarView.scrollToMonth(currentSelectedMonth)
-        //calendarView.monthScrollListener = {
-        //    val currentMonth = it.yearMonth
-        //    //val text = "${currentMonth.month.toLocalizedString(mainActivity)} ${currentMonth.year}"
-        //    //binding.lblMonthAndYear.text = text
-        //
-        //    if (isNearEdgeOfMonthRange(currentMonth)) {
-        //        startMonth = currentMonth.minusMonths(HALF_CACHED_MONTH_COUNT)
-        //        endMonth = currentMonth.plusMonths(HALF_CACHED_MONTH_COUNT)
-        //        binding.calendarView.updateMonthRangeAsync(startMonth, endMonth)
-        //    }
-        //}
         return binding.root
     }
-
-    //companion object {
-    //    private const val HALF_CACHED_MONTH_COUNT: Long = 10
-    //}
 }
 
 data class MonthViewDay(
@@ -99,15 +69,16 @@ data class MonthViewDay(
 @Composable
 fun MonthLayout(mainActivity: MainActivity) {
     val themeValues = mainActivity.themePainter.values
-    var currentYearMonth: YearMonth by remember {
-        mutableStateOf(mainActivity.sharedData.viewedDate.yearMonth)
-    }
+    val selectedDateYearMonth = mainActivity.sharedData.viewedDate.yearMonth
     val firstDayOfWeek = mainActivity.settings.firstDayOfWeek
     val today = LocalDate.now()
-
+    var currentYearMonth by remember {
+        mutableStateOf(selectedDateYearMonth)
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
         Text(
             text = currentYearMonth
@@ -127,22 +98,32 @@ fun MonthLayout(mainActivity: MainActivity) {
             textColor = Color(themeValues.buttonTextColor),
             fontSize = 16.sp,
         )
-        //HorizontalPager() { }
-        MonthPage(
-            yearMonth = currentYearMonth,
-            firstDayOfWeek = firstDayOfWeek
-        ) { date, modifier ->
-            DayLayout(
-                modifier,
-                mainActivity,
-                dayData = MonthViewDay(
-                    date = date,
-                    isSelected = mainActivity.sharedData.viewedDate == date,
-                    isToday = date == today,
-                    isInCurrentMonth = date.month == currentYearMonth.month,
-                    hasNote = NoteRepository.getByDate(date) != null
+        InfiniteHorizontalPager(
+            verticalAlignment = Alignment.Top,
+            key = { selectedDateYearMonth.plusMonths(it.toLong()) },
+            onPageChange = { page ->
+                currentYearMonth = selectedDateYearMonth.plusMonths(page.toLong())
+            }
+        ) {
+            val yearMonth = selectedDateYearMonth.plusMonths(it.toLong())
+
+            MonthPage(
+                modifier = Modifier.fillMaxSize(),
+                yearMonth = yearMonth,
+                firstDayOfWeek = firstDayOfWeek
+            ) { date, modifier ->
+                DayLayout(
+                    modifier,
+                    mainActivity,
+                    dayData = MonthViewDay(
+                        date = date,
+                        isSelected = mainActivity.sharedData.viewedDate == date,
+                        isToday = date == today,
+                        isInCurrentMonth = date.month == yearMonth.month,
+                        hasNote = NoteRepository.getByDate(date) != null
+                    )
                 )
-            )
+            }
         }
     }
 }
