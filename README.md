@@ -11,6 +11,24 @@ Minimum Android version: 5.0 (Lollipop, API level 21)
 [<img alt="Get it on IzzyOnDroid" height="80" src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png">](https://apt.izzysoft.de/fdroid/index/apk/com.sztorm.notecalendar)
 [<img alt="Get it on Google Play" height="80" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png">](https://play.google.com/store/apps/details?id=com.sztorm.notecalendar)
 
+## Current state
+
+I'm actively migrating xml views to Jetpack Compose, which can be observed on
+[compose-migration](https://github.com/Sztorm/NoteCalendar/tree/compose-migration) branch.
+
+Jetpack Compose will help me with app maintenance as it's newer, and it doesn't require that much
+Android compatibility code, and code itself tends to be shorter and easier to reason about.
+
+That will also allow me to add more features soon, but now the goal is to migrate whole codebase
+without too much meddling with the current app design.
+
+Progress:
+ * Day view - 90% complete
+ * Week view - 80% complete (differs significantly from current one)
+ * Month view - 90% complete
+ * Settings views - 0% complete
+ * Activity view - 0% complete
+
 ## Screenshots
 
 <img src="assets/01.png" alt="app screenshot 01" width=200 height=411> <img src="assets/02.png" alt="app screenshot 02" width=200 height=411> <img src="assets/03.png" alt="app screenshot 03" width=200 height=411> <img src="assets/04.png" alt="app screenshot 04" width=200 height=411>
@@ -45,6 +63,12 @@ Minimum Android version: 5.0 (Lollipop, API level 21)
 <a href="https://hosted.weblate.org/engage/note-calendar/">
 <img src="https://hosted.weblate.org/widget/note-calendar/multi-auto.svg" alt="Translations state" />
 </a>
+
+When English translation string is `?` that means the translation is optional and will be
+translated automatically. That way specific strings are translated for all languages without manual
+translations.
+You can however add translation for your language for that type of string if the automatic one is
+not the best fit.
 
 You can help with translations on https://hosted.weblate.org/projects/note-calendar/.
 
