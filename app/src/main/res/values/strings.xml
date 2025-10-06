@@ -1,112 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Note Calendar</string>
-    <string name="Save">Save</string>
-    <string name="Cancel">Cancel</string>
     <string name="AddNote">Add note</string>
-    <string name="EditNote">Edit note</string>
-    <string name="DeleteNote">Delete note</string>
-    <string name="UndoDeletion">Undo deletion</string>
-    <string name="Confirm">OK</string>
-    <string name="SetDefault">Set default</string>
+    <string name="App_Name">Note Calendar</string>
+    <string name="April">\?</string>
+    <string name="April_GenitiveCase">\?</string>
+    <string name="August">\?</string>
+    <string name="August_GenitiveCase">\?</string>
+    <string name="BackgroundColor">Background color</string>
+    <string name="ButtonTextColor">Button text color</string>
+    <string name="Cancel">Cancel</string>
     <string name="ColorPicker">Color picker</string>
-    <string name="PrimaryColor">Primary color</string>
-    <string name="SecondaryColor">Secondary color</string>
+    <string name="Confirm">OK</string>
+    <string name="DayView">Day view</string>
+    <string name="December">\?</string>
+    <string name="December_GenitiveCase">\?</string>
+    <string name="DeleteNote">Delete note</string>
+    <string name="EditNote">Edit note</string>
+    <string name="February">\?</string>
+    <string name="February_GenitiveCase">\?</string>
+    <string name="Friday">\?</string>
+    <string name="Friday_Short">\?</string>
     <string name="InactiveItemColor">Inactive item color</string>
     <string name="InactiveItemColorVariant">Inactive item color variant</string>
-    <string name="TextColor">Text color</string>
-    <string name="ButtonTextColor">Button text color</string>
-    <string name="NoteTextColor">Note text color</string>
-    <string name="BackgroundColor">Background color</string>
+    <string name="January">\?</string>
+    <string name="January_GenitiveCase">\?</string>
+    <string name="July">\?</string>
+    <string name="July_GenitiveCase">\?</string>
+    <string name="June">\?</string>
+    <string name="June_GenitiveCase">\?</string>
+    <string name="March">\?</string>
+    <string name="March_GenitiveCase">\?</string>
+    <string name="May">\?</string>
+    <string name="May_GenitiveCase">\?</string>
+    <string name="Monday">\?</string>
+    <string name="Monday_Short">\?</string>
+    <string name="MonthView">Month view</string>
     <string name="NoteColor">Note color</string>
     <string name="NoteColorVariant">Note color variant</string>
-    <string name="January">January</string>
-    <string name="February">February</string>
-    <string name="March">March</string>
-    <string name="April">April</string>
-    <string name="May">May</string>
-    <string name="June">June</string>
-    <string name="July">July</string>
-    <string name="August">August</string>
-    <string name="September">September</string>
-    <string name="October">October</string>
-    <string name="November">November</string>
-    <string name="December">December</string>
-    <string name="abbreviation_Monday">MON</string>
-    <string name="abbreviation_Tuesday">TUE</string>
-    <string name="abbreviation_Wednesday">WED</string>
-    <string name="abbreviation_Thursday">THU</string>
-    <string name="abbreviation_Friday">FRI</string>
-    <string name="abbreviation_Saturday">SAT</string>
-    <string name="abbreviation_Sunday">SUN</string>
-    <string name="lblMonth_January">January</string>
-    <string name="lblMonth_February">February</string>
-    <string name="lblMonth_March">March</string>
-    <string name="lblMonth_April">April</string>
-    <string name="lblMonth_May">May</string>
-    <string name="lblMonth_June">June</string>
-    <string name="lblMonth_July">July</string>
-    <string name="lblMonth_August">August</string>
-    <string name="lblMonth_September">September</string>
-    <string name="lblMonth_October">October</string>
-    <string name="lblMonth_November">November</string>
-    <string name="lblMonth_December">December</string>
-    <string name="lblDayOfWeek_Monday">Monday</string>
-    <string name="lblDayOfWeek_Tuesday">Tuesday</string>
-    <string name="lblDayOfWeek_Wednesday">Wednesday</string>
-    <string name="lblDayOfWeek_Thursday">Thursday</string>
-    <string name="lblDayOfWeek_Friday">Friday</string>
-    <string name="lblDayOfWeek_Saturday">Saturday</string>
-    <string name="lblDayOfWeek_Sunday">Sunday</string>
-    <string name="Notification_Note_Title">Today\'s note</string>
-    <string name="Notification_Note_ChannelName">Notes</string>
+    <string name="NoteTextColor">Note text color</string>
     <string name="Notification_Note_ChannelDescription">Inform about saved note daily.</string>
-    <string name="Settings_Header_Theme">Theme</string>
-    <string name="Settings_Header_Notifications">Notifications</string>
-    <string name="Settings_Header_Notes">Notes</string>
-    <string name="Settings_Header_Other">Other</string>
-    <string name="Settings_Header_CustomTheme">Custom theme</string>
-    <string name="Settings_SetCustomTheme">Set custom theme</string>
-    <string name="Settings_SetLightTheme">Set light theme</string>
-    <string name="Settings_SetDarkTheme">Set dark theme</string>
-    <string name="Settings_SetDefaultTheme">Set default theme</string>
-    <string name="Settings_Summary_SetDefaultTheme">Sets theme based on system settings. If system does not support theming then light theme is set.</string>
-    <string name="Settings_DeleteNotesDateRange">Delete notes from date range</string>
-    <string name="Settings_DeleteAllNotes">Delete all notes</string>
-    <string name="Settings_DeleteAllNotes_Alert_Title">Delete all notes?</string>
-    <string name="Settings_DeleteAllNotes_Alert_Message">This action will delete all notes data. Do you want to continue?</string>
-    <string name="Settings_EnableNotifications">Turn on notifications</string>
-    <string name="Settings_NotificationTime">Notification time</string>
-    <string name="Settings_FirstDayOfWeek">First day of week</string>
-    <string name="Settings_Licenses">Licenses</string>
-    <string name="Settings_StartingView">Starting view</string>
-    <string name="DayView">Day view</string>
-    <string name="WeekView">Week view</string>
-    <string name="MonthView">Month view</string>
+    <string name="Notification_Note_ChannelName">Notes</string>
+    <string name="Notification_Note_Title">Today\'s note</string>
+    <string name="November">\?</string>
+    <string name="November_GenitiveCase">\?</string>
+    <string name="October">\?</string>
+    <string name="October_GenitiveCase">\?</string>
+    <string name="PrefKey_BackgroundColor" translatable="false">PrefKey_BackgroundColor</string>
+    <string name="PrefKey_ButtonTextColor" translatable="false">PrefKey_ButtonTextColor</string>
+    <string name="PrefKey_CategoryNotes" translatable="false">PrefKey_CategoryNotes</string>
+    <string name="PrefKey_CategoryNotifications" translatable="false">PrefKey_CategoryNotifications</string>
+    <string name="PrefKey_CategoryOther" translatable="false">PrefKey_CategoryOther</string>
     <string name="PrefKey_CategoryTheme" translatable="false">PrefKey_CategoryTheme</string>
+    <string name="PrefKey_DeleteAllNotes" translatable="false">PrefKey_DeleteAllNotes</string>
+    <string name="PrefKey_EnableNotifications" translatable="false">PrefKey_EnableNotifications</string>
+    <string name="PrefKey_FirstDayOfWeek" translatable="false">PrefKey_FirstDayOfWeek</string>
     <string name="PrefKey_HeaderCustomTheme" translatable="false">PrefKey_HeaderCustomTheme</string>
-    <string name="PrefKey_PrimaryColor" translatable="false">PrefKey_PrimaryColor</string>
-    <string name="PrefKey_SecondaryColor" translatable="false">PrefKey_SecondaryColor</string>
     <string name="PrefKey_InactiveItemColor" translatable="false">PrefKey_InactiveItemColor</string>
     <string name="PrefKey_InactiveItemColorVariant" translatable="false">PrefKey_InactiveItemColorVariant</string>
-    <string name="PrefKey_TextColor" translatable="false">PrefKey_TextColor</string>
-    <string name="PrefKey_ButtonTextColor" translatable="false">PrefKey_ButtonTextColor</string>
-    <string name="PrefKey_NoteTextColor" translatable="false">PrefKey_NoteTextColor</string>
-    <string name="PrefKey_BackgroundColor" translatable="false">PrefKey_BackgroundColor</string>
+    <string name="PrefKey_Licenses" translatable="false">PrefKey_Licenses</string>
     <string name="PrefKey_NoteColor" translatable="false">PrefKey_NoteColor</string>
     <string name="PrefKey_NoteColorVariant" translatable="false">PrefKey_NoteColorVariant</string>
+    <string name="PrefKey_NoteTextColor" translatable="false">PrefKey_NoteTextColor</string>
+    <string name="PrefKey_NotificationTime" translatable="false">PrefKey_NotificationTime</string>
+    <string name="PrefKey_PrimaryColor" translatable="false">PrefKey_PrimaryColor</string>
+    <string name="PrefKey_SecondaryColor" translatable="false">PrefKey_SecondaryColor</string>
     <string name="PrefKey_SetCustomTheme" translatable="false">PrefKey_SetCustomTheme</string>
-    <string name="PrefKey_SetLightTheme" translatable="false">PrefKey_SetLightTheme</string>
     <string name="PrefKey_SetDarkTheme" translatable="false">PrefKey_SetDarkTheme</string>
     <string name="PrefKey_SetDefaultTheme" translatable="false">PrefKey_SetDefaultTheme</string>
-    <string name="PrefKey_CategoryNotes" translatable="false">PrefKey_CategoryNotes</string>
-    <string name="PrefKey_DeleteAllNotes" translatable="false">PrefKey_DeleteAllNotes</string>
-    <string name="PrefKey_CategoryNotifications" translatable="false">PrefKey_CategoryNotifications</string>
-    <string name="PrefKey_EnableNotifications" translatable="false">PrefKey_EnableNotifications</string>
-    <string name="PrefKey_NotificationTime" translatable="false">PrefKey_NotificationTime</string>
-    <string name="PrefKey_CategoryOther" translatable="false">PrefKey_CategoryOther</string>
-    <string name="PrefKey_FirstDayOfWeek" translatable="false">PrefKey_FirstDayOfWeek</string>
-    <string name="PrefKey_Licenses" translatable="false">PrefKey_Licenses</string>
+    <string name="PrefKey_SetLightTheme" translatable="false">PrefKey_SetLightTheme</string>
     <string name="PrefKey_StartingView" translatable="false">PrefKey_StartingView</string>
-    <string name="Today">Today</string>
+    <string name="PrefKey_TextColor" translatable="false">PrefKey_TextColor</string>
+    <string name="PrimaryColor">Primary color</string>
+    <string name="Saturday">\?</string>
+    <string name="Saturday_Short">\?</string>
+    <string name="Save">Save</string>
+    <string name="SecondaryColor">Secondary color</string>
+    <string name="September">\?</string>
+    <string name="September_GenitiveCase">\?</string>
+    <string name="SetDefault">Set default</string>
+    <string name="Settings_DeleteAllNotes">Delete all notes</string>
+    <string name="Settings_DeleteAllNotes_Alert_Message">This action will delete all notes data. Do you want to continue?</string>
+    <string name="Settings_DeleteAllNotes_Alert_Title">Delete all notes?</string>
+    <string name="Settings_DeleteNotesDateRange">Delete notes from date range</string>
+    <string name="Settings_EnableNotifications">Turn on notifications</string>
+    <string name="Settings_FirstDayOfWeek">First day of week</string>
+    <string name="Settings_Header_CustomTheme">Custom theme</string>
+    <string name="Settings_Header_Notes">Notes</string>
+    <string name="Settings_Header_Notifications">Notifications</string>
+    <string name="Settings_Header_Other">Other</string>
+    <string name="Settings_Header_Theme">Theme</string>
+    <string name="Settings_Licenses">Licenses</string>
+    <string name="Settings_NotificationTime">Notification time</string>
+    <string name="Settings_SetCustomTheme">Set custom theme</string>
+    <string name="Settings_SetDarkTheme">Set dark theme</string>
+    <string name="Settings_SetDefaultTheme">Set default theme</string>
+    <string name="Settings_SetLightTheme">Set light theme</string>
+    <string name="Settings_StartingView">Starting view</string>
+    <string name="Settings_Summary_SetDefaultTheme">Sets theme based on system settings. If system does not support theming then light theme is set.</string>
+    <string name="Sunday">\?</string>
+    <string name="Sunday_Short">\?</string>
+    <string name="TextColor">Text color</string>
+    <string name="Thursday">\?</string>
+    <string name="Thursday_Short">\?</string>
+    <string name="Tuesday">\?</string>
+    <string name="Tuesday_Short">\?</string>
+    <string name="UndoDeletion">Undo deletion</string>
+    <string name="Wednesday">\?</string>
+    <string name="Wednesday_Short">\?</string>
+    <string name="WeekView">Week view</string>
 </resources>
