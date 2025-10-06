@@ -34,6 +34,7 @@ import com.sztorm.notecalendar.components.InfiniteHorizontalPager
 import com.sztorm.notecalendar.components.MonthPage
 import com.sztorm.notecalendar.databinding.FragmentMonthBinding
 import com.sztorm.notecalendar.repositories.NoteRepository
+import com.sztorm.notecalendar.repositories.NoteRepositoryImpl
 import com.sztorm.notecalendar.ui.AppTheme
 import java.time.LocalDate
 import java.time.format.TextStyle
@@ -50,7 +51,10 @@ class MonthFragment : Fragment() {
         binding.composeView.setContent {
             AppTheme(mainActivity.themePainter.values) {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    MonthLayout(mainActivity)
+                    MonthLayout(
+                        mainActivity = mainActivity,
+                        noteRepository = NoteRepositoryImpl
+                    )
                 }
             }
         }
@@ -67,7 +71,7 @@ data class MonthViewDay(
 )
 
 @Composable
-fun MonthLayout(mainActivity: MainActivity) {
+fun MonthLayout(mainActivity: MainActivity, noteRepository: NoteRepository) {
     val themeValues = mainActivity.themePainter.values
     val selectedDateYearMonth = mainActivity.sharedData.viewedDate.yearMonth
     val firstDayOfWeek = mainActivity.settings.firstDayOfWeek
@@ -120,7 +124,7 @@ fun MonthLayout(mainActivity: MainActivity) {
                         isSelected = mainActivity.sharedData.viewedDate == date,
                         isToday = date == today,
                         isInCurrentMonth = date.month == yearMonth.month,
-                        hasNote = NoteRepository.getByDate(date) != null
+                        hasNote = noteRepository.getBy(date) != null
                     )
                 )
             }

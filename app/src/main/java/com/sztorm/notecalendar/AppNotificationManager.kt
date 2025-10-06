@@ -73,7 +73,10 @@ class AppNotificationManager(val mainActivity: MainActivity) {
         )
     }
 
-    fun tryScheduleNotification(args: ScheduleNoteNotificationArguments): Boolean {
+    fun tryScheduleNotification(
+        args: ScheduleNoteNotificationArguments,
+        noteRepository: NoteRepository
+    ): Boolean {
         val settings = mainActivity.settings
         val enabledNotifications: Boolean =
             args.enabledNotifications ?: settings.enabledNotifications
@@ -90,7 +93,9 @@ class AppNotificationManager(val mainActivity: MainActivity) {
                     AppPermissionCode.NOTIFICATIONS
                 ) { isSuccess ->
                     if (isSuccess) {
-                        tryScheduleNotification(args.copy(grantPermissions = false))
+                        tryScheduleNotification(
+                            args.copy(grantPermissions = false), noteRepository
+                        )
                     } else {
                         mainActivity.settings.enabledNotifications = false
                         Timber.i("${LogTags.NOTIFICATIONS} Scheduling failed beacuse notifications permissions are denied (request permission callback).")
@@ -115,7 +120,7 @@ class AppNotificationManager(val mainActivity: MainActivity) {
                 LocalDateTime.of(currentDateTime.toLocalDate(), notificationTime.toLocalTime())
             }
         val note: NoteData? =
-            args.note ?: NoteRepository.getByDate(notificationDateTime.toLocalDate())
+            args.note ?: noteRepository.getBy(notificationDateTime.toLocalDate())
 
         if (note === null || note.date != notificationDateTime.toLocalDate().toString()) {
             Timber.i("${LogTags.NOTIFICATIONS} Scheduling failed beacuse note is invalid.")

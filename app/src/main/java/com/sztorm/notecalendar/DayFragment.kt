@@ -64,6 +64,7 @@ import com.sztorm.notecalendar.components.ThemedIconButton
 import com.sztorm.notecalendar.components.ThemedNote
 import com.sztorm.notecalendar.databinding.FragmentDayBinding
 import com.sztorm.notecalendar.repositories.NoteRepository
+import com.sztorm.notecalendar.repositories.NoteRepositoryImpl
 import com.sztorm.notecalendar.ui.AppTheme
 import timber.log.Timber
 import java.time.LocalDate
@@ -106,7 +107,11 @@ class DayFragment : Fragment {
             MaterialTheme {
                 AppTheme(mainActivity.themePainter.values) {
                     Surface(modifier = Modifier.fillMaxSize()) {
-                        DayLayout(mainActivity, initArgs)
+                        DayLayout(
+                            mainActivity = mainActivity,
+                            noteRepository = NoteRepositoryImpl,
+                            args = initArgs
+                        )
                     }
                 }
             }
@@ -118,7 +123,8 @@ class DayFragment : Fragment {
 @Composable
 fun DayLayout(
     mainActivity: MainActivity,
-    args: Arguments? = null
+    noteRepository: NoteRepository,
+    args: Arguments? = null,
 ) {
     var prevDate: LocalDate by remember { mutableStateOf(mainActivity.sharedData.viewedDate) }
     var startDate: LocalDate by remember { mutableStateOf(prevDate) }
@@ -160,6 +166,7 @@ fun DayLayout(
                 }
             ),
             mainActivity = mainActivity,
+            noteRepository = noteRepository,
             date = targetState,
             args = args,
         )
@@ -171,6 +178,7 @@ fun DayPageLayout(
     modifier: Modifier = Modifier,
     draggableModifier: Modifier = Modifier,
     mainActivity: MainActivity,
+    noteRepository: NoteRepository,
     date: LocalDate,
     args: Arguments? = null
 ) {
@@ -178,7 +186,7 @@ fun DayPageLayout(
         mainActivity.sharedData.viewedDate = date
     }
     var noteState = remember {
-        mutableStateOf(NoteRepository.getByDate(date))
+        mutableStateOf(noteRepository.getBy(date))
     }
     var undoNoteState: MutableState<NoteData?> = remember { mutableStateOf(null) }
     val themeValues: ThemeValues = mainActivity.themePainter.values
@@ -302,6 +310,7 @@ fun DayPageLayout(
                         DayNoteEmptyLayout(
                             draggableModifier = draggableModifier,
                             mainActivity = mainActivity,
+                            noteRepository = noteRepository,
                             dayNoteState = dayNoteState,
                             noteState = noteState,
                             undoNoteState = undoNoteState
@@ -310,23 +319,25 @@ fun DayPageLayout(
 
                     DayNoteTransitionState.Reading -> {
                         DayNoteLayout(
-                            mainActivity,
-                            focusRequester,
-                            dayNoteState,
-                            noteState,
-                            undoNoteState,
-                            modifier = Modifier.graphicsLayer(scaleY = inScaleY)
+                            modifier = Modifier.graphicsLayer(scaleY = inScaleY),
+                            mainActivity = mainActivity,
+                            noteRepository = noteRepository,
+                            focusRequester = focusRequester,
+                            dayNoteState = dayNoteState,
+                            noteState = noteState,
+                            undoNoteState = undoNoteState,
                         )
                     }
 
                     DayNoteTransitionState.Adding -> {
                         DayNoteAddLayout(
-                            mainActivity,
-                            focusRequester,
-                            dayNoteState,
-                            noteState,
-                            undoNoteState,
-                            modifier = Modifier.graphicsLayer(scaleY = inScaleY)
+                            modifier = Modifier.graphicsLayer(scaleY = inScaleY),
+                            mainActivity = mainActivity,
+                            noteRepository = noteRepository,
+                            focusRequester = focusRequester,
+                            dayNoteState = dayNoteState,
+                            noteState = noteState,
+                            undoNoteState = undoNoteState,
                         )
                     }
                 }
@@ -340,6 +351,7 @@ fun DayNoteEmptyLayout(
     modifier: Modifier = Modifier,
     draggableModifier: Modifier,
     mainActivity: MainActivity,
+    noteRepository: NoteRepository,
     dayNoteState: MutableState<DayNoteState>,
     noteState: MutableState<NoteData?>,
     undoNoteState: MutableState<NoteData?>,
@@ -367,10 +379,11 @@ fun DayNoteEmptyLayout(
                         val note = undoNote
                         undoNoteState.value = null
 
-                        NoteRepository.add(note)
+                        noteRepository.add(note)
 
                         if (mainActivity.notificationManager.tryScheduleNotification(
-                                ScheduleNoteNotificationArguments(note = note)
+                                ScheduleNoteNotificationArguments(note = note),
+                                noteRepository
                             )
                         ) {
                             Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification after note save")
@@ -393,12 +406,13 @@ fun DayNoteEmptyLayout(
 
 @Composable
 fun DayNoteAddLayout(
+    modifier: Modifier = Modifier,
     mainActivity: MainActivity,
+    noteRepository: NoteRepository,
     focusRequester: FocusRequester,
     dayNoteState: MutableState<DayNoteState>,
     noteState: MutableState<NoteData?>,
-    undoNoteState: MutableState<NoteData?>,
-    modifier: Modifier = Modifier
+    undoNoteState: MutableState<NoteData?>
 ) {
     val themeValues = mainActivity.themePainter.values
     val focusManager = LocalFocusManager.current
@@ -420,9 +434,10 @@ fun DayNoteAddLayout(
                         date = mainActivity.sharedData.viewedDate.toString(),
                         text = noteTextFieldState.text.toString()
                     )
-                    NoteRepository.add(noteData)
+                    noteRepository.add(noteData)
                     if (mainActivity.notificationManager.tryScheduleNotification(
-                            ScheduleNoteNotificationArguments(note = noteData)
+                            ScheduleNoteNotificationArguments(note = noteData),
+                            noteRepository
                         )
                     ) {
                         Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification after note save")
@@ -483,12 +498,13 @@ fun DayNoteAddLayout(
 
 @Composable
 fun DayNoteLayout(
+    modifier: Modifier = Modifier,
     mainActivity: MainActivity,
+    noteRepository: NoteRepository,
     focusRequester: FocusRequester,
     dayNoteState: MutableState<DayNoteState>,
     noteState: MutableState<NoteData?>,
-    undoNoteState: MutableState<NoteData?>,
-    modifier: Modifier = Modifier
+    undoNoteState: MutableState<NoteData?>
 ) {
     val themeValues = mainActivity.themePainter.values
     val focusManager = LocalFocusManager.current
@@ -512,11 +528,12 @@ fun DayNoteLayout(
                             date = mainActivity.sharedData.viewedDate.toString(),
                             text = noteTextFieldState.text.toString()
                         )
-                        NoteRepository.update(note)
+                        noteRepository.update(note)
                         noteState.value = note
 
                         if (mainActivity.notificationManager.tryScheduleNotification(
-                                ScheduleNoteNotificationArguments(note = note)
+                                ScheduleNoteNotificationArguments(note = note),
+                                noteRepository
                             )
                         ) {
                             Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification after note edit")
@@ -561,7 +578,7 @@ fun DayNoteLayout(
                         val note = noteState.value
 
                         if (note != null) {
-                            NoteRepository.delete(note)
+                            noteRepository.delete(note)
                             if (mainActivity.notificationManager
                                     .tryCancelScheduledNotification(LocalDate.parse(note.date))
                             ) {

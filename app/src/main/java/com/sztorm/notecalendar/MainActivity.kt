@@ -10,6 +10,7 @@ import androidx.core.view.WindowCompat
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.sztorm.notecalendar.NoteCalendarApplication.Companion.BUNDLE_KEY_MAIN_FRAGMENT_TYPE
 import com.sztorm.notecalendar.databinding.ActivityMainBinding
+import com.sztorm.notecalendar.repositories.NoteRepositoryImpl
 import timber.log.Timber
 import java.time.LocalDate
 
@@ -108,7 +109,10 @@ class MainActivity : AppCompatActivity() {
         setNavigationButtonClickListener(binding.btnViewSettings, MainFragmentType.ROOT_SETTINGS)
         setBackButtonPressListener()
         setMainFragmentOnCreate()
-        if (notificationManager.tryScheduleNotification(ScheduleNoteNotificationArguments())) {
+        if (notificationManager.tryScheduleNotification(
+                args = ScheduleNoteNotificationArguments(),
+                noteRepository = NoteRepositoryImpl
+        )) {
             Timber.i(
                 "${LogTags.NOTIFICATIONS} Scheduled notification upon MainActivity creation"
             )

@@ -36,6 +36,7 @@ import com.sztorm.notecalendar.WeekViewItem.WeekViewMonth
 import com.sztorm.notecalendar.components.InfiniteColumn
 import com.sztorm.notecalendar.databinding.FragmentWeekBinding
 import com.sztorm.notecalendar.repositories.NoteRepository
+import com.sztorm.notecalendar.repositories.NoteRepositoryImpl
 import com.sztorm.notecalendar.ui.AppTheme
 import java.time.LocalDate
 import java.time.YearMonth
@@ -55,7 +56,10 @@ class WeekFragment : Fragment() {
         binding.composeView.setContent {
             AppTheme(mainActivity.themePainter.values) {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    WeekLayout(mainActivity)
+                    WeekLayout(
+                        mainActivity = mainActivity,
+                        noteRepository = NoteRepositoryImpl
+                    )
                 }
             }
         }
@@ -183,7 +187,10 @@ tailrec fun MutableList<WeekViewItem>.loadPrevItems(
 }
 
 @Composable
-fun WeekLayout(mainActivity: MainActivity) {
+fun WeekLayout(
+    mainActivity: MainActivity,
+    noteRepository: NoteRepository
+) {
     val themeValues = mainActivity.themePainter.values
     val viewedDate = mainActivity.sharedData.viewedDate
     val cachedItemsCount = 60
@@ -191,7 +198,7 @@ fun WeekLayout(mainActivity: MainActivity) {
     val today = LocalDate.now()
     val isSelected = { date: LocalDate -> date == viewedDate }
     val isToday = { date: LocalDate -> date == today }
-    val hasNote = { date: LocalDate -> NoteRepository.getByDate(date) != null }
+    val hasNote = { date: LocalDate -> noteRepository.getBy(date) != null }
     val days = remember {
         val startDate: LocalDate = viewedDate.minusDays(cachedItemsCount / 2L)
 
