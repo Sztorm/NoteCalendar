@@ -37,8 +37,6 @@ import com.sztorm.notecalendar.repositories.NoteRepository
 import com.sztorm.notecalendar.repositories.NoteRepositoryImpl
 import com.sztorm.notecalendar.ui.AppTheme
 import java.time.LocalDate
-import java.time.format.TextStyle
-import java.util.Locale
 
 class MonthFragment : Fragment() {
     private lateinit var binding: FragmentMonthBinding
@@ -88,9 +86,7 @@ fun MonthLayout(mainActivity: MainActivity, noteRepository: NoteRepository) {
             .verticalScroll(rememberScrollState())
     ) {
         Text(
-            text = currentYearMonth
-                .getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault())
-                .replaceFirstChar { it.uppercaseChar() },
+            text = currentYearMonth.getLocalizedName(),
             fontSize = 38.sp,
             fontWeight = FontWeight.Light,
             color = Color(themeValues.textColor),
@@ -101,6 +97,7 @@ fun MonthLayout(mainActivity: MainActivity, noteRepository: NoteRepository) {
         DayOfWeekBar(
             modifier = Modifier.padding(vertical = 8.dp),
             firstDayOfWeek = firstDayOfWeek,
+            dayOfWeekText = { it.getLocalizedShortName() },
             backgroundColor = Color(themeValues.secondaryColor),
             textColor = Color(themeValues.buttonTextColor),
             fontSize = 16.sp,

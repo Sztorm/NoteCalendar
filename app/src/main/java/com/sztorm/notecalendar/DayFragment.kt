@@ -68,10 +68,8 @@ import com.sztorm.notecalendar.repositories.NoteRepositoryImpl
 import com.sztorm.notecalendar.ui.AppTheme
 import timber.log.Timber
 import java.time.LocalDate
-import java.util.Locale
 import kotlin.math.absoluteValue
 import kotlin.math.sign
-import java.time.format.TextStyle as JTextStyle
 
 enum class DayNoteState {
     Empty,
@@ -227,9 +225,7 @@ fun DayPageLayout(
                     .padding(5.dp)
             )
             BasicText(
-                text = date.month
-                    .getDisplayName(JTextStyle.FULL, Locale.getDefault())
-                    .replaceFirstChar { it.uppercaseChar() },
+                text = date.month.getLocalizedGenitiveCaseName(),
                 style = LocalTextStyle.current.copy(
                     color = Color(themeValues.textColor),
                     textAlign = TextAlign.Center,
@@ -242,9 +238,7 @@ fun DayPageLayout(
                     .padding(5.dp)
             )
             BasicText(
-                text = date.dayOfWeek
-                    .getDisplayName(JTextStyle.FULL_STANDALONE, Locale.getDefault())
-                    .replaceFirstChar { it.uppercaseChar() },
+                text = date.dayOfWeek.getLocalizedName(),
                 style = LocalTextStyle.current.copy(
                     color = Color(themeValues.textColor),
                     textAlign = TextAlign.Center,

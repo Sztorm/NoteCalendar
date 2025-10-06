@@ -24,10 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
@@ -40,7 +37,6 @@ import com.sztorm.notecalendar.repositories.NoteRepositoryImpl
 import com.sztorm.notecalendar.ui.AppTheme
 import java.time.LocalDate
 import java.time.YearMonth
-import java.time.format.TextStyle
 import kotlin.math.min
 import kotlin.collections.removeFirst as removeFirstKt
 import kotlin.collections.removeLast as removeLastKt
@@ -228,17 +224,27 @@ fun WeekLayout(
         onReachBottom = { days.loadNextItems(isSelected, isToday, hasNote, bufferSize) }
     ) { index, item ->
         val backgroundColor = Color(
-            if (index.isEven) themeValues.backgroundColor
-            else themeValues.backgroundColorVariant
+            when {
+                index.isEven -> themeValues.backgroundColor
+                else -> themeValues.backgroundColorVariant
+            }
         )
         when (item) {
             is WeekViewDay -> {
-                val dayOfMonthTextColor: Int = when {
-                    item.isSelected -> themeValues.textColor
-                    else -> themeValues.getTextColorOf(
-                        item.date.dayOfWeek, mainActivity.settings.firstDayOfWeek
-                    )
-                }
+                val dayOfMonthTextColor = Color(
+                    when {
+                        item.isSelected -> themeValues.textColor
+                        else -> themeValues.getTextColorOf(
+                            item.date.dayOfWeek, mainActivity.settings.firstDayOfWeek
+                        )
+                    }
+                )
+                val dayOfWeekTextColor = Color(
+                    when {
+                        item.isToday -> themeValues.secondaryColor
+                        else -> themeValues.textColor
+                    }
+                )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -258,31 +264,11 @@ fun WeekLayout(
                         )
                         .padding(horizontal = 5.dp, vertical = 10.dp)
                 ) {
-                    val dayOfWeekText = when {
-                        item.isToday -> {
-                            val dayOfWeekString =
-                                item.date.dayOfWeek
-                                    .getDisplayName(
-                                        TextStyle.FULL_STANDALONE, java.util.Locale.getDefault()
-                                    )
-                                    .replaceFirstChar { it.uppercaseChar() }
-                            val todayString =
-                                stringResource(R.string.Today).toLowerCase(Locale.current)
-
-                            "$dayOfWeekString ($todayString)"
-                        }
-
-                        else -> item.date.dayOfWeek
-                            .getDisplayName(
-                                TextStyle.FULL_STANDALONE, java.util.Locale.getDefault()
-                            )
-                            .replaceFirstChar { it.uppercaseChar() }
-                    }
                     Text(
                         text = item.date.dayOfMonth.toString(),
                         textAlign = TextAlign.Center,
                         fontSize = 20.sp,
-                        color = Color(dayOfMonthTextColor),
+                        color = dayOfMonthTextColor,
                         modifier = Modifier
                             .fillMaxHeight()
                             .width(50.dp)
@@ -328,18 +314,16 @@ fun WeekLayout(
                             }
                     )
                     Text(
-                        text = dayOfWeekText,
+                        text = item.date.dayOfWeek.getLocalizedName(),
                         fontSize = 24.sp,
-                        color = Color(themeValues.textColor)
+                        color = dayOfWeekTextColor
                     )
                 }
             }
 
             is WeekViewMonth -> {
                 Text(
-                    text = item.yearMonth
-                        .getDisplayName(TextStyle.FULL_STANDALONE, java.util.Locale.getDefault())
-                        .replaceFirstChar { it.uppercaseChar() },
+                    text = item.yearMonth.getLocalizedName(),
                     fontSize = 28.sp,
                     textAlign = TextAlign.Center,
                     color = Color(themeValues.textColor),
