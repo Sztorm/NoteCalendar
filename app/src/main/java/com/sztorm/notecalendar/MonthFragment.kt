@@ -79,6 +79,9 @@ fun MonthLayout(mainActivity: MainActivity, noteRepository: NoteRepository) {
     var currentYearMonth by remember {
         mutableStateOf(selectedDateYearMonth)
     }
+    var notesCache by remember {
+        mutableStateOf(MonthNotesCache(noteRepository, selectedDateYearMonth))
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -106,7 +109,14 @@ fun MonthLayout(mainActivity: MainActivity, noteRepository: NoteRepository) {
             verticalAlignment = Alignment.Top,
             key = { selectedDateYearMonth.plusMonths(it.toLong()) },
             onPageChange = { page ->
+                val prevYearMonth = currentYearMonth
                 currentYearMonth = selectedDateYearMonth.plusMonths(page.toLong())
+
+                notesCache = when {
+                    currentYearMonth > prevYearMonth -> notesCache.nextMonth()
+                    currentYearMonth < prevYearMonth -> notesCache.prevMonth()
+                    else -> notesCache
+                }
             }
         ) {
             val yearMonth = selectedDateYearMonth.plusMonths(it.toLong())
@@ -124,7 +134,7 @@ fun MonthLayout(mainActivity: MainActivity, noteRepository: NoteRepository) {
                         isSelected = mainActivity.sharedData.viewedDate == date,
                         isToday = date == today,
                         isInCurrentMonth = date.month == yearMonth.month,
-                        hasNote = noteRepository.getBy(date) != null
+                        hasNote = notesCache.getBy(date) != null
                     )
                 )
             }
