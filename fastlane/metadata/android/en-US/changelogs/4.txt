@@ -1,0 +1,2 @@
+* Updated app dependencies
+* Fixed visual bug appearing in the week tab.

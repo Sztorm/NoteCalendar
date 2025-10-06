@@ -1,0 +1,3 @@
+* Updated app dependencies and target SDK
+* Fixed notifications
+* Fixed rarely occurring app crashes when note is deleted

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,46 +12,46 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:singleSelection="true"
+        app:checkedButton="@id/btnViewDay"
         app:selectionRequired="true"
-        app:checkedButton="@id/btnViewDay">
+        app:singleSelection="true">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnViewMonth"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:icon="@drawable/icon_calendar_month"
             app:cornerRadius="0dp"
-            style="@style/Widget.App.Button.OutlinedButton.IconOnly" />
+            app:icon="@drawable/icon_calendar_month" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnViewWeek"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:icon="@drawable/icon_calendar_week"
-            style="@style/Widget.App.Button.OutlinedButton.IconOnly" />
+            app:icon="@drawable/icon_calendar_week" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnViewDay"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:icon="@drawable/icon_calendar_day"
-            style="@style/Widget.App.Button.OutlinedButton.IconOnly" />
+            app:icon="@drawable/icon_calendar_day" />
 
         <Button
-            android:enabled="false"
-            android:visibility="invisible"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:enabled="false"
+            android:visibility="invisible" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnViewSettings"
+            style="@style/Widget.App.Button.OutlinedButton.IconOnly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:icon="@drawable/icon_settings"
             app:cornerRadius="0dp"
-            style="@style/Widget.App.Button.OutlinedButton.IconOnly"/>
+            app:icon="@drawable/icon_settings" />
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -60,7 +59,6 @@
         android:id="@+id/mainFragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-    </LinearLayout>
+        android:orientation="vertical" />
 
 </LinearLayout>

@@ -1,7 +1,9 @@
 package com.sztorm.notecalendar
 
 import com.orm.SugarRecord
+import com.orm.dsl.Unique
 
 data class NoteData(
-    var date: String = "",
-    var text: String = "") : SugarRecord()
+    @Unique val date: String = "",
+    val text: String = ""
+) : SugarRecord()

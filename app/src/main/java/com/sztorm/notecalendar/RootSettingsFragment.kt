@@ -13,7 +13,7 @@ import com.sztorm.notecalendar.helpers.PreferenceFragmentCompatHelper.Companion.
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getColorCompat
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getColorFromAttr
 import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedString
-import com.sztorm.notecalendar.repositories.NoteRepository
+import com.sztorm.notecalendar.repositories.NoteRepositoryImpl
 import com.sztorm.notecalendar.themedpreferences.*
 import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference
 import timber.log.Timber
@@ -24,9 +24,6 @@ import java.util.*
 class RootSettingsFragment : PreferenceFragmentCompat() {
     private val mainActivity: MainActivity
         get() = activity as MainActivity
-
-    @Suppress("UNUSED_PARAMETER")
-    fun postInit(args: Arguments?) {}
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         mainActivity.initManagers()
@@ -175,7 +172,7 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
             themePainter.paintDialogButton(positiveButton)
             themePainter.paintDialogButton(negativeButton)
             positiveButton.setOnClickListener {
-                NoteRepository.deleteAll()
+                NoteRepositoryImpl.deleteAll()
                 confirmationDialog.dismiss()
             }
         }
@@ -191,10 +188,11 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
             val value = valueBoxed as Boolean
             if (value) {
                 if (mainActivity.notificationManager.tryScheduleNotification(
-                        ScheduleNoteNotificationArguments(
+                        args = ScheduleNoteNotificationArguments(
                             grantPermissions = true,
                             enabledNotifications = true
-                        )
+                        ),
+                        noteRepository  = NoteRepositoryImpl
                     )
                 ) {
                     Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification when \"Enable notifications\" setting was set to true")
@@ -215,11 +213,12 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
             val value = valueBoxed as TimePickerPreference.Time
 
             if (mainActivity.notificationManager.tryScheduleNotification(
-                    ScheduleNoteNotificationArguments(
+                    args = ScheduleNoteNotificationArguments(
                         grantPermissions = true,
                         enabledNotifications = true,
                         notificationTime = value
                     ),
+                    noteRepository  = NoteRepositoryImpl
                 )
             ) {
                 Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification when \"Notification time\" setting changed")
@@ -252,7 +251,7 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
             mainActivity.settings.startingView.toLocalizedString(mainActivity)
         preference.setOnPreferenceChangeListener { pref, valueBoxed ->
             val value = valueBoxed as String
-            pref.summary = StartingViewType.from(value.toInt()).toLocalizedString(mainActivity)
+            pref.summary = StartingViewType.entries[value.toInt()].toLocalizedString(mainActivity)
             true
         }
     }

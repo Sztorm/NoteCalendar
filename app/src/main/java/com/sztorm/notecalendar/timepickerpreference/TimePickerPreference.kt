@@ -112,7 +112,7 @@ open class TimePickerPreference : Preference, View.OnClickListener {
             }
             onPreferenceChangeListener?.onPreferenceChange(this, preferenceValue)
 
-            val timeValue = v.findViewById(R.id.timeValue) as TextView
+            val timeValue = v.findViewById<TextView>(R.id.timeValue)
             timeValue.text = formatter.format(preferenceValue.toLocalTime())
         }
         dialog.show(mainActivity.supportFragmentManager, null)

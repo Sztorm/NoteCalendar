@@ -12,22 +12,12 @@ enum class MainFragmentType {
     fun createFragment(args: Arguments? = null): Fragment = CREATORS[ordinal](args)
 
     companion object {
-        private val VALUES: Array<MainFragmentType> = values()
         private val CREATORS: Array<(args: Arguments?) -> Fragment> = arrayOf(
-            { args -> DayFragment().apply { postInit(args) } },
-            { args -> WeekFragment().apply { postInit(args) } },
-            { args -> MonthFragment().apply { postInit(args) } },
-            { args -> RootSettingsFragment().apply { postInit(args) } },
-            { args -> CustomThemeSettingsFragment().apply { postInit(args) } }
+            { args -> DayFragment(args) },
+            { args -> WeekFragment() },
+            { args -> MonthFragment() },
+            { args -> RootSettingsFragment() },
+            { args -> CustomThemeSettingsFragment() }
         )
-
-        fun from(ordinal: Int) = try {
-            VALUES[ordinal]
-        } catch (e: IndexOutOfBoundsException) {
-            throw IllegalArgumentException(
-                "Value is out of range of enum ordinals. The " +
-                        "value must be in [0, 4] range."
-            )
-        }
     }
 }

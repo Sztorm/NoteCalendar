@@ -20,9 +20,6 @@ import com.sztorm.notecalendar.themedpreferences.ThemedHeaderPreference
 class CustomThemeSettingsFragment : PreferenceFragmentCompat() {
     private lateinit var mainActivity: MainActivity
 
-    @Suppress("UNUSED_PARAMETER")
-    fun postInit(args: Arguments?) {}
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mainActivity = activity as MainActivity

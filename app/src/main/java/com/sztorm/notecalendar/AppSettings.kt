@@ -1,4 +1,4 @@
-@file:Suppress("MemberVisibilityCanBePrivate", "unused")
+@file:Suppress("MemberVisibilityCanBePrivate")
 
 package com.sztorm.notecalendar
 
@@ -214,6 +214,6 @@ class AppSettings(val context: Context) {
         val key: String = context.getString(R.string.PrefKey_StartingView)
         val value: Int = preferences.getString(key, null)?.toInt() ?: default.ordinal
 
-        return StartingViewType.from(value)
+        return StartingViewType.entries[value]
     }
 }

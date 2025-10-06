@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.sztorm.notecalendar.NoteCalendarApplication.Companion.BUNDLE_KEY_MAIN_FRAGMENT_TYPE
 import com.sztorm.notecalendar.databinding.ActivityMainBinding
+import com.sztorm.notecalendar.repositories.NoteRepositoryImpl
 import timber.log.Timber
 import java.time.LocalDate
 
@@ -33,7 +35,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun setTheme() {
         themePainter.apply {
-            paintWindowStatusBar(window)
+            paintStatusBarAndSetSystemInsets(
+                window,
+                binding.navigation,
+                binding.mainFragmentContainer
+            )
             paintNavigationButton(binding.btnViewMonth)
             paintNavigationButton(binding.btnViewWeek)
             paintNavigationButton(binding.btnViewDay)
@@ -76,7 +82,7 @@ class MainActivity : AppCompatActivity() {
             BUNDLE_KEY_MAIN_FRAGMENT_TYPE, MainFragmentType.DAY.ordinal
         )
         setMainFragment(
-            MainFragmentType.from(mainFragmentTypeOrdinal),
+            MainFragmentType.entries[mainFragmentTypeOrdinal],
             resAnimIn = R.anim.anim_immediate,
             resAnimOut = R.anim.anim_immediate
         )
@@ -91,6 +97,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         binding = ActivityMainBinding.inflate(layoutInflater)
         fragmentSetter = FragmentSetter(supportFragmentManager, R.id.mainFragmentContainer)
         setContentView(binding.root)
@@ -102,7 +109,10 @@ class MainActivity : AppCompatActivity() {
         setNavigationButtonClickListener(binding.btnViewSettings, MainFragmentType.ROOT_SETTINGS)
         setBackButtonPressListener()
         setMainFragmentOnCreate()
-        if (notificationManager.tryScheduleNotification(ScheduleNoteNotificationArguments())) {
+        if (notificationManager.tryScheduleNotification(
+                args = ScheduleNoteNotificationArguments(),
+                noteRepository = NoteRepositoryImpl
+        )) {
             Timber.i(
                 "${LogTags.NOTIFICATIONS} Scheduled notification upon MainActivity creation"
             )

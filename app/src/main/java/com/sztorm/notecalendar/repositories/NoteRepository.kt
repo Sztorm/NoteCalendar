@@ -5,50 +5,51 @@ package com.sztorm.notecalendar.repositories
 import com.orm.SugarRecord
 import com.orm.SugarContext
 import com.sztorm.notecalendar.NoteData
+import com.sztorm.notecalendar.component1
+import com.sztorm.notecalendar.component2
 import java.time.LocalDate
-import java.time.Month
+import java.time.YearMonth
+
+interface NoteRepository {
+    fun add(note: NoteData)
+    fun update(note: NoteData)
+    fun delete(note: NoteData)
+    fun deleteAll(): Int
+    fun getAll(): List<NoteData>
+    fun getBy(date: LocalDate): NoteData?
+    fun getBy(yearMonth: YearMonth): List<NoteData>
+}
 
 /**
- * [NoteRepository] is ready to use when [SugarContext] is initialized.
+ * [NoteRepositoryImpl] is ready to use when [SugarContext] is initialized.
  **/
-object NoteRepository {
-    fun add(note: NoteData) {
+object NoteRepositoryImpl : NoteRepository {
+    override fun add(note: NoteData) {
         note.save()
     }
 
-    fun delete(note: NoteData) {
+    override fun update(note: NoteData) {
+        note.update()
+    }
+
+    override fun delete(note: NoteData) {
         note.delete()
     }
 
-    fun deleteAll() {
-        SugarRecord.deleteAll(NoteData::class.java)
+    override fun deleteAll() = SugarRecord.deleteAll(NoteData::class.java)
+
+    override fun getAll(): List<NoteData> = SugarRecord.listAll(NoteData::class.java)
+
+    override fun getBy(date: LocalDate): NoteData? =
+        SugarRecord
+            .find(NoteData::class.java, "date = ?", date.toString())
+            .firstOrNull()
+
+    override fun getBy(yearMonth: YearMonth): List<NoteData> {
+        val (year, month) = yearMonth
+        val yearString = year.toString().padStart(length = 4, padChar = '0')
+        val monthString = month.value.toString().padStart(length = 2, padChar = '0')
+
+        return SugarRecord.find(NoteData::class.java, "date LIKE ?", "%$yearString-$monthString-%")
     }
-
-    fun getByDate(date: LocalDate): NoteData? {
-        val records: List<NoteData> = SugarRecord.find(
-            NoteData::class.java, "date = ?", date.toString()
-        )
-
-        return if (records.isNotEmpty()) records[0] else null
-    }
-
-    fun getByMonth(month: Month): List<NoteData> {
-        val capacity = 6
-        val argBuilder = StringBuilder(capacity).append("%-")
-        val monthValueRaw = month.value.toString()
-
-        if (monthValueRaw.length == 1) {
-            argBuilder.append('0')
-
-        }
-        argBuilder
-            .append(monthValueRaw)
-            .append("-%")
-
-        return SugarRecord.find(
-            NoteData::class.java, "date LIKE ?", argBuilder.toString()
-        )
-    }
-
-    fun getAll(): List<NoteData> = SugarRecord.listAll(NoteData::class.java)
 }

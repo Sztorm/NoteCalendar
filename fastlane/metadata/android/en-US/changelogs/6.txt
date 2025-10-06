@@ -1,0 +1,2 @@
+* Fixed crashes on device orientation change (and possibly for other configuration changes).
+* Minor UI changes.
