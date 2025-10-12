@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.button.MaterialButton
 import com.mikepenz.aboutlibraries.LibsBuilder
@@ -16,6 +17,7 @@ import com.sztorm.notecalendar.helpers.DateHelper.Companion.toLocalizedString
 import com.sztorm.notecalendar.repositories.NoteRepositoryImpl
 import com.sztorm.notecalendar.themedpreferences.*
 import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.DayOfWeek
 import java.time.temporal.WeekFields
@@ -187,15 +189,17 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
         preference.setOnPreferenceChangeListener { _, valueBoxed ->
             val value = valueBoxed as Boolean
             if (value) {
-                if (mainActivity.notificationManager.tryScheduleNotification(
-                        args = ScheduleNoteNotificationArguments(
-                            grantPermissions = true,
-                            enabledNotifications = true
-                        ),
-                        noteRepository  = NoteRepositoryImpl
-                    )
-                ) {
-                    Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification when \"Enable notifications\" setting was set to true")
+                mainActivity.lifecycleScope.launch {
+                    if (mainActivity.notificationManager.tryScheduleNotification(
+                            args = ScheduleNoteNotificationArguments(
+                                grantPermissions = true,
+                                turnOnNotifications = true
+                            ),
+                            noteRepository  = NoteRepositoryImpl
+                        )
+                    ) {
+                        Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification when \"Enable notifications\" setting was set to true")
+                    }
                 }
             } else {
                 mainActivity.notificationManager.cancelScheduledNotification()
@@ -212,16 +216,18 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
         preference.setOnPreferenceChangeListener { _, valueBoxed ->
             val value = valueBoxed as TimePickerPreference.Time
 
-            if (mainActivity.notificationManager.tryScheduleNotification(
-                    args = ScheduleNoteNotificationArguments(
-                        grantPermissions = true,
-                        enabledNotifications = true,
-                        notificationTime = value
-                    ),
-                    noteRepository  = NoteRepositoryImpl
-                )
-            ) {
-                Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification when \"Notification time\" setting changed")
+            mainActivity.lifecycleScope.launch {
+                if (mainActivity.notificationManager.tryScheduleNotification(
+                        args = ScheduleNoteNotificationArguments(
+                            grantPermissions = true,
+                            turnOnNotifications = true,
+                            notificationTime = value
+                        ),
+                        noteRepository  = NoteRepositoryImpl
+                    )
+                ) {
+                    Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification when \"Notification time\" setting changed")
+                }
             }
             true
         }
@@ -233,8 +239,11 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
         val defaultValue = WeekFields.of(Locale.getDefault()).firstDayOfWeek.value.toString()
         preference.themePainter = mainActivity.themePainter
         preference.setDefaultValue(defaultValue)
-        preference.summary =
-            mainActivity.settings.firstDayOfWeek.toLocalizedString(mainActivity)
+
+        lifecycleScope.launch {
+            preference.summary =
+                mainActivity.settings.getFirstDayOfWeek().toLocalizedString(mainActivity)
+        }
         preference.setOnPreferenceChangeListener { pref, valueBoxed ->
             val value = valueBoxed as String
             pref.summary = DayOfWeek.of(value.toInt()).toLocalizedString(mainActivity)
@@ -247,8 +256,10 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
         val preference: ThemedSimpleListPreference = findPreference(key)!!
         preference.themePainter = mainActivity.themePainter
         preference.setDefaultValue("0")
-        preference.summary =
-            mainActivity.settings.startingView.toLocalizedString(mainActivity)
+        lifecycleScope.launch {
+            preference.summary =
+                mainActivity.settings.getStartingView().toLocalizedString(mainActivity)
+        }
         preference.setOnPreferenceChangeListener { pref, valueBoxed ->
             val value = valueBoxed as String
             pref.summary = StartingViewType.entries[value.toInt()].toLocalizedString(mainActivity)

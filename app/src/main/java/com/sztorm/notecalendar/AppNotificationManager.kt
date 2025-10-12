@@ -6,9 +6,11 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.lifecycleScope
 import com.sztorm.notecalendar.NoteCalendarApplication.Companion.BUNDLE_KEY_MAIN_FRAGMENT_TYPE
 import com.sztorm.notecalendar.repositories.NoteRepository
 import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -73,13 +75,13 @@ class AppNotificationManager(val mainActivity: MainActivity) {
         )
     }
 
-    fun tryScheduleNotification(
+    suspend fun tryScheduleNotification(
         args: ScheduleNoteNotificationArguments,
         noteRepository: NoteRepository
     ): Boolean {
         val settings = mainActivity.settings
         val enabledNotifications: Boolean =
-            args.enabledNotifications ?: settings.enabledNotifications
+            args.turnOnNotifications ?: settings.getTurnOnNotifications()
 
         if (!enabledNotifications) {
             Timber.i("${LogTags.NOTIFICATIONS} Scheduling failed beacuse notifications are disabled.")
@@ -92,24 +94,26 @@ class AppNotificationManager(val mainActivity: MainActivity) {
                 mainActivity.permissionManager.requestUngrantedPermissions(
                     AppPermissionCode.NOTIFICATIONS
                 ) { isSuccess ->
-                    if (isSuccess) {
-                        tryScheduleNotification(
-                            args.copy(grantPermissions = false), noteRepository
-                        )
-                    } else {
-                        mainActivity.settings.enabledNotifications = false
-                        Timber.i("${LogTags.NOTIFICATIONS} Scheduling failed beacuse notifications permissions are denied (request permission callback).")
+                    mainActivity.lifecycleScope.launch {
+                        if (isSuccess) {
+                            tryScheduleNotification(
+                                args.copy(grantPermissions = false), noteRepository
+                            )
+                        } else {
+                            mainActivity.settings.setTurnOnNotifications(false)
+                            Timber.i("${LogTags.NOTIFICATIONS} Scheduling failed beacuse notifications permissions are denied (request permission callback).")
+                        }
                     }
                 }
                 return true
             } else {
-                mainActivity.settings.enabledNotifications = false
+                mainActivity.settings.setTurnOnNotifications(false)
                 Timber.i("${LogTags.NOTIFICATIONS} Scheduling failed beacuse notifications permissions are denied.")
                 return false
             }
         }
         val notificationTime: TimePickerPreference.Time =
-            args.notificationTime ?: settings.notificationTime
+            args.notificationTime ?: settings.getNotificationTime()
         val currentDateTime = LocalDateTime.now()
         val notificationDateTime =
             if ((notificationTime.toLocalTime() <= currentDateTime.toLocalTime())) {
@@ -144,8 +148,9 @@ class AppNotificationManager(val mainActivity: MainActivity) {
         alarmManager.cancel(pendingIntent)
     }
 
-    fun tryCancelScheduledNotification(noteDate: LocalDate): Boolean {
-        val notificationTime: TimePickerPreference.Time = mainActivity.settings.notificationTime
+    suspend fun tryCancelScheduledNotification(noteDate: LocalDate): Boolean {
+        val notificationTime: TimePickerPreference.Time =
+            mainActivity.settings.getNotificationTime()
         val currentDateTime = LocalDateTime.now()
         var notificationDateTime = LocalDateTime.of(
             currentDateTime.toLocalDate(), notificationTime.toLocalTime()

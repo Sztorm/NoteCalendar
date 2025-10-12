@@ -17,8 +17,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -37,6 +40,8 @@ import com.sztorm.notecalendar.repositories.NoteRepositoryImpl
 import com.sztorm.notecalendar.ui.AppTheme
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.temporal.WeekFields
+import java.util.Locale
 import kotlin.math.min
 import kotlin.collections.removeFirst as removeFirstKt
 import kotlin.collections.removeLast as removeLastKt
@@ -195,6 +200,9 @@ fun WeekLayout(
     val isSelected = { date: LocalDate -> date == viewedDate }
     val isToday = { date: LocalDate -> date == today }
     val hasNote = { date: LocalDate -> noteRepository.getBy(date) != null }
+    var firstDayOfWeek by remember {
+        mutableStateOf(WeekFields.of(Locale.getDefault()).firstDayOfWeek)
+    }
     val days = remember {
         val startDate: LocalDate = viewedDate.minusDays(cachedItemsCount / 2L)
 
@@ -215,6 +223,9 @@ fun WeekLayout(
     }
     val dayListState = rememberLazyListState()
 
+    LaunchedEffect(Unit) {
+        firstDayOfWeek = mainActivity.settings.getFirstDayOfWeek()
+    }
     InfiniteColumn(
         modifier = Modifier.fillMaxSize(),
         items = days,
@@ -235,7 +246,7 @@ fun WeekLayout(
                     when {
                         item.isSelected -> themeValues.textColor
                         else -> themeValues.getTextColorOf(
-                            item.date.dayOfWeek, mainActivity.settings.firstDayOfWeek
+                            item.date.dayOfWeek, firstDayOfWeek
                         )
                     }
                 )

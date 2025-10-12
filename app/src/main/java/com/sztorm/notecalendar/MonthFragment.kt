@@ -17,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +38,8 @@ import com.sztorm.notecalendar.repositories.NoteRepository
 import com.sztorm.notecalendar.repositories.NoteRepositoryImpl
 import com.sztorm.notecalendar.ui.AppTheme
 import java.time.LocalDate
+import java.time.temporal.WeekFields
+import java.util.Locale
 
 class MonthFragment : Fragment() {
     private lateinit var binding: FragmentMonthBinding
@@ -72,13 +75,18 @@ data class MonthViewDay(
 fun MonthLayout(mainActivity: MainActivity, noteRepository: NoteRepository) {
     val themeValues = mainActivity.themePainter.values
     val selectedDateYearMonth = mainActivity.sharedData.viewedDate.yearMonth
-    val firstDayOfWeek = mainActivity.settings.firstDayOfWeek
     val today = LocalDate.now()
+    var firstDayOfWeek by remember {
+        mutableStateOf(WeekFields.of(Locale.getDefault()).firstDayOfWeek)
+    }
     var currentYearMonth by remember {
         mutableStateOf(selectedDateYearMonth)
     }
     var notesCache by remember {
         mutableStateOf(MonthNotesCache(noteRepository, selectedDateYearMonth))
+    }
+    LaunchedEffect(Unit) {
+        firstDayOfWeek = mainActivity.settings.getFirstDayOfWeek()
     }
     Column(
         modifier = Modifier

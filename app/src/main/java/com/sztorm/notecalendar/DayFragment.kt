@@ -59,6 +59,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.sztorm.notecalendar.components.ThemedButton
 import com.sztorm.notecalendar.components.ThemedIconButton
 import com.sztorm.notecalendar.components.ThemedNote
@@ -66,6 +67,7 @@ import com.sztorm.notecalendar.databinding.FragmentDayBinding
 import com.sztorm.notecalendar.repositories.NoteRepository
 import com.sztorm.notecalendar.repositories.NoteRepositoryImpl
 import com.sztorm.notecalendar.ui.AppTheme
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.LocalDate
 import kotlin.math.absoluteValue
@@ -372,18 +374,18 @@ fun DayNoteEmptyLayout(
                     onClick = {
                         val note = undoNote
                         undoNoteState.value = null
-
-                        noteRepository.add(note)
-
-                        if (mainActivity.notificationManager.tryScheduleNotification(
-                                ScheduleNoteNotificationArguments(note = note),
-                                noteRepository
-                            )
-                        ) {
-                            Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification after note save")
-                        }
                         noteState.value = note
+                        noteRepository.add(note)
                         dayNoteState.value = DayNoteState.Reading
+                        mainActivity.lifecycleScope.launch {
+                            if (mainActivity.notificationManager.tryScheduleNotification(
+                                    ScheduleNoteNotificationArguments(note = note),
+                                    noteRepository
+                                )
+                            ) {
+                                Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification after note save")
+                            }
+                        }
                     },
                     themeValues = themeValues,
                     modifier = Modifier
@@ -429,16 +431,18 @@ fun DayNoteAddLayout(
                         text = noteTextFieldState.text.toString()
                     )
                     noteRepository.add(noteData)
-                    if (mainActivity.notificationManager.tryScheduleNotification(
-                            ScheduleNoteNotificationArguments(note = noteData),
-                            noteRepository
-                        )
-                    ) {
-                        Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification after note save")
-                    }
                     noteState.value = noteData
                     undoNoteState.value = null
                     dayNoteState.value = DayNoteState.Reading
+                    mainActivity.lifecycleScope.launch {
+                        if (mainActivity.notificationManager.tryScheduleNotification(
+                                ScheduleNoteNotificationArguments(note = noteData),
+                                noteRepository
+                            )
+                        ) {
+                            Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification after note save")
+                        }
+                    }
                 },
                 themeValues = themeValues,
                 modifier = Modifier
@@ -524,15 +528,16 @@ fun DayNoteLayout(
                         )
                         noteRepository.update(note)
                         noteState.value = note
-
-                        if (mainActivity.notificationManager.tryScheduleNotification(
-                                ScheduleNoteNotificationArguments(note = note),
-                                noteRepository
-                            )
-                        ) {
-                            Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification after note edit")
-                        }
                         focusManager.clearFocus()
+                        mainActivity.lifecycleScope.launch {
+                            if (mainActivity.notificationManager.tryScheduleNotification(
+                                    ScheduleNoteNotificationArguments(note = note),
+                                    noteRepository
+                                )
+                            ) {
+                                Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification after note edit")
+                            }
+                        }
                     },
                     themeValues = themeValues,
                     modifier = Modifier
@@ -572,13 +577,15 @@ fun DayNoteLayout(
                         val note = noteState.value
 
                         if (note != null) {
-                            noteRepository.delete(note)
-                            if (mainActivity.notificationManager
-                                    .tryCancelScheduledNotification(LocalDate.parse(note.date))
-                            ) {
-                                Timber.i("${LogTags.NOTIFICATIONS} Canceled notification after note deletion")
-                            }
                             undoNoteState.value = note
+                            noteRepository.delete(note)
+                            mainActivity.lifecycleScope.launch {
+                                if (mainActivity.notificationManager
+                                        .tryCancelScheduledNotification(LocalDate.parse(note.date))
+                                ) {
+                                    Timber.i("${LogTags.NOTIFICATIONS} Canceled notification after note deletion")
+                                }
+                            }
                         }
                         dayNoteState.value = DayNoteState.Empty
                         focusManager.clearFocus()

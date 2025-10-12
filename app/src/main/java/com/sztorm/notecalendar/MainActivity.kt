@@ -7,10 +7,14 @@ import android.widget.Button
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.sztorm.notecalendar.NoteCalendarApplication.Companion.BUNDLE_KEY_MAIN_FRAGMENT_TYPE
 import com.sztorm.notecalendar.databinding.ActivityMainBinding
 import com.sztorm.notecalendar.repositories.NoteRepositoryImpl
+import com.sztorm.notecalendar.repositories.UserPreferencesRepository
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import java.time.LocalDate
 
@@ -19,12 +23,12 @@ class MainActivity : AppCompatActivity() {
         private set
     private lateinit var fragmentSetter: FragmentSetter
     private lateinit var currentFragmentType: MainFragmentType
-    private var _settings: AppSettings? = null
+    private var _settings: UserPreferencesRepository? = null
     private var _permissionManager: AppPermissionManager? = null
     private var _notificationManager: AppNotificationManager? = null
     private var _themePainter: ThemePainter? = null
     val sharedData = AppSharedData(viewedDate = LocalDate.now())
-    val settings: AppSettings
+    val settings: UserPreferencesRepository
         get() = _settings!!
     val permissionManager: AppPermissionManager
         get() = _permissionManager!!
@@ -73,9 +77,11 @@ class MainActivity : AppCompatActivity() {
         val bundle: Bundle? = intent.extras
 
         if (bundle === null) {
-            setMainFragment(
-                settings.getStartingView(StartingViewType.DAY_VIEW).toMainFragmentType()
-            )
+            lifecycleScope.launch {
+                setMainFragment(
+                    settings.getStartingView(StartingViewType.DAY_VIEW).toMainFragmentType()
+                )
+            }
             return
         }
         val mainFragmentTypeOrdinal: Int = bundle.getInt(
@@ -89,10 +95,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun initManagers() {
-        _settings = _settings ?: AppSettings(this)
+        _settings = _settings ?: UserPreferencesRepository(this)
         _permissionManager = _permissionManager ?: AppPermissionManager(this)
         _notificationManager = _notificationManager ?: AppNotificationManager(this)
-        _themePainter = _themePainter ?: ThemePainter(settings.themeValues)
+
+        runBlocking {
+            _themePainter = _themePainter ?: ThemePainter(settings.getThemeValues())
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,13 +118,16 @@ class MainActivity : AppCompatActivity() {
         setNavigationButtonClickListener(binding.btnViewSettings, MainFragmentType.ROOT_SETTINGS)
         setBackButtonPressListener()
         setMainFragmentOnCreate()
-        if (notificationManager.tryScheduleNotification(
-                args = ScheduleNoteNotificationArguments(),
-                noteRepository = NoteRepositoryImpl
-        )) {
-            Timber.i(
-                "${LogTags.NOTIFICATIONS} Scheduled notification upon MainActivity creation"
-            )
+
+        lifecycleScope.launch {
+            if (notificationManager.tryScheduleNotification(
+                    args = ScheduleNoteNotificationArguments(),
+                    noteRepository = NoteRepositoryImpl
+                )) {
+                Timber.i(
+                    "${LogTags.NOTIFICATIONS} Scheduled notification upon MainActivity creation"
+                )
+            }
         }
     }
 
