@@ -13,7 +13,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.button.MaterialButtonToggleGroup
 import com.sztorm.timepicker.TwoStepTimePicker
 
-class ThemePainter(val values: ThemeValues) {
+class ThemePainter(val values: ThemeColors) {
     fun paintStatusBarAndSetSystemInsets(
         window: Window, navigation: MaterialButtonToggleGroup, fragmentContainer: LinearLayout
     ) {

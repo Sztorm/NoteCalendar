@@ -12,7 +12,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.sztorm.notecalendar.PreferenceKeys
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.StartingViewType
-import com.sztorm.notecalendar.ThemeValues
+import com.sztorm.notecalendar.ThemeColors
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getColorFromAttr
 import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference
 import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference.Time.Companion.asTime
@@ -24,13 +24,12 @@ import java.time.temporal.WeekFields
 import java.util.Locale
 
 private const val PREFERENCES_NAME = "com.sztorm.notecalendar_preferences"
+private val Context.preferences: DataStore<Preferences> by preferencesDataStore(
+    name = PREFERENCES_NAME,
+    produceMigrations = { listOf(SharedPreferencesMigration(context = it, PREFERENCES_NAME)) }
+)
 
 class UserPreferencesRepository(private val context: Context) {
-    private val Context.preferences: DataStore<Preferences> by preferencesDataStore(
-        name = PREFERENCES_NAME,
-        produceMigrations = { listOf(SharedPreferencesMigration(context = it, PREFERENCES_NAME)) }
-    )
-
     private suspend inline fun <reified T> getPreference(key: Preferences.Key<T>, default: T): T =
         context.preferences.data
             .catch { exception ->
@@ -81,6 +80,19 @@ class UserPreferencesRepository(private val context: Context) {
     suspend fun getTextColor(
         @ColorInt default: Int = context.getColorFromAttr(R.attr.colorText)
     ): Int = getPreference(PreferenceKeys.TextColor, default)
+
+    suspend fun getThemeColors() = ThemeColors(
+        getPrimaryColor(),
+        getSecondaryColor(),
+        getInactiveItemColor(),
+        getInactiveItemColorVariant(),
+        getNoteColor(),
+        getNoteColorVariant(),
+        getTextColor(),
+        getButtonTextColor(),
+        getNoteTextColor(),
+        getBackgroundColor()
+    )
 
     suspend fun getTurnOnNotifications(default: Boolean = false): Boolean =
         getPreference(PreferenceKeys.TurnOnNotifications, default)
@@ -160,6 +172,20 @@ class UserPreferencesRepository(private val context: Context) {
         }
     }
 
+    suspend fun setThemeColors(themeColors: ThemeColors) =
+        with(themeColors) {
+            setPrimaryColor(primaryColor)
+            setSecondaryColor(secondaryColor)
+            setInactiveItemColor(inactiveItemColor)
+            setInactiveItemColorVariant(inactiveItemColorVariant)
+            setNoteColor(noteColor)
+            setNoteColorVariant(noteColorVariant)
+            setTextColor(textColor)
+            setButtonTextColor(buttonTextColor)
+            setNoteTextColor(noteTextColor)
+            setBackgroundColor(backgroundColor)
+        }
+
     suspend fun setTurnOnNotifications(value: Boolean) {
         context.preferences.edit {
             it[PreferenceKeys.TurnOnNotifications] = value
@@ -183,17 +209,4 @@ class UserPreferencesRepository(private val context: Context) {
             it[PreferenceKeys.StartingView] = value.ordinal.toString()
         }
     }
-
-    suspend fun getThemeValues() = ThemeValues(
-        getPrimaryColor(),
-        getSecondaryColor(),
-        getInactiveItemColor(),
-        getInactiveItemColorVariant(),
-        getNoteColor(),
-        getNoteColorVariant(),
-        getTextColor(),
-        getButtonTextColor(),
-        getNoteTextColor(),
-        getBackgroundColor()
-    )
 }

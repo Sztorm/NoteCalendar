@@ -33,7 +33,7 @@ class ThemedTimePickerPreference : TimePickerPreference, ThemePaintable {
         val dialog: TimePickerDialog = super.createTimePickerDialog()
 
         dialog.addOnViewCreatedListener { view ->
-            val themeValues: ThemeValues = themePainter.values
+            val themeValues: ThemeColors = themePainter.values
             val titleHeader: TextView = view.findViewById(R.id.lblTitle)
             val positiveButton: MaterialButton = view.findViewById(R.id.btnPositive)
             val negativeButton: MaterialButton = view.findViewById(R.id.btnNegative)
@@ -49,7 +49,7 @@ class ThemedTimePickerPreference : TimePickerPreference, ThemePaintable {
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-        val themeValues: ThemeValues = mThemePainter.values
+        val themeValues: ThemeColors = mThemePainter.values
         val title: TextView = holder.findViewById(android.R.id.title) as TextView
         val timeValue = holder.findViewById(R.id.timeValue) as TextView
 

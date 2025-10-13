@@ -6,10 +6,10 @@ import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
-import com.sztorm.notecalendar.ThemeValues
+import com.sztorm.notecalendar.ThemeColors
 
 @Composable
-fun AppTheme(themeValues: ThemeValues, content: @Composable () -> Unit) {
+fun AppTheme(themeValues: ThemeColors, content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = themeValues.colorScheme,
         typography = Typography,

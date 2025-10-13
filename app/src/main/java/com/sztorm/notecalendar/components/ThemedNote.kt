@@ -9,12 +9,12 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Fill
-import com.sztorm.notecalendar.ThemeValues
+import com.sztorm.notecalendar.ThemeColors
 
 @Composable
 fun ThemedNote(
     modifier: Modifier = Modifier,
-    themeValues: ThemeValues,
+    themeValues: ThemeColors,
     content: @Composable (ColumnScope.() -> Unit)
 ) {
     Column(

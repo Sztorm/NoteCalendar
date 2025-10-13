@@ -13,14 +13,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
-import com.sztorm.notecalendar.ThemeValues
+import com.sztorm.notecalendar.ThemeColors
 
 @Composable
 fun ThemedButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    themeValues: ThemeValues,
+    themeValues: ThemeColors,
     content: @Composable (RowScope.() -> Unit)
 ) = Button(
     onClick = onClick,
@@ -40,7 +40,7 @@ fun ThemedButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    themeValues: ThemeValues,
+    themeValues: ThemeColors,
     text: String,
     icon: Painter,
     contentDescription: String = text,
@@ -63,7 +63,7 @@ fun ThemedIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    themeValues: ThemeValues,
+    themeValues: ThemeColors,
     icon: Painter,
     contentDescription: String,
 ) = OutlinedIconButton(

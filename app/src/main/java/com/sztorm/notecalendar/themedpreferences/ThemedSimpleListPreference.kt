@@ -24,7 +24,7 @@ class ThemedSimpleListPreference : SimpleListPreference, ThemePaintable {
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-        val themeValues: ThemeValues = themePainter.values
+        val themeValues: ThemeColors = themePainter.values
         val title: TextView = holder.findViewById(android.R.id.title) as TextView
         val summary: TextView = holder.findViewById(android.R.id.summary) as TextView
 

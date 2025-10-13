@@ -11,7 +11,7 @@ import com.skydoves.colorpickerpreference.ColorPickerPreference
 import com.skydoves.colorpickerview.ColorEnvelope
 import com.sztorm.notecalendar.ThemePaintable
 import com.sztorm.notecalendar.ThemePainter
-import com.sztorm.notecalendar.ThemeValues
+import com.sztorm.notecalendar.ThemeColors
 
 class ThemedColorPickerPreference: ColorPickerPreference, ThemePaintable {
     private lateinit var mThemePainter: ThemePainter
@@ -37,7 +37,7 @@ class ThemedColorPickerPreference: ColorPickerPreference, ThemePaintable {
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-        val themeValues: ThemeValues = mThemePainter.values
+        val themeValues: ThemeColors = mThemePainter.values
         val title: TextView = holder.findViewById(android.R.id.title) as TextView
         val colorBoxGradient = colorBox.background as GradientDrawable
         val colorBoxColor: Int? = colorBoxColor

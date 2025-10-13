@@ -189,7 +189,7 @@ fun DayPageLayout(
         mutableStateOf(noteRepository.getBy(date))
     }
     var undoNoteState: MutableState<NoteData?> = remember { mutableStateOf(null) }
-    val themeValues: ThemeValues = mainActivity.themePainter.values
+    val themeValues = mainActivity.themePainter.values
     val dayNoteState = remember {
         mutableStateOf(
             when (Pair(noteState.value != null, args is CreateOrEditNoteRequest)) {

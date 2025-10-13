@@ -23,7 +23,7 @@ class ThemedSimpleListDialog(override var themePainter: ThemePainter) :
         val layoutList: ListView = root.findViewById(R.id.layoutList)
         val btnPositive: MaterialButton = root.findViewById(R.id.btnPositive)
         val btnNegative: MaterialButton = root.findViewById(R.id.btnNegative)
-        val themeValues: ThemeValues = themePainter.values
+        val themeValues: ThemeColors = themePainter.values
         val adapter = (layoutList.adapter as SimpleListDialogAdapter)
 
         adapter.onCreateViewHolderListener = {

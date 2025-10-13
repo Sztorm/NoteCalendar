@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity() {
         _notificationManager = _notificationManager ?: AppNotificationManager(this)
 
         runBlocking {
-            _themePainter = _themePainter ?: ThemePainter(settings.getThemeValues())
+            _themePainter = _themePainter ?: ThemePainter(settings.getThemeColors())
         }
     }
 

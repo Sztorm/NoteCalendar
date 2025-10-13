@@ -9,7 +9,7 @@ import androidx.core.graphics.ColorUtils
 import com.sztorm.notecalendar.helpers.ColorStateListHelper
 import java.time.DayOfWeek
 
-class ThemeValues(
+class ThemeColors(
     @ColorInt val primaryColor: Int,
     @ColorInt val secondaryColor: Int,
     @ColorInt val inactiveItemColor: Int,
