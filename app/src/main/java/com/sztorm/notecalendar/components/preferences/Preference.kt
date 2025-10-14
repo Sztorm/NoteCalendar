@@ -22,14 +22,15 @@ fun Preference(
     title: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    textColor: Color = Color.Unspecified,
+    titleColor: Color = Color.Unspecified,
     summary: String? = null,
+    summaryColor: Color = Color.Unspecified,
     icon: Painter? = null,
     iconColorFilter: ColorFilter? = null,
     enabled: Boolean = true
 ) {
-    val titleColor = textColor.copy(alpha = if (enabled) 1f else 0.5f)
-    val summaryColor = titleColor.copy(alpha = if (enabled) 0.8f else 0.5f)
+    val titleColor = titleColor.copy(alpha = if (enabled) 1f else 0.4f)
+    val summaryColor = summaryColor.copy(alpha = if (enabled) 0.8f else 0.4f)
 
     Column(
         modifier = modifier
@@ -43,10 +44,8 @@ fun Preference(
             .padding(16.dp)
     ) {
         Row {
-            if (icon == null) {
-                Spacer(Modifier.width(56.dp))
-            } else {
-                Row(Modifier.width(56.dp)) {
+            Column(Modifier.width(56.dp)) {
+                if (icon != null) {
                     Image(
                         painter = icon,
                         contentDescription = null,
