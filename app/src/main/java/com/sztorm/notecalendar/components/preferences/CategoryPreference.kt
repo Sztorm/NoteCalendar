@@ -32,54 +32,51 @@ fun CategoryPreference(
 ) {
     val summaryColor = summaryColor.copy(alpha = 0.8f)
 
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.fillMaxWidth()
     ) {
-        Row(
+        Column(Modifier.width(56.dp)) {
+            if (icon != null) {
+                Image(
+                    painter = icon,
+                    contentDescription = null,
+                    colorFilter = iconColorFilter
+                )
+            }
+        }
+        Column(
             modifier = modifier
-                .fillMaxWidth()
                 .padding(
-                    horizontal = 16.dp,
-                    vertical = 4.dp
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = 16.dp,
+                    bottom = 4.dp,
                 )
         ) {
-            Row(
-                modifier = Modifier
-                    .width(56.dp)
-                    .align(Alignment.CenterVertically)
-            ) {
-                if (icon != null) {
-                    Image(
-                        painter = icon,
-                        contentDescription = null,
-                        colorFilter = iconColorFilter
-                    )
-                }
+            Row {
+                Text(
+                    text = title,
+                    color = titleColor,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                )
             }
-            Column {
+            if (summary != null) {
                 Row {
                     Text(
-                        text = title,
-                        color = titleColor,
+                        text = summary,
+                        color = summaryColor,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
                         fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium
+                        lineHeight = 16.sp
                     )
-                }
-                if (summary != null) {
-                    Row {
-                        Text(
-                            text = summary,
-                            color = summaryColor,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
-                            fontSize = 14.sp,
-                            lineHeight = 16.sp
-                        )
-                    }
                 }
             }
         }
+    }
+    Column {
         content(enabled)
     }
 }

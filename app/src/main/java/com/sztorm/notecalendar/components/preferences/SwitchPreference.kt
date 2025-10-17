@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -39,6 +38,7 @@ fun SwitchPreference(
     val titleColor = textColor.copy(alpha = if (enabled) 1f else 0.5f)
     val summaryColor = titleColor.copy(alpha = if (enabled) 0.8f else 0.5f)
     val interactionSource = remember { MutableInteractionSource() }
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
@@ -54,7 +54,6 @@ fun SwitchPreference(
             )
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-
         Column(modifier = Modifier.weight(1f)) {
             Row {
                 Column(Modifier.width(56.dp)) {
@@ -66,20 +65,23 @@ fun SwitchPreference(
                         )
                     }
                 }
-                Text(
-                    text = title,
-                    color = titleColor
-                )
-            }
-            if (summary != null) {
-                Row {
-                    Spacer(Modifier.width(56.dp))
-                    Text(
-                        text = summary,
-                        color = summaryColor,
-                        fontSize = 14.sp,
-                        lineHeight = 16.sp
-                    )
+                Column {
+                    Row {
+                        Text(
+                            text = title,
+                            color = titleColor
+                        )
+                    }
+                    if (summary != null) {
+                        Row {
+                            Text(
+                                text = summary,
+                                color = summaryColor,
+                                fontSize = 14.sp,
+                                lineHeight = 16.sp
+                            )
+                        }
+                    }
                 }
             }
         }
