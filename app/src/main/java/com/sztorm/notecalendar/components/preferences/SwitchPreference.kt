@@ -45,9 +45,10 @@ fun SwitchPreference(
             .fillMaxWidth()
             .then(
                 when (enabled && onCheckedChange != null) {
-                    true -> Modifier.clickable(onClick = {
-                        onCheckedChange(!checked)
-                    }, interactionSource = interactionSource)
+                    true -> Modifier.clickable(
+                        onClick = { onCheckedChange(!checked) },
+                        interactionSource = interactionSource
+                    )
 
                     false -> Modifier
                 }

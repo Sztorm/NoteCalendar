@@ -244,7 +244,7 @@ fun WeekLayout(
             is WeekViewDay -> {
                 val dayOfMonthTextColor = Color(
                     when {
-                        item.isSelected -> themeValues.textColor
+                        item.isSelected -> themeValues.buttonTextColor
                         else -> themeValues.getTextColorOf(
                             item.date.dayOfWeek, firstDayOfWeek
                         )
