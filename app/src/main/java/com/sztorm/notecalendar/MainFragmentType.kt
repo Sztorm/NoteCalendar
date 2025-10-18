@@ -6,6 +6,7 @@ enum class MainFragmentType {
     DAY,
     WEEK,
     MONTH,
+    ROOT_SETTINGS2,
     ROOT_SETTINGS,
     CUSTOM_THEME_SETTINGS;
 
@@ -16,6 +17,7 @@ enum class MainFragmentType {
             { args -> DayFragment(args) },
             { args -> WeekFragment() },
             { args -> MonthFragment() },
+            { args -> RootSettingsFragment2() },
             { args -> RootSettingsFragment() },
             { args -> CustomThemeSettingsFragment() }
         )

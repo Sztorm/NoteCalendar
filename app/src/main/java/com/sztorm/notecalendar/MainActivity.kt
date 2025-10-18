@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity() {
             paintNavigationButton(binding.btnViewMonth)
             paintNavigationButton(binding.btnViewWeek)
             paintNavigationButton(binding.btnViewDay)
+            paintNavigationButton(binding.btnViewSettings2)
             paintNavigationButton(binding.btnViewSettings)
             paintBackground(binding.root)
         }
@@ -115,6 +116,7 @@ class MainActivity : AppCompatActivity() {
         setNavigationButtonClickListener(binding.btnViewDay, MainFragmentType.DAY)
         setNavigationButtonClickListener(binding.btnViewWeek, MainFragmentType.WEEK)
         setNavigationButtonClickListener(binding.btnViewMonth, MainFragmentType.MONTH)
+        setNavigationButtonClickListener(binding.btnViewSettings2, MainFragmentType.ROOT_SETTINGS2)
         setNavigationButtonClickListener(binding.btnViewSettings, MainFragmentType.ROOT_SETTINGS)
         setBackButtonPressListener()
         setMainFragmentOnCreate()
@@ -171,6 +173,7 @@ class MainActivity : AppCompatActivity() {
             R.id.btnViewDay,
             R.id.btnViewWeek,
             R.id.btnViewMonth,
+            R.id.btnViewSettings2,
             R.id.btnViewSettings,
             R.id.btnViewSettings
         )
