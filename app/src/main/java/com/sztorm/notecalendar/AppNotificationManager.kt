@@ -9,7 +9,6 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.lifecycleScope
 import com.sztorm.notecalendar.NoteCalendarApplication.Companion.BUNDLE_KEY_MAIN_FRAGMENT_TYPE
 import com.sztorm.notecalendar.repositories.NoteRepository
-import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.LocalDate
@@ -112,16 +111,16 @@ class AppNotificationManager(val mainActivity: MainActivity) {
                 return false
             }
         }
-        val notificationTime: TimePickerPreference.Time =
+        val notificationTime =
             args.notificationTime ?: settings.getNotificationTime()
         val currentDateTime = LocalDateTime.now()
         val notificationDateTime =
-            if ((notificationTime.toLocalTime() <= currentDateTime.toLocalTime())) {
+            if ((notificationTime <= currentDateTime.toLocalTime())) {
                 LocalDateTime.of(
-                    currentDateTime.toLocalDate().plusDays(1), notificationTime.toLocalTime()
+                    currentDateTime.toLocalDate().plusDays(1), notificationTime
                 )
             } else {
-                LocalDateTime.of(currentDateTime.toLocalDate(), notificationTime.toLocalTime())
+                LocalDateTime.of(currentDateTime.toLocalDate(), notificationTime)
             }
         val note: NoteData? =
             args.note ?: noteRepository.getBy(notificationDateTime.toLocalDate())
@@ -149,13 +148,13 @@ class AppNotificationManager(val mainActivity: MainActivity) {
     }
 
     suspend fun tryCancelScheduledNotification(noteDate: LocalDate): Boolean {
-        val notificationTime: TimePickerPreference.Time =
+        val notificationTime =
             mainActivity.settings.getNotificationTime()
         val currentDateTime = LocalDateTime.now()
         var notificationDateTime = LocalDateTime.of(
-            currentDateTime.toLocalDate(), notificationTime.toLocalTime()
+            currentDateTime.toLocalDate(), notificationTime
         )
-        if (notificationTime.toLocalTime() <= currentDateTime.toLocalTime()) {
+        if (notificationTime <= currentDateTime.toLocalTime()) {
             notificationDateTime = notificationDateTime.plusDays(1)
         }
         if (notificationDateTime.toLocalDate() != noteDate) {

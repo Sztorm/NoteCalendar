@@ -20,6 +20,7 @@ import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.DayOfWeek
+import java.time.LocalTime
 import java.time.temporal.WeekFields
 import java.util.*
 
@@ -221,7 +222,7 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
                         args = ScheduleNoteNotificationArguments(
                             grantPermissions = true,
                             turnOnNotifications = true,
-                            notificationTime = value
+                            notificationTime = LocalTime.of(value.hour, value.minute)
                         ),
                         noteRepository  = NoteRepositoryImpl
                     )

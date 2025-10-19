@@ -14,12 +14,11 @@ import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.StartingViewType
 import com.sztorm.notecalendar.ThemeColors
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getColorFromAttr
-import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference
-import com.sztorm.notecalendar.timepickerpreference.TimePickerPreference.Time.Companion.asTime
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.time.DayOfWeek
+import java.time.LocalTime
 import java.time.temporal.WeekFields
 import java.util.Locale
 
@@ -28,6 +27,10 @@ private val Context.preferences: DataStore<Preferences> by preferencesDataStore(
     name = PREFERENCES_NAME,
     produceMigrations = { listOf(SharedPreferencesMigration(context = it, PREFERENCES_NAME)) }
 )
+
+private const val HOUR_BITS: Int = 0b00000000_00000000_00000000_00011111
+private const val HOUR_BITS_SIZE: Int = 5
+private const val MINUTE_BITS: Int = 0b00000000_00000000_00000111_11100000
 
 class UserPreferencesRepository(private val context: Context) {
     private suspend inline fun <reified T> getPreference(key: Preferences.Key<T>, default: T): T =
@@ -40,6 +43,15 @@ class UserPreferencesRepository(private val context: Context) {
             }
             .map { it[key] ?: default }
             .first()
+
+    private fun Int.asLocalTime(): LocalTime {
+        val hour = this and HOUR_BITS
+        val minute = (this and MINUTE_BITS) shr HOUR_BITS_SIZE
+
+        return LocalTime.of(hour, minute)
+    }
+
+    private fun LocalTime.asInt(): Int = hour or (minute shl HOUR_BITS_SIZE)
 
     suspend fun getBackgroundColor(
         @ColorInt default: Int = context.getColorFromAttr(R.attr.colorBackground)
@@ -103,9 +115,8 @@ class UserPreferencesRepository(private val context: Context) {
         .let { DayOfWeek.of(it.toInt()) }
 
     suspend fun getNotificationTime(
-        default: TimePickerPreference.Time = TimePickerPreference.Companion.DEFAULT_TIME
-    ): TimePickerPreference.Time =
-        getPreference(PreferenceKeys.NotificationTime, default.asInt()).asTime()
+        default: LocalTime = LocalTime.of(8, 0)
+    ): LocalTime = getPreference(PreferenceKeys.NotificationTime, default.asInt()).asLocalTime()
 
     suspend fun getStartingView(
         default: StartingViewType = StartingViewType.DAY_VIEW
@@ -198,7 +209,7 @@ class UserPreferencesRepository(private val context: Context) {
         }
     }
 
-    suspend fun setNotificationTime(value: TimePickerPreference.Time) {
+    suspend fun setNotificationTime(value: LocalTime) {
         context.preferences.edit {
             it[PreferenceKeys.NotificationTime] = value.asInt()
         }
