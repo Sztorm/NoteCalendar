@@ -3,15 +3,12 @@ package com.sztorm.notecalendar.components.preferences
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.RadioButton
@@ -27,11 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 
 @Composable
@@ -39,12 +34,12 @@ fun <V> ListPreference(
     title: String,
     options: List<Pair<String, V>>,
     initialSelectedOptionIndex: Int,
-    onAccept: (Int, V) -> Unit,
+    onConfirm: (Int, V) -> Unit,
     modifier: Modifier = Modifier,
-    onDismiss: (Int, V) -> Unit = { i, v -> },
-    dialogColors: CardColors = CardDefaults.cardColors(),
+    onDismiss: ((Int, V) -> Unit)? = null,
     titleColor: Color = Color.Unspecified,
     summaryColor: Color = Color.Unspecified,
+    dialogColors: CardColors = CardDefaults.cardColors(),
     buttonColor: Color = Color.Unspecified,
     icon: Painter? = null,
     iconColorFilter: ColorFilter? = null,
@@ -104,98 +99,61 @@ fun <V> ListPreference(
         }
     }
     if (openDialog) {
-        Dialog(
-            onDismissRequest = {
+        ConfirmationDialog(
+            onConfirm = {
+                openDialog = false
+                onConfirm(selectedIndex, selectedValue)
+            },
+            onDismiss = {
                 openDialog = false
                 selectedIndex = initialSelectedOptionIndex
                 selectedValue = options[initialSelectedOptionIndex].second
+                onDismiss?.invoke(selectedIndex, selectedValue)
             },
             properties = DialogProperties(
                 dismissOnBackPress = true,
                 dismissOnClickOutside = true,
                 usePlatformDefaultWidth = false
-            )
+            ),
+            dialogColors = dialogColors,
+            textButtonColor = buttonColor
         ) {
-            Card(
-                shape = RoundedCornerShape(32.dp),
-                colors = dialogColors,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(32.dp)
-            ) {
-                Column(Modifier.padding(8.dp)) {
-                    Row(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            text = title,
-                            color = titleColor,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Medium
+            Row(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = title,
+                    color = titleColor,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            for (i in options.indices) {
+                val (name, value) = options[i]
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(
+                            onClick = {
+                                selectedIndex = i
+                                selectedValue = value
+                            },
+                            indication = null,
+                            interactionSource = optionInteractionSources[i]
                         )
-                    }
-                    for (i in options.indices) {
-                        val (name, value) = options[i]
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable(
-                                    onClick = {
-                                        selectedIndex = i
-                                        selectedValue = value
-                                    },
-                                    indication = null,
-                                    interactionSource = optionInteractionSources[i]
-                                )
-                        ) {
-                            RadioButton(
-                                selected = i == selectedIndex,
-                                onClick = {
-                                    selectedIndex = i
-                                    selectedValue = value
-                                },
-                                interactionSource = optionInteractionSources[i]
-                            )
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Text(
-                                text = name,
-                                color = titleColor
-                            )
-                        }
-                    }
-                    Row(
-                        horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp, horizontal = 16.dp)
-                    ) {
-                        Text(
-                            text = stringResource(android.R.string.cancel),
-                            color = buttonColor,
-                            modifier = Modifier
-                                .clickable(
-                                    onClick = {
-                                        openDialog = false
-                                        selectedIndex = initialSelectedOptionIndex
-                                        selectedValue = options[initialSelectedOptionIndex].second
-                                        onDismiss(selectedIndex, selectedValue)
-                                    }
-                                )
-                                .padding(vertical = 8.dp, horizontal = 16.dp)
-                        )
-                        Text(
-                            text = stringResource(android.R.string.ok),
-                            color = buttonColor,
-                            modifier = Modifier
-                                .clickable(
-                                    onClick = {
-                                        openDialog = false
-                                        onAccept(selectedIndex, selectedValue)
-                                    }
-                                )
-                                .padding(vertical = 8.dp, horizontal = 16.dp)
-                        )
-                    }
+                ) {
+                    RadioButton(
+                        selected = i == selectedIndex,
+                        onClick = {
+                            selectedIndex = i
+                            selectedValue = value
+                        },
+                        interactionSource = optionInteractionSources[i]
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Text(
+                        text = name,
+                        color = titleColor
+                    )
                 }
             }
         }

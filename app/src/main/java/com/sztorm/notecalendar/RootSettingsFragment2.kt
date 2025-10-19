@@ -246,7 +246,7 @@ fun RootSettingsLayout(mainActivity: MainActivity, noteRepository: NoteRepositor
                 title = stringResource(R.string.Settings_FirstDayOfWeek),
                 options = DayOfWeek.entries.map { it.getLocalizedName() to it },
                 initialSelectedOptionIndex = firstDayOfWeekIndexPair.second,
-                onAccept = { index, value ->
+                onConfirm = { index, value ->
                     firstDayOfWeekIndexPair = Pair(value, index)
                     mainActivity.lifecycleScope.launch {
                         mainActivity.settings.setFirstDayOfWeek(value)
@@ -265,7 +265,7 @@ fun RootSettingsLayout(mainActivity: MainActivity, noteRepository: NoteRepositor
                 title = stringResource(R.string.Settings_StartingView),
                 options = StartingViewType.entries.map { it.getLocalizedName() to it },
                 initialSelectedOptionIndex = startingViewIndexPair.second,
-                onAccept = { index, value ->
+                onConfirm = { index, value ->
                     startingViewIndexPair = Pair(value, index)
                     mainActivity.lifecycleScope.launch {
                         mainActivity.settings.setStartingView(value)
