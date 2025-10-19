@@ -29,6 +29,7 @@ import com.sztorm.notecalendar.components.preferences.CategoryPreference
 import com.sztorm.notecalendar.components.preferences.ListPreference
 import com.sztorm.notecalendar.components.preferences.Preference
 import com.sztorm.notecalendar.components.preferences.SwitchPreference
+import com.sztorm.notecalendar.components.preferences.TimePickerPreference
 import com.sztorm.notecalendar.databinding.FragmentRootSettings2Binding
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getColorCompat
 import com.sztorm.notecalendar.helpers.ContextHelper.Companion.getColorFromAttr
@@ -38,6 +39,7 @@ import com.sztorm.notecalendar.ui.AppTheme
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.DayOfWeek
+import java.time.LocalTime
 import java.time.temporal.WeekFields
 import java.util.Locale
 
@@ -120,6 +122,9 @@ fun RootSettingsLayout(mainActivity: MainActivity, noteRepository: NoteRepositor
     var startingViewIndexPair by remember {
         mutableStateOf(Pair(StartingViewType.DAY_VIEW, 0))
     }
+    var notificationTime by remember {
+        mutableStateOf(LocalTime.of(8, 0))
+    }
     LaunchedEffect(Unit) {
         turnOnNotifications = mainActivity.settings.getTurnOnNotifications()
         firstDayOfWeekIndexPair = mainActivity.settings
@@ -128,6 +133,7 @@ fun RootSettingsLayout(mainActivity: MainActivity, noteRepository: NoteRepositor
         startingViewIndexPair = mainActivity.settings
             .getStartingView()
             .let { it to it.ordinal }
+        notificationTime = mainActivity.settings.getNotificationTime()
     }
     Column(
         modifier = Modifier
@@ -208,8 +214,8 @@ fun RootSettingsLayout(mainActivity: MainActivity, noteRepository: NoteRepositor
                 checked = turnOnNotifications,
                 onCheckedChange = {
                     turnOnNotifications = it
-                    if (it) {
-                        mainActivity.lifecycleScope.launch {
+                    mainActivity.lifecycleScope.launch {
+                        if (it) {
                             if (mainActivity.notificationManager.tryScheduleNotification(
                                     args = ScheduleNoteNotificationArguments(
                                         grantPermissions = true,
@@ -220,22 +226,27 @@ fun RootSettingsLayout(mainActivity: MainActivity, noteRepository: NoteRepositor
                             ) {
                                 Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification when \"Enable notifications\" setting was set to true")
                             }
+                        } else {
+                            mainActivity.notificationManager.cancelScheduledNotification()
+                            Timber.i("${LogTags.NOTIFICATIONS} Canceled notification when \"Enable notifications\" setting was set to false")
                         }
-                    } else {
-                        mainActivity.notificationManager.cancelScheduledNotification()
-                        Timber.i("${LogTags.NOTIFICATIONS} Canceled notification when \"Enable notifications\" setting was set to false")
+                        mainActivity.settings.setTurnOnNotifications(it)
                     }
                 },
                 textColor = Color(themeValues.textColor),
                 enabled = enabled,
             )
-            Preference(
+            TimePickerPreference(
                 title = stringResource(R.string.Settings_NotificationTime),
                 titleColor = Color(themeValues.textColor),
+                initialTime = notificationTime,
+                onConfirm = { notificationTime = it },
+                buttonColor = Color(themeValues.primaryColor),
+                dialogColors = CardDefaults.cardColors().copy(
+                    containerColor = Color(themeValues.backgroundColor),
+                    contentColor = Color(themeValues.backgroundColor),
+                ),
                 enabled = enabled && turnOnNotifications,
-                onClick = {
-
-                }
             )
         }
         CategoryPreference(

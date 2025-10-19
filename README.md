@@ -24,9 +24,9 @@ without too much meddling with the current app design.
 
 ### Current Progress:
  * Day view - 90% complete
- * Week view - 80% complete (differs significantly from current one)
+ * Week view - 80% complete (differs significantly from the current one)
  * Month view - 90% complete
- * Settings views - 0% complete
+ * Settings views - 50% complete
  * Activity view - 0% complete
 
 ## Screenshots
