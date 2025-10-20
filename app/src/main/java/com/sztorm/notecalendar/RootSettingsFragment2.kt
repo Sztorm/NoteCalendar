@@ -33,6 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import com.mikepenz.aboutlibraries.LibsBuilder
 import com.sztorm.notecalendar.components.preferences.CategoryPreference
 import com.sztorm.notecalendar.components.preferences.ColorPickerPreference
+import com.sztorm.notecalendar.components.preferences.ConfirmationPreference
 import com.sztorm.notecalendar.components.preferences.ListPreference
 import com.sztorm.notecalendar.components.preferences.Preference
 import com.sztorm.notecalendar.components.preferences.SubpreferenceScreen
@@ -248,13 +249,24 @@ fun RootSettingsLayout(
             title = stringResource(R.string.Settings_Header_Notes),
             titleColor = Color(themeValues.secondaryColor)
         ) { enabled ->
-            Preference(
+            ConfirmationPreference(
                 title = stringResource(R.string.Settings_DeleteAllNotes),
+                dialogTitle = stringResource(R.string.Settings_DeleteAllNotes_Alert_Title),
+                dialogMessage = stringResource(R.string.Settings_DeleteAllNotes_Alert_Message),
+                onConfirm = {
+                    noteRepository.deleteAll()
+                    mainActivity.notificationManager.cancelScheduledNotification()
+                    Timber.i("${LogTags.NOTIFICATIONS} Canceled notification when \"delete all notes\" was confirmed.")
+                },
                 titleColor = Color(themeValues.textColor),
+                dialogTitleColor = Color(themeValues.textColor),
+                dialogMessageColor = Color(themeValues.textColor),
+                dialogButtonColor = Color(themeValues.primaryColor),
+                dialogColors = CardDefaults.cardColors().copy(
+                    containerColor = Color(themeValues.backgroundColor),
+                    contentColor = Color(themeValues.backgroundColor),
+                ),
                 enabled = enabled,
-                onClick = {
-
-                }
             )
             // TODO: Settings_DeleteNotesDateRange (Datepicker)
         }
@@ -277,11 +289,11 @@ fun RootSettingsLayout(
                                     noteRepository = noteRepository
                                 )
                             ) {
-                                Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification when \"Enable notifications\" setting was set to true")
+                                Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification when \"Turn on notifications\" was set to true.")
                             }
                         } else {
                             mainActivity.notificationManager.cancelScheduledNotification()
-                            Timber.i("${LogTags.NOTIFICATIONS} Canceled notification when \"Enable notifications\" setting was set to false")
+                            Timber.i("${LogTags.NOTIFICATIONS} Canceled notification when \"Turn on notifications\" was set to false.")
                         }
                         mainActivity.settings.setTurnOnNotifications(it)
                     }

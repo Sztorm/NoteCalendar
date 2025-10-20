@@ -30,6 +30,28 @@ import androidx.compose.ui.window.DialogProperties
 import java.time.LocalTime
 import java.util.Locale
 
+private fun LocalTime.format(is24HourFormat: Boolean) =
+    when (is24HourFormat) {
+        true -> String.format(Locale.US, "%02d:%02d", hour, minute)
+        false -> when {
+            hour == 0 -> String.format(
+                Locale.US, "12:%02d AM", minute
+            )
+
+            hour < 12 -> String.format(
+                Locale.US, "%02d:%02d AM", hour, minute
+            )
+
+            hour == 12 -> String.format(
+                Locale.US, "12:%02d PM", minute
+            )
+
+            else -> String.format(
+                Locale.US, "%02d:%02d PM", hour % 12, minute
+            )
+        }
+    }
+
 @Composable
 fun TimePickerPreference(
     title: String,
@@ -105,30 +127,7 @@ fun TimePickerPreference(
             modifier = Modifier.width(80.dp)
         ) {
             Text(
-                text = initialTime.let {
-                    when (is24HourFormat) {
-                        true -> String.format(Locale.US, "%02d:%02d", it.hour, it.minute)
-                        false -> {
-                            when {
-                                it.hour == 0 -> String.format(
-                                    Locale.US, "12:%02d AM", it.minute
-                                )
-
-                                it.hour < 12 -> String.format(
-                                    Locale.US, "%02d:%02d AM", it.hour, it.minute
-                                )
-
-                                it.hour == 12 -> String.format(
-                                    Locale.US, "12:%02d PM", it.minute
-                                )
-
-                                else -> String.format(
-                                    Locale.US, "%02d:%02d PM", it.hour % 12, it.minute
-                                )
-                            }
-                        }
-                    }
-                },
+                text = initialTime.format(is24HourFormat),
                 color = titleColor
             )
         }
