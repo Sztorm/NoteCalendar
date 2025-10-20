@@ -24,6 +24,7 @@ import androidx.compose.ui.window.DialogProperties
 fun ConfirmationDialog(
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
     properties: DialogProperties = DialogProperties(),
     dialogColors: CardColors = CardDefaults.cardColors(),
     textButtonColor: Color = Color.Unspecified,
@@ -36,7 +37,7 @@ fun ConfirmationDialog(
         Card(
             shape = RoundedCornerShape(32.dp),
             colors = dialogColors,
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(32.dp)
         ) {
