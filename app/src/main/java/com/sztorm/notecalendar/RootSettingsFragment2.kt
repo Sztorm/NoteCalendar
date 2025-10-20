@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.animation.AnimatedContentTransitionScope.SlideDirection
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
@@ -24,10 +26,16 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.mikepenz.aboutlibraries.LibsBuilder
 import com.sztorm.notecalendar.components.preferences.CategoryPreference
+import com.sztorm.notecalendar.components.preferences.ColorPickerPreference
 import com.sztorm.notecalendar.components.preferences.ListPreference
 import com.sztorm.notecalendar.components.preferences.Preference
+import com.sztorm.notecalendar.components.preferences.SubpreferenceScreen
 import com.sztorm.notecalendar.components.preferences.SwitchPreference
 import com.sztorm.notecalendar.components.preferences.TimePickerPreference
 import com.sztorm.notecalendar.databinding.FragmentRootSettings2Binding
@@ -55,18 +63,63 @@ class RootSettingsFragment2 : Fragment() {
             MaterialTheme {
                 AppTheme(mainActivity.themePainter.values) {
                     Surface(modifier = Modifier.fillMaxSize()) {
-                        RootSettingsLayout(mainActivity, NoteRepositoryImpl)
+                        SettingsLayout(mainActivity, NoteRepositoryImpl)
                     }
                 }
             }
         }
         return binding.root
-        return inflater.inflate(R.layout.fragment_root_settings2, container, false)
     }
 }
 
 @Composable
-fun RootSettingsLayout(mainActivity: MainActivity, noteRepository: NoteRepository) {
+fun SettingsLayout(mainActivity: MainActivity, noteRepository: NoteRepository) {
+    val navController = rememberNavController()
+
+    NavHost(navController, startDestination = Screen.Settings.route) {
+        composable(
+            route = Screen.Settings.route,
+            enterTransition = {
+                slideIntoContainer(
+                    towards = SlideDirection.Right,
+                    animationSpec = tween(300)
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    towards = SlideDirection.Left,
+                    animationSpec = tween(300)
+                )
+            }
+        ) {
+            RootSettingsLayout(mainActivity, noteRepository, navController)
+        }
+        composable(
+            route = Screen.Settings.CustomTheme.route,
+            enterTransition = {
+                slideIntoContainer(
+                    towards = SlideDirection.Left,
+                    animationSpec = tween(300)
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    towards = SlideDirection.Right,
+                    animationSpec = tween(300)
+                )
+            }
+        ) {
+            CustomThemeSettingsLayout(mainActivity, navController)
+        }
+    }
+}
+
+@Composable
+fun RootSettingsLayout(
+    mainActivity: MainActivity,
+    noteRepository: NoteRepository,
+    navController: NavController
+) {
     val themeValues = mainActivity.themePainter.values
     // TODO: move these to Color.kt and just set color values without resources
     val lightThemeValues = remember {
@@ -150,7 +203,7 @@ fun RootSettingsLayout(mainActivity: MainActivity, noteRepository: NoteRepositor
                 title = stringResource(R.string.Settings_SetCustomTheme),
                 titleColor = Color(themeValues.textColor),
                 enabled = enabled,
-                onClick = {}
+                onClick = { navController.navigate(Screen.Settings.CustomTheme.route) }
             )
             Preference(
                 title = stringResource(R.string.Settings_SetLightTheme),
@@ -308,5 +361,142 @@ fun RootSettingsLayout(mainActivity: MainActivity, noteRepository: NoteRepositor
             }
         )
         // TODO: About application
+    }
+}
+
+@Composable
+fun CustomThemeSettingsLayout(
+    mainActivity: MainActivity,
+    navController: NavController
+) {
+    val themeValues = mainActivity.themePainter.values
+
+    SubpreferenceScreen(
+        title = stringResource(R.string.Settings_Header_CustomTheme),
+        titleColor = Color(themeValues.textColor),
+        iconTint = Color(themeValues.textColor),
+        onBackButtonClick = { navController.navigate(Screen.Settings.route) },
+        modifier = Modifier.verticalScroll(rememberScrollState())
+    ) {
+        ColorPickerPreference(
+            title = stringResource(R.string.PrimaryColor),
+            titleColor = Color(themeValues.textColor),
+            initialColor = Color(themeValues.primaryColor),
+            outlineColor = Color(themeValues.textColor),
+            buttonColor = Color(themeValues.primaryColor),
+            dialogColors = CardDefaults.cardColors().copy(
+                containerColor = Color(themeValues.backgroundColor),
+                contentColor = Color(themeValues.backgroundColor),
+            ),
+            onConfirm = { color -> },
+        )
+        ColorPickerPreference(
+            title = stringResource(R.string.SecondaryColor),
+            titleColor = Color(themeValues.textColor),
+            initialColor = Color(themeValues.secondaryColor),
+            outlineColor = Color(themeValues.textColor),
+            buttonColor = Color(themeValues.primaryColor),
+            dialogColors = CardDefaults.cardColors().copy(
+                containerColor = Color(themeValues.backgroundColor),
+                contentColor = Color(themeValues.backgroundColor),
+            ),
+            onConfirm = { color -> },
+        )
+        ColorPickerPreference(
+            title = stringResource(R.string.InactiveItemColor),
+            titleColor = Color(themeValues.textColor),
+            initialColor = Color(themeValues.inactiveItemColor),
+            outlineColor = Color(themeValues.textColor),
+            buttonColor = Color(themeValues.primaryColor),
+            dialogColors = CardDefaults.cardColors().copy(
+                containerColor = Color(themeValues.backgroundColor),
+                contentColor = Color(themeValues.backgroundColor),
+            ),
+            onConfirm = { color -> },
+        )
+        ColorPickerPreference(
+            title = stringResource(R.string.InactiveItemColorVariant),
+            titleColor = Color(themeValues.textColor),
+            initialColor = Color(themeValues.inactiveItemColorVariant),
+            outlineColor = Color(themeValues.textColor),
+            buttonColor = Color(themeValues.primaryColor),
+            dialogColors = CardDefaults.cardColors().copy(
+                containerColor = Color(themeValues.backgroundColor),
+                contentColor = Color(themeValues.backgroundColor),
+            ),
+            onConfirm = { color -> },
+        )
+        ColorPickerPreference(
+            title = stringResource(R.string.NoteColor),
+            titleColor = Color(themeValues.textColor),
+            initialColor = Color(themeValues.noteColor),
+            outlineColor = Color(themeValues.textColor),
+            buttonColor = Color(themeValues.primaryColor),
+            dialogColors = CardDefaults.cardColors().copy(
+                containerColor = Color(themeValues.backgroundColor),
+                contentColor = Color(themeValues.backgroundColor),
+            ),
+            onConfirm = { color -> },
+        )
+        ColorPickerPreference(
+            title = stringResource(R.string.NoteColorVariant),
+            titleColor = Color(themeValues.textColor),
+            initialColor = Color(themeValues.noteColorVariant),
+            outlineColor = Color(themeValues.textColor),
+            buttonColor = Color(themeValues.primaryColor),
+            dialogColors = CardDefaults.cardColors().copy(
+                containerColor = Color(themeValues.backgroundColor),
+                contentColor = Color(themeValues.backgroundColor),
+            ),
+            onConfirm = { color -> },
+        )
+        ColorPickerPreference(
+            title = stringResource(R.string.TextColor),
+            titleColor = Color(themeValues.textColor),
+            initialColor = Color(themeValues.textColor),
+            outlineColor = Color(themeValues.textColor),
+            buttonColor = Color(themeValues.primaryColor),
+            dialogColors = CardDefaults.cardColors().copy(
+                containerColor = Color(themeValues.backgroundColor),
+                contentColor = Color(themeValues.backgroundColor),
+            ),
+            onConfirm = { color -> },
+        )
+        ColorPickerPreference(
+            title = stringResource(R.string.ButtonTextColor),
+            titleColor = Color(themeValues.textColor),
+            initialColor = Color(themeValues.buttonTextColor),
+            outlineColor = Color(themeValues.textColor),
+            buttonColor = Color(themeValues.primaryColor),
+            dialogColors = CardDefaults.cardColors().copy(
+                containerColor = Color(themeValues.backgroundColor),
+                contentColor = Color(themeValues.backgroundColor),
+            ),
+            onConfirm = { color -> },
+        )
+        ColorPickerPreference(
+            title = stringResource(R.string.NoteTextColor),
+            titleColor = Color(themeValues.textColor),
+            initialColor = Color(themeValues.noteTextColor),
+            outlineColor = Color(themeValues.textColor),
+            buttonColor = Color(themeValues.primaryColor),
+            dialogColors = CardDefaults.cardColors().copy(
+                containerColor = Color(themeValues.backgroundColor),
+                contentColor = Color(themeValues.backgroundColor),
+            ),
+            onConfirm = { color -> },
+        )
+        ColorPickerPreference(
+            title = stringResource(R.string.BackgroundColor),
+            titleColor = Color(themeValues.textColor),
+            initialColor = Color(themeValues.backgroundColor),
+            outlineColor = Color(themeValues.textColor),
+            buttonColor = Color(themeValues.primaryColor),
+            dialogColors = CardDefaults.cardColors().copy(
+                containerColor = Color(themeValues.backgroundColor),
+                contentColor = Color(themeValues.backgroundColor),
+            ),
+            onConfirm = { color -> },
+        )
     }
 }
