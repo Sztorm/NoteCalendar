@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -115,6 +117,7 @@ fun SettingsLayout(mainActivity: MainActivity, noteRepository: NoteRepository) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RootSettingsLayout(
     mainActivity: MainActivity,
@@ -305,11 +308,31 @@ fun RootSettingsLayout(
                 title = stringResource(R.string.Settings_NotificationTime),
                 titleColor = Color(themeValues.textColor),
                 initialTime = notificationTime,
-                onConfirm = { notificationTime = it },
+                onConfirm = {
+                    notificationTime = it
+
+                    mainActivity.lifecycleScope.launch {
+                        mainActivity.settings.setNotificationTime(it)
+
+                        if (mainActivity.notificationManager.tryScheduleNotification(
+                                args = ScheduleNoteNotificationArguments(
+                                    grantPermissions = true,
+                                    turnOnNotifications = true
+                                ),
+                                noteRepository = noteRepository
+                            )
+                        ) {
+                            Timber.i("${LogTags.NOTIFICATIONS} Scheduled notification when \"Notification time\" was changed.")
+                        }
+                    }
+                },
                 buttonColor = Color(themeValues.primaryColor),
                 dialogColors = CardDefaults.cardColors().copy(
                     containerColor = Color(themeValues.backgroundColor),
                     contentColor = Color(themeValues.backgroundColor),
+                ),
+                timePickerColors = TimePickerDefaults.colors().copy(
+                    selectorColor = Color(themeValues.primaryColor),
                 ),
                 enabled = enabled && turnOnNotifications,
             )

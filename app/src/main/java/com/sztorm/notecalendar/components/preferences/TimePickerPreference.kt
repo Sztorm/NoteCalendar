@@ -10,8 +10,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimePickerColors
+import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.VerticalDivider
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,6 +59,7 @@ private fun LocalTime.format(is24HourFormat: Boolean) =
         }
     }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePickerPreference(
     title: String,
@@ -68,6 +74,7 @@ fun TimePickerPreference(
     dividerColor: Color = DividerDefaults.color,
     dialogColors: CardColors = CardDefaults.cardColors(),
     buttonColor: Color = Color.Unspecified,
+    timePickerColors: TimePickerColors = TimePickerDefaults.colors(),
     icon: Painter? = null,
     iconColorFilter: ColorFilter? = null,
     enabled: Boolean = true
@@ -75,12 +82,16 @@ fun TimePickerPreference(
     val titleColor = titleColor.copy(alpha = if (enabled) 1f else 0.4f)
     val summaryColor = summaryColor.copy(alpha = if (enabled) 0.8f else 0.4f)
     var openDialog by remember { mutableStateOf(false) }
-    var selectedTime by remember { mutableStateOf(initialTime) }
-
+    val timePickerState = rememberTimePickerState(
+        initialHour = initialTime.hour,
+        initialMinute = initialTime.minute,
+        is24Hour = is24HourFormat,
+    )
     Preference(
         title = title,
         onClick = {
-            selectedTime = initialTime
+            timePickerState.hour = initialTime.hour
+            timePickerState.minute = initialTime.minute
             openDialog = true
         },
         modifier = modifier,
@@ -116,11 +127,13 @@ fun TimePickerPreference(
         ConfirmationDialog(
             onConfirm = {
                 openDialog = false
-                onConfirm(selectedTime)
+                onConfirm(LocalTime.of(timePickerState.hour, timePickerState.minute))
             },
             onDismiss = {
+                val selectedTime = LocalTime.of(timePickerState.hour, timePickerState.minute)
                 openDialog = false
-                selectedTime = initialTime
+                timePickerState.hour = initialTime.hour
+                timePickerState.minute = initialTime.minute
                 onDismiss?.invoke(selectedTime)
             },
             properties = DialogProperties(
@@ -137,6 +150,16 @@ fun TimePickerPreference(
                     color = titleColor,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Medium
+                )
+            }
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                TimePicker(
+                    state = timePickerState,
+                    colors = timePickerColors,
                 )
             }
         }
