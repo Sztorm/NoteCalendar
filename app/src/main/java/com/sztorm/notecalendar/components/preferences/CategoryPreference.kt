@@ -1,9 +1,13 @@
 package com.sztorm.notecalendar.components.preferences
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
@@ -28,38 +32,46 @@ fun CategoryPreference(
     icon: Painter? = null,
     iconColorFilter: ColorFilter? = null,
     enabled: Boolean = true,
-    content: @Composable (Boolean) -> Unit
+    content: @Composable ColumnScope.(Boolean) -> Unit
 ) {
     val summaryColor = summaryColor.copy(alpha = 0.8f)
 
+    Spacer(
+        modifier = Modifier
+            .height(16.dp)
+            .fillMaxWidth()
+    )
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier.fillMaxWidth()
     ) {
-        Column(Modifier.width(56.dp)) {
-            if (icon != null) {
+        if (icon != null) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.width(56.dp)
+            ) {
                 Image(
                     painter = icon,
                     contentDescription = null,
                     colorFilter = iconColorFilter
                 )
             }
+        } else {
+            Spacer(modifier = Modifier.width(24.dp))
         }
         Column(
+            verticalArrangement = Arrangement.Center,
             modifier = modifier
-                .padding(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 16.dp,
-                    bottom = 4.dp,
-                )
+                .padding(top = 8.dp, bottom = 8.dp, end = 24.dp)
+                .weight(1f)
         ) {
             Row {
                 Text(
                     text = title,
                     color = titleColor,
                     fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
                 )
             }
             if (summary != null) {
@@ -77,6 +89,6 @@ fun CategoryPreference(
         }
     }
     Column {
-        content(enabled)
+        this.content(enabled)
     }
 }

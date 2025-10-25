@@ -2,8 +2,12 @@ package com.sztorm.notecalendar.components.preferences
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -27,7 +31,10 @@ fun Preference(
     summaryColor: Color = Color.Unspecified,
     icon: Painter? = null,
     iconColorFilter: ColorFilter? = null,
-    enabled: Boolean = true
+    isClickable: Boolean = true,
+    interactionSource: MutableInteractionSource? = null,
+    enabled: Boolean = true,
+    content: @Composable (RowScope.() -> Unit)? = null
 ) {
     val titleColor = titleColor.copy(alpha = if (enabled) 1f else 0.4f)
     val summaryColor = summaryColor.copy(alpha = if (enabled) 0.8f else 0.4f)
@@ -36,28 +43,34 @@ fun Preference(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .then(
-                when (enabled) {
-                    true -> Modifier.clickable(onClick = onClick)
-                    false -> Modifier
-                }
+            .clickable(
+                enabled = enabled && isClickable,
+                onClick = onClick,
+                interactionSource = interactionSource
             )
-            .padding(16.dp)
+            .padding(vertical = 16.dp)
     ) {
-        Column(Modifier.width(56.dp)) {
-            if (icon != null) {
+        if (icon != null) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.width(56.dp)
+            ) {
                 Image(
                     painter = icon,
                     contentDescription = null,
-                    colorFilter = iconColorFilter
+                    colorFilter = iconColorFilter,
                 )
             }
+        } else {
+            Spacer(modifier = Modifier.width(24.dp))
         }
-        Column {
+        Column(modifier = Modifier.weight(1f)) {
             Row {
                 Text(
                     text = title,
-                    color = titleColor
+                    color = titleColor,
+                    fontSize = 20.sp
                 )
             }
             if (summary != null) {
@@ -70,6 +83,11 @@ fun Preference(
                     )
                 }
             }
+        }
+        if (content != null) {
+            this.content()
+        } else {
+            Spacer(modifier = Modifier.width(24.dp))
         }
     }
 }

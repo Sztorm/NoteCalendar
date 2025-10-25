@@ -1,12 +1,7 @@
 package com.sztorm.notecalendar.components.preferences
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -15,7 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -24,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import com.sztorm.notecalendar.components.ConfirmationDialog
 
 @Composable
 fun ConfirmationPreference(
@@ -48,46 +43,17 @@ fun ConfirmationPreference(
     val summaryColor = summaryColor.copy(alpha = if (enabled) 0.8f else 0.4f)
     var openDialog by remember { mutableStateOf(false) }
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-            .then(
-                when (enabled) {
-                    true -> Modifier.clickable(onClick = { openDialog = true })
-                    false -> Modifier
-                }
-            )
-            .padding(16.dp)
-    ) {
-        Column(Modifier.width(56.dp)) {
-            if (icon != null) {
-                Image(
-                    painter = icon,
-                    contentDescription = null,
-                    colorFilter = iconColorFilter
-                )
-            }
-        }
-        Column {
-            Row {
-                Text(
-                    text = title,
-                    color = titleColor
-                )
-            }
-            if (summary != null) {
-                Row {
-                    Text(
-                        text = summary,
-                        color = summaryColor,
-                        fontSize = 14.sp,
-                        lineHeight = 16.sp
-                    )
-                }
-            }
-        }
-    }
+    Preference(
+        title = title,
+        onClick = { openDialog = true },
+        modifier = modifier,
+        titleColor = titleColor,
+        summary = summary,
+        summaryColor = summaryColor,
+        icon = icon,
+        iconColorFilter = iconColorFilter,
+        enabled = enabled
+    )
     if (openDialog) {
         ConfirmationDialog(
             onConfirm = {

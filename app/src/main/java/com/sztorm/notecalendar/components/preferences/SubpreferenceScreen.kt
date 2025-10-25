@@ -1,6 +1,7 @@
 package com.sztorm.notecalendar.components.preferences
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -23,7 +24,7 @@ fun SubpreferenceScreen(
     modifier: Modifier = Modifier,
     titleColor: Color = Color.Unspecified,
     iconTint: Color = LocalContentColor.current,
-    content: @Composable () -> Unit
+    content: @Composable ColumnScope.() -> Unit
 ) {
     Column(modifier.fillMaxSize()) {
         Row(Modifier.padding(horizontal = 8.dp)) {
@@ -44,6 +45,6 @@ fun SubpreferenceScreen(
                 fontSize = 36.sp
             )
         }
-        content()
+        this.content()
     }
 }

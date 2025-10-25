@@ -1,16 +1,17 @@
 package com.sztorm.notecalendar.components.preferences
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import com.sztorm.notecalendar.components.ConfirmationDialog
 
 @Composable
 fun ColorPickerPreference(
@@ -39,6 +41,7 @@ fun ColorPickerPreference(
     titleColor: Color = Color.Unspecified,
     summary: String? = null,
     summaryColor: Color = Color.Unspecified,
+    dividerColor: Color = DividerDefaults.color,
     dialogColors: CardColors = CardDefaults.cardColors(),
     buttonColor: Color = Color.Unspecified,
     icon: Painter? = null,
@@ -50,78 +53,52 @@ fun ColorPickerPreference(
     var openDialog by remember { mutableStateOf(false) }
     var selectedColor by remember { mutableStateOf(initialColor) }
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-            .then(
-                when (enabled) {
-                    true -> Modifier.clickable(onClick = {
-                        selectedColor = initialColor
-                        openDialog = true
-                    })
-
-                    false -> Modifier
-                }
-            )
-            .padding(16.dp)
+    Preference(
+        title = title,
+        onClick = {
+            selectedColor = initialColor
+            openDialog = true
+        },
+        modifier = modifier,
+        titleColor = titleColor,
+        summary = summary,
+        summaryColor = summaryColor,
+        icon = icon,
+        iconColorFilter = iconColorFilter,
+        enabled = enabled
     ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Row {
-                Column(Modifier.width(56.dp)) {
-                    if (icon != null) {
-                        Image(
-                            painter = icon,
-                            contentDescription = null,
-                            colorFilter = iconColorFilter
-                        )
-                    }
-                }
-                Column {
-                    Row {
-                        Text(
-                            text = title,
-                            color = titleColor
-                        )
-                    }
-                    if (summary != null) {
-                        Row {
-                            Text(
-                                text = summary,
-                                color = summaryColor,
-                                fontSize = 14.sp,
-                                lineHeight = 16.sp
-                            )
-                        }
-                    }
-                }
-            }
-        }
-        Column(
-            horizontalAlignment = Alignment.End,
-            modifier = Modifier
-                .width(64.dp)
+        Row(
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.width(88.dp)
         ) {
+            if (summary != null) {
+                VerticalDivider(
+                    thickness = 1.dp,
+                    color = dividerColor,
+                    modifier = Modifier.height(32.dp)
+                )
+                Spacer(modifier = Modifier.weight(1f))
+            }
             Box(
-                Modifier
-                    .padding(end = 24.dp)
-                    .drawWithCache {
-                        val stroke = Stroke(width = 2.dp.toPx())
-                        val radius = 16.dp.toPx()
+                modifier = Modifier.drawWithCache {
+                    val stroke = Stroke(width = 2.dp.toPx())
+                    val radius = 16.dp.toPx()
 
-                        onDrawBehind {
-                            drawCircle(
-                                color = initialColor,
-                                radius = radius
-                            )
-                            drawCircle(
-                                color = outlineColor,
-                                radius = radius,
-                                style = stroke
-                            )
-                        }
+                    onDrawBehind {
+                        drawCircle(
+                            color = initialColor,
+                            radius = radius
+                        )
+                        drawCircle(
+                            color = outlineColor,
+                            radius = radius,
+                            style = stroke
+                        )
                     }
+                }
             )
+            Spacer(modifier = Modifier.width(32.dp))
         }
     }
     if (openDialog) {

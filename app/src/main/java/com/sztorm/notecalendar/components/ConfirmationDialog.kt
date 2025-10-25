@@ -1,8 +1,9 @@
-package com.sztorm.notecalendar.components.preferences
+package com.sztorm.notecalendar.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,7 +29,7 @@ fun ConfirmationDialog(
     properties: DialogProperties = DialogProperties(),
     dialogColors: CardColors = CardDefaults.cardColors(),
     textButtonColor: Color = Color.Unspecified,
-    content: @Composable () -> Unit,
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     Dialog(
         onDismissRequest = onDismiss,
@@ -42,7 +43,7 @@ fun ConfirmationDialog(
                 .padding(32.dp)
         ) {
             Column(Modifier.padding(8.dp)) {
-                content()
+                this.content()
                 Row(
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically,

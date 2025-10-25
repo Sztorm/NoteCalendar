@@ -1,9 +1,7 @@
 package com.sztorm.notecalendar.components.preferences
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import com.sztorm.notecalendar.components.ConfirmationDialog
 
 @Composable
 fun <V> ListPreference(
@@ -55,49 +54,21 @@ fun <V> ListPreference(
     val optionInteractionSources = remember {
         List(options.size) { MutableInteractionSource() }
     }
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-            .then(
-                when (enabled) {
-                    true -> Modifier.clickable(onClick = {
-                        selectedIndex = initialSelectedOptionIndex
-                        selectedValue = options[initialSelectedOptionIndex].second
-                        openDialog = true
-                    })
-
-                    false -> Modifier
-                }
-            )
-            .padding(16.dp)
-    ) {
-        Column(Modifier.width(56.dp)) {
-            if (icon != null) {
-                Image(
-                    painter = icon,
-                    contentDescription = null,
-                    colorFilter = iconColorFilter
-                )
-            }
-        }
-        Column {
-            Row {
-                Text(
-                    text = title,
-                    color = titleColor
-                )
-            }
-            Row {
-                Text(
-                    text = options[initialSelectedOptionIndex].first,
-                    color = summaryColor,
-                    fontSize = 14.sp,
-                    lineHeight = 16.sp
-                )
-            }
-        }
-    }
+    Preference(
+        title = title,
+        onClick = {
+            selectedIndex = initialSelectedOptionIndex
+            selectedValue = options[initialSelectedOptionIndex].second
+            openDialog = true
+        },
+        modifier = modifier,
+        titleColor = titleColor,
+        summary = options[initialSelectedOptionIndex].first,
+        summaryColor = summaryColor,
+        icon = icon,
+        iconColorFilter = iconColorFilter,
+        enabled = enabled
+    )
     if (openDialog) {
         ConfirmationDialog(
             onConfirm = {

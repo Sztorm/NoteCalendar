@@ -387,7 +387,7 @@ fun CustomThemeSettingsLayout(
         title = stringResource(R.string.Settings_Header_CustomTheme),
         titleColor = Color(themeValues.textColor),
         iconTint = Color(themeValues.textColor),
-        onBackButtonClick = { navController.navigate(Screen.Settings.route) },
+        onBackButtonClick = { navController.navigateUp() },
         modifier = Modifier.verticalScroll(rememberScrollState())
     ) {
         ColorPickerPreference(
