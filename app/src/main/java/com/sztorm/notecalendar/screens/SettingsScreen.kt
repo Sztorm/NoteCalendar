@@ -122,6 +122,28 @@ fun SettingsScreen(
             )
         }
         composable(
+            route = Screen.Settings.Other.route,
+            enterTransition = {
+                slideIntoContainer(
+                    towards = SlideDirection.Left,
+                    animationSpec = tween(300)
+                )
+            },
+            exitTransition = {
+                slideOutOfContainer(
+                    towards = SlideDirection.Right,
+                    animationSpec = tween(300)
+                )
+            }
+        ) {
+            OtherSettingsScreen(
+                logger = logger,
+                viewModel = viewModel,
+                preferencesRepository = preferencesRepository,
+                navController = navController
+            )
+        }
+        composable(
             route = Screen.Settings.About.route,
             enterTransition = {
                 slideIntoContainer(
@@ -173,6 +195,13 @@ private fun RootSettingsScreen(viewModel: MainViewModel, navController: NavContr
             icon = painterResource(R.drawable.icon_outline_rounded_palette),
             iconColorFilter = ColorFilter.tint(themeColors.secondaryColor),
             onClick = { navController.navigate(Screen.Settings.Theme.route) }
+        )
+        Preference(
+            title = stringResource(R.string.Settings_Other),
+            titleColor = themeColors.textColor,
+            icon = painterResource(R.drawable.icon_outline_rounded_other),
+            iconColorFilter = ColorFilter.tint(themeColors.secondaryColor),
+            onClick = { navController.navigate(Screen.Settings.Other.route) }
         )
         Preference(
             title = stringResource(R.string.Settings_About),
