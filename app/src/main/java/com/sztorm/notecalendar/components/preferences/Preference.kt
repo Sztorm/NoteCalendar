@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +27,7 @@ fun Preference(
     title: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    paddingValues: PaddingValues = PaddingValues(vertical = 16.dp),
     titleColor: Color = Color.Unspecified,
     summary: String? = null,
     summaryColor: Color = Color.Unspecified,
@@ -48,7 +50,7 @@ fun Preference(
                 onClick = onClick,
                 interactionSource = interactionSource
             )
-            .padding(vertical = 16.dp)
+            .padding(paddingValues)
     ) {
         if (icon != null) {
             Column(
