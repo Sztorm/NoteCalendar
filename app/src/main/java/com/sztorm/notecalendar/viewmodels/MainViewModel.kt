@@ -16,6 +16,8 @@ class MainViewModel(initialState: MainState) : ViewModel() {
         state = when (event) {
             is MainEvent.ThemeChange -> state.copy(themeColors = event.themeColors)
             is MainEvent.DayScreenDateChange -> state.copy(dayScreenDate = event.dayScreenDate)
+            is MainEvent.NavigationBarDestinationChange ->
+                state.copy(navigationBarDestination = event.destination)
         }
     }
 }
@@ -33,9 +35,20 @@ class MainViewFactory(val initialState: MainState) : ViewModelProvider.Factory {
 sealed class MainEvent {
     data class ThemeChange(val themeColors: ThemeColors) : MainEvent()
     data class DayScreenDateChange(val dayScreenDate: LocalDate) : MainEvent()
+    data class NavigationBarDestinationChange(
+        val destination: NavigationBarDestination
+    ) : MainEvent()
+}
+
+enum class NavigationBarDestination {
+    Month,
+    Week,
+    Day,
+    Settings
 }
 
 data class MainState(
     val themeColors: ThemeColors,
-    val dayScreenDate: LocalDate
+    val dayScreenDate: LocalDate,
+    val navigationBarDestination: NavigationBarDestination
 )

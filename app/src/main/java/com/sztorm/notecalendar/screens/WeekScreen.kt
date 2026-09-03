@@ -37,6 +37,7 @@ import com.sztorm.notecalendar.repositories.NoteRepository
 import com.sztorm.notecalendar.repositories.UserPreferencesRepository
 import com.sztorm.notecalendar.screens.WeekViewItem.WeekViewDay
 import com.sztorm.notecalendar.screens.WeekViewItem.WeekViewMonth
+import com.sztorm.notecalendar.viewmodels.NavigationBarDestination
 import com.sztorm.notecalendar.yearMonth
 import java.time.LocalDate
 import java.time.YearMonth
@@ -236,11 +237,21 @@ fun WeekScreen(
                                 viewModel.onEvent(
                                     MainEvent.DayScreenDateChange(item.date)
                                 )
+                                viewModel.onEvent(
+                                    MainEvent.NavigationBarDestinationChange(
+                                        NavigationBarDestination.Day
+                                    )
+                                )
                                 navController.navigate(Screen.Day())
                             },
                             onLongClick = {
                                 viewModel.onEvent(
                                     MainEvent.DayScreenDateChange(item.date)
+                                )
+                                viewModel.onEvent(
+                                    MainEvent.NavigationBarDestinationChange(
+                                        NavigationBarDestination.Day
+                                    )
                                 )
                                 navController.navigate(
                                     Screen.Day(isCreateOrEditRequested = true)

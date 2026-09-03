@@ -16,11 +16,6 @@ import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -36,11 +31,12 @@ import com.sztorm.notecalendar.AppNotificationManager
 import com.sztorm.notecalendar.AppPermissionManager
 import com.sztorm.notecalendar.ILogger
 import com.sztorm.notecalendar.R
-import com.sztorm.notecalendar.StartingScreenType
 import com.sztorm.notecalendar.repositories.FileRepository
 import com.sztorm.notecalendar.repositories.NoteRepository
 import com.sztorm.notecalendar.repositories.UserPreferencesRepository
+import com.sztorm.notecalendar.viewmodels.MainEvent
 import com.sztorm.notecalendar.viewmodels.MainViewModel
+import com.sztorm.notecalendar.viewmodels.NavigationBarDestination
 
 private data class MainTab(
     val screen: Screen,
@@ -48,12 +44,72 @@ private data class MainTab(
     val description: String,
 )
 
+@Composable
+private fun NavigationBar(
+    viewModel: MainViewModel,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    val tabs = listOf(
+        MainTab(
+            screen = Screen.Month,
+            icon = ImageVector.vectorResource(R.drawable.icon_outline_rounded_month),
+            description = stringResource(R.string.Month)
+        ),
+        MainTab(
+            screen = Screen.Week,
+            icon = ImageVector.vectorResource(R.drawable.icon_outline_rounded_week),
+            description = stringResource(R.string.Week)
+        ),
+        MainTab(
+            screen = Screen.Day(),
+            icon = ImageVector.vectorResource(R.drawable.icon_outline_rounded_day),
+            description = stringResource(R.string.Day)
+        ),
+        MainTab(
+            screen = Screen.Settings,
+            icon = ImageVector.vectorResource(R.drawable.icon_outline_rounded_settings),
+            description = stringResource(R.string.Settings)
+        )
+    )
+    PrimaryTabRow(
+        selectedTabIndex = viewModel.state.navigationBarDestination.ordinal,
+        modifier = modifier
+    ) {
+        tabs.forEachIndexed { i, tab ->
+            Tab(
+                selected = viewModel.state.navigationBarDestination.ordinal == i,
+                onClick = {
+                    navController.navigate(tab.screen)
+                    viewModel.onEvent(
+                        MainEvent.NavigationBarDestinationChange(
+                            NavigationBarDestination.entries[i]
+                        )
+                    )
+                },
+                text = {
+                    Text(
+                        text = tab.description,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                icon = {
+                    Icon(
+                        imageVector = tab.icon,
+                        contentDescription = tab.description,
+                        modifier = Modifier.defaultMinSize(36.dp, 36.dp)
+                    )
+                }
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppScreen(
     logger: ILogger,
     viewModel: MainViewModel,
-    startingView: StartingScreenType,
     permissionManager: AppPermissionManager,
     notificationManager: AppNotificationManager,
     noteRepository: NoteRepository,
@@ -61,87 +117,23 @@ fun AppScreen(
     preferencesRepository: UserPreferencesRepository
 ) {
     val navController = rememberNavController()
-    var selectedTabIndex by rememberSaveable {
-        mutableIntStateOf(
-            when (startingView) {
-                StartingScreenType.DayScreen -> 2
-                StartingScreenType.WeekScreen -> 1
-                StartingScreenType.MonthScreen -> 0
-            }
-        )
-    }
-    DisposableEffect(Unit) {
-        val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
-            selectedTabIndex = when (destination.route) {
-                Screen.Month.route -> 0
-                Screen.Week.route -> 1
-                Screen.Day().route -> 2
-                Screen.Settings.route -> 3
-                else -> selectedTabIndex
-            }
-        }
-        navController.addOnDestinationChangedListener(listener)
-        onDispose {
-            navController.removeOnDestinationChangedListener(listener)
-        }
-    }
+
     Column(
         modifier = Modifier
             .windowInsetsPadding(WindowInsets.safeDrawing)
             .fillMaxWidth()
     ) {
-        val tabs = listOf(
-            MainTab(
-                screen = Screen.Month,
-                icon = ImageVector.vectorResource(R.drawable.icon_outline_rounded_month),
-                description = stringResource(R.string.Month)
-            ),
-            MainTab(
-                screen = Screen.Week,
-                icon = ImageVector.vectorResource(R.drawable.icon_outline_rounded_week),
-                description = stringResource(R.string.Week)
-            ),
-            MainTab(
-                screen = Screen.Day(),
-                icon = ImageVector.vectorResource(R.drawable.icon_outline_rounded_day),
-                description = stringResource(R.string.Day)
-            ),
-            MainTab(
-                screen = Screen.Settings,
-                icon = ImageVector.vectorResource(R.drawable.icon_outline_rounded_settings),
-                description = stringResource(R.string.Settings)
-            )
+        NavigationBar(
+            viewModel = viewModel,
+            navController = navController
         )
-        PrimaryTabRow(selectedTabIndex = selectedTabIndex) {
-            tabs.forEachIndexed { i, tab ->
-                Tab(
-                    selected = selectedTabIndex == i,
-                    onClick = {
-                        navController.navigate(tab.screen)
-                        selectedTabIndex = i
-                    },
-                    text = {
-                        Text(
-                            text = tab.description,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = tab.icon,
-                            contentDescription = tab.description,
-                            modifier = Modifier.defaultMinSize(36.dp, 36.dp)
-                        )
-                    }
-                )
-            }
-        }
         NavHost(
             navController = navController,
-            startDestination = when (startingView) {
-                StartingScreenType.DayScreen -> Screen.Day()
-                StartingScreenType.WeekScreen -> Screen.Week
-                StartingScreenType.MonthScreen -> Screen.Month
+            startDestination = when (viewModel.state.navigationBarDestination) {
+                NavigationBarDestination.Month -> Screen.Month
+                NavigationBarDestination.Week -> Screen.Week
+                NavigationBarDestination.Day -> Screen.Day()
+                NavigationBarDestination.Settings -> Screen.Settings
             },
             enterTransition = {
                 slideInHorizontally(animationSpec = tween(durationMillis = 400)) { -it }

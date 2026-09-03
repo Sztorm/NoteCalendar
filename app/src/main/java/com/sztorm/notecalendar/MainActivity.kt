@@ -17,6 +17,7 @@ import com.sztorm.notecalendar.ui.AppTheme
 import com.sztorm.notecalendar.viewmodels.MainState
 import com.sztorm.notecalendar.viewmodels.MainViewFactory
 import com.sztorm.notecalendar.viewmodels.MainViewModel
+import com.sztorm.notecalendar.viewmodels.NavigationBarDestination
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 
@@ -49,14 +50,19 @@ class MainActivity : ComponentActivity() {
         val notificationManager = AppNotificationManager(this, logger)
         val bundleResult = readBundle()
         val dayScreenDate = bundleResult?.noteDate?.toLocalDateOrNull() ?: LocalDate.now()
-        val startingView: StartingScreenType
         val themeColors: ThemeColors
+        val navigationBarDestination: NavigationBarDestination
 
         runBlocking {
-            startingView =
+            val startingView =
                 if (bundleResult != null && bundleResult.isLaunchedFromNotification)
                     StartingScreenType.DayScreen
-                else preferencesRepository.getStartingScreen(StartingScreenType.DayScreen)
+                else preferencesRepository.getStartingScreen()
+            navigationBarDestination = when (startingView) {
+                StartingScreenType.DayScreen -> NavigationBarDestination.Day
+                StartingScreenType.WeekScreen -> NavigationBarDestination.Week
+                StartingScreenType.MonthScreen -> NavigationBarDestination.Month
+            }
             themeColors = preferencesRepository.getThemeColors()
         }
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -66,7 +72,8 @@ class MainActivity : ComponentActivity() {
                 factory = MainViewFactory(
                     initialState = MainState(
                         themeColors = themeColors,
-                        dayScreenDate = dayScreenDate
+                        dayScreenDate = dayScreenDate,
+                        navigationBarDestination = navigationBarDestination,
                     )
                 )
             )
@@ -75,7 +82,6 @@ class MainActivity : ComponentActivity() {
                     AppScreen(
                         logger = logger,
                         viewModel = viewModel,
-                        startingView = startingView,
                         permissionManager = permissionManager,
                         notificationManager = notificationManager,
                         noteRepository = noteRepository,

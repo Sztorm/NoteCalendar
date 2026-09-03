@@ -35,6 +35,7 @@ import com.sztorm.notecalendar.getLocalizedShortName
 import com.sztorm.notecalendar.getSystemFirstDayOfWeek
 import com.sztorm.notecalendar.repositories.NoteRepository
 import com.sztorm.notecalendar.repositories.UserPreferencesRepository
+import com.sztorm.notecalendar.viewmodels.NavigationBarDestination
 import com.sztorm.notecalendar.yearMonth
 import java.time.LocalDate
 
@@ -96,7 +97,6 @@ fun MonthScreen(
             onPageChange = { page ->
                 val prevYearMonth = currentYearMonth
                 currentYearMonth = selectedDateYearMonth.plusMonths(page.toLong())
-
                 notesCache = when {
                     currentYearMonth > prevYearMonth -> notesCache.nextMonth()
                     currentYearMonth < prevYearMonth -> notesCache.prevMonth()
@@ -146,11 +146,21 @@ private fun DayLayout(
                     viewModel.onEvent(
                         MainEvent.DayScreenDateChange(dayData.date)
                     )
+                    viewModel.onEvent(
+                        MainEvent.NavigationBarDestinationChange(
+                            NavigationBarDestination.Day
+                        )
+                    )
                     navController.navigate(Screen.Day())
                 },
                 onLongClick = {
                     viewModel.onEvent(
                         MainEvent.DayScreenDateChange(dayData.date)
+                    )
+                    viewModel.onEvent(
+                        MainEvent.NavigationBarDestinationChange(
+                            NavigationBarDestination.Day
+                        )
                     )
                     navController.navigate(Screen.Day(isCreateOrEditRequested = true))
                 }
