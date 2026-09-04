@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.core.view.WindowCompat
 import com.sztorm.notecalendar.preferences.StartingScreenType
-import com.sztorm.notecalendar.preferences.ThemeColors
 import com.sztorm.notecalendar.repositories.FileRepositoryImpl
 import com.sztorm.notecalendar.repositories.NoteRepositoryImpl
 import com.sztorm.notecalendar.repositories.UserPreferencesRepository
@@ -51,34 +50,29 @@ class MainActivity : ComponentActivity() {
         val permissionManager = AppPermissionManager(this)
         val notificationManager = AppNotificationManager(this, logger)
         val bundleResult = readBundle()
-        val dayScreenDate = bundleResult?.noteDate?.toLocalDateOrNull() ?: LocalDate.now()
-        val themeColors: ThemeColors
-        val navigationBarDestination: NavigationBarDestination
+        val initialState: MainState
 
         runBlocking {
             val startingView =
                 if (bundleResult != null && bundleResult.isLaunchedFromNotification)
                     StartingScreenType.DayScreen
                 else preferencesRepository.getStartingScreen()
-            navigationBarDestination = when (startingView) {
-                StartingScreenType.DayScreen -> NavigationBarDestination.Day
-                StartingScreenType.WeekScreen -> NavigationBarDestination.Week
-                StartingScreenType.MonthScreen -> NavigationBarDestination.Month
-            }
-            themeColors = preferencesRepository.getThemeColors()
+            initialState = MainState(
+                themeColors = preferencesRepository.getThemeColors(),
+                dayScreenDate = bundleResult?.noteDate?.toLocalDateOrNull() ?: LocalDate.now(),
+                navigationBarDestination = when (startingView) {
+                    StartingScreenType.DayScreen -> NavigationBarDestination.Day
+                    StartingScreenType.WeekScreen -> NavigationBarDestination.Week
+                    StartingScreenType.MonthScreen -> NavigationBarDestination.Month
+                },
+                noteFontSize = preferencesRepository.getNoteFontSize()
+            )
         }
         WindowCompat.setDecorFitsSystemWindows(window, false)
         enableEdgeToEdge()
         setContent {
-            val viewModel = viewModel<MainViewModel>(
-                factory = MainViewFactory(
-                    initialState = MainState(
-                        themeColors = themeColors,
-                        dayScreenDate = dayScreenDate,
-                        navigationBarDestination = navigationBarDestination,
-                    )
-                )
-            )
+            val viewModel = viewModel<MainViewModel>(factory = MainViewFactory(initialState))
+
             AppTheme(viewModel.state.themeColors) {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     AppScreen(

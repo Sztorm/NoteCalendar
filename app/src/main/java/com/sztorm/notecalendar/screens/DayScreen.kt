@@ -886,8 +886,8 @@ fun DayPageLayout(
                                 maxLines = Int.MAX_VALUE,
                                 textStyle = TextStyle(
                                     color = themeColors.noteTextColor,
-                                    fontSize = 24.sp,
-                                    lineHeight = 26.sp,
+                                    fontSize = mainViewModel.state.noteFontSize.value,
+                                    lineHeight = mainViewModel.state.noteFontSize.value * 1.33f,
                                 ),
                                 cursorBrush = SolidColor(themeColors.secondaryColor),
                                 modifier = Modifier

@@ -1,6 +1,7 @@
 package com.sztorm.notecalendar.preferences
 
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 
@@ -11,6 +12,7 @@ object PreferenceKeys {
     val InactiveElementColor = intPreferencesKey("PrefKey_InactiveElementColor")
     val NoteColor = intPreferencesKey("PrefKey_NoteColor")
     val NoteColorVariant = intPreferencesKey("PrefKey_NoteColorVariant")
+    val NoteFontSize = floatPreferencesKey("PrefKey_NoteFontSize")
     val NoteTextColor = intPreferencesKey("PrefKey_NoteTextColor")
     val PrimaryColor = intPreferencesKey("PrefKey_PrimaryColor")
     val SecondaryColor = intPreferencesKey("PrefKey_SecondaryColor")

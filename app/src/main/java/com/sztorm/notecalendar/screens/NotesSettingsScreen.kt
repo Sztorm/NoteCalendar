@@ -8,10 +8,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalDensity
@@ -19,7 +16,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sztorm.notecalendar.AppNotificationManager
 import com.sztorm.notecalendar.ILogger
@@ -39,10 +35,16 @@ import com.sztorm.notecalendar.components.preferences.CategoryPreference
 import com.sztorm.notecalendar.components.preferences.ConfirmationPreference
 import com.sztorm.notecalendar.components.preferences.SizeSliderPreference
 import com.sztorm.notecalendar.components.preferences.SubpreferenceScreen
+import com.sztorm.notecalendar.preferences.NoteFontSize
 import com.sztorm.notecalendar.repositories.FileRepository
 import com.sztorm.notecalendar.repositories.NoteRepository
+import com.sztorm.notecalendar.repositories.UserPreferencesRepository
 import com.sztorm.notecalendar.toLocalDateOrNull
+import com.sztorm.notecalendar.viewmodels.MainEvent
 import com.sztorm.notecalendar.viewmodels.MainViewModel
+import kotlinx.coroutines.launch
+import kotlin.math.abs
+import kotlin.math.max
 
 @Composable
 fun NotesSettingsScreen(
@@ -50,17 +52,16 @@ fun NotesSettingsScreen(
     viewModel: MainViewModel,
     noteRepository: NoteRepository,
     fileRepository: FileRepository,
+    preferencesRepository: UserPreferencesRepository,
     notificationManager: AppNotificationManager,
     navController: NavController
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val themeColors = viewModel.state.themeColors
     val dialogColors = CardDefaults.cardColors().copy(
         containerColor = themeColors.backgroundColor,
         contentColor = themeColors.backgroundColor,
     )
-    val noteFontSizes = listOf(12.sp, 14.sp, 16.sp, 18.sp, 20.sp, 24.sp, 28.sp)
-    var selectedNoteFontSizeIndex by remember { mutableIntStateOf(4) }
-
     SubpreferenceScreen(
         title = stringResource(R.string.Settings_Notes),
         iconTint = themeColors.textColor,
@@ -154,7 +155,7 @@ fun NotesSettingsScreen(
             titleColor = themeColors.secondaryColor
         ) { enabled ->
             val minPreviewHeight = with(LocalDensity.current) {
-                noteFontSizes.last().toDp() * 3 + 16.dp
+                NoteFontSize.Sizes.last().value.toDp() * (2f * 1.33f) + 16.dp
             }
             DayNote(
                 color = themeColors.noteColor,
@@ -168,22 +169,30 @@ fun NotesSettingsScreen(
             ) {
                 Text(
                     text = "Aa Bb Cc 123\n" + "Sample note text", // TODO: add to strings.xml
-                    fontSize = noteFontSizes[selectedNoteFontSizeIndex],
-                    lineHeight = noteFontSizes[selectedNoteFontSizeIndex] * 1.5f,
+                    fontSize = viewModel.state.noteFontSize.value,
+                    lineHeight = viewModel.state.noteFontSize.value * 1.33f,
                     modifier = Modifier.padding(8.dp)
                 )
             }
             SizeSliderPreference(
                 title = "Note font size", // TODO: add to strings.xml
-                sizes = noteFontSizes,
-                selectedIndex = selectedNoteFontSizeIndex,
-                onSizeChange = { i, _ ->
-                    selectedNoteFontSizeIndex = i
+                sizes = NoteFontSize.Sizes,
+                selectedIndex = NoteFontSize.Sizes
+                    .indexOfFirst { size ->
+                        abs(size.floatValue - viewModel.state.noteFontSize.floatValue) < 1f
+                    }.let { max(it, 0) },
+                onSizeChange = { _, size ->
+                    coroutineScope.launch {
+                        preferencesRepository.setNoteFontSize(size)
+                    }
+                    viewModel.onEvent(MainEvent.NoteFontSizeChange(size))
                 },
                 titleColor = themeColors.textColor,
                 iconColor = themeColors.textColor,
                 enabled = enabled
             )
+
+            // TODO: line spacing (Compact, Standard, Relaxed)
         }
 
         // TODO: note font

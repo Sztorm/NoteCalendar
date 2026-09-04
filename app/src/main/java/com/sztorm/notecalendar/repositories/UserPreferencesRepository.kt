@@ -3,6 +3,7 @@ package com.sztorm.notecalendar.repositories
 import android.content.Context
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.unit.sp
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
 import androidx.datastore.preferences.SharedPreferencesMigration
@@ -15,6 +16,7 @@ import com.sztorm.notecalendar.preferences.StartingScreenType
 import com.sztorm.notecalendar.preferences.ThemeColors
 import com.sztorm.notecalendar.getSystemFirstDayOfWeek
 import com.sztorm.notecalendar.isDarkThemeEnabled
+import com.sztorm.notecalendar.preferences.NoteFontSize
 import com.sztorm.notecalendar.ui.getDefaultThemeColors
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -130,12 +132,16 @@ class UserPreferencesRepository(context: Context) {
     @Suppress("unused") // Legacy setting
     suspend fun getNotificationTime(
         default: LocalTime = LocalTime.of(8, 0)
-    ): LocalTime = getPreference(PreferenceKeys.NotificationTime, default.asInt()).asLocalTime()
+    ) = getPreference(PreferenceKeys.NotificationTime, default.asInt()).asLocalTime()
 
     suspend fun getStartingScreen(
         default: StartingScreenType = StartingScreenType.DayScreen
-    ): StartingScreenType = getPreference(PreferenceKeys.StartingScreen, default.ordinal.toString())
+    ) = getPreference(PreferenceKeys.StartingScreen, default.ordinal.toString())
         .let { StartingScreenType.entries[it.toInt()] }
+
+    suspend fun getNoteFontSize(
+        default: NoteFontSize = NoteFontSize(20.sp)
+    ) = NoteFontSize(getPreference(PreferenceKeys.NoteFontSize, default.floatValue).sp)
 
     suspend fun setBackgroundColor(value: Color) {
         context.preferences.edit {
@@ -234,6 +240,12 @@ class UserPreferencesRepository(context: Context) {
     suspend fun setStartingScreen(value: StartingScreenType) {
         context.preferences.edit {
             it[PreferenceKeys.StartingScreen] = value.ordinal.toString()
+        }
+    }
+
+    suspend fun setNoteFontSize(value: NoteFontSize) {
+        context.preferences.edit {
+            it[PreferenceKeys.NoteFontSize] = value.floatValue
         }
     }
 }

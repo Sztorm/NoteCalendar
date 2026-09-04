@@ -74,6 +74,7 @@ fun SettingsScreen(
                 noteRepository = noteRepository,
                 notificationManager = notificationManager,
                 fileRepository = fileRepository,
+                preferencesRepository = preferencesRepository,
                 navController = navController
             )
         }

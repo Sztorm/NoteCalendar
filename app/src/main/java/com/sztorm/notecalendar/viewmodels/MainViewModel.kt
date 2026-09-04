@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.sztorm.notecalendar.preferences.NoteFontSize
 import com.sztorm.notecalendar.preferences.ThemeColors
 import java.time.LocalDate
 
@@ -18,6 +19,8 @@ class MainViewModel(initialState: MainState) : ViewModel() {
             is MainEvent.DayScreenDateChange -> state.copy(dayScreenDate = event.dayScreenDate)
             is MainEvent.NavigationBarDestinationChange ->
                 state.copy(navigationBarDestination = event.destination)
+
+            is MainEvent.NoteFontSizeChange -> state.copy(noteFontSize = event.size)
         }
     }
 }
@@ -38,6 +41,8 @@ sealed class MainEvent {
     data class NavigationBarDestinationChange(
         val destination: NavigationBarDestination
     ) : MainEvent()
+
+    data class NoteFontSizeChange(val size: NoteFontSize) : MainEvent()
 }
 
 enum class NavigationBarDestination {
@@ -50,5 +55,6 @@ enum class NavigationBarDestination {
 data class MainState(
     val themeColors: ThemeColors,
     val dayScreenDate: LocalDate,
-    val navigationBarDestination: NavigationBarDestination
+    val navigationBarDestination: NavigationBarDestination,
+    val noteFontSize: NoteFontSize
 )
