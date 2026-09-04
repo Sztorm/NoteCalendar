@@ -1,4 +1,4 @@
-package com.sztorm.notecalendar
+package com.sztorm.notecalendar.preferences
 
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey

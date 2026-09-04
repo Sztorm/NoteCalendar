@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import com.sztorm.notecalendar.ThemeColors
+import com.sztorm.notecalendar.preferences.ThemeColors
 
 val DarkThemeColors = ThemeColors(
     primaryColor = PrimaryDark,

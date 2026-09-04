@@ -10,9 +10,9 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.sztorm.notecalendar.PreferenceKeys
-import com.sztorm.notecalendar.StartingScreenType
-import com.sztorm.notecalendar.ThemeColors
+import com.sztorm.notecalendar.preferences.PreferenceKeys
+import com.sztorm.notecalendar.preferences.StartingScreenType
+import com.sztorm.notecalendar.preferences.ThemeColors
 import com.sztorm.notecalendar.getSystemFirstDayOfWeek
 import com.sztorm.notecalendar.isDarkThemeEnabled
 import com.sztorm.notecalendar.ui.getDefaultThemeColors

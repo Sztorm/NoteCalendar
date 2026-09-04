@@ -15,7 +15,7 @@ import com.sztorm.notecalendar.LogTags
 import com.sztorm.notecalendar.viewmodels.MainEvent
 import com.sztorm.notecalendar.viewmodels.MainViewModel
 import com.sztorm.notecalendar.R
-import com.sztorm.notecalendar.ThemeFile
+import com.sztorm.notecalendar.preferences.backup.ThemeFile
 import com.sztorm.notecalendar.components.colorpicker.ColorPickerDefaults
 import com.sztorm.notecalendar.components.colorpicker.ColorPickerProperties
 import com.sztorm.notecalendar.components.colorpicker.ColorPickerTab

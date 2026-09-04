@@ -1,6 +1,16 @@
-package com.sztorm.notecalendar
+package com.sztorm.notecalendar.preferences.backup
 
 import android.util.Base64
+import com.sztorm.notecalendar.Base64String
+import com.sztorm.notecalendar.EncryptionParameters
+import com.sztorm.notecalendar.EncryptionType
+import com.sztorm.notecalendar.ILogger
+import com.sztorm.notecalendar.LogTags
+import com.sztorm.notecalendar.Note
+import com.sztorm.notecalendar.decrypt
+import com.sztorm.notecalendar.encrypt
+import com.sztorm.notecalendar.toBase64
+import com.sztorm.notecalendar.toList
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject

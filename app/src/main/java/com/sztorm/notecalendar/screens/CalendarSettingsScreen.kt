@@ -12,10 +12,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.sztorm.notecalendar.viewmodels.MainViewModel
 import com.sztorm.notecalendar.R
-import com.sztorm.notecalendar.StartingScreenType
+import com.sztorm.notecalendar.preferences.StartingScreenType
 import com.sztorm.notecalendar.components.preferences.ListPreference
 import com.sztorm.notecalendar.components.preferences.SubpreferenceScreen
 import com.sztorm.notecalendar.getLocalizedName
+import com.sztorm.notecalendar.preferences.getLocalizedName
 import com.sztorm.notecalendar.getSystemFirstDayOfWeek
 import com.sztorm.notecalendar.repositories.UserPreferencesRepository
 import kotlinx.coroutines.launch

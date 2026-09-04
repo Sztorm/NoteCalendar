@@ -61,13 +61,13 @@ import com.sztorm.notecalendar.ILogger
 import com.sztorm.notecalendar.NoteData
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.ReminderNote
-import com.sztorm.notecalendar.ThemeColors
 import com.sztorm.notecalendar.components.DayNote
 import com.sztorm.notecalendar.components.InfiniteHorizontalPager
 import com.sztorm.notecalendar.components.TimePickerDialog
 import com.sztorm.notecalendar.components.TimedContent
 import com.sztorm.notecalendar.getLocalizedGenitiveCaseName
 import com.sztorm.notecalendar.getLocalizedName
+import com.sztorm.notecalendar.preferences.ThemeColors
 import com.sztorm.notecalendar.remainingDurationFromNow
 import com.sztorm.notecalendar.repositories.NoteRepository
 import com.sztorm.notecalendar.viewmodels.DayScreenEvent

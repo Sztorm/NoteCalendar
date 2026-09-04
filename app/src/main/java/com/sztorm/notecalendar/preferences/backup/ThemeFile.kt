@@ -1,7 +1,10 @@
-package com.sztorm.notecalendar
+package com.sztorm.notecalendar.preferences.backup
 
 import androidx.compose.ui.graphics.Color
 import com.sztorm.notecalendar.components.colorpicker.parseHexCodeOrNull
+import com.sztorm.notecalendar.preferences.ThemeColors
+import com.sztorm.notecalendar.toColor
+import com.sztorm.notecalendar.toHexCodeFormat
 import org.json.JSONException
 import org.json.JSONObject
 

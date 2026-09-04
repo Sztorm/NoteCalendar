@@ -9,6 +9,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.core.view.WindowCompat
+import com.sztorm.notecalendar.preferences.StartingScreenType
+import com.sztorm.notecalendar.preferences.ThemeColors
 import com.sztorm.notecalendar.repositories.FileRepositoryImpl
 import com.sztorm.notecalendar.repositories.NoteRepositoryImpl
 import com.sztorm.notecalendar.repositories.UserPreferencesRepository

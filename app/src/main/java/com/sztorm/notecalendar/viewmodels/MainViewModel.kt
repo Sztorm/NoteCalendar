@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.sztorm.notecalendar.ThemeColors
+import com.sztorm.notecalendar.preferences.ThemeColors
 import java.time.LocalDate
 
 class MainViewModel(initialState: MainState) : ViewModel() {

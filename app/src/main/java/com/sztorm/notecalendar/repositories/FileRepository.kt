@@ -6,8 +6,8 @@ import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import com.sztorm.notecalendar.NotesBackupFile
-import com.sztorm.notecalendar.ThemeFile
+import com.sztorm.notecalendar.preferences.backup.NotesBackupFile
+import com.sztorm.notecalendar.preferences.backup.ThemeFile
 import java.io.BufferedReader
 import java.io.InputStreamReader
 

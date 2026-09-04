@@ -1,4 +1,4 @@
-package com.sztorm.notecalendar
+package com.sztorm.notecalendar.preferences
 
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme

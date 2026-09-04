@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.sztorm.notecalendar.ILogger
 import com.sztorm.notecalendar.LogTags
-import com.sztorm.notecalendar.NotesBackupFile
+import com.sztorm.notecalendar.preferences.backup.NotesBackupFile
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.components.preferences.Preference
 import com.sztorm.notecalendar.generateAes256Key

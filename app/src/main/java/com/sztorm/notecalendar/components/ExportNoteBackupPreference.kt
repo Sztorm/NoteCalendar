@@ -35,7 +35,7 @@ import com.sztorm.notecalendar.EncryptionParameters
 import com.sztorm.notecalendar.EncryptionType
 import com.sztorm.notecalendar.ILogger
 import com.sztorm.notecalendar.LogTags
-import com.sztorm.notecalendar.NotesBackupFile
+import com.sztorm.notecalendar.preferences.backup.NotesBackupFile
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.components.preferences.ConfirmationPreference
 import com.sztorm.notecalendar.generateAes256Key
