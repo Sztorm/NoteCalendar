@@ -1,7 +1,6 @@
 package com.sztorm.notecalendar.data.repositories
 
 import android.content.Context
-import androidx.compose.ui.unit.sp
 import com.sztorm.notecalendar.core.common.getSystemFirstDayOfWeek
 import com.sztorm.notecalendar.core.common.isDarkThemeEnabled
 import com.sztorm.notecalendar.domain.repositories.PreferenceDefaults
@@ -59,7 +58,7 @@ class PreferenceDefaultsImpl(context: Context) : PreferenceDefaults {
         get() = StartingScreenType.DayScreen
 
     override val noteFontSize
-        get() = NoteFontSize(20.sp)
+        get() = NoteFontSize.Sizes[3]
 
     override val noteLineSpacing: NoteLineSpacing
         get() = NoteLineSpacing.LineSpacings[2]
