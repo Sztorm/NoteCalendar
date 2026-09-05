@@ -2,9 +2,11 @@ package com.sztorm.notecalendar.ui.components.preferences
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CardColors
@@ -137,4 +139,65 @@ fun <V> ListPreference(
             }
         }
     }
+}
+
+@Suppress("unused")
+@Composable
+fun <V> ListPreference(
+    title: String,
+    options: List<Pair<String, V>>,
+    initialSelectedOptionIndex: Int,
+    onRadioButtonClick: (Int, V) -> Unit,
+    modifier: Modifier = Modifier,
+    summary: String? = null,
+    titleColor: Color = Color.Unspecified,
+    summaryColor: Color = Color.Unspecified,
+    icon: Painter? = null,
+    iconColorFilter: ColorFilter? = null,
+    enabled: Boolean = true
+) {
+    val titleColor = titleColor.copy(alpha = if (enabled) 1f else 0.4f)
+    val summaryColor = summaryColor.copy(alpha = if (enabled) 0.8f else 0.4f)
+    val optionInteractionSources = remember {
+        List(options.size) { MutableInteractionSource() }
+    }
+    Preference(
+        title = title,
+        onClick = {},
+        isClickable = false,
+        modifier = modifier,
+        summary = summary,
+        titleColor = titleColor,
+        summaryColor = summaryColor,
+        icon = icon,
+        iconColorFilter = iconColorFilter,
+        enabled = enabled,
+        paddingValues = PaddingValues(top = 16.dp)
+    )
+    for (i in options.indices) {
+        val (name, value) = options[i]
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable(
+                    onClick = { onRadioButtonClick(i, value) },
+                    indication = null,
+                    interactionSource = optionInteractionSources[i]
+                )
+                .padding(start = 16.dp, end = 16.dp)
+        ) {
+            RadioButton(
+                selected = i == initialSelectedOptionIndex,
+                onClick = { onRadioButtonClick(i, value) },
+                interactionSource = optionInteractionSources[i]
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = name,
+                color = titleColor
+            )
+        }
+    }
+    Spacer(modifier = Modifier.height(16.dp))
 }
