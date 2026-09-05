@@ -1,7 +1,7 @@
 package com.sztorm.notecalendar.feature.settings.about
 
 object AppInfo {
-    const val VERSION = "2.0.0"
+    const val VERSION = "2.0.1"
     const val LICENSE = "MIT"
     const val CONTACT_EMAIL = "sztorm.contact@gmail.com"
     const val SOURCE_CODE_GITHUB = "GitHub"
