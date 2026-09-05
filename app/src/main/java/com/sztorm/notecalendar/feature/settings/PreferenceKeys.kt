@@ -13,6 +13,7 @@ object PreferenceKeys {
     val NoteColor = intPreferencesKey("PrefKey_NoteColor")
     val NoteColorVariant = intPreferencesKey("PrefKey_NoteColorVariant")
     val NoteFontSize = floatPreferencesKey("PrefKey_NoteFontSize")
+    val NoteLineSpacing = floatPreferencesKey("PrefKey_NoteLineSpacing")
     val NoteTextColor = intPreferencesKey("PrefKey_NoteTextColor")
     val PrimaryColor = intPreferencesKey("PrefKey_PrimaryColor")
     val SecondaryColor = intPreferencesKey("PrefKey_SecondaryColor")

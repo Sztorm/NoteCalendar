@@ -20,7 +20,7 @@ import com.sztorm.notecalendar.platform.notifications.AppNotificationManager
 import com.sztorm.notecalendar.platform.notifications.NotificationIntentKeys
 import com.sztorm.notecalendar.platform.permissions.AppPermissionManager
 import com.sztorm.notecalendar.ui.theme.AppTheme
-import com.sztorm.notecalendar.feature.app.MainState
+import com.sztorm.notecalendar.feature.app.AppState
 import com.sztorm.notecalendar.feature.app.AppViewFactory
 import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.feature.app.NavigationBarDestination
@@ -55,14 +55,12 @@ class MainActivity : ComponentActivity() {
         val permissionManager = AppPermissionManager(this)
         val notificationManager = AppNotificationManager(this, logger)
         val bundleResult = readBundle()
-        val initialState: MainState
-
-        runBlocking {
+        val initialState = runBlocking {
             val startingView =
                 if (bundleResult != null && bundleResult.isLaunchedFromNotification)
                     StartingScreenType.DayScreen
                 else preferenceRepository.getStartingScreen()
-            initialState = MainState(
+            AppState(
                 themeColors = preferenceRepository.getThemeColors(),
                 dayScreenDate = bundleResult?.noteDate?.toLocalDateOrNull() ?: LocalDate.now(),
                 navigationBarDestination = when (startingView) {
@@ -70,7 +68,8 @@ class MainActivity : ComponentActivity() {
                     StartingScreenType.WeekScreen -> NavigationBarDestination.Week
                     StartingScreenType.MonthScreen -> NavigationBarDestination.Month
                 },
-                noteFontSize = preferenceRepository.getNoteFontSize()
+                noteFontSize = preferenceRepository.getNoteFontSize(),
+                noteLineSpacing = preferenceRepository.getNoteLineSpacing()
             )
         }
         WindowCompat.setDecorFitsSystemWindows(window, false)

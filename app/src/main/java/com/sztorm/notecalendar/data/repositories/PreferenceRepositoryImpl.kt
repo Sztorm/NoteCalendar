@@ -16,6 +16,7 @@ import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
 import com.sztorm.notecalendar.feature.settings.PreferenceKeys
 import com.sztorm.notecalendar.feature.settings.calendar.StartingScreenType
 import com.sztorm.notecalendar.feature.settings.notes.NoteFontSize
+import com.sztorm.notecalendar.feature.settings.notes.NoteLineSpacing
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -102,6 +103,12 @@ class PreferenceRepositoryImpl(context: Context) : PreferenceRepository {
 
     override suspend fun getNoteFontSize(default: NoteFontSize) =
         NoteFontSize(getPreference(PreferenceKeys.NoteFontSize, default.floatValue).sp)
+
+    override suspend fun getNoteLineSpacing(default: NoteLineSpacing) = NoteLineSpacing(
+        fontScaleFactor = getPreference(
+            PreferenceKeys.NoteLineSpacing, default.fontScaleFactor
+        )
+    )
 
     override suspend fun setBackgroundColor(value: Color) {
         context.preferences.edit {
@@ -190,6 +197,12 @@ class PreferenceRepositoryImpl(context: Context) : PreferenceRepository {
     override suspend fun setNoteFontSize(value: NoteFontSize) {
         context.preferences.edit {
             it[PreferenceKeys.NoteFontSize] = value.floatValue
+        }
+    }
+
+    override suspend fun setNoteLineSpacing(value: NoteLineSpacing) {
+        context.preferences.edit {
+            it[PreferenceKeys.NoteLineSpacing] = value.fontScaleFactor
         }
     }
 }

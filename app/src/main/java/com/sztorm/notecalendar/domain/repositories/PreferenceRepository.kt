@@ -3,6 +3,7 @@ package com.sztorm.notecalendar.domain.repositories
 import androidx.compose.ui.graphics.Color
 import com.sztorm.notecalendar.feature.settings.calendar.StartingScreenType
 import com.sztorm.notecalendar.feature.settings.notes.NoteFontSize
+import com.sztorm.notecalendar.feature.settings.notes.NoteLineSpacing
 import com.sztorm.notecalendar.feature.settings.theme.ThemeColors
 import java.time.DayOfWeek
 import java.time.LocalTime
@@ -65,6 +66,10 @@ interface PreferenceRepository {
         default: NoteFontSize = defaults.noteFontSize
     ): NoteFontSize
 
+    suspend fun getNoteLineSpacing(
+        default: NoteLineSpacing = defaults.noteLineSpacing
+    ): NoteLineSpacing
+
     suspend fun setBackgroundColor(value: Color)
 
     suspend fun setBackgroundColorVariant(value: Color)
@@ -112,4 +117,6 @@ interface PreferenceRepository {
     suspend fun setStartingScreen(value: StartingScreenType)
 
     suspend fun setNoteFontSize(value: NoteFontSize)
+
+    suspend fun setNoteLineSpacing(value: NoteLineSpacing)
 }

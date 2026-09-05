@@ -7,6 +7,7 @@ import com.sztorm.notecalendar.core.common.isDarkThemeEnabled
 import com.sztorm.notecalendar.domain.repositories.PreferenceDefaults
 import com.sztorm.notecalendar.feature.settings.calendar.StartingScreenType
 import com.sztorm.notecalendar.feature.settings.notes.NoteFontSize
+import com.sztorm.notecalendar.feature.settings.notes.NoteLineSpacing
 import com.sztorm.notecalendar.ui.theme.getDefaultThemeColors
 import java.time.LocalTime
 
@@ -59,4 +60,7 @@ class PreferenceDefaultsImpl(context: Context) : PreferenceDefaults {
 
     override val noteFontSize
         get() = NoteFontSize(20.sp)
+
+    override val noteLineSpacing: NoteLineSpacing
+        get() = NoteLineSpacing.LineSpacings[2]
 }

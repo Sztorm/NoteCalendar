@@ -146,8 +146,11 @@ fun NotesSettingsScreen(
             titleColor = themeColors.secondaryColor
         ) { enabled ->
             val minPreviewHeight = with(LocalDensity.current) {
-                NoteFontSize.Sizes.last().value.toDp() * (2f * 1.33f) + 16.dp
+                NoteFontSize.Sizes.last().value.toDp() *
+                    viewModel.state.noteLineSpacing.fontScaleFactor *
+                    2f + 16.dp
             }
+            // TODO: preview label
             DayNote(
                 color = themeColors.noteColor,
                 bendTint = themeColors.noteColorVariant,
@@ -161,12 +164,13 @@ fun NotesSettingsScreen(
                 Text(
                     text = "Aa Bb Cc 123\n" + "Sample note text", // TODO: add to strings.xml
                     fontSize = viewModel.state.noteFontSize.value,
-                    lineHeight = viewModel.state.noteFontSize.value * 1.33f,
+                    lineHeight = viewModel.state.noteFontSize.value *
+                        viewModel.state.noteLineSpacing.fontScaleFactor,
                     modifier = Modifier.padding(8.dp)
                 )
             }
             SizeSliderPreference(
-                title = "Note font size", // TODO: add to strings.xml
+                title = "Font size", // TODO: add to strings.xml
                 sizes = NoteFontSize.Sizes,
                 selectedIndex = NoteFontSize.Sizes
                     .indexOfFirst { size ->
@@ -182,10 +186,30 @@ fun NotesSettingsScreen(
                 iconColor = themeColors.textColor,
                 enabled = enabled
             )
-
-            // TODO: line spacing (Compact, Standard, Relaxed)
+            SizeSliderPreference(
+                title = "Line spacing", // TODO: add to strings.xml
+                sizes = NoteLineSpacing.LineSpacings,
+                selectedIndex = NoteLineSpacing.LineSpacings
+                    .indexOfFirst { lineSpacing ->
+                        abs(
+                            lineSpacing.fontScaleFactor -
+                                viewModel.state.noteLineSpacing.fontScaleFactor
+                        ) < 0.01f
+                    }.let { max(it, 0) },
+                onSizeChange = { _, lineSpacing ->
+                    coroutineScope.launch {
+                        preferenceRepository.setNoteLineSpacing(lineSpacing)
+                    }
+                    viewModel.onEvent(AppEvent.NoteLineSpacingChange(lineSpacing))
+                },
+                titleColor = themeColors.textColor,
+                iconColor = themeColors.textColor,
+                enabled = enabled
+            )
+            // TODO: note font
+            // TODO: note text color
+            // TODO: note color
+            // TODO: note color variant
         }
-
-        // TODO: note font
     }
 }

@@ -6,10 +6,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.sztorm.notecalendar.feature.settings.notes.NoteFontSize
+import com.sztorm.notecalendar.feature.settings.notes.NoteLineSpacing
 import com.sztorm.notecalendar.feature.settings.theme.ThemeColors
 import java.time.LocalDate
 
-class AppViewModel(initialState: MainState) : ViewModel() {
+class AppViewModel(initialState: AppState) : ViewModel() {
     var state by mutableStateOf(initialState)
         private set
 
@@ -21,11 +22,12 @@ class AppViewModel(initialState: MainState) : ViewModel() {
                 state.copy(navigationBarDestination = event.destination)
 
             is AppEvent.NoteFontSizeChange -> state.copy(noteFontSize = event.size)
+            is AppEvent.NoteLineSpacingChange -> state.copy(noteLineSpacing = event.lineSpacing)
         }
     }
 }
 
-class AppViewFactory(val initialState: MainState) : ViewModelProvider.Factory {
+class AppViewFactory(val initialState: AppState) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T = when {
         modelClass.isAssignableFrom(AppViewModel::class.java) ->
@@ -43,11 +45,13 @@ sealed class AppEvent {
     ) : AppEvent()
 
     data class NoteFontSizeChange(val size: NoteFontSize) : AppEvent()
+    data class NoteLineSpacingChange(val lineSpacing: NoteLineSpacing) : AppEvent()
 }
 
-data class MainState(
+data class AppState(
     val themeColors: ThemeColors,
     val dayScreenDate: LocalDate,
     val navigationBarDestination: NavigationBarDestination,
-    val noteFontSize: NoteFontSize
+    val noteFontSize: NoteFontSize,
+    val noteLineSpacing: NoteLineSpacing
 )
