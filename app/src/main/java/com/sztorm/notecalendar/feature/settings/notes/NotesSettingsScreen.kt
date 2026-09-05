@@ -89,7 +89,7 @@ fun NotesSettingsScreen(
         onBackButtonClick = { navController.navigateUp() }
     ) {
         CategoryPreference(
-            title = "Note management", // TODO: add to strings.xml
+            title = stringResource(R.string.Settings_Notes_NoteManagement),
             titleColor = themeColors.secondaryColor
         ) { enabled ->
             ConfirmationPreference(
@@ -180,11 +180,11 @@ fun NotesSettingsScreen(
             )
         }
         CategoryPreference(
-            title = "Note appearance", // TODO: add to strings.xml
+            title = stringResource(R.string.Settings_Notes_NoteAppearance),
             titleColor = themeColors.secondaryColor
         ) { enabled ->
             NotePreview(
-                previewText = "Preview", // TODO: add to strings.xml
+                previewText = stringResource(R.string.Settings_Notes_Preview),
                 noteText = """
                 Aa Bb Cc 123
                 Αα Ββ Γγ 123
@@ -201,7 +201,7 @@ fun NotesSettingsScreen(
                 backgroundColor = themeColors.backgroundColorVariant,
             )
             SizeSliderPreference(
-                title = "Font size", // TODO: add to strings.xml
+                title = stringResource(R.string.Settings_Notes_FontSize),
                 sizes = NoteFontSize.Sizes,
                 selectedIndex = NoteFontSize.Sizes
                     .indexOfFirst { size ->
@@ -218,7 +218,7 @@ fun NotesSettingsScreen(
                 enabled = enabled
             )
             SizeSliderPreference(
-                title = "Line spacing", // TODO: add to strings.xml
+                title = stringResource(R.string.Settings_Notes_LineSpacing),
                 sizes = NoteLineSpacing.LineSpacings,
                 selectedIndex = NoteLineSpacing.LineSpacings
                     .indexOfFirst { lineSpacing ->

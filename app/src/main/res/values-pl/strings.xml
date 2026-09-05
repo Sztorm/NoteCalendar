@@ -107,8 +107,13 @@
     <string name="Settings_Notes_DeleteNotesDateRange">Usuń notatki z okresu</string>
     <string name="Settings_Notes_ExportNotesBackup">Eksportuj kopię zapasową notatek</string>
     <string name="Settings_Notes_ExportNotesBackup_DialogTitle">Eksport kopii zapasowej notatek</string>
+    <string name="Settings_Notes_FontSize">Rozmiar czcionki</string>
     <string name="Settings_Notes_ImportNotesBackup">Importuj kopię zapasową notatek</string>
     <string name="Settings_Notes_ImportNotesBackup_DialogTitle">Import kopii zapasowej notatek</string>
+    <string name="Settings_Notes_LineSpacing">Odstęp między wierszami</string>
+    <string name="Settings_Notes_NoteAppearance">Wygląd notatki</string>
+    <string name="Settings_Notes_NoteManagement">Zarządzanie notatkami</string>
+    <string name="Settings_Notes_Preview">Podgląd</string>
     <string name="Settings_Notifications">Powiadomienia</string>
     <string name="Settings_Notifications_NotificationTime">Czas powiadomienia</string>
     <string name="Settings_Notifications_TurnOnNotifications">Włącz powiadomienia</string>

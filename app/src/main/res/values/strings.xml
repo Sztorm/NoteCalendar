@@ -107,8 +107,13 @@
     <string name="Settings_Notes_DeleteNotesDateRange">Delete notes from date range</string>
     <string name="Settings_Notes_ExportNotesBackup">Export notes backup</string>
     <string name="Settings_Notes_ExportNotesBackup_DialogTitle">Notes backup export</string>
+    <string name="Settings_Notes_FontSize">Font size</string>
     <string name="Settings_Notes_ImportNotesBackup">Import notes backup</string>
     <string name="Settings_Notes_ImportNotesBackup_DialogTitle">Notes backup import</string>
+    <string name="Settings_Notes_LineSpacing">Line spacing</string>
+    <string name="Settings_Notes_NoteAppearance">Note appearance</string>
+    <string name="Settings_Notes_NoteManagement">Note management</string>
+    <string name="Settings_Notes_Preview">Preview</string>
     <string name="Settings_Notifications">Notifications</string>
     <string name="Settings_Notifications_NotificationTime">Notification time</string>
     <string name="Settings_Notifications_TurnOnNotifications">Turn on notifications</string>
