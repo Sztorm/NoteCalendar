@@ -20,6 +20,6 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class com.sztorm.notecalendar.NoteData { *; }
+-keep class com.sztorm.notecalendar.data.models.NoteData { *; }
 
 -dontobfuscate

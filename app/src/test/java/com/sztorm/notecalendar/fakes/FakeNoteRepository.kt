@@ -1,8 +1,8 @@
 package com.sztorm.notecalendar.fakes
 
-import com.sztorm.notecalendar.NoteData
-import com.sztorm.notecalendar.repositories.NoteRepository
-import com.sztorm.notecalendar.yearMonth
+import com.sztorm.notecalendar.core.common.yearMonth
+import com.sztorm.notecalendar.data.models.NoteData
+import com.sztorm.notecalendar.domain.repositories.NoteRepository
 import java.time.LocalDate
 import java.time.YearMonth
 

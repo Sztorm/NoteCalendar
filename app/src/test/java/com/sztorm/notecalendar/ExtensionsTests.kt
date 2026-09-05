@@ -1,5 +1,8 @@
 package com.sztorm.notecalendar
 
+import com.sztorm.notecalendar.core.common.getFirstVisibleDay
+import com.sztorm.notecalendar.core.common.getLastVisibleDay
+import com.sztorm.notecalendar.core.common.getVisibleWeeks
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments

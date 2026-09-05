@@ -9,16 +9,21 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.core.view.WindowCompat
-import com.sztorm.notecalendar.preferences.StartingScreenType
-import com.sztorm.notecalendar.repositories.FileRepositoryImpl
-import com.sztorm.notecalendar.repositories.NoteRepositoryImpl
-import com.sztorm.notecalendar.repositories.UserPreferencesRepository
-import com.sztorm.notecalendar.screens.AppScreen
-import com.sztorm.notecalendar.ui.AppTheme
-import com.sztorm.notecalendar.viewmodels.MainState
-import com.sztorm.notecalendar.viewmodels.MainViewFactory
-import com.sztorm.notecalendar.viewmodels.MainViewModel
-import com.sztorm.notecalendar.viewmodels.NavigationBarDestination
+import com.sztorm.notecalendar.core.common.toLocalDateOrNull
+import com.sztorm.notecalendar.feature.settings.calendar.StartingScreenType
+import com.sztorm.notecalendar.data.repositories.FileRepositoryImpl
+import com.sztorm.notecalendar.data.repositories.NoteRepositoryImpl
+import com.sztorm.notecalendar.data.repositories.PreferenceRepositoryImpl
+import com.sztorm.notecalendar.feature.app.AppScreen
+import com.sztorm.notecalendar.platform.logging.TimberLogger
+import com.sztorm.notecalendar.platform.notifications.AppNotificationManager
+import com.sztorm.notecalendar.platform.notifications.NotificationIntentKeys
+import com.sztorm.notecalendar.platform.permissions.AppPermissionManager
+import com.sztorm.notecalendar.ui.theme.AppTheme
+import com.sztorm.notecalendar.feature.app.MainState
+import com.sztorm.notecalendar.feature.app.AppViewFactory
+import com.sztorm.notecalendar.feature.app.AppViewModel
+import com.sztorm.notecalendar.feature.app.NavigationBarDestination
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 
@@ -31,9 +36,9 @@ class MainActivity : ComponentActivity() {
     private fun readBundle(): BundleResult? {
         val bundle: Bundle = intent.extras ?: return null
         val isLaunchedFromNotification = bundle.getBoolean(
-            IntentKeys.NOTIFICATION_LAUNCH_DAY_SCREEN, false
+            NotificationIntentKeys.EXTRA_NOTIFICATION_LAUNCH_DAY_SCREEN, false
         )
-        val noteDate = bundle.getString(IntentKeys.NOTE_DATE, null)
+        val noteDate = bundle.getString(NotificationIntentKeys.EXTRA_NOTE_DATE, null)
 
         return BundleResult(
             isLaunchedFromNotification = isLaunchedFromNotification,
@@ -46,7 +51,7 @@ class MainActivity : ComponentActivity() {
         val logger = TimberLogger
         val noteRepository = NoteRepositoryImpl(logger)
         val fileRepository = FileRepositoryImpl(this)
-        val preferencesRepository = UserPreferencesRepository(this)
+        val preferencesRepository = PreferenceRepositoryImpl(this)
         val permissionManager = AppPermissionManager(this)
         val notificationManager = AppNotificationManager(this, logger)
         val bundleResult = readBundle()
@@ -71,7 +76,7 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         enableEdgeToEdge()
         setContent {
-            val viewModel = viewModel<MainViewModel>(factory = MainViewFactory(initialState))
+            val viewModel = viewModel<AppViewModel>(factory = AppViewFactory(initialState))
 
             AppTheme(viewModel.state.themeColors) {
                 Surface(modifier = Modifier.fillMaxSize()) {

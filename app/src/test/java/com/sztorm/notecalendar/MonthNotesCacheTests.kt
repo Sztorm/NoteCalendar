@@ -1,5 +1,7 @@
 package com.sztorm.notecalendar
 
+import com.sztorm.notecalendar.data.MonthNotesCache
+import com.sztorm.notecalendar.data.models.NoteData
 import com.sztorm.notecalendar.fakes.FakeNoteRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.params.ParameterizedTest

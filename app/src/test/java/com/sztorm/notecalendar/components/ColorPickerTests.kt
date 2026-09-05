@@ -2,16 +2,16 @@ package com.sztorm.notecalendar.components
 
 import androidx.compose.ui.graphics.toArgb
 import com.sztorm.mathkit.ColorRGBA32
-import com.sztorm.notecalendar.components.colorpicker.HslColor
-import com.sztorm.notecalendar.components.colorpicker.HslaColor
-import com.sztorm.notecalendar.components.colorpicker.HsvColor
-import com.sztorm.notecalendar.components.colorpicker.HsvaColor
-import com.sztorm.notecalendar.components.colorpicker.RgbColor
-import com.sztorm.notecalendar.components.colorpicker.RgbaColor
-import com.sztorm.notecalendar.components.colorpicker.parseHexCodeOrNull
-import com.sztorm.notecalendar.components.colorpicker.parseHslCodeOrNull
-import com.sztorm.notecalendar.components.colorpicker.parseHsvCodeOrNull
-import com.sztorm.notecalendar.components.colorpicker.parseRgbCodeOrNull
+import com.sztorm.notecalendar.ui.components.colorpicker.HslColor
+import com.sztorm.notecalendar.ui.components.colorpicker.HslaColor
+import com.sztorm.notecalendar.ui.components.colorpicker.HsvColor
+import com.sztorm.notecalendar.ui.components.colorpicker.HsvaColor
+import com.sztorm.notecalendar.ui.components.colorpicker.RgbColor
+import com.sztorm.notecalendar.ui.components.colorpicker.RgbaColor
+import com.sztorm.notecalendar.ui.components.colorpicker.parseHexCodeOrNull
+import com.sztorm.notecalendar.ui.components.colorpicker.parseHslCodeOrNull
+import com.sztorm.notecalendar.ui.components.colorpicker.parseHsvCodeOrNull
+import com.sztorm.notecalendar.ui.components.colorpicker.parseRgbCodeOrNull
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments

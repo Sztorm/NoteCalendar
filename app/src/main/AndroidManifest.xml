@@ -34,7 +34,7 @@
         </activity>
 
         <receiver
-            android:name="com.sztorm.notecalendar.NoteNotificationReceiver"
+            android:name="com.sztorm.notecalendar.platform.notifications.NoteNotificationReceiver"
             android:enabled="true" />
 
         <meta-data
