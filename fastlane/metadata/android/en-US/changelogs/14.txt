@@ -1,0 +1,3 @@
+* Added German translation (thanks @Atalanttore!)
+* Added Chinese translation (thanks @Sketch6580!)
+* Added note appearance settings that include font size, line spacing and a preview to show the changes.

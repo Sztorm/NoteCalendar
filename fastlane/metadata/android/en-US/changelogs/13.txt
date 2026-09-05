@@ -1,0 +1,7 @@
+* Updated app dependencies and target SDK to 36 (Android 16)
+* Fully migrated the codebase to Jetpack Compose for better maintainability and a cleaner code structure
+* Introduction of Material 3 design a more modern and consistent user experience
+* Updated the main app screens with a cleaner, more straightforward interface
+* Updated reminder system
+* Added support for importing and exporting notes, with optional encryption for enhanced security
+* Added support for importing and exporting custom themes, along with a new color picker
