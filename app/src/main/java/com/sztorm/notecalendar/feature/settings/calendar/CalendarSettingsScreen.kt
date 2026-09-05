@@ -13,7 +13,7 @@ import androidx.navigation.NavController
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.core.common.getLocalizedName
 import com.sztorm.notecalendar.core.common.getSystemFirstDayOfWeek
-import com.sztorm.notecalendar.data.repositories.PreferenceRepositoryImpl
+import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
 import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.ui.components.preferences.ListPreference
 import com.sztorm.notecalendar.ui.components.preferences.SubpreferenceScreen
@@ -23,7 +23,7 @@ import java.time.DayOfWeek
 @Composable
 fun CalendarSettingsScreen(
     viewModel: AppViewModel,
-    preferencesRepository: PreferenceRepositoryImpl,
+    preferenceRepository: PreferenceRepository,
     navController: NavController
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -35,10 +35,10 @@ fun CalendarSettingsScreen(
         mutableStateOf(Pair(StartingScreenType.DayScreen, 0))
     }
     LaunchedEffect(Unit) {
-        firstDayOfWeekIndexPair = preferencesRepository
+        firstDayOfWeekIndexPair = preferenceRepository
             .getFirstDayOfWeek()
             .let { it to it.ordinal }
-        startingViewIndexPair = preferencesRepository
+        startingViewIndexPair = preferenceRepository
             .getStartingScreen()
             .let { it to it.ordinal }
     }
@@ -57,7 +57,7 @@ fun CalendarSettingsScreen(
                 firstDayOfWeekIndexPair = Pair(value, index)
 
                 coroutineScope.launch {
-                    preferencesRepository.setFirstDayOfWeek(value)
+                    preferenceRepository.setFirstDayOfWeek(value)
                 }
             },
             titleColor = themeColors.textColor,
@@ -78,7 +78,7 @@ fun CalendarSettingsScreen(
                 startingViewIndexPair = Pair(value, index)
 
                 coroutineScope.launch {
-                    preferencesRepository.setStartingScreen(value)
+                    preferenceRepository.setStartingScreen(value)
                 }
             },
             titleColor = themeColors.textColor,

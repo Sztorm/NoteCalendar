@@ -26,11 +26,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.sztorm.notecalendar.core.common.getLocalizedName
 import com.sztorm.notecalendar.core.common.getLocalizedShortName
-import com.sztorm.notecalendar.core.common.getSystemFirstDayOfWeek
 import com.sztorm.notecalendar.core.common.yearMonth
 import com.sztorm.notecalendar.data.MonthNotesCache
-import com.sztorm.notecalendar.data.repositories.PreferenceRepositoryImpl
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
+import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
 import com.sztorm.notecalendar.feature.app.AppEvent
 import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.feature.app.NavigationBarDestination
@@ -51,13 +50,13 @@ fun MonthScreen(
     viewModel: AppViewModel,
     navController: NavController,
     noteRepository: NoteRepository,
-    preferencesRepository: PreferenceRepositoryImpl
+    preferenceRepository: PreferenceRepository
 ) {
     val themeColors = viewModel.state.themeColors
     val selectedDateYearMonth = viewModel.state.dayScreenDate.yearMonth
     val today = LocalDate.now()
     var firstDayOfWeek by remember {
-        mutableStateOf(getSystemFirstDayOfWeek())
+        mutableStateOf(preferenceRepository.defaults.firstDayOfWeek)
     }
     var currentYearMonth by remember {
         mutableStateOf(selectedDateYearMonth)
@@ -66,7 +65,7 @@ fun MonthScreen(
         mutableStateOf(MonthNotesCache(noteRepository, selectedDateYearMonth))
     }
     LaunchedEffect(Unit) {
-        firstDayOfWeek = preferencesRepository.getFirstDayOfWeek()
+        firstDayOfWeek = preferenceRepository.getFirstDayOfWeek()
     }
     Column(
         modifier = Modifier

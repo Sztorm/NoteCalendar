@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
         val logger = TimberLogger
         val noteRepository = NoteRepositoryImpl(logger)
         val fileRepository = FileRepositoryImpl(this)
-        val preferencesRepository = PreferenceRepositoryImpl(this)
+        val preferenceRepository = PreferenceRepositoryImpl(this)
         val permissionManager = AppPermissionManager(this)
         val notificationManager = AppNotificationManager(this, logger)
         val bundleResult = readBundle()
@@ -61,16 +61,16 @@ class MainActivity : ComponentActivity() {
             val startingView =
                 if (bundleResult != null && bundleResult.isLaunchedFromNotification)
                     StartingScreenType.DayScreen
-                else preferencesRepository.getStartingScreen()
+                else preferenceRepository.getStartingScreen()
             initialState = MainState(
-                themeColors = preferencesRepository.getThemeColors(),
+                themeColors = preferenceRepository.getThemeColors(),
                 dayScreenDate = bundleResult?.noteDate?.toLocalDateOrNull() ?: LocalDate.now(),
                 navigationBarDestination = when (startingView) {
                     StartingScreenType.DayScreen -> NavigationBarDestination.Day
                     StartingScreenType.WeekScreen -> NavigationBarDestination.Week
                     StartingScreenType.MonthScreen -> NavigationBarDestination.Month
                 },
-                noteFontSize = preferencesRepository.getNoteFontSize()
+                noteFontSize = preferenceRepository.getNoteFontSize()
             )
         }
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -87,7 +87,7 @@ class MainActivity : ComponentActivity() {
                         notificationManager = notificationManager,
                         noteRepository = noteRepository,
                         fileRepository = fileRepository,
-                        preferencesRepository = preferencesRepository
+                        preferenceRepository = preferenceRepository
                     )
                 }
             }

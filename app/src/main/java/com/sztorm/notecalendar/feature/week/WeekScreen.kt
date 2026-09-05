@@ -31,8 +31,8 @@ import com.sztorm.notecalendar.core.common.getLocalizedName
 import com.sztorm.notecalendar.core.common.getSystemFirstDayOfWeek
 import com.sztorm.notecalendar.core.common.isEven
 import com.sztorm.notecalendar.core.common.yearMonth
-import com.sztorm.notecalendar.data.repositories.PreferenceRepositoryImpl
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
+import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
 import com.sztorm.notecalendar.feature.app.AppEvent
 import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.feature.app.NavigationBarDestination
@@ -170,7 +170,7 @@ fun WeekScreen(
     viewModel: AppViewModel,
     navController: NavController,
     noteRepository: NoteRepository,
-    preferencesRepository: PreferenceRepositoryImpl
+    preferenceRepository: PreferenceRepository
 ) {
     val themeColors = viewModel.state.themeColors
     val dayScreenDate = viewModel.state.dayScreenDate
@@ -204,7 +204,7 @@ fun WeekScreen(
     val dayListState = rememberLazyListState()
 
     LaunchedEffect(Unit) {
-        firstDayOfWeek = preferencesRepository.getFirstDayOfWeek()
+        firstDayOfWeek = preferenceRepository.getFirstDayOfWeek()
     }
     InfiniteColumn(
         modifier = Modifier.fillMaxSize(),

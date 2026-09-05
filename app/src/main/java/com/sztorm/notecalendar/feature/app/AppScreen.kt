@@ -27,17 +27,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.sztorm.notecalendar.platform.notifications.AppNotificationManager
-import com.sztorm.notecalendar.platform.permissions.AppPermissionManager
-import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.R
-import com.sztorm.notecalendar.data.repositories.PreferenceRepositoryImpl
+import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.domain.repositories.FileRepository
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
+import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
 import com.sztorm.notecalendar.feature.day.DayScreen
+import com.sztorm.notecalendar.feature.month.MonthScreen
 import com.sztorm.notecalendar.feature.settings.SettingsScreen
 import com.sztorm.notecalendar.feature.week.WeekScreen
-import com.sztorm.notecalendar.feature.month.MonthScreen
+import com.sztorm.notecalendar.platform.notifications.AppNotificationManager
+import com.sztorm.notecalendar.platform.permissions.AppPermissionManager
 
 private data class MainTab(
     val screen: Screen,
@@ -115,7 +115,7 @@ fun AppScreen(
     notificationManager: AppNotificationManager,
     noteRepository: NoteRepository,
     fileRepository: FileRepository,
-    preferencesRepository: PreferenceRepositoryImpl
+    preferenceRepository: PreferenceRepository
 ) {
     val navController = rememberNavController()
 
@@ -149,7 +149,7 @@ fun AppScreen(
                     viewModel = viewModel,
                     navController = navController,
                     noteRepository = noteRepository,
-                    preferencesRepository = preferencesRepository
+                    preferenceRepository = preferenceRepository
                 )
             }
             composable<Screen.Week> {
@@ -157,7 +157,7 @@ fun AppScreen(
                     viewModel = viewModel,
                     navController = navController,
                     noteRepository = noteRepository,
-                    preferencesRepository = preferencesRepository
+                    preferenceRepository = preferenceRepository
                 )
             }
             composable<Screen.Day> {
@@ -179,7 +179,7 @@ fun AppScreen(
                     notificationManager = notificationManager,
                     fileRepository = fileRepository,
                     noteRepository = noteRepository,
-                    preferencesRepository = preferencesRepository
+                    preferenceRepository = preferenceRepository
                 )
             }
         }

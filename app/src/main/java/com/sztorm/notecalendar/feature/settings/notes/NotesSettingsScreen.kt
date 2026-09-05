@@ -21,9 +21,9 @@ import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.core.common.toLocalDateOrNull
 import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.core.logging.LogTags
-import com.sztorm.notecalendar.data.repositories.PreferenceRepositoryImpl
 import com.sztorm.notecalendar.domain.repositories.FileRepository
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
+import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
 import com.sztorm.notecalendar.feature.app.AppEvent
 import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.platform.notifications.AppNotificationManager
@@ -43,7 +43,7 @@ fun NotesSettingsScreen(
     viewModel: AppViewModel,
     noteRepository: NoteRepository,
     fileRepository: FileRepository,
-    preferencesRepository: PreferenceRepositoryImpl,
+    preferenceRepository: PreferenceRepository,
     notificationManager: AppNotificationManager,
     navController: NavController
 ) {
@@ -174,7 +174,7 @@ fun NotesSettingsScreen(
                     }.let { max(it, 0) },
                 onSizeChange = { _, size ->
                     coroutineScope.launch {
-                        preferencesRepository.setNoteFontSize(size)
+                        preferenceRepository.setNoteFontSize(size)
                     }
                     viewModel.onEvent(AppEvent.NoteFontSizeChange(size))
                 },

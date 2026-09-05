@@ -14,20 +14,20 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.sztorm.notecalendar.platform.notifications.AppNotificationManager
-import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.R
-import com.sztorm.notecalendar.ui.components.preferences.Preference
-import com.sztorm.notecalendar.ui.components.preferences.PreferenceScreen
-import com.sztorm.notecalendar.data.repositories.PreferenceRepositoryImpl
+import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.domain.repositories.FileRepository
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
+import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
+import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.feature.app.Screen
 import com.sztorm.notecalendar.feature.settings.about.AboutSettingsScreen
 import com.sztorm.notecalendar.feature.settings.calendar.CalendarSettingsScreen
 import com.sztorm.notecalendar.feature.settings.notes.NotesSettingsScreen
 import com.sztorm.notecalendar.feature.settings.theme.ThemeSettingsScreen
-import com.sztorm.notecalendar.feature.app.AppViewModel
+import com.sztorm.notecalendar.platform.notifications.AppNotificationManager
+import com.sztorm.notecalendar.ui.components.preferences.Preference
+import com.sztorm.notecalendar.ui.components.preferences.PreferenceScreen
 
 @Composable
 fun SettingsScreen(
@@ -36,7 +36,7 @@ fun SettingsScreen(
     notificationManager: AppNotificationManager,
     fileRepository: FileRepository,
     noteRepository: NoteRepository,
-    preferencesRepository: PreferenceRepositoryImpl,
+    preferenceRepository: PreferenceRepository,
 ) {
     val navController = rememberNavController()
 
@@ -79,7 +79,7 @@ fun SettingsScreen(
                 noteRepository = noteRepository,
                 notificationManager = notificationManager,
                 fileRepository = fileRepository,
-                preferencesRepository = preferencesRepository,
+                preferenceRepository = preferenceRepository,
                 navController = navController
             )
         }
@@ -100,7 +100,7 @@ fun SettingsScreen(
         ) {
             CalendarSettingsScreen(
                 viewModel = viewModel,
-                preferencesRepository = preferencesRepository,
+                preferenceRepository = preferenceRepository,
                 navController = navController
             )
         }
@@ -123,7 +123,7 @@ fun SettingsScreen(
                 logger = logger,
                 viewModel = viewModel,
                 fileRepository = fileRepository,
-                preferencesRepository = preferencesRepository,
+                preferenceRepository = preferenceRepository,
                 navController = navController
             )
         }
