@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.sztorm.notecalendar.core.common.getLocalizedName
 import com.sztorm.notecalendar.core.common.getLocalizedShortName
@@ -47,22 +48,24 @@ data class MonthViewDay(
 
 @Composable
 fun MonthScreen(
-    viewModel: AppViewModel,
+    appViewModel: AppViewModel,
     navController: NavController,
     noteRepository: NoteRepository,
     preferenceRepository: PreferenceRepository
 ) {
-    val themeColors = viewModel.state.themeColors
-    val selectedDateYearMonth = viewModel.state.dayScreenDate.yearMonth
+    val themeColors = appViewModel.state.themeColors
+    val initialYearMonth = appViewModel.state.dayScreenDate.yearMonth
     val today = LocalDate.now()
+    val viewModel = viewModel<MonthScreenViewModel>(
+        factory = MonthScreenViewModelFactory(
+            initialState = MonthScreenState(
+                yearMonth = initialYearMonth,
+                notesCache = MonthNotesCache(noteRepository, initialYearMonth)
+            )
+        )
+    )
     var firstDayOfWeek by remember {
         mutableStateOf(preferenceRepository.defaults.firstDayOfWeek)
-    }
-    var currentYearMonth by remember {
-        mutableStateOf(selectedDateYearMonth)
-    }
-    var notesCache by remember {
-        mutableStateOf(MonthNotesCache(noteRepository, selectedDateYearMonth))
     }
     LaunchedEffect(Unit) {
         firstDayOfWeek = preferenceRepository.getFirstDayOfWeek()
@@ -73,7 +76,7 @@ fun MonthScreen(
             .verticalScroll(rememberScrollState())
     ) {
         Text(
-            text = currentYearMonth.getLocalizedName(),
+            text = viewModel.state.yearMonth.getLocalizedName(),
             fontSize = 38.sp,
             fontWeight = FontWeight.Light,
             color = themeColors.textColor,
@@ -91,18 +94,13 @@ fun MonthScreen(
         )
         InfiniteHorizontalPager(
             verticalAlignment = Alignment.Top,
-            key = { selectedDateYearMonth.plusMonths(it.toLong()) },
+            key = { initialYearMonth.plusMonths(it.toLong()) },
             onPageChange = { page ->
-                val prevYearMonth = currentYearMonth
-                currentYearMonth = selectedDateYearMonth.plusMonths(page.toLong())
-                notesCache = when {
-                    currentYearMonth > prevYearMonth -> notesCache.nextMonth()
-                    currentYearMonth < prevYearMonth -> notesCache.prevMonth()
-                    else -> notesCache
-                }
+                val currentYearMonth = initialYearMonth.plusMonths(page.toLong())
+                viewModel.onEvent(MonthScreenEvent.YearMonthChange(currentYearMonth))
             }
         ) {
-            val yearMonth = selectedDateYearMonth.plusMonths(it.toLong())
+            val yearMonth = initialYearMonth.plusMonths(it.toLong())
 
             MonthPage(
                 modifier = Modifier.fillMaxSize(),
@@ -111,14 +109,14 @@ fun MonthScreen(
             ) { date, modifier ->
                 DayLayout(
                     modifier = modifier,
-                    viewModel = viewModel,
+                    appViewModel = appViewModel,
                     navController = navController,
                     dayData = MonthViewDay(
                         date = date,
-                        isSelected = viewModel.state.dayScreenDate == date,
+                        isSelected = appViewModel.state.dayScreenDate == date,
                         isToday = date == today,
                         isInCurrentMonth = date.month == yearMonth.month,
-                        hasNote = notesCache.getBy(date) != null
+                        hasNote = viewModel.state.notesCache.getBy(date) != null
                     )
                 )
             }
@@ -129,11 +127,11 @@ fun MonthScreen(
 @Composable
 private fun DayLayout(
     modifier: Modifier,
-    viewModel: AppViewModel,
+    appViewModel: AppViewModel,
     navController: NavController,
     dayData: MonthViewDay
 ) {
-    val themeColors = viewModel.state.themeColors
+    val themeColors = appViewModel.state.themeColors
 
     Box(
         contentAlignment = Alignment.Center,
@@ -141,10 +139,10 @@ private fun DayLayout(
             .aspectRatio(1f)
             .combinedClickable(
                 onClick = {
-                    viewModel.onEvent(
+                    appViewModel.onEvent(
                         AppEvent.DayScreenDateChange(dayData.date)
                     )
-                    viewModel.onEvent(
+                    appViewModel.onEvent(
                         AppEvent.NavigationBarDestinationChange(
                             NavigationBarDestination.Day
                         )
@@ -152,10 +150,10 @@ private fun DayLayout(
                     navController.navigate(Screen.Day())
                 },
                 onLongClick = {
-                    viewModel.onEvent(
+                    appViewModel.onEvent(
                         AppEvent.DayScreenDateChange(dayData.date)
                     )
-                    viewModel.onEvent(
+                    appViewModel.onEvent(
                         AppEvent.NavigationBarDestinationChange(
                             NavigationBarDestination.Day
                         )

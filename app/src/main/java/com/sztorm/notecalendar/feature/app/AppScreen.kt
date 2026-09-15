@@ -146,7 +146,7 @@ fun AppScreen(
         ) {
             composable<Screen.Month> {
                 MonthScreen(
-                    viewModel = viewModel,
+                    appViewModel = viewModel,
                     navController = navController,
                     noteRepository = noteRepository,
                     preferenceRepository = preferenceRepository
