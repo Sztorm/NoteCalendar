@@ -11,11 +11,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -30,7 +25,6 @@ import com.sztorm.notecalendar.core.common.getLocalizedShortName
 import com.sztorm.notecalendar.core.common.yearMonth
 import com.sztorm.notecalendar.data.MonthNotesCache
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
-import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
 import com.sztorm.notecalendar.feature.app.AppEvent
 import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.feature.app.NavigationBarDestination
@@ -50,8 +44,7 @@ data class MonthViewDay(
 fun MonthScreen(
     appViewModel: AppViewModel,
     navController: NavController,
-    noteRepository: NoteRepository,
-    preferenceRepository: PreferenceRepository
+    noteRepository: NoteRepository
 ) {
     val themeColors = appViewModel.state.themeColors
     val initialYearMonth = appViewModel.state.dayScreenDate.yearMonth
@@ -64,12 +57,6 @@ fun MonthScreen(
             )
         )
     )
-    var firstDayOfWeek by remember {
-        mutableStateOf(preferenceRepository.defaults.firstDayOfWeek)
-    }
-    LaunchedEffect(Unit) {
-        firstDayOfWeek = preferenceRepository.getFirstDayOfWeek()
-    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -86,7 +73,7 @@ fun MonthScreen(
         )
         DayOfWeekBar(
             modifier = Modifier.padding(vertical = 8.dp),
-            firstDayOfWeek = firstDayOfWeek,
+            firstDayOfWeek = appViewModel.state.firstDayOfWeek,
             dayOfWeekText = { it.getLocalizedShortName() },
             backgroundColor = themeColors.secondaryColor,
             textColor = themeColors.buttonTextColor,
@@ -105,7 +92,7 @@ fun MonthScreen(
             MonthPage(
                 modifier = Modifier.fillMaxSize(),
                 yearMonth = yearMonth,
-                firstDayOfWeek = firstDayOfWeek
+                firstDayOfWeek = appViewModel.state.firstDayOfWeek
             ) { date, modifier ->
                 DayLayout(
                     modifier = modifier,

@@ -12,8 +12,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.core.common.getLocalizedName
-import com.sztorm.notecalendar.core.common.getSystemFirstDayOfWeek
 import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
+import com.sztorm.notecalendar.feature.app.AppEvent
 import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.ui.components.preferences.ListPreference
 import com.sztorm.notecalendar.ui.components.preferences.SubpreferenceScreen
@@ -28,16 +28,10 @@ fun CalendarSettingsScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val themeColors = viewModel.state.themeColors
-    var firstDayOfWeekIndexPair by remember {
-        mutableStateOf(getSystemFirstDayOfWeek().let { it to it.ordinal })
-    }
     var startingViewIndexPair by remember {
         mutableStateOf(Pair(StartingScreenType.DayScreen, 0))
     }
     LaunchedEffect(Unit) {
-        firstDayOfWeekIndexPair = preferenceRepository
-            .getFirstDayOfWeek()
-            .let { it to it.ordinal }
         startingViewIndexPair = preferenceRepository
             .getStartingScreen()
             .let { it to it.ordinal }
@@ -50,15 +44,12 @@ fun CalendarSettingsScreen(
         ListPreference(
             title = stringResource(R.string.Settings_Calendar_FirstDayOfWeek),
             options = DayOfWeek.entries.map { it.getLocalizedName() to it },
-            initialSelectedOptionIndex = firstDayOfWeekIndexPair.second,
-            onConfirm = { index, value ->
-                // Without it Compose will not update the UI text.
-                @Suppress("AssignedValueIsNeverRead")
-                firstDayOfWeekIndexPair = Pair(value, index)
-
+            initialSelectedOptionIndex = viewModel.state.firstDayOfWeek.ordinal,
+            onConfirm = { _, firstDayOfWeek ->
                 coroutineScope.launch {
-                    preferenceRepository.setFirstDayOfWeek(value)
+                    preferenceRepository.setFirstDayOfWeek(firstDayOfWeek)
                 }
+                viewModel.onEvent(AppEvent.FirstDayOfWeekChange(firstDayOfWeek))
             },
             titleColor = themeColors.textColor,
             summaryColor = themeColors.textColor,
@@ -73,8 +64,6 @@ fun CalendarSettingsScreen(
             options = StartingScreenType.entries.map { it.getLocalizedName() to it },
             initialSelectedOptionIndex = startingViewIndexPair.second,
             onConfirm = { index, value ->
-                // Without it Compose will not update the UI text.
-                @Suppress("AssignedValueIsNeverRead")
                 startingViewIndexPair = Pair(value, index)
 
                 coroutineScope.launch {

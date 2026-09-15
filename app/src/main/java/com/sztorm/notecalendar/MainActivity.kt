@@ -68,6 +68,7 @@ class MainActivity : ComponentActivity() {
                     StartingScreenType.WeekScreen -> NavigationBarDestination.Week
                     StartingScreenType.MonthScreen -> NavigationBarDestination.Month
                 },
+                firstDayOfWeek = preferenceRepository.getFirstDayOfWeek(),
                 noteFontSize = preferenceRepository.getNoteFontSize(),
                 noteLineSpacing = preferenceRepository.getNoteLineSpacing()
             )

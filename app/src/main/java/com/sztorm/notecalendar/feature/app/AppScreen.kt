@@ -148,16 +148,14 @@ fun AppScreen(
                 MonthScreen(
                     appViewModel = viewModel,
                     navController = navController,
-                    noteRepository = noteRepository,
-                    preferenceRepository = preferenceRepository
+                    noteRepository = noteRepository
                 )
             }
             composable<Screen.Week> {
                 WeekScreen(
-                    viewModel = viewModel,
+                    appViewModel = viewModel,
                     navController = navController,
-                    noteRepository = noteRepository,
-                    preferenceRepository = preferenceRepository
+                    noteRepository = noteRepository
                 )
             }
             composable<Screen.Day> {

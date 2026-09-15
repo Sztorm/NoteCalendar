@@ -12,11 +12,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -28,11 +25,9 @@ import androidx.navigation.NavController
 import com.sztorm.notecalendar.core.common.addFirstKt
 import com.sztorm.notecalendar.core.common.addLastKt
 import com.sztorm.notecalendar.core.common.getLocalizedName
-import com.sztorm.notecalendar.core.common.getSystemFirstDayOfWeek
 import com.sztorm.notecalendar.core.common.isEven
 import com.sztorm.notecalendar.core.common.yearMonth
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
-import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
 import com.sztorm.notecalendar.feature.app.AppEvent
 import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.feature.app.NavigationBarDestination
@@ -167,22 +162,18 @@ tailrec fun MutableList<WeekViewItem>.loadPrevItems(
 
 @Composable
 fun WeekScreen(
-    viewModel: AppViewModel,
+    appViewModel: AppViewModel,
     navController: NavController,
-    noteRepository: NoteRepository,
-    preferenceRepository: PreferenceRepository
+    noteRepository: NoteRepository
 ) {
-    val themeColors = viewModel.state.themeColors
-    val dayScreenDate = viewModel.state.dayScreenDate
+    val themeColors = appViewModel.state.themeColors
+    val dayScreenDate = appViewModel.state.dayScreenDate
     val cachedItemsCount = 60
     val bufferSize = 30
     val today = LocalDate.now()
     val isSelected = { date: LocalDate -> date == dayScreenDate }
     val isToday = { date: LocalDate -> date == today }
     val hasNote = { date: LocalDate -> noteRepository.getBy(date) != null }
-    var firstDayOfWeek by remember {
-        mutableStateOf(getSystemFirstDayOfWeek())
-    }
     val days = remember {
         val startDate: LocalDate = dayScreenDate.minusDays(1)
 
@@ -203,9 +194,6 @@ fun WeekScreen(
     }
     val dayListState = rememberLazyListState()
 
-    LaunchedEffect(Unit) {
-        firstDayOfWeek = preferenceRepository.getFirstDayOfWeek()
-    }
     InfiniteColumn(
         modifier = Modifier.fillMaxSize(),
         items = days,
@@ -222,7 +210,9 @@ fun WeekScreen(
             is WeekViewDay -> {
                 val dayOfMonthTextColor = when {
                     item.isSelected -> themeColors.buttonTextColor
-                    else -> themeColors.getTextColorOf(item.date.dayOfWeek, firstDayOfWeek)
+                    else -> themeColors.getTextColorOf(
+                        item.date.dayOfWeek, appViewModel.state.firstDayOfWeek
+                    )
                 }
                 val dayOfWeekTextColor = when {
                     item.isToday -> themeColors.secondaryColor
@@ -235,10 +225,10 @@ fun WeekScreen(
                         .background(color = backgroundColor)
                         .combinedClickable(
                             onClick = {
-                                viewModel.onEvent(
+                                appViewModel.onEvent(
                                     AppEvent.DayScreenDateChange(item.date)
                                 )
-                                viewModel.onEvent(
+                                appViewModel.onEvent(
                                     AppEvent.NavigationBarDestinationChange(
                                         NavigationBarDestination.Day
                                     )
@@ -246,10 +236,10 @@ fun WeekScreen(
                                 navController.navigate(Screen.Day())
                             },
                             onLongClick = {
-                                viewModel.onEvent(
+                                appViewModel.onEvent(
                                     AppEvent.DayScreenDateChange(item.date)
                                 )
-                                viewModel.onEvent(
+                                appViewModel.onEvent(
                                     AppEvent.NavigationBarDestinationChange(
                                         NavigationBarDestination.Day
                                     )
