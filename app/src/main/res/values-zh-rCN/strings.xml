@@ -59,7 +59,7 @@
     <string name="Settings_Licenses">许可</string>
     <string name="Settings_Notes">笔记</string>
     <string name="Settings_Notes_DeleteAllNotes">删除所有笔记</string>
-    <string name="Settings_Notes_DeleteAllNotes_DialogMessage">此操作将删除所有笔记数据。是否要继续？</string>
+    <string name="Settings_Notes_DeleteAllNotes_DialogMessage">此操作将删除所有笔记。</string>
     <string name="Settings_Notes_DeleteAllNotes_DialogTitle">删除所有笔记？</string>
     <string name="Settings_Notes_DeleteNotesDateRange">删除指定日期范围内的笔记</string>
     <string name="Settings_Notifications">通知</string>
