@@ -163,7 +163,7 @@ fun AppScreen(
 
                 DayScreen(
                     logger = logger,
-                    mainViewModel = viewModel,
+                    appViewModel = viewModel,
                     permissionManager = permissionManager,
                     notificationManager = notificationManager,
                     noteRepository = noteRepository,

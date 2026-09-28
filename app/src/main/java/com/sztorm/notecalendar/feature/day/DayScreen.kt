@@ -25,7 +25,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
@@ -39,7 +38,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
@@ -64,10 +62,10 @@ import com.sztorm.notecalendar.domain.models.ReminderNote
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
 import com.sztorm.notecalendar.feature.app.AppEvent
 import com.sztorm.notecalendar.feature.app.AppViewModel
-import com.sztorm.notecalendar.feature.settings.theme.ThemeColors
 import com.sztorm.notecalendar.platform.notifications.AppNotificationManager
 import com.sztorm.notecalendar.platform.permissions.AppPermission
 import com.sztorm.notecalendar.platform.permissions.AppPermissionManager
+import com.sztorm.notecalendar.ui.components.ActionButton
 import com.sztorm.notecalendar.ui.components.DayNote
 import com.sztorm.notecalendar.ui.components.InfiniteHorizontalPager
 import com.sztorm.notecalendar.ui.components.TimePickerDialog
@@ -88,13 +86,13 @@ enum class DayActionType {
 @Composable
 fun DayScreen(
     logger: AppLogger,
-    mainViewModel: AppViewModel,
+    appViewModel: AppViewModel,
     permissionManager: AppPermissionManager,
     notificationManager: AppNotificationManager,
     noteRepository: NoteRepository,
     isCreateOrEditRequested: Boolean = false
 ) {
-    val currentDate = remember { mainViewModel.state.dayScreenDate }
+    val currentDate = remember { appViewModel.state.dayScreenDate }
     val initialDayNote = noteRepository
         .getBy(currentDate)
         ?.let { noteData ->
@@ -149,7 +147,7 @@ fun DayScreen(
             onPageChange = { page ->
                 val date = currentDate.plusDays(page.toLong())
                 val currentNoteData = noteRepository.getBy(date)
-                mainViewModel.onEvent(AppEvent.DayScreenDateChange(date))
+                appViewModel.onEvent(AppEvent.DayScreenDateChange(date))
                 viewModel.onEvent(
                     DayScreenEvent.DateChange(
                         note = currentNoteData?.let { noteData ->
@@ -193,7 +191,7 @@ fun DayScreen(
             DayPageLayout(
                 logger = logger,
                 modifier = Modifier.fillMaxSize(),
-                mainViewModel = mainViewModel,
+                appViewModel = appViewModel,
                 viewModel = viewModel,
                 focusRequester = focusRequester,
                 date = date
@@ -201,7 +199,7 @@ fun DayScreen(
         }
         ActionButtons(
             logger = logger,
-            mainViewModel = mainViewModel,
+            appViewModel = appViewModel,
             viewModel = viewModel,
             noteRepository = noteRepository,
             permissionManager = permissionManager,
@@ -219,7 +217,7 @@ fun DayScreen(
                     viewModel.onEvent(
                         DayScreenEvent.NoteChange(
                             DayScreenNote(
-                                date = mainViewModel.state.dayScreenDate,
+                                date = appViewModel.state.dayScreenDate,
                                 textValue = TextFieldValue()
                             )
                         )
@@ -303,48 +301,6 @@ private fun ColumnScope.DayDateText(
     }
 }
 
-@Composable
-private fun ActionButton(
-    modifier: Modifier = Modifier,
-    visible: Boolean = true,
-    onClick: () -> Unit,
-    themeColors: ThemeColors,
-    content: @Composable () -> Unit
-) {
-    AnimatedVisibility(
-        visible = visible,
-        enter = scaleIn() + expandIn(),
-        exit = shrinkOut() + scaleOut()
-    ) {
-        FloatingActionButton(
-            onClick = onClick,
-            containerColor = themeColors.primaryColor,
-            contentColor = themeColors.buttonTextColor,
-            modifier = modifier.padding(8.dp)
-        ) {
-            content()
-        }
-    }
-}
-
-@Composable
-private fun ActionButton(
-    modifier: Modifier = Modifier,
-    visible: Boolean = true,
-    onClick: () -> Unit,
-    themeColors: ThemeColors,
-    icon: Painter,
-    contentDescription: String,
-) = ActionButton(
-    modifier = modifier,
-    visible = visible,
-    onClick = onClick,
-    themeColors = themeColors,
-    content = {
-        Icon(painter = icon, contentDescription = contentDescription)
-    }
-)
-
 private fun showNotificationPermissionDeniedToast(context: Context) = Toast
     .makeText(
         context,
@@ -356,14 +312,14 @@ private fun showNotificationPermissionDeniedToast(context: Context) = Toast
 @Composable
 private fun BoxScope.ActionButtons(
     @Suppress("unused") logger: AppLogger,
-    mainViewModel: AppViewModel,
+    appViewModel: AppViewModel,
     viewModel: DayScreenViewModel,
     noteRepository: NoteRepository,
     permissionManager: AppPermissionManager,
     notificationManager: AppNotificationManager,
     focusRequester: FocusRequester
 ) {
-    val themeColors = mainViewModel.state.themeColors
+    val themeColors = appViewModel.state.themeColors
     val dialogColors = CardDefaults.cardColors().copy(
         containerColor = themeColors.backgroundColor,
         contentColor = themeColors.backgroundColor,
@@ -527,7 +483,7 @@ private fun BoxScope.ActionButtons(
             if (noteData == null) {
                 noteRepository.add(
                     NoteData(
-                        date = mainViewModel.state.dayScreenDate.toString(),
+                        date = appViewModel.state.dayScreenDate.toString(),
                         text = note.textValue.text
                     )
                 )
@@ -557,7 +513,7 @@ private fun BoxScope.ActionButtons(
             viewModel.onEvent(
                 DayScreenEvent.NoteChange(
                     DayScreenNote(
-                        date = mainViewModel.state.dayScreenDate,
+                        date = appViewModel.state.dayScreenDate,
                         textValue = TextFieldValue()
                     )
                 )
@@ -632,7 +588,7 @@ private fun BoxScope.ActionButtons(
             if (noteData == null) {
                 noteRepository.add(
                     NoteData(
-                        date = mainViewModel.state.dayScreenDate.toString(),
+                        date = appViewModel.state.dayScreenDate.toString(),
                         text = note.textValue.text
                     )
                 )
@@ -710,7 +666,8 @@ private fun BoxScope.ActionButtons(
             onClick = onDeleteReminderClick,
             visible = viewModel.state.actionType == DayActionType.EditingReminder &&
                 viewModel.state.note?.reminderDateTime != null,
-            themeColors = themeColors,
+            containerColor = themeColors.primaryColor,
+            contentColor = themeColors.buttonTextColor,
             icon = painterResource(R.drawable.icon_outline_rounded_delete_forever),
             contentDescription = stringResource(R.string.DeleteReminder)
         )
@@ -718,7 +675,8 @@ private fun BoxScope.ActionButtons(
             onClick = onCancelReminderEditClick,
             visible = viewModel.state.actionType == DayActionType.EditingReminder &&
                 viewModel.state.note?.reminderDateTime != null,
-            themeColors = themeColors,
+            containerColor = themeColors.primaryColor,
+            contentColor = themeColors.buttonTextColor,
             icon = painterResource(R.drawable.icon_outline_rounded_notifications_edit_off),
             contentDescription = stringResource(R.string.Cancel)
         )
@@ -726,7 +684,8 @@ private fun BoxScope.ActionButtons(
             onClick = onEditReminderDialogClick,
             visible = viewModel.state.actionType == DayActionType.EditingReminder &&
                 viewModel.state.note?.reminderDateTime != null,
-            themeColors = themeColors,
+            containerColor = themeColors.primaryColor,
+            contentColor = themeColors.buttonTextColor,
             icon = painterResource(R.drawable.icon_outline_rounded_edit_notifications),
             contentDescription = stringResource(R.string.OpenReminderDialog)
         )
@@ -734,7 +693,8 @@ private fun BoxScope.ActionButtons(
             onClick = onAddOrEditReminderClick,
             visible = viewModel.state.actionType == DayActionType.None &&
                 viewModel.state.note != null,
-            themeColors = themeColors,
+            containerColor = themeColors.primaryColor,
+            contentColor = themeColors.buttonTextColor,
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Icon(
@@ -761,14 +721,16 @@ private fun BoxScope.ActionButtons(
             visible = viewModel.state.actionType == DayActionType.None &&
                 viewModel.state.note == null &&
                 viewModel.state.noteBackup != null,
-            themeColors = themeColors,
+            containerColor = themeColors.primaryColor,
+            contentColor = themeColors.buttonTextColor,
             icon = painterResource(R.drawable.icon_rounded_undo),
             contentDescription = stringResource(R.string.UndoDeletion)
         )
         ActionButton(
             onClick = onAddOrEditNoteClick,
             visible = viewModel.state.actionType == DayActionType.None,
-            themeColors = themeColors,
+            containerColor = themeColors.primaryColor,
+            contentColor = themeColors.buttonTextColor,
             icon = painterResource(
                 if (viewModel.state.note == null) R.drawable.icon_rounded_plus
                 else R.drawable.icon_outline_rounded_edit
@@ -780,7 +742,8 @@ private fun BoxScope.ActionButtons(
         ActionButton(
             onClick = onDeleteNoteClick,
             visible = viewModel.state.actionType == DayActionType.EditingNote,
-            themeColors = themeColors,
+            containerColor = themeColors.primaryColor,
+            contentColor = themeColors.buttonTextColor,
             icon = painterResource(R.drawable.icon_outline_rounded_delete),
             contentDescription = stringResource(R.string.DeleteNote)
         )
@@ -788,7 +751,8 @@ private fun BoxScope.ActionButtons(
             onClick = onCancelNoteEditClick,
             visible = viewModel.state.actionType == DayActionType.EditingNote ||
                 viewModel.state.actionType == DayActionType.AddingNote,
-            themeColors = themeColors,
+            containerColor = themeColors.primaryColor,
+            contentColor = themeColors.buttonTextColor,
             icon = painterResource(R.drawable.icon_outline_rounded_edit_off),
             contentDescription = stringResource(R.string.Cancel)
         )
@@ -796,7 +760,8 @@ private fun BoxScope.ActionButtons(
             onClick = onAcceptNoteEditClick,
             visible = viewModel.state.actionType == DayActionType.EditingNote ||
                 viewModel.state.actionType == DayActionType.AddingNote,
-            themeColors = themeColors,
+            containerColor = themeColors.primaryColor,
+            contentColor = themeColors.buttonTextColor,
             icon = painterResource(R.drawable.icon_rounded_check),
             contentDescription = stringResource(R.string.Accept)
         )
@@ -807,13 +772,13 @@ private fun BoxScope.ActionButtons(
 fun DayPageLayout(
     @Suppress("unused") logger: AppLogger,
     modifier: Modifier = Modifier,
-    mainViewModel: AppViewModel,
+    appViewModel: AppViewModel,
     viewModel: DayScreenViewModel,
     focusRequester: FocusRequester,
     date: LocalDate
 ) {
-    val themeColors = mainViewModel.state.themeColors
-    val dayScreenDate = mainViewModel.state.dayScreenDate
+    val themeColors = appViewModel.state.themeColors
+    val dayScreenDate = appViewModel.state.dayScreenDate
     val note = when {
         date > dayScreenDate -> viewModel.state.nextNote
         date < dayScreenDate -> viewModel.state.prevNote
@@ -826,7 +791,7 @@ fun DayPageLayout(
 
     Column(modifier = modifier) {
         DayDateText(
-            viewModel = mainViewModel,
+            viewModel = appViewModel,
             date = date
         )
         Column(
@@ -881,9 +846,9 @@ fun DayPageLayout(
                                 maxLines = Int.MAX_VALUE,
                                 textStyle = TextStyle(
                                     color = themeColors.noteTextColor,
-                                    fontSize = mainViewModel.state.noteFontSize.value,
-                                    lineHeight = mainViewModel.state.noteFontSize.value *
-                                        mainViewModel.state.noteLineSpacing.fontScaleFactor,
+                                    fontSize = appViewModel.state.noteFontSize.value,
+                                    lineHeight = appViewModel.state.noteFontSize.value *
+                                        appViewModel.state.noteLineSpacing.fontScaleFactor,
                                 ),
                                 cursorBrush = SolidColor(themeColors.secondaryColor),
                                 modifier = Modifier
