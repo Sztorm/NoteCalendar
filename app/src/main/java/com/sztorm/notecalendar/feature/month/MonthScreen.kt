@@ -2,7 +2,9 @@ package com.sztorm.notecalendar.feature.month
 
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,20 +17,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.core.common.getLocalizedName
 import com.sztorm.notecalendar.core.common.getLocalizedShortName
 import com.sztorm.notecalendar.core.common.yearMonth
+import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.data.MonthNotesCache
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
 import com.sztorm.notecalendar.feature.app.AppEvent
 import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.feature.app.NavigationBarDestination
 import com.sztorm.notecalendar.feature.app.Screen
+import com.sztorm.notecalendar.ui.components.ActionButton
 import com.sztorm.notecalendar.ui.components.InfiniteHorizontalPager
 import java.time.LocalDate
 
@@ -41,7 +47,30 @@ data class MonthViewDay(
 )
 
 @Composable
+private fun BoxScope.ActionButtons(
+    @Suppress("unused") logger: AppLogger,
+    appViewModel: AppViewModel
+) {
+    val themeColors = appViewModel.state.themeColors
+
+    Row(
+        modifier = Modifier
+            .align(Alignment.BottomEnd)
+            .padding(8.dp)
+    ) {
+        ActionButton(
+            onClick = { },
+            containerColor = themeColors.primaryColor,
+            contentColor = themeColors.buttonTextColor,
+            icon = painterResource(R.drawable.icon_outline_rounded_search),
+            contentDescription = "search for notes" // TODO: add to strings.xml
+        )
+    }
+}
+
+@Composable
 fun MonthScreen(
+    logger: AppLogger,
     appViewModel: AppViewModel,
     navController: NavController,
     noteRepository: NoteRepository
@@ -57,57 +86,63 @@ fun MonthScreen(
             )
         )
     )
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        Text(
-            text = viewModel.state.yearMonth.getLocalizedName(),
-            fontSize = 38.sp,
-            fontWeight = FontWeight.Light,
-            color = themeColors.textColor,
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(15.dp)
-        )
-        DayOfWeekBar(
-            modifier = Modifier.padding(vertical = 8.dp),
-            firstDayOfWeek = appViewModel.state.firstDayOfWeek,
-            dayOfWeekText = { it.getLocalizedShortName() },
-            backgroundColor = themeColors.secondaryColor,
-            textColor = themeColors.buttonTextColor,
-            fontSize = 16.sp,
-        )
-        InfiniteHorizontalPager(
-            verticalAlignment = Alignment.Top,
-            key = { initialYearMonth.plusMonths(it.toLong()) },
-            onPageChange = { page ->
-                val currentYearMonth = initialYearMonth.plusMonths(page.toLong())
-                viewModel.onEvent(MonthScreenEvent.YearMonthChange(currentYearMonth))
-            }
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
-            val yearMonth = initialYearMonth.plusMonths(it.toLong())
+            Text(
+                text = viewModel.state.yearMonth.getLocalizedName(),
+                fontSize = 38.sp,
+                fontWeight = FontWeight.Light,
+                color = themeColors.textColor,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(15.dp)
+            )
+            DayOfWeekBar(
+                modifier = Modifier.padding(vertical = 8.dp),
+                firstDayOfWeek = appViewModel.state.firstDayOfWeek,
+                dayOfWeekText = { it.getLocalizedShortName() },
+                backgroundColor = themeColors.secondaryColor,
+                textColor = themeColors.buttonTextColor,
+                fontSize = 16.sp,
+            )
+            InfiniteHorizontalPager(
+                verticalAlignment = Alignment.Top,
+                key = { initialYearMonth.plusMonths(it.toLong()) },
+                onPageChange = { page ->
+                    val currentYearMonth = initialYearMonth.plusMonths(page.toLong())
+                    viewModel.onEvent(MonthScreenEvent.YearMonthChange(currentYearMonth))
+                }
+            ) {
+                val yearMonth = initialYearMonth.plusMonths(it.toLong())
 
-            MonthPage(
-                modifier = Modifier.fillMaxSize(),
-                yearMonth = yearMonth,
-                firstDayOfWeek = appViewModel.state.firstDayOfWeek
-            ) { date, modifier ->
-                DayLayout(
-                    modifier = modifier,
-                    appViewModel = appViewModel,
-                    navController = navController,
-                    dayData = MonthViewDay(
-                        date = date,
-                        isSelected = appViewModel.state.dayScreenDate == date,
-                        isToday = date == today,
-                        isInCurrentMonth = date.month == yearMonth.month,
-                        hasNote = viewModel.state.notesCache.getBy(date) != null
+                MonthPage(
+                    modifier = Modifier.fillMaxSize(),
+                    yearMonth = yearMonth,
+                    firstDayOfWeek = appViewModel.state.firstDayOfWeek
+                ) { date, modifier ->
+                    DayLayout(
+                        modifier = modifier,
+                        appViewModel = appViewModel,
+                        navController = navController,
+                        dayData = MonthViewDay(
+                            date = date,
+                            isSelected = appViewModel.state.dayScreenDate == date,
+                            isToday = date == today,
+                            isInCurrentMonth = date.month == yearMonth.month,
+                            hasNote = viewModel.state.notesCache.getBy(date) != null
+                        )
                     )
-                )
+                }
             }
         }
+        ActionButtons(
+            logger = logger,
+            appViewModel = appViewModel,
+        )
     }
 }
 
