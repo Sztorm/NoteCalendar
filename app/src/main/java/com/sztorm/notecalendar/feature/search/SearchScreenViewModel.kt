@@ -13,6 +13,7 @@ class SearchScreenViewModel(initialState: SearchScreenState) : ViewModel() {
 
     fun onEvent(event: SearchScreenEvent) {
         state = when (event) {
+            is SearchScreenEvent.UiStateChange -> state.copy(uiState = event.state)
             is SearchScreenEvent.SearchTextValueChange -> state.copy(searchTextValue = event.value)
         }
     }
@@ -31,9 +32,11 @@ class SearchScreenViewModelFactory(
 }
 
 sealed class SearchScreenEvent {
+    data class UiStateChange(val state: SearchUiState) : SearchScreenEvent()
     data class SearchTextValueChange(val value: TextFieldValue) : SearchScreenEvent()
 }
 
 data class SearchScreenState(
+    val uiState: SearchUiState,
     val searchTextValue: TextFieldValue
 )
