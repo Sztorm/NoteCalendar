@@ -49,7 +49,8 @@ data class MonthViewDay(
 @Composable
 private fun BoxScope.ActionButtons(
     @Suppress("unused") logger: AppLogger,
-    appViewModel: AppViewModel
+    appViewModel: AppViewModel,
+    navController: NavController
 ) {
     val themeColors = appViewModel.state.themeColors
 
@@ -59,11 +60,11 @@ private fun BoxScope.ActionButtons(
             .padding(8.dp)
     ) {
         ActionButton(
-            onClick = { },
+            onClick = { navController.navigate(Screen.Search) },
             containerColor = themeColors.primaryColor,
             contentColor = themeColors.buttonTextColor,
             icon = painterResource(R.drawable.icon_outline_rounded_search),
-            contentDescription = "search for notes" // TODO: add to strings.xml
+            contentDescription = "Search" // TODO: add to strings.xml
         )
     }
 }
@@ -142,6 +143,7 @@ fun MonthScreen(
         ActionButtons(
             logger = logger,
             appViewModel = appViewModel,
+            navController = navController
         )
     }
 }

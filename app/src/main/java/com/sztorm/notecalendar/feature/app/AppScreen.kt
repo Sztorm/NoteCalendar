@@ -34,6 +34,7 @@ import com.sztorm.notecalendar.domain.repositories.NoteRepository
 import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
 import com.sztorm.notecalendar.feature.day.DayScreen
 import com.sztorm.notecalendar.feature.month.MonthScreen
+import com.sztorm.notecalendar.feature.search.SearchScreen
 import com.sztorm.notecalendar.feature.settings.SettingsScreen
 import com.sztorm.notecalendar.feature.week.WeekScreen
 import com.sztorm.notecalendar.platform.notifications.AppNotificationManager
@@ -179,6 +180,14 @@ fun AppScreen(
                     fileRepository = fileRepository,
                     noteRepository = noteRepository,
                     preferenceRepository = preferenceRepository
+                )
+            }
+            composable<Screen.Search> {
+                SearchScreen(
+                    logger = logger,
+                    appViewModel = viewModel,
+                    navController = navController,
+                    noteRepository = noteRepository
                 )
             }
         }
