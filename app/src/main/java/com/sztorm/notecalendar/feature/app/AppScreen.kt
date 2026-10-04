@@ -149,7 +149,20 @@ fun AppScreen(
                 MonthScreen(
                     logger = logger,
                     appViewModel = viewModel,
-                    navController = navController,
+                    onSearchButtonClick = { navController.navigate(Screen.Search) },
+                    onDayCellClick = { isLongClick, date ->
+                        viewModel.onEvent(
+                            AppEvent.DayScreenDateChange(date)
+                        )
+                        viewModel.onEvent(
+                            AppEvent.NavigationBarDestinationChange(
+                                NavigationBarDestination.Day
+                            )
+                        )
+                        navController.navigate(
+                            Screen.Day(isCreateOrEditRequested = isLongClick)
+                        )
+                    },
                     noteRepository = noteRepository
                 )
             }

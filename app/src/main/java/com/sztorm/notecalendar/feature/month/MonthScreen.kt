@@ -22,7 +22,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.core.common.getLocalizedName
 import com.sztorm.notecalendar.core.common.getLocalizedShortName
@@ -30,15 +29,13 @@ import com.sztorm.notecalendar.core.common.yearMonth
 import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.data.MonthNotesCache
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
-import com.sztorm.notecalendar.feature.app.AppEvent
 import com.sztorm.notecalendar.feature.app.AppViewModel
-import com.sztorm.notecalendar.feature.app.NavigationBarDestination
-import com.sztorm.notecalendar.feature.app.Screen
+import com.sztorm.notecalendar.feature.settings.theme.ThemeColors
 import com.sztorm.notecalendar.ui.components.ActionButton
 import com.sztorm.notecalendar.ui.components.InfiniteHorizontalPager
 import java.time.LocalDate
 
-data class MonthViewDay(
+data class DayCell(
     val date: LocalDate,
     val isSelected: Boolean,
     val isToday: Boolean,
@@ -50,7 +47,7 @@ data class MonthViewDay(
 private fun BoxScope.ActionButtons(
     @Suppress("unused") logger: AppLogger,
     appViewModel: AppViewModel,
-    navController: NavController
+    onSearchButtonClick: () -> Unit,
 ) {
     val themeColors = appViewModel.state.themeColors
 
@@ -60,7 +57,7 @@ private fun BoxScope.ActionButtons(
             .padding(8.dp)
     ) {
         ActionButton(
-            onClick = { navController.navigate(Screen.Search) },
+            onClick = onSearchButtonClick,
             containerColor = themeColors.primaryColor,
             contentColor = themeColors.buttonTextColor,
             icon = painterResource(R.drawable.icon_outline_rounded_search),
@@ -73,8 +70,9 @@ private fun BoxScope.ActionButtons(
 fun MonthScreen(
     logger: AppLogger,
     appViewModel: AppViewModel,
-    navController: NavController,
-    noteRepository: NoteRepository
+    onSearchButtonClick: () -> Unit,
+    onDayCellClick: (isLongClick: Boolean, date: LocalDate) -> Unit,
+    noteRepository: NoteRepository,
 ) {
     val themeColors = appViewModel.state.themeColors
     val initialYearMonth = appViewModel.state.dayScreenDate.yearMonth
@@ -125,11 +123,11 @@ fun MonthScreen(
                     yearMonth = yearMonth,
                     firstDayOfWeek = appViewModel.state.firstDayOfWeek
                 ) { date, modifier ->
-                    DayLayout(
+                    DayCell(
                         modifier = modifier,
-                        appViewModel = appViewModel,
-                        navController = navController,
-                        dayData = MonthViewDay(
+                        themeColors = themeColors,
+                        onClick = onDayCellClick,
+                        dayCell = DayCell(
                             date = date,
                             isSelected = appViewModel.state.dayScreenDate == date,
                             isToday = date == today,
@@ -143,47 +141,25 @@ fun MonthScreen(
         ActionButtons(
             logger = logger,
             appViewModel = appViewModel,
-            navController = navController
+            onSearchButtonClick = onSearchButtonClick
         )
     }
 }
 
 @Composable
-private fun DayLayout(
+private fun DayCell(
     modifier: Modifier,
-    appViewModel: AppViewModel,
-    navController: NavController,
-    dayData: MonthViewDay
+    onClick: (isLongClick: Boolean, date: LocalDate) -> Unit,
+    dayCell: DayCell,
+    themeColors: ThemeColors
 ) {
-    val themeColors = appViewModel.state.themeColors
-
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .aspectRatio(1f)
             .combinedClickable(
-                onClick = {
-                    appViewModel.onEvent(
-                        AppEvent.DayScreenDateChange(dayData.date)
-                    )
-                    appViewModel.onEvent(
-                        AppEvent.NavigationBarDestinationChange(
-                            NavigationBarDestination.Day
-                        )
-                    )
-                    navController.navigate(Screen.Day())
-                },
-                onLongClick = {
-                    appViewModel.onEvent(
-                        AppEvent.DayScreenDateChange(dayData.date)
-                    )
-                    appViewModel.onEvent(
-                        AppEvent.NavigationBarDestinationChange(
-                            NavigationBarDestination.Day
-                        )
-                    )
-                    navController.navigate(Screen.Day(isCreateOrEditRequested = true))
-                }
+                onClick = { onClick(false, dayCell.date) },
+                onLongClick = { onClick(true, dayCell.date) },
             )
             .drawWithCache {
                 val stroke = Stroke(width = 3.dp.toPx())
@@ -194,7 +170,7 @@ private fun DayLayout(
 
                 onDrawBehind {
                     when {
-                        dayData.isSelected && dayData.hasNote -> {
+                        dayCell.isSelected && dayCell.hasNote -> {
                             drawCircle(
                                 color = themeColors.secondaryColor,
                                 radius = secondRadius
@@ -206,14 +182,14 @@ private fun DayLayout(
                             )
                         }
 
-                        dayData.isSelected -> {
+                        dayCell.isSelected -> {
                             drawCircle(
                                 color = themeColors.secondaryColor,
                                 radius = radiusWithStroke
                             )
                         }
 
-                        dayData.hasNote && dayData.isInCurrentMonth -> {
+                        dayCell.hasNote && dayCell.isInCurrentMonth -> {
                             drawCircle(
                                 color = themeColors.primaryColor,
                                 radius = radius,
@@ -221,7 +197,7 @@ private fun DayLayout(
                             )
                         }
 
-                        dayData.hasNote -> {
+                        dayCell.hasNote -> {
                             drawCircle(
                                 color = themeColors.primaryColor
                                     .copy(alpha = 0.3333333f),
@@ -234,11 +210,11 @@ private fun DayLayout(
             }
     ) {
         Text(
-            text = dayData.date.dayOfMonth.toString(),
+            text = dayCell.date.dayOfMonth.toString(),
             color = when {
-                dayData.isSelected -> themeColors.buttonTextColor
-                dayData.isToday -> themeColors.secondaryColor
-                dayData.isInCurrentMonth -> themeColors.textColor
+                dayCell.isSelected -> themeColors.buttonTextColor
+                dayCell.isToday -> themeColors.secondaryColor
+                dayCell.isInCurrentMonth -> themeColors.textColor
                 else -> themeColors.inactiveTextColor
             }
         )
