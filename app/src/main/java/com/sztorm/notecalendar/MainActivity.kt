@@ -24,6 +24,7 @@ import com.sztorm.notecalendar.feature.app.AppState
 import com.sztorm.notecalendar.feature.app.AppViewFactory
 import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.feature.app.NavigationBarDestination
+import com.sztorm.notecalendar.feature.app.Screen
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 
@@ -55,11 +56,17 @@ class MainActivity : ComponentActivity() {
         val permissionManager = AppPermissionManager(this)
         val notificationManager = AppNotificationManager(this, logger)
         val bundleResult = readBundle()
+        val initialScreen: Screen
         val initialState = runBlocking {
             val startingView =
                 if (bundleResult != null && bundleResult.isLaunchedFromNotification)
                     StartingScreenType.DayScreen
                 else preferenceRepository.getStartingScreen()
+            initialScreen = when (startingView) {
+                StartingScreenType.DayScreen -> Screen.Day()
+                StartingScreenType.WeekScreen -> Screen.Week
+                StartingScreenType.MonthScreen -> Screen.Month
+            }
             AppState(
                 themeColors = preferenceRepository.getThemeColors(),
                 dayScreenDate = bundleResult?.noteDate?.toLocalDateOrNull() ?: LocalDate.now(),
@@ -87,7 +94,8 @@ class MainActivity : ComponentActivity() {
                         notificationManager = notificationManager,
                         noteRepository = noteRepository,
                         fileRepository = fileRepository,
-                        preferenceRepository = preferenceRepository
+                        preferenceRepository = preferenceRepository,
+                        initialScreen = initialScreen
                     )
                 }
             }

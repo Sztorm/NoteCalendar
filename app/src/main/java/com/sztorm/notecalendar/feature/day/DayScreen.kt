@@ -31,6 +31,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -76,8 +78,8 @@ import java.time.LocalTime
 import java.time.OffsetDateTime
 import kotlin.time.Duration as KotlinDuration
 
-enum class DayActionType {
-    None,
+enum class DayUiState {
+    Viewing,
     EditingNote,
     AddingNote,
     EditingReminder,
@@ -92,48 +94,53 @@ fun DayScreen(
     noteRepository: NoteRepository,
     isCreateOrEditRequested: Boolean = false
 ) {
-    val currentDate = remember { appViewModel.state.dayScreenDate }
-    val initialDayNote = noteRepository
-        .getBy(currentDate)
-        ?.let { noteData ->
-            DayScreenNote(
-                date = currentDate,
-                textValue = TextFieldValue(text = noteData.text),
-                reminderDateTime = noteData.reminderDateTime
-                    .ifEmpty { null }
-                    ?.let { OffsetDateTime.parse(it) }
-            )
-        }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val initialDate = appViewModel.state.dayScreenDate
+    val prevNoteData by produceState<NoteData?>(null) {
+        value = noteRepository.getBy(initialDate.minusDays(1))
+    }
+    val currNoteData by produceState<NoteData?>(null) {
+        value = noteRepository.getBy(initialDate)
+    }
+    val nextNoteData by produceState<NoteData?>(null) {
+        value = noteRepository.getBy(initialDate.plusDays(1))
+    }
+    val currNote = currNoteData?.let { noteData ->
+        DayScreenNote(
+            date = initialDate,
+            textValue = TextFieldValue(text = noteData.text),
+            reminderDateTime = noteData.reminderDateTime
+                .ifEmpty { null }
+                ?.let { OffsetDateTime.parse(it) }
+        )
+    }
     val viewModel = viewModel<DayScreenViewModel>(
         factory = DayScreenViewModelFactory(
             initialState = DayScreenState(
-                note = initialDayNote,
-                prevNote = noteRepository
-                    .getBy(currentDate.minusDays(1))
-                    ?.let { noteData ->
-                        DayScreenNote(
-                            date = currentDate.minusDays(1),
-                            textValue = TextFieldValue(text = noteData.text),
-                            reminderDateTime = noteData.reminderDateTime
-                                .ifEmpty { null }
-                                ?.let { OffsetDateTime.parse(it) }
-                        )
-                    },
-                nextNote = noteRepository
-                    .getBy(currentDate.plusDays(1))
-                    ?.let { noteData ->
-                        DayScreenNote(
-                            date = currentDate.plusDays(1),
-                            textValue = TextFieldValue(text = noteData.text),
-                            reminderDateTime = noteData.reminderDateTime
-                                .ifEmpty { null }
-                                ?.let { OffsetDateTime.parse(it) }
-                        )
-                    },
-                actionType = DayActionType.None,
+                uiState = DayUiState.Viewing,
+                initialDate = initialDate,
+                note = currNote,
+                prevNote = prevNoteData?.let { noteData ->
+                    DayScreenNote(
+                        date = initialDate.minusDays(1),
+                        textValue = TextFieldValue(text = noteData.text),
+                        reminderDateTime = noteData.reminderDateTime
+                            .ifEmpty { null }
+                            ?.let { OffsetDateTime.parse(it) }
+                    )
+                },
+                nextNote = nextNoteData?.let { noteData ->
+                    DayScreenNote(
+                        date = initialDate.plusDays(1),
+                        textValue = TextFieldValue(text = noteData.text),
+                        reminderDateTime = noteData.reminderDateTime
+                            .ifEmpty { null }
+                            ?.let { OffsetDateTime.parse(it) }
+                    )
+                },
                 noteBackup = null,
                 isReminderDialogOpen = false,
-                remainingReminderTime = initialDayNote?.reminderDateTime?.remainingDurationFromNow(),
+                remainingReminderTime = currNote?.reminderDateTime?.remainingDurationFromNow(),
                 haveReminderPermissionsBeenDenied = false
             )
         )
@@ -143,9 +150,9 @@ fun DayScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         InfiniteHorizontalPager(
             verticalAlignment = Alignment.Top,
-            key = { currentDate.plusDays(it.toLong()) },
+            key = { viewModel.state.initialDate.plusDays(it.toLong()) },
             onPageChange = { page ->
-                val date = currentDate.plusDays(page.toLong())
+                val date = viewModel.state.initialDate.plusDays(page.toLong())
                 val currentNoteData = noteRepository.getBy(date)
                 appViewModel.onEvent(AppEvent.DayScreenDateChange(date))
                 viewModel.onEvent(
@@ -182,11 +189,11 @@ fun DayScreen(
                     )
                 )
                 viewModel.onEvent(
-                    DayScreenEvent.ActionTypeChange(DayActionType.None)
+                    DayScreenEvent.UiStateChange(DayUiState.Viewing)
                 )
             }
         ) {
-            val date = currentDate.plusDays(it.toLong())
+            val date = viewModel.state.initialDate.plusDays(it.toLong())
 
             DayPageLayout(
                 logger = logger,
@@ -206,39 +213,40 @@ fun DayScreen(
             notificationManager = notificationManager,
             focusRequester = focusRequester
         )
-        LaunchedEffect(Unit) {
-            if (isCreateOrEditRequested) {
-                val note = viewModel.state.note
+    }
+    LaunchedEffect(isCreateOrEditRequested) {
+        if (isCreateOrEditRequested) {
+            val note = viewModel.state.note
 
-                if (note == null) {
-                    viewModel.onEvent(
-                        DayScreenEvent.ActionTypeChange(DayActionType.AddingNote)
-                    )
-                    viewModel.onEvent(
-                        DayScreenEvent.NoteChange(
-                            DayScreenNote(
-                                date = appViewModel.state.dayScreenDate,
-                                textValue = TextFieldValue()
-                            )
+            if (note == null) {
+                viewModel.onEvent(
+                    DayScreenEvent.UiStateChange(DayUiState.AddingNote)
+                )
+                viewModel.onEvent(
+                    DayScreenEvent.NoteChange(
+                        DayScreenNote(
+                            date = appViewModel.state.dayScreenDate,
+                            textValue = TextFieldValue()
                         )
                     )
-                } else {
-                    viewModel.onEvent(
-                        DayScreenEvent.ActionTypeChange(DayActionType.EditingNote)
-                    )
-                    viewModel.onEvent(
-                        DayScreenEvent.NoteChange(
-                            DayScreenNote(
-                                date = note.date,
-                                textValue = note.textValue.copy(
-                                    selection = TextRange(note.textValue.text.length)
-                                ),
-                                reminderDateTime = note.reminderDateTime
-                            )
+                )
+            } else {
+                viewModel.onEvent(
+                    DayScreenEvent.UiStateChange(DayUiState.EditingNote)
+                )
+                viewModel.onEvent(
+                    DayScreenEvent.NoteChange(
+                        DayScreenNote(
+                            date = note.date,
+                            textValue = note.textValue.copy(
+                                selection = TextRange(note.textValue.text.length)
+                            ),
+                            reminderDateTime = note.reminderDateTime
                         )
                     )
-                }
+                )
             }
+            keyboardController?.show()
         }
     }
 }
@@ -432,7 +440,7 @@ private fun BoxScope.ActionButtons(
         }
         viewModel.onEvent(DayScreenEvent.ReminderDialogStateChange(false))
         viewModel.onEvent(
-            DayScreenEvent.ActionTypeChange(DayActionType.None)
+            DayScreenEvent.UiStateChange(DayUiState.Viewing)
         )
     }
     val onReminderDialogDismiss = { _: LocalTime ->
@@ -446,8 +454,8 @@ private fun BoxScope.ActionButtons(
                 viewModel.onEvent(DayScreenEvent.ReminderDialogStateChange(true))
             } else {
                 viewModel.onEvent(
-                    DayScreenEvent.ActionTypeChange(
-                        DayActionType.EditingReminder
+                    DayScreenEvent.UiStateChange(
+                        DayUiState.EditingReminder
                     )
                 )
             }
@@ -461,12 +469,12 @@ private fun BoxScope.ActionButtons(
             notificationManager.cancelScheduledNotification(note.date)
         }
         viewModel.onEvent(
-            DayScreenEvent.ActionTypeChange(DayActionType.None)
+            DayScreenEvent.UiStateChange(DayUiState.Viewing)
         )
     }
     val onCancelReminderEditClick = {
         viewModel.onEvent(
-            DayScreenEvent.ActionTypeChange(DayActionType.None)
+            DayScreenEvent.UiStateChange(DayUiState.Viewing)
         )
     }
     val onEditReminderDialogClick = {
@@ -508,7 +516,7 @@ private fun BoxScope.ActionButtons(
 
         if (note == null) {
             viewModel.onEvent(
-                DayScreenEvent.ActionTypeChange(DayActionType.AddingNote)
+                DayScreenEvent.UiStateChange(DayUiState.AddingNote)
             )
             viewModel.onEvent(
                 DayScreenEvent.NoteChange(
@@ -520,7 +528,7 @@ private fun BoxScope.ActionButtons(
             )
         } else {
             viewModel.onEvent(
-                DayScreenEvent.ActionTypeChange(DayActionType.EditingNote)
+                DayScreenEvent.UiStateChange(DayUiState.EditingNote)
             )
             viewModel.onEvent(
                 DayScreenEvent.NoteChange(
@@ -545,7 +553,7 @@ private fun BoxScope.ActionButtons(
         }
         viewModel.onEvent(DayScreenEvent.NoteChange(null))
         viewModel.onEvent(
-            DayScreenEvent.ActionTypeChange(DayActionType.None)
+            DayScreenEvent.UiStateChange(DayUiState.Viewing)
         )
         focusRequester.freeFocus()
         keyboardController?.hide()
@@ -553,9 +561,9 @@ private fun BoxScope.ActionButtons(
     }
     val onCancelNoteEditClick = {
         val note = viewModel.state.note
-        val noteMode = viewModel.state.actionType
+        val noteMode = viewModel.state.uiState
 
-        if (noteMode == DayActionType.EditingNote && note != null) {
+        if (noteMode == DayUiState.EditingNote && note != null) {
             val noteData = noteRepository.getBy(note.date)
 
             if (noteData != null) {
@@ -569,11 +577,11 @@ private fun BoxScope.ActionButtons(
                     )
                 )
             }
-        } else if (noteMode == DayActionType.AddingNote) {
+        } else if (noteMode == DayUiState.AddingNote) {
             viewModel.onEvent(DayScreenEvent.NoteChange(null))
         }
         viewModel.onEvent(
-            DayScreenEvent.ActionTypeChange(DayActionType.None)
+            DayScreenEvent.UiStateChange(DayUiState.Viewing)
         )
         focusRequester.freeFocus()
         keyboardController?.hide()
@@ -609,7 +617,7 @@ private fun BoxScope.ActionButtons(
                 )
             )
             viewModel.onEvent(
-                DayScreenEvent.ActionTypeChange(DayActionType.None)
+                DayScreenEvent.UiStateChange(DayUiState.Viewing)
             )
         }
         focusRequester.freeFocus()
@@ -646,11 +654,9 @@ private fun BoxScope.ActionButtons(
                     ) {
                         deleteReminder()
 
-                        if (viewModel.state.actionType == DayActionType.EditingReminder) {
+                        if (viewModel.state.uiState == DayUiState.EditingReminder) {
                             viewModel.onEvent(
-                                DayScreenEvent.ActionTypeChange(
-                                    DayActionType.None
-                                )
+                                DayScreenEvent.UiStateChange(DayUiState.Viewing)
                             )
                         }
                         viewModel.onEvent(
@@ -664,7 +670,7 @@ private fun BoxScope.ActionButtons(
         }
         ActionButton(
             onClick = onDeleteReminderClick,
-            visible = viewModel.state.actionType == DayActionType.EditingReminder &&
+            visible = viewModel.state.uiState == DayUiState.EditingReminder &&
                 viewModel.state.note?.reminderDateTime != null,
             containerColor = themeColors.primaryColor,
             contentColor = themeColors.buttonTextColor,
@@ -673,7 +679,7 @@ private fun BoxScope.ActionButtons(
         )
         ActionButton(
             onClick = onCancelReminderEditClick,
-            visible = viewModel.state.actionType == DayActionType.EditingReminder &&
+            visible = viewModel.state.uiState == DayUiState.EditingReminder &&
                 viewModel.state.note?.reminderDateTime != null,
             containerColor = themeColors.primaryColor,
             contentColor = themeColors.buttonTextColor,
@@ -682,7 +688,7 @@ private fun BoxScope.ActionButtons(
         )
         ActionButton(
             onClick = onEditReminderDialogClick,
-            visible = viewModel.state.actionType == DayActionType.EditingReminder &&
+            visible = viewModel.state.uiState == DayUiState.EditingReminder &&
                 viewModel.state.note?.reminderDateTime != null,
             containerColor = themeColors.primaryColor,
             contentColor = themeColors.buttonTextColor,
@@ -691,7 +697,7 @@ private fun BoxScope.ActionButtons(
         )
         ActionButton(
             onClick = onAddOrEditReminderClick,
-            visible = viewModel.state.actionType == DayActionType.None &&
+            visible = viewModel.state.uiState == DayUiState.Viewing &&
                 viewModel.state.note != null,
             containerColor = themeColors.primaryColor,
             contentColor = themeColors.buttonTextColor,
@@ -718,7 +724,7 @@ private fun BoxScope.ActionButtons(
         }
         ActionButton(
             onClick = onUndoNoteDeletionClick,
-            visible = viewModel.state.actionType == DayActionType.None &&
+            visible = viewModel.state.uiState == DayUiState.Viewing &&
                 viewModel.state.note == null &&
                 viewModel.state.noteBackup != null,
             containerColor = themeColors.primaryColor,
@@ -728,7 +734,7 @@ private fun BoxScope.ActionButtons(
         )
         ActionButton(
             onClick = onAddOrEditNoteClick,
-            visible = viewModel.state.actionType == DayActionType.None,
+            visible = viewModel.state.uiState == DayUiState.Viewing,
             containerColor = themeColors.primaryColor,
             contentColor = themeColors.buttonTextColor,
             icon = painterResource(
@@ -741,7 +747,7 @@ private fun BoxScope.ActionButtons(
         )
         ActionButton(
             onClick = onDeleteNoteClick,
-            visible = viewModel.state.actionType == DayActionType.EditingNote,
+            visible = viewModel.state.uiState == DayUiState.EditingNote,
             containerColor = themeColors.primaryColor,
             contentColor = themeColors.buttonTextColor,
             icon = painterResource(R.drawable.icon_outline_rounded_delete),
@@ -749,8 +755,8 @@ private fun BoxScope.ActionButtons(
         )
         ActionButton(
             onClick = onCancelNoteEditClick,
-            visible = viewModel.state.actionType == DayActionType.EditingNote ||
-                viewModel.state.actionType == DayActionType.AddingNote,
+            visible = viewModel.state.uiState == DayUiState.EditingNote ||
+                viewModel.state.uiState == DayUiState.AddingNote,
             containerColor = themeColors.primaryColor,
             contentColor = themeColors.buttonTextColor,
             icon = painterResource(R.drawable.icon_outline_rounded_edit_off),
@@ -758,8 +764,8 @@ private fun BoxScope.ActionButtons(
         )
         ActionButton(
             onClick = onAcceptNoteEditClick,
-            visible = viewModel.state.actionType == DayActionType.EditingNote ||
-                viewModel.state.actionType == DayActionType.AddingNote,
+            visible = viewModel.state.uiState == DayUiState.EditingNote ||
+                viewModel.state.uiState == DayUiState.AddingNote,
             containerColor = themeColors.primaryColor,
             contentColor = themeColors.buttonTextColor,
             icon = painterResource(R.drawable.icon_rounded_check),
@@ -785,8 +791,8 @@ fun DayPageLayout(
         else -> viewModel.state.note
     }
     val actionType =
-        if (date == dayScreenDate) viewModel.state.actionType
-        else DayActionType.None
+        if (date == dayScreenDate) viewModel.state.uiState
+        else DayUiState.Viewing
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(modifier = modifier) {
@@ -803,8 +809,8 @@ fun DayPageLayout(
         ) {
             AnimatedVisibility(
                 visible = note != null ||
-                    actionType == DayActionType.EditingNote ||
-                    actionType == DayActionType.AddingNote,
+                    actionType == DayUiState.EditingNote ||
+                    actionType == DayUiState.AddingNote,
                 enter = scaleIn() + expandIn(),
                 exit = shrinkOut() + scaleOut()
             ) {
@@ -825,10 +831,10 @@ fun DayPageLayout(
                             BasicTextField(
                                 value = note.textValue,
                                 onValueChange = {
-                                    val actionType = viewModel.state.actionType
+                                    val actionType = viewModel.state.uiState
 
-                                    if (actionType == DayActionType.AddingNote ||
-                                        actionType == DayActionType.EditingNote
+                                    if (actionType == DayUiState.AddingNote ||
+                                        actionType == DayUiState.EditingNote
                                     ) {
                                         viewModel.onEvent(
                                             DayScreenEvent.NoteChange(
@@ -841,7 +847,7 @@ fun DayPageLayout(
                                         )
                                     }
                                 },
-                                readOnly = actionType == DayActionType.None,
+                                readOnly = actionType == DayUiState.Viewing,
                                 minLines = 1,
                                 maxLines = Int.MAX_VALUE,
                                 textStyle = TextStyle(
@@ -866,7 +872,7 @@ fun DayPageLayout(
                         Spacer(modifier = Modifier.height(72.dp))
                         LaunchedEffect(actionType) {
                             when (actionType) {
-                                DayActionType.EditingNote, DayActionType.AddingNote -> {
+                                DayUiState.EditingNote, DayUiState.AddingNote -> {
                                     focusRequester.requestFocus()
                                     keyboardController?.show()
                                 }

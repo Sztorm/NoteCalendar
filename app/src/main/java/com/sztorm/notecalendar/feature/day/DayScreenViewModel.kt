@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.sztorm.notecalendar.core.common.remainingDurationFromNow
+import java.time.LocalDate
 import kotlin.time.Duration
 
 class DayScreenViewModel(initialState: DayScreenState) : ViewModel() {
@@ -14,6 +15,8 @@ class DayScreenViewModel(initialState: DayScreenState) : ViewModel() {
 
     fun onEvent(event: DayScreenEvent) {
         state = when (event) {
+            is DayScreenEvent.UiStateChange -> state.copy(uiState = event.state)
+
             is DayScreenEvent.NoteChange -> state.copy(
                 note = event.note,
                 noteBackup = state.note,
@@ -27,8 +30,6 @@ class DayScreenViewModel(initialState: DayScreenState) : ViewModel() {
                 noteBackup = null,
                 remainingReminderTime = event.note?.reminderDateTime?.remainingDurationFromNow()
             )
-
-            is DayScreenEvent.ActionTypeChange -> state.copy(actionType = event.actionType)
 
             is DayScreenEvent.ReminderDialogStateChange ->
                 state.copy(isReminderDialogOpen = event.isOpen)
@@ -53,22 +54,23 @@ class DayScreenViewModelFactory(val initialState: DayScreenState) : ViewModelPro
 }
 
 sealed class DayScreenEvent {
+    data class UiStateChange(val state: DayUiState) : DayScreenEvent()
     data class NoteChange(val note: DayScreenNote?) : DayScreenEvent()
     data class DateChange(
         val note: DayScreenNote?, val prevNote: DayScreenNote?, val nextNote: DayScreenNote?
     ) : DayScreenEvent()
 
-    data class ActionTypeChange(val actionType: DayActionType) : DayScreenEvent()
     data class ReminderDialogStateChange(val isOpen: Boolean) : DayScreenEvent()
     data class ReminderRemainingTimeChange(val remainingTime: Duration?) : DayScreenEvent()
     data class ReminderPermissionsChange(val areDenied: Boolean) : DayScreenEvent()
 }
 
 data class DayScreenState(
+    val uiState: DayUiState,
+    val initialDate: LocalDate,
     val note: DayScreenNote?,
     val prevNote: DayScreenNote?,
     val nextNote: DayScreenNote?,
-    val actionType: DayActionType,
     val noteBackup: DayScreenNote?,
     val isReminderDialogOpen: Boolean,
     val remainingReminderTime: Duration?,

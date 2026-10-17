@@ -79,15 +79,18 @@ private fun NavigationBar(
         modifier = modifier
     ) {
         tabs.forEachIndexed { i, tab ->
+            val isSelected = viewModel.state.navigationBarDestination.ordinal == i
             Tab(
-                selected = viewModel.state.navigationBarDestination.ordinal == i,
+                selected = isSelected,
                 onClick = {
-                    navController.navigate(tab.screen)
-                    viewModel.onEvent(
-                        AppEvent.NavigationBarDestinationChange(
-                            NavigationBarDestination.entries[i]
+                    if (!isSelected) {
+                        navController.navigate(tab.screen)
+                        viewModel.onEvent(
+                            AppEvent.NavigationBarDestinationChange(
+                                NavigationBarDestination.entries[i]
+                            )
                         )
-                    )
+                    }
                 },
                 text = {
                     Text(
@@ -116,7 +119,8 @@ fun AppScreen(
     notificationManager: AppNotificationManager,
     noteRepository: NoteRepository,
     fileRepository: FileRepository,
-    preferenceRepository: PreferenceRepository
+    preferenceRepository: PreferenceRepository,
+    initialScreen: Screen
 ) {
     val navController = rememberNavController()
 
@@ -131,12 +135,7 @@ fun AppScreen(
         )
         NavHost(
             navController = navController,
-            startDestination = when (viewModel.state.navigationBarDestination) {
-                NavigationBarDestination.Month -> Screen.Month
-                NavigationBarDestination.Week -> Screen.Week
-                NavigationBarDestination.Day -> Screen.Day()
-                NavigationBarDestination.Settings -> Screen.Settings
-            },
+            startDestination = initialScreen,
             enterTransition = {
                 slideInHorizontally(animationSpec = tween(durationMillis = 400)) { -it }
             },
@@ -173,8 +172,8 @@ fun AppScreen(
                     noteRepository = noteRepository
                 )
             }
-            composable<Screen.Day> {
-                val day = it.toRoute<Screen.Day>()
+            composable<Screen.Day> { entry ->
+                val route = entry.toRoute<Screen.Day>()
 
                 DayScreen(
                     logger = logger,
@@ -182,7 +181,7 @@ fun AppScreen(
                     permissionManager = permissionManager,
                     notificationManager = notificationManager,
                     noteRepository = noteRepository,
-                    isCreateOrEditRequested = day.isCreateOrEditRequested
+                    isCreateOrEditRequested = route.isCreateOrEditRequested
                 )
             }
             composable<Screen.Settings> {
