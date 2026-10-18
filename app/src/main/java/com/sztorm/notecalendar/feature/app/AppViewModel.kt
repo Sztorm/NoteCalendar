@@ -19,9 +19,6 @@ class AppViewModel(initialState: AppState) : ViewModel() {
         state = when (event) {
             is AppEvent.ThemeChange -> state.copy(themeColors = event.themeColors)
             is AppEvent.DayScreenDateChange -> state.copy(dayScreenDate = event.dayScreenDate)
-            is AppEvent.NavigationBarDestinationChange ->
-                state.copy(navigationBarDestination = event.destination)
-
             is AppEvent.FirstDayOfWeekChange -> state.copy(firstDayOfWeek = event.dayOfWeek)
             is AppEvent.NoteFontSizeChange -> state.copy(noteFontSize = event.size)
             is AppEvent.NoteLineSpacingChange -> state.copy(noteLineSpacing = event.lineSpacing)
@@ -42,10 +39,6 @@ class AppViewFactory(val initialState: AppState) : ViewModelProvider.Factory {
 sealed class AppEvent {
     data class ThemeChange(val themeColors: ThemeColors) : AppEvent()
     data class DayScreenDateChange(val dayScreenDate: LocalDate) : AppEvent()
-    data class NavigationBarDestinationChange(
-        val destination: NavigationBarDestination
-    ) : AppEvent()
-
     data class FirstDayOfWeekChange(val dayOfWeek: DayOfWeek) : AppEvent()
     data class NoteFontSizeChange(val size: NoteFontSize) : AppEvent()
     data class NoteLineSpacingChange(val lineSpacing: NoteLineSpacing) : AppEvent()
@@ -54,7 +47,6 @@ sealed class AppEvent {
 data class AppState(
     val themeColors: ThemeColors,
     val dayScreenDate: LocalDate,
-    val navigationBarDestination: NavigationBarDestination,
     val firstDayOfWeek: DayOfWeek,
     val noteFontSize: NoteFontSize,
     val noteLineSpacing: NoteLineSpacing

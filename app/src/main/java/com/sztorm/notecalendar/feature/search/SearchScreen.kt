@@ -35,7 +35,6 @@ import com.sztorm.notecalendar.domain.models.toNote
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
 import com.sztorm.notecalendar.feature.app.AppEvent
 import com.sztorm.notecalendar.feature.app.AppViewModel
-import com.sztorm.notecalendar.feature.app.NavigationBarDestination
 import com.sztorm.notecalendar.feature.app.Screen
 import com.sztorm.notecalendar.feature.settings.theme.ThemeColors
 import com.sztorm.notecalendar.ui.components.IconButton
@@ -72,21 +71,11 @@ fun SearchItemRow(
                 appViewModel.onEvent(
                     AppEvent.DayScreenDateChange(note.date)
                 )
-                appViewModel.onEvent(
-                    AppEvent.NavigationBarDestinationChange(
-                        NavigationBarDestination.Day
-                    )
-                )
                 navController.navigate(Screen.Day())
             },
             onLongClick = {
                 appViewModel.onEvent(
                     AppEvent.DayScreenDateChange(note.date)
-                )
-                appViewModel.onEvent(
-                    AppEvent.NavigationBarDestinationChange(
-                        NavigationBarDestination.Day
-                    )
                 )
                 navController.navigate(Screen.Day(isCreateOrEditRequested = true))
             },

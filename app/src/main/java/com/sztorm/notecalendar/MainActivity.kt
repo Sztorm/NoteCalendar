@@ -7,24 +7,23 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sztorm.notecalendar.core.common.toLocalDateOrNull
-import com.sztorm.notecalendar.feature.settings.calendar.StartingScreenType
 import com.sztorm.notecalendar.data.repositories.FileRepositoryImpl
 import com.sztorm.notecalendar.data.repositories.NoteRepositoryImpl
 import com.sztorm.notecalendar.data.repositories.PreferenceRepositoryImpl
 import com.sztorm.notecalendar.feature.app.AppScreen
+import com.sztorm.notecalendar.feature.app.AppState
+import com.sztorm.notecalendar.feature.app.AppViewFactory
+import com.sztorm.notecalendar.feature.app.AppViewModel
+import com.sztorm.notecalendar.feature.app.Screen
+import com.sztorm.notecalendar.feature.settings.calendar.StartingScreenType
 import com.sztorm.notecalendar.platform.logging.TimberLogger
 import com.sztorm.notecalendar.platform.notifications.AppNotificationManager
 import com.sztorm.notecalendar.platform.notifications.NotificationIntentKeys
 import com.sztorm.notecalendar.platform.permissions.AppPermissionManager
 import com.sztorm.notecalendar.ui.theme.AppTheme
-import com.sztorm.notecalendar.feature.app.AppState
-import com.sztorm.notecalendar.feature.app.AppViewFactory
-import com.sztorm.notecalendar.feature.app.AppViewModel
-import com.sztorm.notecalendar.feature.app.NavigationBarDestination
-import com.sztorm.notecalendar.feature.app.Screen
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 
@@ -70,11 +69,6 @@ class MainActivity : ComponentActivity() {
             AppState(
                 themeColors = preferenceRepository.getThemeColors(),
                 dayScreenDate = bundleResult?.noteDate?.toLocalDateOrNull() ?: LocalDate.now(),
-                navigationBarDestination = when (startingView) {
-                    StartingScreenType.DayScreen -> NavigationBarDestination.Day
-                    StartingScreenType.WeekScreen -> NavigationBarDestination.Week
-                    StartingScreenType.MonthScreen -> NavigationBarDestination.Month
-                },
                 firstDayOfWeek = preferenceRepository.getFirstDayOfWeek(),
                 noteFontSize = preferenceRepository.getNoteFontSize(),
                 noteLineSpacing = preferenceRepository.getNoteLineSpacing()

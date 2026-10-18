@@ -19,6 +19,7 @@ import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -30,6 +31,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.sztorm.notecalendar.R
@@ -57,8 +59,9 @@ private data class MainTab(
 
 @Composable
 private fun NavigationBar(
-    viewModel: AppViewModel,
+    @Suppress("unused") logger: AppLogger,
     navController: NavController,
+    initialScreen: Screen,
     modifier: Modifier = Modifier
 ) {
     val tabs = listOf(
@@ -83,22 +86,26 @@ private fun NavigationBar(
             description = stringResource(R.string.Settings)
         )
     )
+    val entry by navController.currentBackStackEntryAsState()
+    val destination = entry?.destination
+    val currentDestination = destination
+        ?.let {
+            destination.toNavigationBarDestination()
+                ?: navController.previousBackStackEntry?.destination?.toNavigationBarDestination()
+        }
+        ?: initialScreen.toNavigationBarDestination()
+        ?: NavigationBarDestination.Day
     PrimaryTabRow(
-        selectedTabIndex = viewModel.state.navigationBarDestination.ordinal,
+        selectedTabIndex = currentDestination.ordinal,
         modifier = modifier
     ) {
-        tabs.forEachIndexed { i, tab ->
-            val isSelected = viewModel.state.navigationBarDestination.ordinal == i
+        tabs.forEach { tab ->
+            val isSelected = currentDestination == tab.screen.toNavigationBarDestination()
             Tab(
                 selected = isSelected,
                 onClick = {
                     if (!isSelected) {
                         navController.navigate(tab.screen)
-                        viewModel.onEvent(
-                            AppEvent.NavigationBarDestinationChange(
-                                NavigationBarDestination.entries[i]
-                            )
-                        )
                     }
                 },
                 text = {
@@ -136,11 +143,6 @@ private fun NavGraphBuilder.appNavGraph(
                 viewModel.onEvent(
                     AppEvent.DayScreenDateChange(date)
                 )
-                viewModel.onEvent(
-                    AppEvent.NavigationBarDestinationChange(
-                        NavigationBarDestination.Day
-                    )
-                )
                 navController.navigate(
                     Screen.Day(isCreateOrEditRequested = isLongClick)
                 )
@@ -156,11 +158,6 @@ private fun NavGraphBuilder.appNavGraph(
             onDayRowClick = { isLongClick, date ->
                 viewModel.onEvent(
                     AppEvent.DayScreenDateChange(date)
-                )
-                viewModel.onEvent(
-                    AppEvent.NavigationBarDestinationChange(
-                        NavigationBarDestination.Day
-                    )
                 )
                 navController.navigate(
                     Screen.Day(isCreateOrEditRequested = isLongClick)
@@ -289,8 +286,9 @@ fun AppScreen(
             .fillMaxWidth()
     ) {
         NavigationBar(
-            viewModel = viewModel,
-            navController = navController
+            logger = logger,
+            navController = navController,
+            initialScreen = initialScreen
         )
         NavHost(
             navController = navController,
