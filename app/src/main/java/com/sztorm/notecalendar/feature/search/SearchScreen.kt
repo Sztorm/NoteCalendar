@@ -27,28 +27,25 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.sztorm.notecalendar.core.common.isEven
 import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.domain.models.Note
 import com.sztorm.notecalendar.domain.models.toNote
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
-import com.sztorm.notecalendar.feature.app.AppEvent
 import com.sztorm.notecalendar.feature.app.AppViewModel
-import com.sztorm.notecalendar.feature.app.Screen
 import com.sztorm.notecalendar.feature.settings.theme.ThemeColors
 import com.sztorm.notecalendar.ui.components.IconButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.LocalDate
 
 @Composable
 fun SearchItemRow(
     index: Int,
     note: Note,
-    appViewModel: AppViewModel,
-    themeColors: ThemeColors,
-    navController: NavController
+    onResultGoButtonClick: (isLongClick: Boolean, date: LocalDate) -> Unit,
+    themeColors: ThemeColors
 ) {
     val backgroundColor = when {
         index.isEven -> themeColors.backgroundColorVariant
@@ -67,18 +64,8 @@ fun SearchItemRow(
         )
         Spacer(Modifier.weight(1f))
         IconButton(
-            onClick = {
-                appViewModel.onEvent(
-                    AppEvent.DayScreenDateChange(note.date)
-                )
-                navController.navigate(Screen.Day())
-            },
-            onLongClick = {
-                appViewModel.onEvent(
-                    AppEvent.DayScreenDateChange(note.date)
-                )
-                navController.navigate(Screen.Day(isCreateOrEditRequested = true))
-            },
+            onClick = { onResultGoButtonClick(false, note.date) },
+            onLongClick = { onResultGoButtonClick(true, note.date) },
             onClickLabel = "Go to note", // TODO: add to strings.xml
             onLongClickLabel = "Go to note and edit", // TODO: add to strings.xml
         ) {
@@ -94,7 +81,8 @@ fun SearchItemRow(
 fun SearchScreen(
     @Suppress("unused") logger: AppLogger,
     appViewModel: AppViewModel,
-    navController: NavController,
+    onBackButtonClick: () -> Unit,
+    onResultGoButtonClick: (isLongClick: Boolean, date: LocalDate) -> Unit,
     noteRepository: NoteRepository
 ) {
     val themeColors = appViewModel.state.themeColors
@@ -148,7 +136,7 @@ fun SearchScreen(
                     }
                 },
                 leadingIcon = {
-                    IconButton(onClick = { navController.navigateUp() }) {
+                    IconButton(onClick = onBackButtonClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             tint = themeColors.textColor,
@@ -208,7 +196,12 @@ fun SearchScreen(
                             items = uiState.results.mapIndexed { i, note -> i to note },
                             key = { (_, note) -> note.date }
                         ) { (index, note) ->
-                            SearchItemRow(index, note, appViewModel, themeColors, navController)
+                            SearchItemRow(
+                                index = index,
+                                note = note,
+                                onResultGoButtonClick = onResultGoButtonClick,
+                                themeColors = themeColors
+                            )
                         }
                     }
                 }

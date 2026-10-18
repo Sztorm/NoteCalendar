@@ -95,6 +95,7 @@ private fun NavigationBar(
         }
         ?: initialScreen.toNavigationBarDestination()
         ?: NavigationBarDestination.Day
+
     PrimaryTabRow(
         selectedTabIndex = currentDestination.ordinal,
         modifier = modifier
@@ -192,7 +193,15 @@ private fun NavGraphBuilder.appNavGraph(
         SearchScreen(
             logger = logger,
             appViewModel = viewModel,
-            navController = navController,
+            onBackButtonClick = { navController.navigateUp() },
+            onResultGoButtonClick = { isLongClick, date ->
+                viewModel.onEvent(
+                    AppEvent.DayScreenDateChange(date)
+                )
+                navController.navigate(
+                    Screen.Day(isCreateOrEditRequested = isLongClick)
+                )
+            },
             noteRepository = noteRepository
         )
     }
