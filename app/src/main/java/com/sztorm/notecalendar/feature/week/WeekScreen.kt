@@ -2,6 +2,8 @@ package com.sztorm.notecalendar.feature.week
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,22 +20,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.core.common.addFirstKt
 import com.sztorm.notecalendar.core.common.addLastKt
 import com.sztorm.notecalendar.core.common.getLocalizedName
 import com.sztorm.notecalendar.core.common.isEven
 import com.sztorm.notecalendar.core.common.yearMonth
+import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
-import com.sztorm.notecalendar.feature.app.AppEvent
 import com.sztorm.notecalendar.feature.app.AppViewModel
-import com.sztorm.notecalendar.feature.app.NavigationBarDestination
-import com.sztorm.notecalendar.feature.app.Screen
 import com.sztorm.notecalendar.feature.week.WeekViewItem.WeekViewDay
 import com.sztorm.notecalendar.feature.week.WeekViewItem.WeekViewMonth
+import com.sztorm.notecalendar.ui.components.ActionButton
 import com.sztorm.notecalendar.ui.components.InfiniteColumn
 import java.time.LocalDate
 import java.time.YearMonth
@@ -161,9 +163,34 @@ tailrec fun MutableList<WeekViewItem>.loadPrevItems(
 }
 
 @Composable
-fun WeekScreen(
+private fun BoxScope.ActionButtons(
+    @Suppress("unused") logger: AppLogger,
     appViewModel: AppViewModel,
-    navController: NavController,
+    onSearchButtonClick: () -> Unit,
+) {
+    val themeColors = appViewModel.state.themeColors
+
+    Row(
+        modifier = Modifier
+            .align(Alignment.BottomEnd)
+            .padding(8.dp)
+    ) {
+        ActionButton(
+            onClick = onSearchButtonClick,
+            containerColor = themeColors.primaryColor,
+            contentColor = themeColors.buttonTextColor,
+            icon = painterResource(R.drawable.icon_outline_rounded_search),
+            contentDescription = "Search" // TODO: add to strings.xml
+        )
+    }
+}
+
+@Composable
+fun WeekScreen(
+    logger: AppLogger,
+    appViewModel: AppViewModel,
+    onSearchButtonClick: () -> Unit,
+    onDayRowClick: (isLongClick: Boolean, date: LocalDate) -> Unit,
     noteRepository: NoteRepository
 ) {
     val themeColors = appViewModel.state.themeColors
@@ -194,133 +221,118 @@ fun WeekScreen(
     }
     val dayListState = rememberLazyListState()
 
-    InfiniteColumn(
-        modifier = Modifier.fillMaxSize(),
-        items = days,
-        state = dayListState,
-        key = { _, item -> item.key() },
-        onReachTop = { days.loadPrevItems(isSelected, isToday, hasNote, bufferSize) },
-        onReachBottom = { days.loadNextItems(isSelected, isToday, hasNote, bufferSize) }
-    ) { index, item ->
-        val backgroundColor = when {
-            index.isEven -> themeColors.backgroundColor
-            else -> themeColors.backgroundColorVariant
-        }
-        when (item) {
-            is WeekViewDay -> {
-                val dayOfMonthTextColor = when {
-                    item.isSelected -> themeColors.buttonTextColor
-                    else -> themeColors.getTextColorOf(
-                        item.date.dayOfWeek, appViewModel.state.firstDayOfWeek
-                    )
-                }
-                val dayOfWeekTextColor = when {
-                    item.isToday -> themeColors.secondaryColor
-                    else -> themeColors.textColor
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(color = backgroundColor)
-                        .combinedClickable(
-                            onClick = {
-                                appViewModel.onEvent(
-                                    AppEvent.DayScreenDateChange(item.date)
-                                )
-                                appViewModel.onEvent(
-                                    AppEvent.NavigationBarDestinationChange(
-                                        NavigationBarDestination.Day
-                                    )
-                                )
-                                navController.navigate(Screen.Day())
-                            },
-                            onLongClick = {
-                                appViewModel.onEvent(
-                                    AppEvent.DayScreenDateChange(item.date)
-                                )
-                                appViewModel.onEvent(
-                                    AppEvent.NavigationBarDestinationChange(
-                                        NavigationBarDestination.Day
-                                    )
-                                )
-                                navController.navigate(
-                                    Screen.Day(isCreateOrEditRequested = true)
-                                )
-                            }
+    Box(modifier = Modifier.fillMaxSize()) {
+        InfiniteColumn(
+            modifier = Modifier.fillMaxSize(),
+            items = days,
+            state = dayListState,
+            key = { _, item -> item.key() },
+            onReachTop = { days.loadPrevItems(isSelected, isToday, hasNote, bufferSize) },
+            onReachBottom = { days.loadNextItems(isSelected, isToday, hasNote, bufferSize) }
+        ) { index, item ->
+            val backgroundColor = when {
+                index.isEven -> themeColors.backgroundColor
+                else -> themeColors.backgroundColorVariant
+            }
+            when (item) {
+                is WeekViewDay -> {
+                    val dayOfMonthTextColor = when {
+                        item.isSelected -> themeColors.buttonTextColor
+                        else -> themeColors.getTextColorOf(
+                            item.date.dayOfWeek, appViewModel.state.firstDayOfWeek
                         )
-                        .padding(horizontal = 5.dp, vertical = 10.dp)
-                ) {
-                    Text(
-                        text = item.date.dayOfMonth.toString(),
-                        textAlign = TextAlign.Center,
-                        fontSize = 20.sp,
-                        color = dayOfMonthTextColor,
+                    }
+                    val dayOfWeekTextColor = when {
+                        item.isToday -> themeColors.secondaryColor
+                        else -> themeColors.textColor
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .fillMaxHeight()
-                            .width(50.dp)
-                            .padding(end = 5.dp)
-                            .drawWithCache {
-                                val stroke = Stroke(width = 3.dp.toPx())
-                                val width = size.width
-                                val height = size.height + 10.dp.toPx()
-                                val radius = min(width, height) * 0.5f
-                                val radiusWithStroke = radius + stroke.width * 0.5f
-                                val secondRadius = radius * 0.8f
+                            .fillMaxWidth()
+                            .background(color = backgroundColor)
+                            .combinedClickable(
+                                onClick = { onDayRowClick(false, item.date) },
+                                onLongClick = { onDayRowClick(true, item.date) }
+                            )
+                            .padding(horizontal = 5.dp, vertical = 10.dp)
+                    ) {
+                        Text(
+                            text = item.date.dayOfMonth.toString(),
+                            textAlign = TextAlign.Center,
+                            fontSize = 20.sp,
+                            color = dayOfMonthTextColor,
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .width(50.dp)
+                                .padding(end = 5.dp)
+                                .drawWithCache {
+                                    val stroke = Stroke(width = 3.dp.toPx())
+                                    val width = size.width
+                                    val height = size.height + 10.dp.toPx()
+                                    val radius = min(width, height) * 0.5f
+                                    val radiusWithStroke = radius + stroke.width * 0.5f
+                                    val secondRadius = radius * 0.8f
 
-                                onDrawBehind {
-                                    when {
-                                        item.isSelected && item.hasNote -> {
-                                            drawCircle(
-                                                color = themeColors.secondaryColor,
-                                                radius = secondRadius
-                                            )
-                                            drawCircle(
-                                                color = themeColors.primaryColor,
-                                                radius = radius,
-                                                style = stroke
-                                            )
-                                        }
+                                    onDrawBehind {
+                                        when {
+                                            item.isSelected && item.hasNote -> {
+                                                drawCircle(
+                                                    color = themeColors.secondaryColor,
+                                                    radius = secondRadius
+                                                )
+                                                drawCircle(
+                                                    color = themeColors.primaryColor,
+                                                    radius = radius,
+                                                    style = stroke
+                                                )
+                                            }
 
-                                        item.isSelected -> {
-                                            drawCircle(
-                                                color = themeColors.secondaryColor,
-                                                radius = radiusWithStroke
-                                            )
-                                        }
+                                            item.isSelected -> {
+                                                drawCircle(
+                                                    color = themeColors.secondaryColor,
+                                                    radius = radiusWithStroke
+                                                )
+                                            }
 
-                                        item.hasNote -> {
-                                            drawCircle(
-                                                color = themeColors.primaryColor,
-                                                radius = radius,
-                                                style = stroke
-                                            )
+                                            item.hasNote -> {
+                                                drawCircle(
+                                                    color = themeColors.primaryColor,
+                                                    radius = radius,
+                                                    style = stroke
+                                                )
+                                            }
                                         }
                                     }
                                 }
-                            }
-                    )
+                        )
+                        Text(
+                            text = item.date.dayOfWeek.getLocalizedName(),
+                            fontSize = 24.sp,
+                            color = dayOfWeekTextColor
+                        )
+                    }
+                }
+
+                is WeekViewMonth -> {
                     Text(
-                        text = item.date.dayOfWeek.getLocalizedName(),
-                        fontSize = 24.sp,
-                        color = dayOfWeekTextColor
+                        text = item.yearMonth.getLocalizedName(),
+                        fontSize = 28.sp,
+                        textAlign = TextAlign.Center,
+                        color = themeColors.textColor,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = backgroundColor)
+                            .padding(horizontal = 5.dp, vertical = 10.dp)
                     )
                 }
             }
-
-            is WeekViewMonth -> {
-                Text(
-                    text = item.yearMonth.getLocalizedName(),
-                    fontSize = 28.sp,
-                    textAlign = TextAlign.Center,
-                    color = themeColors.textColor,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(color = backgroundColor)
-                        .padding(horizontal = 5.dp, vertical = 10.dp)
-                )
-            }
         }
+        ActionButtons(
+            logger = logger,
+            appViewModel = appViewModel,
+            onSearchButtonClick = onSearchButtonClick
+        )
     }
     LaunchedEffect(Unit) {
         dayListState.scrollToItem(index = cachedItemsCount / 2 + 1)

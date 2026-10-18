@@ -167,8 +167,22 @@ fun AppScreen(
             }
             composable<Screen.Week> {
                 WeekScreen(
+                    logger = logger,
                     appViewModel = viewModel,
-                    navController = navController,
+                    onSearchButtonClick = { navController.navigate(Screen.Search) },
+                    onDayRowClick = { isLongClick, date ->
+                        viewModel.onEvent(
+                            AppEvent.DayScreenDateChange(date)
+                        )
+                        viewModel.onEvent(
+                            AppEvent.NavigationBarDestinationChange(
+                                NavigationBarDestination.Day
+                            )
+                        )
+                        navController.navigate(
+                            Screen.Day(isCreateOrEditRequested = isLongClick)
+                        )
+                    },
                     noteRepository = noteRepository
                 )
             }
