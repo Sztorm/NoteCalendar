@@ -36,13 +36,12 @@ import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.mikepenz.aboutlibraries.LibsBuilder
 import com.sztorm.notecalendar.R
+import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.ui.components.preferences.CategoryPreference
 import com.sztorm.notecalendar.ui.components.preferences.Preference
 import com.sztorm.notecalendar.ui.components.preferences.SubpreferenceScreen
-import com.sztorm.notecalendar.feature.app.AppViewModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -101,10 +100,10 @@ private fun CopyButton(
 
 @Composable
 fun AboutSettingsScreen(
-    viewModel: AppViewModel,
-    navController: NavController
+    appViewModel: AppViewModel,
+    onBackButtonClick: () -> Unit
 ) {
-    val themeColors = viewModel.state.themeColors
+    val themeColors = appViewModel.state.themeColors
     val context = LocalContext.current
     val clipboardManager = LocalClipboard.current
     val coroutineScope = rememberCoroutineScope()
@@ -112,7 +111,7 @@ fun AboutSettingsScreen(
     SubpreferenceScreen(
         title = stringResource(R.string.Settings_About),
         iconTint = themeColors.textColor,
-        onBackButtonClick = { navController.navigateUp() }
+        onBackButtonClick = onBackButtonClick
     ) {
         CategoryPreference(
             title = stringResource(R.string.Settings_About_Basic),

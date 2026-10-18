@@ -9,7 +9,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.core.common.getLocalizedName
 import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
@@ -22,12 +21,12 @@ import java.time.DayOfWeek
 
 @Composable
 fun CalendarSettingsScreen(
-    viewModel: AppViewModel,
-    preferenceRepository: PreferenceRepository,
-    navController: NavController
+    appViewModel: AppViewModel,
+    onBackButtonClick: () -> Unit,
+    preferenceRepository: PreferenceRepository
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val themeColors = viewModel.state.themeColors
+    val themeColors = appViewModel.state.themeColors
     var startingViewIndexPair by remember {
         mutableStateOf(Pair(StartingScreenType.DayScreen, 0))
     }
@@ -39,17 +38,17 @@ fun CalendarSettingsScreen(
     SubpreferenceScreen(
         title = stringResource(R.string.Settings_Calendar),
         iconTint = themeColors.textColor,
-        onBackButtonClick = { navController.navigateUp() }
+        onBackButtonClick = onBackButtonClick
     ) {
         ListPreference(
             title = stringResource(R.string.Settings_Calendar_FirstDayOfWeek),
             options = DayOfWeek.entries.map { it.getLocalizedName() to it },
-            initialSelectedOptionIndex = viewModel.state.firstDayOfWeek.ordinal,
+            initialSelectedOptionIndex = appViewModel.state.firstDayOfWeek.ordinal,
             onConfirm = { _, firstDayOfWeek ->
                 coroutineScope.launch {
                     preferenceRepository.setFirstDayOfWeek(firstDayOfWeek)
                 }
-                viewModel.onEvent(AppEvent.FirstDayOfWeekChange(firstDayOfWeek))
+                appViewModel.onEvent(AppEvent.FirstDayOfWeekChange(firstDayOfWeek))
             },
             titleColor = themeColors.textColor,
             summaryColor = themeColors.textColor,

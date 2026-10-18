@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.core.common.toLocalDateOrNull
 import com.sztorm.notecalendar.core.logging.AppLogger
@@ -38,15 +37,15 @@ import kotlin.math.max
 @Composable
 fun NotesSettingsScreen(
     logger: AppLogger,
-    viewModel: AppViewModel,
+    appViewModel: AppViewModel,
+    onBackButtonClick: () -> Unit,
     noteRepository: NoteRepository,
     fileRepository: FileRepository,
     preferenceRepository: PreferenceRepository,
-    notificationManager: AppNotificationManager,
-    navController: NavController
+    notificationManager: AppNotificationManager
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val themeColors = viewModel.state.themeColors
+    val themeColors = appViewModel.state.themeColors
     val dialogColors = CardDefaults.cardColors().copy(
         containerColor = themeColors.backgroundColor,
         contentColor = themeColors.backgroundColor,
@@ -86,7 +85,7 @@ fun NotesSettingsScreen(
     SubpreferenceScreen(
         title = stringResource(R.string.Settings_Notes),
         iconTint = themeColors.textColor,
-        onBackButtonClick = { navController.navigateUp() }
+        onBackButtonClick = onBackButtonClick
     ) {
         CategoryPreference(
             title = stringResource(R.string.Settings_Notes_NoteManagement),
@@ -192,8 +191,8 @@ fun NotesSettingsScreen(
                 あ か さ 123
                 中 文 123
                 """.trimIndent(),
-                noteFontSize = viewModel.state.noteFontSize,
-                noteLineSpacing = viewModel.state.noteLineSpacing,
+                noteFontSize = appViewModel.state.noteFontSize,
+                noteLineSpacing = appViewModel.state.noteLineSpacing,
                 previewTextColor = themeColors.textColor.copy(alpha = 0.8f),
                 noteTextColor = themeColors.noteTextColor,
                 noteColor = themeColors.noteColor,
@@ -205,13 +204,13 @@ fun NotesSettingsScreen(
                 sizes = NoteFontSize.Sizes,
                 selectedIndex = NoteFontSize.Sizes
                     .indexOfFirst { size ->
-                        abs(size.floatValue - viewModel.state.noteFontSize.floatValue) < 1f
+                        abs(size.floatValue - appViewModel.state.noteFontSize.floatValue) < 1f
                     }.let { max(it, 0) },
                 onSizeChange = { _, size ->
                     coroutineScope.launch {
                         preferenceRepository.setNoteFontSize(size)
                     }
-                    viewModel.onEvent(AppEvent.NoteFontSizeChange(size))
+                    appViewModel.onEvent(AppEvent.NoteFontSizeChange(size))
                 },
                 titleColor = themeColors.textColor,
                 iconColor = themeColors.textColor,
@@ -224,14 +223,14 @@ fun NotesSettingsScreen(
                     .indexOfFirst { lineSpacing ->
                         abs(
                             lineSpacing.fontScaleFactor -
-                                viewModel.state.noteLineSpacing.fontScaleFactor
+                                appViewModel.state.noteLineSpacing.fontScaleFactor
                         ) < 0.01f
                     }.let { max(it, 0) },
                 onSizeChange = { _, lineSpacing ->
                     coroutineScope.launch {
                         preferenceRepository.setNoteLineSpacing(lineSpacing)
                     }
-                    viewModel.onEvent(AppEvent.NoteLineSpacingChange(lineSpacing))
+                    appViewModel.onEvent(AppEvent.NoteLineSpacingChange(lineSpacing))
                 },
                 titleColor = themeColors.textColor,
                 iconColor = themeColors.textColor,
@@ -251,7 +250,7 @@ fun NotesSettingsScreen(
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setNoteTextColor(color)
-                        viewModel.onEvent(
+                        appViewModel.onEvent(
                             AppEvent.ThemeChange(
                                 preferenceRepository.getThemeColors()
                             )
@@ -273,7 +272,7 @@ fun NotesSettingsScreen(
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setNoteColor(color)
-                        viewModel.onEvent(
+                        appViewModel.onEvent(
                             AppEvent.ThemeChange(
                                 preferenceRepository.getThemeColors()
                             )
@@ -295,7 +294,7 @@ fun NotesSettingsScreen(
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setNoteColorVariant(color)
-                        viewModel.onEvent(
+                        appViewModel.onEvent(
                             AppEvent.ThemeChange(
                                 preferenceRepository.getThemeColors()
                             )

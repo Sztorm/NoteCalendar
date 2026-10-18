@@ -9,7 +9,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.core.logging.LogTags
@@ -36,14 +35,14 @@ import kotlinx.coroutines.launch
 @Composable
 fun ThemeSettingsScreen(
     logger: AppLogger,
-    viewModel: AppViewModel,
+    appViewModel: AppViewModel,
+    onBackButtonClick: () -> Unit,
     fileRepository: FileRepository,
-    preferenceRepository: PreferenceRepository,
-    navController: NavController
+    preferenceRepository: PreferenceRepository
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val themeColors = viewModel.state.themeColors
+    val themeColors = appViewModel.state.themeColors
     val defaultThemeColors = getDefaultThemeColors(isSystemInDarkTheme())
     val colorPickerColors = ColorPickerDefaults.colors().copy(
         backgroundColor = themeColors.backgroundColor,
@@ -85,7 +84,7 @@ fun ThemeSettingsScreen(
     SubpreferenceScreen(
         title = stringResource(R.string.Settings_Theme),
         iconTint = themeColors.textColor,
-        onBackButtonClick = { navController.navigateUp() },
+        onBackButtonClick = onBackButtonClick,
     ) {
         CategoryPreference(
             title = stringResource(R.string.Settings_Theme_PresetTheme),
@@ -100,7 +99,7 @@ fun ThemeSettingsScreen(
                     coroutineScope.launch {
                         preferenceRepository.setThemeColors(LightThemeColors)
                     }.invokeOnCompletion {
-                        viewModel.onEvent(
+                        appViewModel.onEvent(
                             AppEvent.ThemeChange(LightThemeColors)
                         )
                     }
@@ -116,7 +115,7 @@ fun ThemeSettingsScreen(
                     coroutineScope.launch {
                         preferenceRepository.setThemeColors(DarkThemeColors)
                     }.invokeOnCompletion {
-                        viewModel.onEvent(
+                        appViewModel.onEvent(
                             AppEvent.ThemeChange(DarkThemeColors)
                         )
                     }
@@ -134,7 +133,7 @@ fun ThemeSettingsScreen(
                     coroutineScope.launch {
                         preferenceRepository.setThemeColors(defaultThemeColors)
                     }.invokeOnCompletion {
-                        viewModel.onEvent(
+                        appViewModel.onEvent(
                             AppEvent.ThemeChange(defaultThemeColors)
                         )
                     }
@@ -158,7 +157,7 @@ fun ThemeSettingsScreen(
                                 coroutineScope.launch {
                                     preferenceRepository.setThemeColors(themeColors)
                                 }.invokeOnCompletion {
-                                    viewModel.onEvent(
+                                    appViewModel.onEvent(
                                         AppEvent.ThemeChange(themeColors)
                                     )
                                 }
@@ -234,7 +233,7 @@ fun ThemeSettingsScreen(
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setPrimaryColor(color)
-                        viewModel.onEvent(
+                        appViewModel.onEvent(
                             AppEvent.ThemeChange(
                                 preferenceRepository.getThemeColors()
                             )
@@ -256,7 +255,7 @@ fun ThemeSettingsScreen(
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setSecondaryColor(color)
-                        viewModel.onEvent(
+                        appViewModel.onEvent(
                             AppEvent.ThemeChange(
                                 preferenceRepository.getThemeColors()
                             )
@@ -278,7 +277,7 @@ fun ThemeSettingsScreen(
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setInactiveElementColor(color)
-                        viewModel.onEvent(
+                        appViewModel.onEvent(
                             AppEvent.ThemeChange(
                                 preferenceRepository.getThemeColors()
                             )
@@ -300,7 +299,7 @@ fun ThemeSettingsScreen(
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setNoteColor(color)
-                        viewModel.onEvent(
+                        appViewModel.onEvent(
                             AppEvent.ThemeChange(
                                 preferenceRepository.getThemeColors()
                             )
@@ -322,7 +321,7 @@ fun ThemeSettingsScreen(
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setNoteColorVariant(color)
-                        viewModel.onEvent(
+                        appViewModel.onEvent(
                             AppEvent.ThemeChange(
                                 preferenceRepository.getThemeColors()
                             )
@@ -344,7 +343,7 @@ fun ThemeSettingsScreen(
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setTextColor(color)
-                        viewModel.onEvent(
+                        appViewModel.onEvent(
                             AppEvent.ThemeChange(
                                 preferenceRepository.getThemeColors()
                             )
@@ -366,7 +365,7 @@ fun ThemeSettingsScreen(
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setButtonTextColor(color)
-                        viewModel.onEvent(
+                        appViewModel.onEvent(
                             AppEvent.ThemeChange(
                                 preferenceRepository.getThemeColors()
                             )
@@ -388,7 +387,7 @@ fun ThemeSettingsScreen(
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setNoteTextColor(color)
-                        viewModel.onEvent(
+                        appViewModel.onEvent(
                             AppEvent.ThemeChange(
                                 preferenceRepository.getThemeColors()
                             )
@@ -410,7 +409,7 @@ fun ThemeSettingsScreen(
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setBackgroundColor(color)
-                        viewModel.onEvent(
+                        appViewModel.onEvent(
                             AppEvent.ThemeChange(
                                 preferenceRepository.getThemeColors()
                             )
@@ -432,7 +431,7 @@ fun ThemeSettingsScreen(
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setBackgroundColorVariant(color)
-                        viewModel.onEvent(
+                        appViewModel.onEvent(
                             AppEvent.ThemeChange(
                                 preferenceRepository.getThemeColors()
                             )
