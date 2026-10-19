@@ -40,6 +40,23 @@ import kotlin.math.max
 import kotlin.time.Duration.Companion.milliseconds
 import java.util.Locale as JLocale
 
+fun String.indicesOf(
+    string: String,
+    startIndex: Int = 0,
+    ignoreCase: Boolean = false,
+    isOverlapping: Boolean = false
+): List<Int> {
+    val step = if (isOverlapping) 1 else max(string.length, 1)
+
+    tailrec fun loop(i: Int, result: MutableList<Int>): MutableList<Int> {
+        val index = this.indexOf(string, i, ignoreCase)
+
+        return if (index < 0) result
+        else loop(index + step, result.apply { add(index) })
+    }
+    return loop(startIndex, mutableListOf())
+}
+
 fun <T : Parcelable> Intent.getParcelableExtraCompat(name: String, clazz: Class<T>): T? {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         return getParcelableExtra(name, clazz)
