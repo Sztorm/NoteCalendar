@@ -1,5 +1,6 @@
 package com.sztorm.notecalendar.feature.search
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,12 +17,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +35,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
@@ -37,6 +44,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.core.common.isEven
 import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
@@ -76,7 +84,7 @@ fun SearchItemRow(
             .background(backgroundColor)
             .clickable { expanded = !expanded }
             .animateContentSize()
-            .padding(horizontal = 8.dp, vertical = 8.dp)
+            .padding(all = 8.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -134,59 +142,132 @@ fun SearchScreen(
         factory = SearchScreenViewModelFactory(
             initialState = SearchScreenState(
                 uiState = SearchUiState.Success(emptyList()),
-                searchTextValue = TextFieldValue()
+                searchTextValue = TextFieldValue(),
+                searchFilters = emptySet()
             ),
             noteRepository = noteRepository,
             logger = logger,
         )
     )
     val state by viewModel.state.collectAsStateWithLifecycle()
-
+    var filterExpanded by rememberSaveable {
+        mutableStateOf(false)
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        ) {
-            OutlinedTextField(
-                value = state.searchTextValue,
-                onValueChange = {
-                    viewModel.onEvent(SearchScreenEvent.SearchTextValueChange(it))
-                },
-                leadingIcon = {
-                    IconButton(onClick = onBackButtonClick) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            tint = themeColors.textColor,
-                            contentDescription = null
-                        )
-                    }
-                },
-                trailingIcon = {
-                    IconButton(
-                        onClick = {
-                            viewModel.onEvent(
-                                SearchScreenEvent.SearchTextValueChange(TextFieldValue())
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.padding(8.dp)) {
+                OutlinedTextField(
+                    value = state.searchTextValue,
+                    onValueChange = {
+                        viewModel.onEvent(SearchScreenEvent.SearchTextValueChange(it))
+                    },
+                    leadingIcon = {
+                        IconButton(onClick = onBackButtonClick) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                tint = themeColors.textColor,
+                                contentDescription = null
                             )
                         }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Close,
-                            tint = themeColors.textColor,
-                            contentDescription = null
+                    },
+                    trailingIcon = {
+                        Row {
+                            BadgedBox(
+                                badge = {
+                                    if (state.searchFilters.isNotEmpty()) {
+                                        Badge(containerColor = themeColors.secondaryColor) {
+                                            Text(state.searchFilters.size.toString())
+                                        }
+                                    }
+                                }
+                            ) {
+                                IconButton(
+                                    onClick = { filterExpanded = !filterExpanded }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.icon_outline_rounded_filter_list),
+                                        tint = themeColors.textColor,
+                                        contentDescription = "Toggle filter list" // TODO: add to strings.xml
+                                    )
+                                }
+                            }
+                            IconButton(
+                                onClick = {
+                                    viewModel.onEvent(
+                                        SearchScreenEvent.SearchTextValueChange(TextFieldValue())
+                                    )
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Close,
+                                    tint = themeColors.textColor,
+                                    contentDescription = "Clear search term"// TODO: add to strings.xml
+                                )
+                            }
+                        }
+                    },
+                    placeholder = {
+                        Text(
+                            text = "Search notes" // TODO: Add to strings.xml
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            AnimatedVisibility(visible = filterExpanded) {
+                Column(modifier = Modifier.padding(8.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "Filters", // TODO: add to strings.xml
+                            style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.padding(vertical = 12.dp)
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        if (state.searchFilters.isNotEmpty()) {
+                            TextButton(onClick = {
+                                viewModel.onEvent(
+                                    SearchScreenEvent.SearchFiltersChange(emptySet())
+                                )
+                            }) {
+                                Text(
+                                    text = "Clear all" // TODO: add to strings.xml
+                                )
+                            }
+                        }
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "Match case", // TODO: add to strings.xml
+
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        Switch(
+                            checked = state.searchFilters.contains(SearchFilter.MatchCase),
+                            onCheckedChange = { isChecked ->
+                                if (isChecked) {
+                                    viewModel.onEvent(
+                                        SearchScreenEvent.SearchFiltersChange(
+                                            state.searchFilters + SearchFilter.MatchCase
+                                        )
+                                    )
+                                } else {
+                                    viewModel.onEvent(
+                                        SearchScreenEvent.SearchFiltersChange(
+                                            state.searchFilters - SearchFilter.MatchCase
+                                        )
+                                    )
+                                }
+                            }
                         )
                     }
-                },
-                placeholder = {
-                    Text(
-                        text = "Search notes" // TODO: Add to strings.xml
-                    )
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
+                    // TODO: date range selection
+                }
+            }
+            HorizontalDivider(color = MaterialTheme.colorScheme.outline)
         }
         when (val uiState = state.uiState) {
             is SearchUiState.Loading -> {

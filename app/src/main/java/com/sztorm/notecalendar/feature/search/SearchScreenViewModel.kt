@@ -27,16 +27,21 @@ class SearchScreenViewModel(
     private val noteRepository: NoteRepository,
     @Suppress("unused") private val logger: AppLogger
 ) : ViewModel() {
-    private val searchQueries = MutableStateFlow(initialState.searchTextValue.text)
+    private val searchRequests = MutableStateFlow(
+        SearchRequest(
+            query = initialState.searchTextValue.text,
+            filters = initialState.searchFilters
+        )
+    )
     private var _state = MutableStateFlow(initialState)
     val state = _state.asStateFlow()
 
     init {
         viewModelScope.launch {
-            searchQueries
+            searchRequests
                 .debounce(300.milliseconds)
                 .distinctUntilChanged()
-                .collectLatest { query ->
+                .collectLatest { (query, filters) ->
                     if (query.isBlank()) {
                         _state.update {
                             it.copy(uiState = SearchUiState.Success(emptyList()))
@@ -46,13 +51,14 @@ class SearchScreenViewModel(
                             it.copy(uiState = SearchUiState.Loading)
                         }
                         try {
+                            val ignoreCase = !filters.contains(SearchFilter.MatchCase)
                             val results = withContext(Dispatchers.IO) {
                                 noteRepository
                                     .getAll()
                                     .mapNotNull {
                                         val note = it.toNote()
                                         val matchIndex = note.text
-                                            .indexOf(string = query, ignoreCase = true)
+                                            .indexOf(string = query, ignoreCase = ignoreCase)
 
                                         if (matchIndex < 0) null
                                         else {
@@ -60,7 +66,7 @@ class SearchScreenViewModel(
                                                 note.text.indicesOf(
                                                     string = query,
                                                     startIndex = matchIndex + query.length,
-                                                    ignoreCase = true
+                                                    ignoreCase = ignoreCase
                                                 )
                                             SearchResult(note, matchIndices)
                                         }
@@ -90,9 +96,20 @@ class SearchScreenViewModel(
     fun onEvent(event: SearchScreenEvent) {
         when (event) {
             is SearchScreenEvent.SearchTextValueChange -> {
-                searchQueries.value = event.value.text
+                searchRequests.update { current ->
+                    current.copy(query = event.value.text)
+                }
                 _state.update { current ->
                     current.copy(searchTextValue = event.value)
+                }
+            }
+
+            is SearchScreenEvent.SearchFiltersChange -> {
+                searchRequests.update { current ->
+                    current.copy(filters = event.filters)
+                }
+                _state.update { current ->
+                    current.copy(searchFilters = event.filters)
                 }
             }
         }
@@ -115,9 +132,11 @@ class SearchScreenViewModelFactory(
 
 sealed class SearchScreenEvent {
     data class SearchTextValueChange(val value: TextFieldValue) : SearchScreenEvent()
+    data class SearchFiltersChange(val filters: Set<SearchFilter>) : SearchScreenEvent()
 }
 
 data class SearchScreenState(
     val uiState: SearchUiState,
-    val searchTextValue: TextFieldValue
+    val searchTextValue: TextFieldValue,
+    val searchFilters: Set<SearchFilter>
 )
