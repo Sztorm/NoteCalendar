@@ -5,6 +5,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -48,12 +49,143 @@ import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.core.common.isEven
 import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
-import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.ui.components.IconButton
 import java.time.LocalDate
 
 @Composable
-fun SearchItemRow(
+private fun SearchTextField(
+    state: SearchScreenState,
+    onBackButtonClick: () -> Unit,
+    onClearButtonClick: () -> Unit,
+    onTextValueChange: (TextFieldValue) -> Unit,
+    onFiltersExpand: () -> Unit
+) = OutlinedTextField(
+    value = state.searchTextValue,
+    onValueChange = onTextValueChange,
+    leadingIcon = {
+        IconButton(onClick = onBackButtonClick) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                tint = MaterialTheme.colorScheme.onBackground,
+                contentDescription = null
+            )
+        }
+    },
+    trailingIcon = {
+        Row {
+            BadgedBox(
+                badge = {
+                    if (state.searchFilters.isNotEmpty()) {
+                        Badge(containerColor = MaterialTheme.colorScheme.secondary) {
+                            Text(state.searchFilters.size.toString())
+                        }
+                    }
+                }
+            ) {
+                IconButton(
+                    onClick = onFiltersExpand
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.icon_outline_rounded_filter_list),
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        contentDescription = "Toggle filter list" // TODO: add to strings.xml
+                    )
+                }
+            }
+            IconButton(
+                onClick = onClearButtonClick
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    tint = MaterialTheme.colorScheme.onBackground,
+                    contentDescription = "Clear search term"// TODO: add to strings.xml
+                )
+            }
+        }
+    },
+    placeholder = {
+        Text(
+            text = "Search notes" // TODO: Add to strings.xml
+        )
+    },
+    modifier = Modifier
+        .fillMaxWidth()
+        .padding(8.dp)
+)
+
+@Composable
+private fun ColumnScope.SearchFilters(
+    state: SearchScreenState,
+    filtersExpanded: Boolean,
+    onFilterClearAllClick: () -> Unit,
+    onMatchCaseFilterChange: (Boolean) -> Unit
+) {
+    AnimatedVisibility(visible = filtersExpanded) {
+        Column(modifier = Modifier.padding(8.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "Filters", // TODO: add to strings.xml
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(vertical = 12.dp)
+                )
+                Spacer(modifier = Modifier.weight(1f))
+
+                if (state.searchFilters.isNotEmpty()) {
+                    TextButton(onClick = onFilterClearAllClick) {
+                        Text(
+                            text = "Clear all" // TODO: add to strings.xml
+                        )
+                    }
+                }
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "Match case", // TODO: add to strings.xml
+
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Switch(
+                    checked = state.searchFilters.contains(SearchFilter.MatchCase),
+                    onCheckedChange = onMatchCaseFilterChange
+                )
+            }
+            // TODO: date range selection
+        }
+    }
+}
+
+@Composable
+private fun SearchBar(
+    state: SearchScreenState,
+    onBackButtonClick: () -> Unit,
+    onClearButtonClick: () -> Unit,
+    onTextValueChange: (TextFieldValue) -> Unit,
+    onFilterClearAllClick: () -> Unit,
+    onMatchCaseFilterChange: (Boolean) -> Unit
+) {
+    var filtersExpanded by rememberSaveable {
+        mutableStateOf(false)
+    }
+    Column(modifier = Modifier.fillMaxWidth()) {
+        SearchTextField(
+            state = state,
+            onBackButtonClick = onBackButtonClick,
+            onClearButtonClick = onClearButtonClick,
+            onTextValueChange = onTextValueChange,
+            onFiltersExpand = { filtersExpanded = !filtersExpanded }
+        )
+        SearchFilters(
+            state = state,
+            filtersExpanded = filtersExpanded,
+            onFilterClearAllClick = onFilterClearAllClick,
+            onMatchCaseFilterChange = onMatchCaseFilterChange
+        )
+        HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+    }
+}
+
+@Composable
+private fun SearchResultRow(
     index: Int,
     result: SearchResult,
     searchText: String,
@@ -130,14 +262,64 @@ fun SearchItemRow(
 }
 
 @Composable
+private fun ColumnScope.SearchResults(
+    state: SearchScreenState,
+    onNavigateToNote: (isLongClick: Boolean, date: LocalDate) -> Unit
+) {
+    when (val uiState = state.uiState) {
+        is SearchUiState.Loading -> {
+            Spacer(modifier = Modifier.weight(1f))
+            CircularProgressIndicator()
+            Spacer(modifier = Modifier.weight(1f))
+        }
+
+        is SearchUiState.Success -> {
+            if (uiState.results.isEmpty()) {
+                Spacer(modifier = Modifier.weight(1f))
+                Text(
+                    text = "No results", // TODO: Add to strings.xml
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                Spacer(modifier = Modifier.weight(1f))
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(
+                        items = uiState.results.mapIndexed { i, note -> i to note },
+                        key = { (_, result) -> result.note.date }
+                    ) { (index, result) ->
+                        SearchResultRow(
+                            index = index,
+                            result = result,
+                            searchText = state.searchTextValue.text,
+                            onResultGoButtonClick = onNavigateToNote
+                        )
+                    }
+                }
+            }
+        }
+
+        is SearchUiState.Error -> {
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                text = uiState.message,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+            Spacer(modifier = Modifier.weight(1f))
+        }
+    }
+}
+
+@Composable
 fun SearchScreen(
     logger: AppLogger,
-    appViewModel: AppViewModel,
     onBackButtonClick: () -> Unit,
-    onResultGoButtonClick: (isLongClick: Boolean, date: LocalDate) -> Unit,
+    onNavigateToNote: (isLongClick: Boolean, date: LocalDate) -> Unit,
     noteRepository: NoteRepository
 ) {
-    val themeColors = appViewModel.state.themeColors
     val viewModel = viewModel<SearchScreenViewModel>(
         factory = SearchScreenViewModelFactory(
             initialState = SearchScreenState(
@@ -150,169 +332,46 @@ fun SearchScreen(
         )
     )
     val state by viewModel.state.collectAsStateWithLifecycle()
-    var filterExpanded by rememberSaveable {
-        mutableStateOf(false)
-    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Row(modifier = Modifier.padding(8.dp)) {
-                OutlinedTextField(
-                    value = state.searchTextValue,
-                    onValueChange = {
-                        viewModel.onEvent(SearchScreenEvent.SearchTextValueChange(it))
-                    },
-                    leadingIcon = {
-                        IconButton(onClick = onBackButtonClick) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                tint = themeColors.textColor,
-                                contentDescription = null
-                            )
-                        }
-                    },
-                    trailingIcon = {
-                        Row {
-                            BadgedBox(
-                                badge = {
-                                    if (state.searchFilters.isNotEmpty()) {
-                                        Badge(containerColor = themeColors.secondaryColor) {
-                                            Text(state.searchFilters.size.toString())
-                                        }
-                                    }
-                                }
-                            ) {
-                                IconButton(
-                                    onClick = { filterExpanded = !filterExpanded }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(R.drawable.icon_outline_rounded_filter_list),
-                                        tint = themeColors.textColor,
-                                        contentDescription = "Toggle filter list" // TODO: add to strings.xml
-                                    )
-                                }
-                            }
-                            IconButton(
-                                onClick = {
-                                    viewModel.onEvent(
-                                        SearchScreenEvent.SearchTextValueChange(TextFieldValue())
-                                    )
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Close,
-                                    tint = themeColors.textColor,
-                                    contentDescription = "Clear search term"// TODO: add to strings.xml
-                                )
-                            }
-                        }
-                    },
-                    placeholder = {
-                        Text(
-                            text = "Search notes" // TODO: Add to strings.xml
-                        )
-                    },
-                    modifier = Modifier.fillMaxWidth()
+        SearchBar(
+            state = state,
+            onBackButtonClick = onBackButtonClick,
+            onClearButtonClick = {
+                viewModel.onEvent(
+                    SearchScreenEvent.SearchTextValueChange(TextFieldValue())
                 )
-            }
-            AnimatedVisibility(visible = filterExpanded) {
-                Column(modifier = Modifier.padding(8.dp)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "Filters", // TODO: add to strings.xml
-                            style = MaterialTheme.typography.titleMedium,
-                            modifier = Modifier.padding(vertical = 12.dp)
+            },
+            onTextValueChange = {
+                viewModel.onEvent(SearchScreenEvent.SearchTextValueChange(it))
+            },
+            onFilterClearAllClick = {
+                viewModel.onEvent(
+                    SearchScreenEvent.SearchFiltersChange(emptySet())
+                )
+            },
+            onMatchCaseFilterChange = { isChecked ->
+                if (isChecked) {
+                    viewModel.onEvent(
+                        SearchScreenEvent.SearchFiltersChange(
+                            state.searchFilters + SearchFilter.MatchCase
                         )
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        if (state.searchFilters.isNotEmpty()) {
-                            TextButton(onClick = {
-                                viewModel.onEvent(
-                                    SearchScreenEvent.SearchFiltersChange(emptySet())
-                                )
-                            }) {
-                                Text(
-                                    text = "Clear all" // TODO: add to strings.xml
-                                )
-                            }
-                        }
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "Match case", // TODO: add to strings.xml
-
-                        )
-                        Spacer(modifier = Modifier.weight(1f))
-                        Switch(
-                            checked = state.searchFilters.contains(SearchFilter.MatchCase),
-                            onCheckedChange = { isChecked ->
-                                if (isChecked) {
-                                    viewModel.onEvent(
-                                        SearchScreenEvent.SearchFiltersChange(
-                                            state.searchFilters + SearchFilter.MatchCase
-                                        )
-                                    )
-                                } else {
-                                    viewModel.onEvent(
-                                        SearchScreenEvent.SearchFiltersChange(
-                                            state.searchFilters - SearchFilter.MatchCase
-                                        )
-                                    )
-                                }
-                            }
-                        )
-                    }
-                    // TODO: date range selection
-                }
-            }
-            HorizontalDivider(color = MaterialTheme.colorScheme.outline)
-        }
-        when (val uiState = state.uiState) {
-            is SearchUiState.Loading -> {
-                Spacer(modifier = Modifier.weight(1f))
-                CircularProgressIndicator()
-                Spacer(modifier = Modifier.weight(1f))
-            }
-
-            is SearchUiState.Success -> {
-                if (uiState.results.isEmpty()) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    Text(
-                        text = "No results", // TODO: Add to strings.xml
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyLarge,
                     )
-                    Spacer(modifier = Modifier.weight(1f))
                 } else {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        items(
-                            items = uiState.results.mapIndexed { i, note -> i to note },
-                            key = { (_, result) -> result.note.date }
-                        ) { (index, result) ->
-                            SearchItemRow(
-                                index = index,
-                                result = result,
-                                searchText = state.searchTextValue.text,
-                                onResultGoButtonClick = onResultGoButtonClick
-                            )
-                        }
-                    }
+                    viewModel.onEvent(
+                        SearchScreenEvent.SearchFiltersChange(
+                            state.searchFilters - SearchFilter.MatchCase
+                        )
+                    )
                 }
             }
-
-            is SearchUiState.Error -> {
-                Spacer(modifier = Modifier.weight(1f))
-                Text(
-                    text = uiState.message,
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.bodyLarge,
-                )
-                Spacer(modifier = Modifier.weight(1f))
-            }
-        }
+        )
+        SearchResults(
+            state = state,
+            onNavigateToNote = onNavigateToNote
+        )
     }
 }

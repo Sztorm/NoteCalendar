@@ -195,9 +195,8 @@ private fun NavGraphBuilder.appNavGraph(
     composable<Screen.Search> {
         SearchScreen(
             logger = logger,
-            appViewModel = viewModel,
             onBackButtonClick = { navController.navigateUp() },
-            onResultGoButtonClick = { isLongClick, date ->
+            onNavigateToNote = { isLongClick, date ->
                 viewModel.onEvent(
                     AppEvent.DayScreenDateChange(date)
                 )
