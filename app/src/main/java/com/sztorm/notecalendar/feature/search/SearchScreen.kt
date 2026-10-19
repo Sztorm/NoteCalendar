@@ -20,24 +20,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sztorm.notecalendar.core.common.isEven
 import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.domain.models.Note
-import com.sztorm.notecalendar.domain.models.toNote
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
 import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.feature.settings.theme.ThemeColors
 import com.sztorm.notecalendar.ui.components.IconButton
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
 @Composable
@@ -79,22 +76,26 @@ fun SearchItemRow(
 
 @Composable
 fun SearchScreen(
-    @Suppress("unused") logger: AppLogger,
+    logger: AppLogger,
     appViewModel: AppViewModel,
     onBackButtonClick: () -> Unit,
     onResultGoButtonClick: (isLongClick: Boolean, date: LocalDate) -> Unit,
     noteRepository: NoteRepository
 ) {
     val themeColors = appViewModel.state.themeColors
-    val coroutineScope = rememberCoroutineScope()
     val viewModel = viewModel<SearchScreenViewModel>(
         factory = SearchScreenViewModelFactory(
             initialState = SearchScreenState(
                 uiState = SearchUiState.Success(emptyList()),
                 searchTextValue = TextFieldValue()
-            )
+            ),
+            noteRepository = noteRepository,
+            logger = logger,
         )
     )
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    // TODO: add highlighted text fragments
+    // TODO: add option to see note content
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
@@ -105,35 +106,9 @@ fun SearchScreen(
                 .padding(8.dp)
         ) {
             OutlinedTextField(
-                value = viewModel.state.searchTextValue,
-                onValueChange = { textValue ->
-                    viewModel.onEvent(
-                        SearchScreenEvent.UiStateChange(
-                            state =
-                                if (textValue.text.isEmpty())
-                                    SearchUiState.Success(emptyList())
-                                else SearchUiState.Loading
-                        )
-                    )
-                    viewModel.onEvent(SearchScreenEvent.SearchTextValueChange(textValue))
-
-                    if (textValue.text.isNotEmpty()) {
-                        coroutineScope.launch {
-                            val value = withContext(Dispatchers.IO) {
-                                noteRepository
-                                    .getAll()
-                                    .map { it.toNote() }
-                                    .filter {
-                                        it.text.contains(textValue.text, ignoreCase = true)
-                                    }
-                            }
-                            viewModel.onEvent(
-                                SearchScreenEvent.UiStateChange(
-                                    SearchUiState.Success(value)
-                                )
-                            )
-                        }
-                    }
+                value = state.searchTextValue,
+                onValueChange = {
+                    viewModel.onEvent(SearchScreenEvent.SearchTextValueChange(it))
                 },
                 leadingIcon = {
                     IconButton(onClick = onBackButtonClick) {
@@ -147,11 +122,6 @@ fun SearchScreen(
                 trailingIcon = {
                     IconButton(
                         onClick = {
-                            viewModel.onEvent(
-                                SearchScreenEvent.UiStateChange(
-                                    SearchUiState.Success(emptyList())
-                                )
-                            )
                             viewModel.onEvent(
                                 SearchScreenEvent.SearchTextValueChange(TextFieldValue())
                             )
@@ -172,7 +142,7 @@ fun SearchScreen(
                 modifier = Modifier.fillMaxWidth()
             )
         }
-        when (val uiState = viewModel.state.uiState) {
+        when (val uiState = state.uiState) {
             is SearchUiState.Loading -> {
                 Spacer(modifier = Modifier.weight(1f))
                 CircularProgressIndicator()
@@ -194,11 +164,11 @@ fun SearchScreen(
                     ) {
                         items(
                             items = uiState.results.mapIndexed { i, note -> i to note },
-                            key = { (_, note) -> note.date }
-                        ) { (index, note) ->
+                            key = { (_, result) -> result.note.date }
+                        ) { (index, result) ->
                             SearchItemRow(
                                 index = index,
-                                note = note,
+                                note = result.note,
                                 onResultGoButtonClick = onResultGoButtonClick,
                                 themeColors = themeColors
                             )
