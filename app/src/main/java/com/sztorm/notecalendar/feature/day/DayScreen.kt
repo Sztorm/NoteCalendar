@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -253,12 +254,8 @@ fun DayScreen(
 
 @Composable
 private fun ColumnScope.DayDateText(
-    modifier: Modifier = Modifier,
-    viewModel: AppViewModel,
-    date: LocalDate
+    date: LocalDate, textColor: Color, modifier: Modifier = Modifier
 ) {
-    val themeColors = viewModel.state.themeColors
-
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
@@ -273,7 +270,7 @@ private fun ColumnScope.DayDateText(
         BasicText(
             text = date.dayOfMonth.toString(),
             style = LocalTextStyle.current.copy(
-                color = themeColors.textColor,
+                color = textColor,
                 textAlign = TextAlign.Center,
                 fontSize = 140.sp
             ),
@@ -285,7 +282,7 @@ private fun ColumnScope.DayDateText(
         BasicText(
             text = date.month.getLocalizedGenitiveCaseName(),
             style = LocalTextStyle.current.copy(
-                color = themeColors.textColor,
+                color = textColor,
                 textAlign = TextAlign.Center,
                 fontSize = 36.sp
             ),
@@ -297,7 +294,7 @@ private fun ColumnScope.DayDateText(
         BasicText(
             text = date.dayOfWeek.getLocalizedName(),
             style = LocalTextStyle.current.copy(
-                color = themeColors.textColor,
+                color = textColor,
                 textAlign = TextAlign.Center,
                 fontSize = 24.sp
             ),
@@ -796,10 +793,7 @@ fun DayPageLayout(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(modifier = modifier) {
-        DayDateText(
-            viewModel = appViewModel,
-            date = date
-        )
+        DayDateText(date = date, textColor = themeColors.textColor)
         Column(
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.End,

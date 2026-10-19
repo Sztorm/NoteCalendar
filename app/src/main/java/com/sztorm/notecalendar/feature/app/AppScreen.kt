@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -98,7 +100,8 @@ private fun NavigationBar(
 
     PrimaryTabRow(
         selectedTabIndex = currentDestination.ordinal,
-        modifier = modifier
+        modifier = modifier,
+        divider = { HorizontalDivider(color = MaterialTheme.colorScheme.outline) }
     ) {
         tabs.forEach { tab ->
             val isSelected = currentDestination == tab.screen.toNavigationBarDestination()
