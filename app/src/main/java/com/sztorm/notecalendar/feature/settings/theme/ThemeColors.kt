@@ -49,6 +49,7 @@ class ThemeColors(
             onBackground = textColor,
             surface = backgroundColor,
             onSurface = textColor,
+            surfaceVariant = backgroundColorVariant
         )
 
         false -> lightColorScheme(
@@ -68,6 +69,7 @@ class ThemeColors(
             onBackground = textColor,
             surface = backgroundColor,
             onSurface = textColor,
+            surfaceVariant = backgroundColorVariant
         )
     }
 }
