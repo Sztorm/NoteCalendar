@@ -19,17 +19,18 @@ Minimum Android version: 5.0 (Lollipop, API level 21)
 
 ## Features
 
-* Day screen - this screen is used to add, edit or delete note and set reminder for it.
+* Day screen - used to add, edit or delete note and set a reminder for it.
 * Month screen and week screen
-  * Days that constains a note are marked with a ring
-  * Day that is currently selected is marked with a solid circle
-  * Today's day is marked with a different color of text
-  * Long press on a day's number allow to quickly add or edit note for that day
+  * Days that constain a note are marked with a ring.
+  * The currently selected day is marked with a solid circle.
+  * Today's date is marked with a different text color.
+  * Long-press on a day's number to quickly add or edit a note for that day.
+  * A find button that allows to search notes by text, with optional case-sensitive and date-range filters.
 * Settings screen
-  * Notes - notes specific settings, allows to import and export your notes.
-  * Calendar - calendar specific settings like first day of the week.
-  * Theme - includes light, dark and allows to create your own theme and export it.
-  * About - section about the application.
+  * Notes - notes-specific settings, including options to import and export notes.
+  * Calendar - calendar-specific settings, such as first day of the week.
+  * Theme - choose a light or dark theme, create your own theme, and export it.
+  * About - information about the application.
 
 ## Translations
 <a href="https://hosted.weblate.org/engage/note-calendar/">
