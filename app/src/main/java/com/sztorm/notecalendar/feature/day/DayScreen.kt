@@ -33,9 +33,11 @@ import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -141,7 +143,6 @@ fun DayScreen(
                     )
                 },
                 noteBackup = null,
-                isReminderDialogOpen = false,
                 remainingReminderTime = currNote?.reminderDateTime?.remainingDurationFromNow(),
                 haveReminderPermissionsBeenDenied = false
             )
@@ -350,6 +351,7 @@ private fun BoxScope.ActionButtons(
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    var showReminderTimePicker by remember { mutableStateOf(false) }
     val deleteReminder = {
         val note = viewModel.state.note
         val noteData = note?.let { noteRepository.getBy(it.date) }
@@ -436,20 +438,20 @@ private fun BoxScope.ActionButtons(
                 }
             }
         }
-        viewModel.onEvent(DayScreenEvent.ReminderDialogStateChange(false))
+        showReminderTimePicker = false
         viewModel.onEvent(
             DayScreenEvent.UiStateChange(DayUiState.Viewing)
         )
     }
     val onReminderDialogDismiss = { _: LocalTime ->
-        viewModel.onEvent(DayScreenEvent.ReminderDialogStateChange(false))
+        showReminderTimePicker = false
     }
     val onAddOrEditReminderClick = {
         val note = viewModel.state.note
 
         if (note != null) {
             if (note.reminderDateTime == null) {
-                viewModel.onEvent(DayScreenEvent.ReminderDialogStateChange(true))
+                showReminderTimePicker = true
             } else {
                 viewModel.onEvent(
                     DayScreenEvent.UiStateChange(
@@ -476,9 +478,7 @@ private fun BoxScope.ActionButtons(
         )
     }
     val onEditReminderDialogClick = {
-        viewModel.onEvent(
-            DayScreenEvent.ReminderDialogStateChange(true)
-        )
+        showReminderTimePicker = true
     }
     val onUndoNoteDeletionClick = {
         val note = viewModel.state.noteBackup
@@ -622,21 +622,6 @@ private fun BoxScope.ActionButtons(
         keyboardController?.hide()
         focusManager.clearFocus()
     }
-    TimePickerDialog(
-        title = stringResource(R.string.SetReminder),
-        initialTime = viewModel.state.note?.reminderDateTime?.toLocalTime()
-            ?: OffsetDateTime.now().toLocalTime(),
-        isOpen = viewModel.state.isReminderDialogOpen,
-        titleColor = themeColors.textColor,
-        dialogButtonColors = ButtonDefaults.textButtonColors(
-            contentColor = themeColors.primaryColor,
-            disabledContentColor = themeColors.inactiveTextColor
-        ),
-        dialogColors = dialogColors,
-        timePickerColors = timePickerColors,
-        onConfirm = onReminderDialogConfirm,
-        onDismiss = onReminderDialogDismiss
-    )
     Row(
         modifier = Modifier
             .align(Alignment.BottomEnd)
@@ -771,6 +756,22 @@ private fun BoxScope.ActionButtons(
             contentColor = themeColors.buttonTextColor,
             icon = painterResource(R.drawable.icon_rounded_check),
             contentDescription = stringResource(R.string.Accept)
+        )
+    }
+    if (showReminderTimePicker) {
+        TimePickerDialog(
+            title = stringResource(R.string.SetReminder),
+            initialTime = viewModel.state.note?.reminderDateTime?.toLocalTime()
+                ?: OffsetDateTime.now().toLocalTime(),
+            titleColor = themeColors.textColor,
+            dialogButtonColors = ButtonDefaults.textButtonColors(
+                contentColor = themeColors.primaryColor,
+                disabledContentColor = themeColors.inactiveTextColor
+            ),
+            dialogColors = dialogColors,
+            timePickerColors = timePickerColors,
+            onConfirm = onReminderDialogConfirm,
+            onDismiss = onReminderDialogDismiss
         )
     }
 }

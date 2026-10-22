@@ -31,9 +31,6 @@ class DayScreenViewModel(initialState: DayScreenState) : ViewModel() {
                 remainingReminderTime = event.note?.reminderDateTime?.remainingDurationFromNow()
             )
 
-            is DayScreenEvent.ReminderDialogStateChange ->
-                state.copy(isReminderDialogOpen = event.isOpen)
-
             is DayScreenEvent.ReminderRemainingTimeChange ->
                 state.copy(remainingReminderTime = event.remainingTime)
 
@@ -60,7 +57,6 @@ sealed class DayScreenEvent {
         val note: DayScreenNote?, val prevNote: DayScreenNote?, val nextNote: DayScreenNote?
     ) : DayScreenEvent()
 
-    data class ReminderDialogStateChange(val isOpen: Boolean) : DayScreenEvent()
     data class ReminderRemainingTimeChange(val remainingTime: Duration?) : DayScreenEvent()
     data class ReminderPermissionsChange(val areDenied: Boolean) : DayScreenEvent()
 }
@@ -72,7 +68,6 @@ data class DayScreenState(
     val prevNote: DayScreenNote?,
     val nextNote: DayScreenNote?,
     val noteBackup: DayScreenNote?,
-    val isReminderDialogOpen: Boolean,
     val remainingReminderTime: Duration?,
     val haveReminderPermissionsBeenDenied: Boolean,
 )

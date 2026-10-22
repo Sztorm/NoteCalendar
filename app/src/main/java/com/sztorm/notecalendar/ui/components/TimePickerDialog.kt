@@ -31,7 +31,6 @@ import java.time.LocalTime
 fun TimePickerDialog(
     title: String,
     initialTime: LocalTime,
-    isOpen: Boolean,
     onConfirm: (LocalTime) -> Unit,
     modifier: Modifier = Modifier,
     onDismiss: ((LocalTime) -> Unit)? = null,
@@ -45,41 +44,39 @@ fun TimePickerDialog(
         initialMinute = initialTime.minute,
         is24Hour = DateFormat.is24HourFormat(LocalContext.current),
     )
-    if (isOpen) {
-        ConfirmationDialog(
-            onConfirm = {
-                onConfirm(LocalTime.of(timePickerState.hour, timePickerState.minute))
-            },
-            onDismiss = {
-                onDismiss?.invoke(LocalTime.of(timePickerState.hour, timePickerState.minute))
-            },
-            properties = DialogProperties(
-                dismissOnBackPress = true,
-                dismissOnClickOutside = true,
-                usePlatformDefaultWidth = false
-            ),
-            dialogColors = dialogColors,
-            buttonColors = dialogButtonColors,
-            modifier = modifier
+    ConfirmationDialog(
+        onConfirm = {
+            onConfirm(LocalTime.of(timePickerState.hour, timePickerState.minute))
+        },
+        onDismiss = {
+            onDismiss?.invoke(LocalTime.of(timePickerState.hour, timePickerState.minute))
+        },
+        properties = DialogProperties(
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true,
+            usePlatformDefaultWidth = false
+        ),
+        dialogColors = dialogColors,
+        buttonColors = dialogButtonColors,
+        modifier = modifier
+    ) {
+        Row(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = title,
+                color = titleColor,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Medium
+            )
+        }
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Row(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = title,
-                    color = titleColor,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                TimePicker(
-                    state = timePickerState,
-                    colors = timePickerColors,
-                )
-            }
+            TimePicker(
+                state = timePickerState,
+                colors = timePickerColors,
+            )
         }
     }
 }
