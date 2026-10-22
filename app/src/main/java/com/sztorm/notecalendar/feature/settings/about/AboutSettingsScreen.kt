@@ -110,6 +110,7 @@ fun AboutSettingsScreen(
 
     SubpreferenceScreen(
         title = stringResource(R.string.Settings_About),
+        backButtonIcon = painterResource(R.drawable.icon_rounded_arrow_back),
         iconTint = themeColors.textColor,
         onBackButtonClick = onBackButtonClick
     ) {

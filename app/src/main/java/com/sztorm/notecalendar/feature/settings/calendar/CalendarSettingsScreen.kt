@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.core.common.getLocalizedName
@@ -42,6 +43,7 @@ fun CalendarSettingsScreen(
     }
     SubpreferenceScreen(
         title = stringResource(R.string.Settings_Calendar),
+        backButtonIcon = painterResource(R.drawable.icon_rounded_arrow_back),
         iconTint = themeColors.textColor,
         onBackButtonClick = onBackButtonClick
     ) {

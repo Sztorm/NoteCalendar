@@ -14,10 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ButtonDefaults
@@ -76,7 +72,7 @@ private fun SearchTextField(
     leadingIcon = {
         IconButton(onClick = onBackButtonClick) {
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                painter = painterResource(R.drawable.icon_rounded_arrow_back),
                 tint = MaterialTheme.colorScheme.onBackground,
                 contentDescription = null
             )
@@ -107,7 +103,7 @@ private fun SearchTextField(
                 onClick = onClearButtonClick
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Close,
+                    painter = painterResource(R.drawable.icon_rounded_close),
                     tint = MaterialTheme.colorScheme.onBackground,
                     contentDescription = "Clear search term"// TODO: add to strings.xml
                 )
@@ -196,7 +192,7 @@ private fun ColumnScope.SearchFilters(
                     }
                     IconButton(onClick = { onDateRangeFilterChange(null, null) }) {
                         Icon(
-                            imageVector = Icons.Default.Close,
+                            painter = painterResource(R.drawable.icon_rounded_close),
                             contentDescription = "Remove date range filter", // TODO: add to strings.xml
                         )
                     }
@@ -324,7 +320,7 @@ private fun SearchResultRow(
                 onLongClickLabel = "Go to note and edit", // TODO: add to strings.xml
             ) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                    painter = painterResource(R.drawable.icon_rounded_arrow_forward),
                     contentDescription = "Go to note" // TODO: add to strings.xml
                 )
             }

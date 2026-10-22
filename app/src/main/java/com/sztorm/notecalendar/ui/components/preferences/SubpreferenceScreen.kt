@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,7 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,7 +46,7 @@ fun SubpreferenceScreen(
     title: String,
     onBackButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
-    backButtonIcon: ImageVector = Icons.AutoMirrored.Filled.ArrowBack,
+    backButtonIcon: Painter,
     iconTint: Color = LocalContentColor.current,
     titleExpandedColor: Color = MaterialTheme.colorScheme.onBackground,
     titleCollapsedColor: Color = MaterialTheme.colorScheme.onSecondaryContainer,
@@ -119,7 +117,7 @@ private fun CollapsedAppBar(
     modifier: Modifier = Modifier,
     title: String,
     textColor: Color,
-    backButtonIcon: ImageVector,
+    backButtonIcon: Painter,
     topBarColors: TopAppBarColors,
     onBackButtonClick: () -> Unit,
     visible: Boolean
@@ -129,7 +127,7 @@ private fun CollapsedAppBar(
         navigationIcon = {
             IconButton(onClick = onBackButtonClick) {
                 Icon(
-                    imageVector = backButtonIcon,
+                    painter = backButtonIcon,
                     contentDescription = null,
                 )
             }

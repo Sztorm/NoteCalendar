@@ -88,6 +88,7 @@ fun ThemeSettingsScreen(
 
     SubpreferenceScreen(
         title = stringResource(R.string.Settings_Theme),
+        backButtonIcon = painterResource(R.drawable.icon_rounded_arrow_back),
         iconTint = themeColors.textColor,
         onBackButtonClick = onBackButtonClick,
     ) {
