@@ -1,0 +1,6 @@
+* Added note search by text, with optional case-sensitive and date-range filters.
+* Updated Chinese translation (thanks @Sketch6580 & @user54392!)
+* Updated German translation (thanks @Atalanttore!)
+* Fixed an issue where long-pressing a date in the Month or Week screen wouldn’t create or open a note for editing.
+* Fixed an issue where the navigation bar indicator could become out of sync when navigating back.
+* Fixed an issue where selecting the current navigation destination could navigate to it again.
