@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DividerDefaults
@@ -32,7 +34,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.DialogProperties
 import com.sztorm.notecalendar.ui.components.ConfirmationDialog
 import java.time.LocalTime
 import java.util.Locale
@@ -74,7 +75,7 @@ fun TimePickerPreference(
     summaryColor: Color = Color.Unspecified,
     dividerColor: Color = DividerDefaults.color,
     dialogColors: CardColors = CardDefaults.cardColors(),
-    buttonColor: Color = Color.Unspecified,
+    dialogButtonColors: ButtonColors = ButtonDefaults.textButtonColors(),
     timePickerColors: TimePickerColors = TimePickerDefaults.colors(),
     icon: Painter? = null,
     iconColorFilter: ColorFilter? = null,
@@ -127,27 +128,18 @@ fun TimePickerPreference(
     if (openDialog) {
         ConfirmationDialog(
             onConfirm = {
-                // Without it Compose will not update the UI.
-                @Suppress("AssignedValueIsNeverRead")
                 openDialog = false
                 onConfirm(LocalTime.of(timePickerState.hour, timePickerState.minute))
             },
             onDismiss = {
                 val selectedTime = LocalTime.of(timePickerState.hour, timePickerState.minute)
-                // Without it Compose will not update the UI.
-                @Suppress("AssignedValueIsNeverRead")
                 openDialog = false
                 timePickerState.hour = initialTime.hour
                 timePickerState.minute = initialTime.minute
                 onDismiss?.invoke(selectedTime)
             },
-            properties = DialogProperties(
-                dismissOnBackPress = true,
-                dismissOnClickOutside = true,
-                usePlatformDefaultWidth = false
-            ),
             dialogColors = dialogColors,
-            textButtonColor = buttonColor
+            buttonColors = dialogButtonColors
         ) {
             Row(modifier = Modifier.padding(16.dp)) {
                 Text(

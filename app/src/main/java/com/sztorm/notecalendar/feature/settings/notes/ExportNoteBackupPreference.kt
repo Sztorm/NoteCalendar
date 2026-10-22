@@ -9,6 +9,7 @@ import androidx.compose.foundation.text.input.InputTransformation
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.maxLength
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenuItem
@@ -64,7 +65,7 @@ object ExportNoteBackupPreferenceDefaults {
                     dialogColors = ExportNoteBackupPreferenceDialogColors(
                         titleColor = MaterialTheme.colorScheme.onBackground,
                         textContentColor = MaterialTheme.colorScheme.onBackground,
-                        textButtonColor = MaterialTheme.colorScheme.primary,
+                        textButtonColors = ButtonDefaults.textButtonColors(),
                         cardColors = CardDefaults.cardColors()
                     )
                 )
@@ -147,20 +148,16 @@ fun ExportNoteBackupPreference(
                 }
             }
             passwordTextState.clearText()
-            // Without it Compose will not update the UI.
-            @Suppress("AssignedValueIsNeverRead")
             exportEncryptionType = EncryptionType.None
         },
         onDismiss = {
             passwordTextState.clearText()
-            // Without it Compose will not update the UI.
-            @Suppress("AssignedValueIsNeverRead")
             exportEncryptionType = EncryptionType.None
         },
         modifier = modifier,
         dialogModifier = dialogModifier,
         dialogTitleColor = colors.dialogColors.titleColor,
-        dialogButtonColor = colors.dialogColors.textButtonColor,
+        dialogButtonColors = colors.dialogColors.textButtonColors,
         dialogColors = colors.dialogColors.cardColors,
         enabled = enabled
     ) {

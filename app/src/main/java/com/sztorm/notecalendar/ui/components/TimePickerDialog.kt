@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,7 +36,7 @@ fun TimePickerDialog(
     modifier: Modifier = Modifier,
     onDismiss: ((LocalTime) -> Unit)? = null,
     titleColor: Color = Color.Unspecified,
-    buttonColor: Color = Color.Unspecified,
+    dialogButtonColors: ButtonColors = ButtonDefaults.textButtonColors(),
     dialogColors: CardColors = CardDefaults.cardColors(),
     timePickerColors: TimePickerColors = TimePickerDefaults.colors(),
 ) {
@@ -57,7 +59,7 @@ fun TimePickerDialog(
                 usePlatformDefaultWidth = false
             ),
             dialogColors = dialogColors,
-            textButtonColor = buttonColor,
+            buttonColors = dialogButtonColors,
             modifier = modifier
         ) {
             Row(modifier = Modifier.padding(16.dp)) {

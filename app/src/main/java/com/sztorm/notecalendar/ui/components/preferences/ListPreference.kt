@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.RadioButton
@@ -27,7 +29,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.DialogProperties
 import com.sztorm.notecalendar.ui.components.ConfirmationDialog
 
 @Composable
@@ -41,7 +42,7 @@ fun <V> ListPreference(
     titleColor: Color = Color.Unspecified,
     summaryColor: Color = Color.Unspecified,
     dialogColors: CardColors = CardDefaults.cardColors(),
-    buttonColor: Color = Color.Unspecified,
+    dialogButtonColors: ButtonColors = ButtonDefaults.textButtonColors(),
     icon: Painter? = null,
     iconColorFilter: ColorFilter? = null,
     enabled: Boolean = true
@@ -74,26 +75,17 @@ fun <V> ListPreference(
     if (openDialog) {
         ConfirmationDialog(
             onConfirm = {
-                // Without it Compose will not update the UI.
-                @Suppress("AssignedValueIsNeverRead")
                 openDialog = false
                 onConfirm(selectedIndex, selectedValue)
             },
             onDismiss = {
-                // Without it Compose will not update the UI.
-                @Suppress("AssignedValueIsNeverRead")
                 openDialog = false
                 selectedIndex = initialSelectedOptionIndex
                 selectedValue = options[initialSelectedOptionIndex].second
                 onDismiss?.invoke(selectedIndex, selectedValue)
             },
-            properties = DialogProperties(
-                dismissOnBackPress = true,
-                dismissOnClickOutside = true,
-                usePlatformDefaultWidth = false
-            ),
             dialogColors = dialogColors,
-            textButtonColor = buttonColor
+            buttonColors = dialogButtonColors
         ) {
             Row(modifier = Modifier.padding(16.dp)) {
                 Text(
@@ -112,8 +104,6 @@ fun <V> ListPreference(
                         .clickable(
                             onClick = {
                                 selectedIndex = i
-                                // Without it Compose will not update the UI.
-                                @Suppress("AssignedValueIsNeverRead")
                                 selectedValue = value
                             },
                             indication = null,
@@ -124,8 +114,6 @@ fun <V> ListPreference(
                         selected = i == selectedIndex,
                         onClick = {
                             selectedIndex = i
-                            // Without it Compose will not update the UI.
-                            @Suppress("AssignedValueIsNeverRead")
                             selectedValue = value
                         },
                         interactionSource = optionInteractionSources[i]

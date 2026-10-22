@@ -1,5 +1,6 @@
 package com.sztorm.notecalendar.feature.settings.notes
 
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CardColors
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -14,6 +15,6 @@ data class ExportNoteBackupPreferenceColors(
 data class ExportNoteBackupPreferenceDialogColors(
     val titleColor: Color,
     val textContentColor: Color,
-    val textButtonColor: Color,
+    val textButtonColors: ButtonColors,
     val cardColors: CardColors,
 )

@@ -1,5 +1,6 @@
 package com.sztorm.notecalendar.feature.settings.calendar
 
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +28,10 @@ fun CalendarSettingsScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val themeColors = appViewModel.state.themeColors
+    val textButtonColors = ButtonDefaults.textButtonColors(
+        contentColor = themeColors.primaryColor,
+        disabledContentColor = themeColors.inactiveTextColor
+    )
     var startingViewIndexPair by remember {
         mutableStateOf(Pair(StartingScreenType.DayScreen, 0))
     }
@@ -52,7 +57,7 @@ fun CalendarSettingsScreen(
             },
             titleColor = themeColors.textColor,
             summaryColor = themeColors.textColor,
-            buttonColor = themeColors.primaryColor,
+            dialogButtonColors = textButtonColors,
             dialogColors = CardDefaults.cardColors().copy(
                 containerColor = themeColors.backgroundColor,
                 contentColor = themeColors.backgroundColor,
@@ -71,7 +76,7 @@ fun CalendarSettingsScreen(
             },
             titleColor = themeColors.textColor,
             summaryColor = themeColors.textColor,
-            buttonColor = themeColors.primaryColor,
+            dialogButtonColors = textButtonColors,
             dialogColors = CardDefaults.cardColors().copy(
                 containerColor = themeColors.backgroundColor,
                 contentColor = themeColors.backgroundColor,

@@ -3,6 +3,8 @@ package com.sztorm.notecalendar.ui.components.preferences
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -38,7 +40,7 @@ fun ConfirmationPreference(
     dialogTitleColor: Color = MaterialTheme.colorScheme.onBackground,
     dialogMessageColor: Color = MaterialTheme.colorScheme.onBackground,
     dialogColors: CardColors = CardDefaults.cardColors(),
-    dialogButtonColor: Color = MaterialTheme.colorScheme.primary,
+    dialogButtonColors: ButtonColors = ButtonDefaults.textButtonColors(),
     enabled: Boolean = true
 ) = ConfirmationPreference(
     title = title,
@@ -53,7 +55,7 @@ fun ConfirmationPreference(
     icon = icon,
     dialogTitleColor = dialogTitleColor,
     dialogColors = dialogColors,
-    dialogButtonColor = dialogButtonColor,
+    dialogButtonColors = dialogButtonColors,
     enabled = enabled
 ) {
     Row(modifier = Modifier.padding(16.dp)) {
@@ -80,7 +82,7 @@ fun ConfirmationPreference(
     icon: Painter? = null,
     dialogTitleColor: Color = MaterialTheme.colorScheme.onBackground,
     dialogColors: CardColors = CardDefaults.cardColors(),
-    dialogButtonColor: Color = MaterialTheme.colorScheme.primary,
+    dialogButtonColors: ButtonColors = ButtonDefaults.textButtonColors(),
     enabled: Boolean = true,
     dialogContent: @Composable (ColumnScope.() -> Unit)
 ) {
@@ -103,14 +105,10 @@ fun ConfirmationPreference(
     if (openDialog) {
         ConfirmationDialog(
             onConfirm = {
-                // Without it Compose will not update the UI.
-                @Suppress("AssignedValueIsNeverRead")
                 openDialog = false
                 onConfirm()
             },
             onDismiss = {
-                // Without it Compose will not update the UI.
-                @Suppress("AssignedValueIsNeverRead")
                 openDialog = false
                 onDismiss?.invoke()
             },
@@ -120,7 +118,7 @@ fun ConfirmationPreference(
                 usePlatformDefaultWidth = false
             ),
             dialogColors = dialogColors,
-            textButtonColor = dialogButtonColor,
+            buttonColors = dialogButtonColors,
             modifier = dialogModifier
         ) {
             Row(modifier = Modifier.padding(16.dp)) {

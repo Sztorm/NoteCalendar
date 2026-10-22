@@ -1,6 +1,5 @@
 package com.sztorm.notecalendar.ui.components.preferences
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -11,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DividerDefaults
@@ -32,12 +33,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.DialogProperties
 import com.sztorm.notecalendar.R
+import com.sztorm.notecalendar.ui.components.ConfirmationDialog
 import com.sztorm.notecalendar.ui.components.colorpicker.ColorPicker
 import com.sztorm.notecalendar.ui.components.colorpicker.ColorPickerColors
 import com.sztorm.notecalendar.ui.components.colorpicker.ColorPickerDefaults
-import com.sztorm.notecalendar.ui.components.ConfirmationDialog
 import com.sztorm.notecalendar.ui.components.colorpicker.ColorPickerProperties
 import com.sztorm.notecalendar.ui.components.colorpicker.RgbColor
 import com.sztorm.notecalendar.ui.components.colorpicker.rememberColorPickerState
@@ -56,7 +56,7 @@ fun ColorPickerPreference(
     summaryColor: Color = Color.Unspecified,
     dividerColor: Color = DividerDefaults.color,
     dialogColors: CardColors = CardDefaults.cardColors(),
-    buttonColor: Color = Color.Unspecified,
+    dialogButtonColors: ButtonColors = ButtonDefaults.textButtonColors(),
     colorPickerColors: ColorPickerColors = ColorPickerDefaults.colors(),
     colorPickerProperties: ColorPickerProperties = ColorPickerProperties(),
     icon: Painter? = null,
@@ -136,39 +136,12 @@ fun ColorPickerPreference(
         ConfirmationDialog(
             onConfirm = onDialogConfirm,
             onDismiss = onDialogDismiss,
-            properties = DialogProperties(
-                dismissOnBackPress = true,
-                dismissOnClickOutside = true,
-                usePlatformDefaultWidth = false
-            ),
+            onNeutral = if (defaultColor != Color.Unspecified) onSetDefault else null,
+            neutralButtonText =
+                if (defaultColor != Color.Unspecified) stringResource(R.string.SetDefault)
+                else null,
             dialogColors = dialogColors,
-            textButtonColor = buttonColor,
-            buttonsContent = {
-                if (defaultColor != Color.Unspecified) {
-                    Text(
-                        text = stringResource(R.string.SetDefault),
-                        color = buttonColor,
-                        modifier = Modifier
-                            .clickable(onClick = onSetDefault)
-                            .padding(vertical = 8.dp, horizontal = 16.dp)
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-                Text(
-                    text = stringResource(android.R.string.cancel),
-                    color = buttonColor,
-                    modifier = Modifier
-                        .clickable(onClick = onDialogDismiss)
-                        .padding(vertical = 8.dp, horizontal = 16.dp)
-                )
-                Text(
-                    text = stringResource(android.R.string.ok),
-                    color = buttonColor,
-                    modifier = Modifier
-                        .clickable(onClick = onDialogConfirm)
-                        .padding(vertical = 8.dp, horizontal = 16.dp)
-                )
-            },
+            buttonColors = dialogButtonColors,
             modifier = Modifier.verticalScroll(rememberScrollState())
         ) {
             Row(modifier = Modifier.padding(16.dp)) {

@@ -8,6 +8,7 @@ import androidx.compose.foundation.text.input.InputTransformation
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.maxLength
 import androidx.compose.foundation.text.input.then
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedSecureTextField
@@ -50,7 +51,7 @@ object ImportNoteBackupPreferenceDefaults {
                     dialogColors = ImportNoteBackupPreferenceDialogColors(
                         titleColor = MaterialTheme.colorScheme.onBackground,
                         textContentColor = MaterialTheme.colorScheme.onBackground,
-                        textButtonColor = MaterialTheme.colorScheme.primary,
+                        textButtonColors = ButtonDefaults.textButtonColors(),
                         errorTextColor = MaterialTheme.colorScheme.error,
                         cardColors = CardDefaults.cardColors()
                     )
@@ -142,8 +143,6 @@ fun ImportNoteBackupPreference(
 
                         when (val plain = file.decrypted(key, logger)) {
                             null -> {
-                                // Without it Compose will not update the UI.
-                                @Suppress("AssignedValueIsNeverRead")
                                 isPasswordCorrect = false
                             }
 
@@ -154,12 +153,8 @@ fun ImportNoteBackupPreference(
                                     deleteAll()
                                     addAll(notes)
                                 }
-                                // Without it Compose will not update the UI.
-                                @Suppress("AssignedValueIsNeverRead")
                                 openDialog = false
-                                @Suppress("AssignedValueIsNeverRead")
                                 importedNotesBackupFile = null
-                                @Suppress("AssignedValueIsNeverRead")
                                 isPasswordCorrect = true
 
                                 Toast.makeText(
@@ -175,12 +170,8 @@ fun ImportNoteBackupPreference(
                 }
             },
             onDismiss = {
-                // Without it Compose will not update the UI.
-                @Suppress("AssignedValueIsNeverRead")
                 openDialog = false
-                @Suppress("AssignedValueIsNeverRead")
                 importedNotesBackupFile = null
-                @Suppress("AssignedValueIsNeverRead")
                 isPasswordCorrect = true
             },
             properties = DialogProperties(
@@ -189,7 +180,7 @@ fun ImportNoteBackupPreference(
                 usePlatformDefaultWidth = false
             ),
             dialogColors = colors.dialogColors.cardColors,
-            textButtonColor = colors.dialogColors.textButtonColor,
+            buttonColors = colors.dialogColors.textButtonColors,
             modifier = dialogModifier
         ) {
             Row(modifier = Modifier.padding(16.dp)) {

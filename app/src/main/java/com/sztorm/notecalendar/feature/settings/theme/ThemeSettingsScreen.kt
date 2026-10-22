@@ -2,6 +2,7 @@ package com.sztorm.notecalendar.feature.settings.theme
 
 import android.widget.Toast
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -44,6 +45,10 @@ fun ThemeSettingsScreen(
     val coroutineScope = rememberCoroutineScope()
     val themeColors = appViewModel.state.themeColors
     val defaultThemeColors = getDefaultThemeColors(isSystemInDarkTheme())
+    val textButtonColors = ButtonDefaults.textButtonColors(
+        contentColor = themeColors.primaryColor,
+        disabledContentColor = themeColors.inactiveTextColor
+    )
     val colorPickerColors = ColorPickerDefaults.colors().copy(
         backgroundColor = themeColors.backgroundColor,
         labelColor = themeColors.textColor,
@@ -226,7 +231,7 @@ fun ThemeSettingsScreen(
                 initialColor = themeColors.primaryColor,
                 defaultColor = defaultThemeColors.primaryColor,
                 outlineColor = themeColors.textColor,
-                buttonColor = themeColors.primaryColor,
+                dialogButtonColors = textButtonColors,
                 dialogColors = dialogColors,
                 colorPickerColors = colorPickerColors,
                 colorPickerProperties = colorPickerProperties,
@@ -248,7 +253,7 @@ fun ThemeSettingsScreen(
                 initialColor = themeColors.secondaryColor,
                 defaultColor = defaultThemeColors.secondaryColor,
                 outlineColor = themeColors.textColor,
-                buttonColor = themeColors.primaryColor,
+                dialogButtonColors = textButtonColors,
                 dialogColors = dialogColors,
                 colorPickerColors = colorPickerColors,
                 colorPickerProperties = colorPickerProperties,
@@ -270,7 +275,7 @@ fun ThemeSettingsScreen(
                 initialColor = themeColors.inactiveElementColor,
                 defaultColor = defaultThemeColors.inactiveElementColor,
                 outlineColor = themeColors.textColor,
-                buttonColor = themeColors.primaryColor,
+                dialogButtonColors = textButtonColors,
                 dialogColors = dialogColors,
                 colorPickerColors = colorPickerColors,
                 colorPickerProperties = colorPickerProperties,
@@ -292,7 +297,7 @@ fun ThemeSettingsScreen(
                 initialColor = themeColors.noteColor,
                 defaultColor = defaultThemeColors.noteColor,
                 outlineColor = themeColors.textColor,
-                buttonColor = themeColors.primaryColor,
+                dialogButtonColors = textButtonColors,
                 dialogColors = dialogColors,
                 colorPickerColors = colorPickerColors,
                 colorPickerProperties = colorPickerProperties,
@@ -314,7 +319,7 @@ fun ThemeSettingsScreen(
                 initialColor = themeColors.noteColorVariant,
                 defaultColor = defaultThemeColors.noteColorVariant,
                 outlineColor = themeColors.textColor,
-                buttonColor = themeColors.primaryColor,
+                dialogButtonColors = textButtonColors,
                 dialogColors = dialogColors,
                 colorPickerColors = colorPickerColors,
                 colorPickerProperties = colorPickerProperties,
@@ -336,7 +341,7 @@ fun ThemeSettingsScreen(
                 initialColor = themeColors.textColor,
                 defaultColor = defaultThemeColors.textColor,
                 outlineColor = themeColors.textColor,
-                buttonColor = themeColors.primaryColor,
+                dialogButtonColors = textButtonColors,
                 dialogColors = dialogColors,
                 colorPickerColors = colorPickerColors,
                 colorPickerProperties = colorPickerProperties,
@@ -358,7 +363,7 @@ fun ThemeSettingsScreen(
                 initialColor = themeColors.buttonTextColor,
                 defaultColor = defaultThemeColors.buttonTextColor,
                 outlineColor = themeColors.textColor,
-                buttonColor = themeColors.primaryColor,
+                dialogButtonColors = textButtonColors,
                 dialogColors = dialogColors,
                 colorPickerColors = colorPickerColors,
                 colorPickerProperties = colorPickerProperties,
@@ -380,7 +385,7 @@ fun ThemeSettingsScreen(
                 initialColor = themeColors.noteTextColor,
                 defaultColor = defaultThemeColors.noteTextColor,
                 outlineColor = themeColors.textColor,
-                buttonColor = themeColors.primaryColor,
+                dialogButtonColors = textButtonColors,
                 dialogColors = dialogColors,
                 colorPickerColors = colorPickerColors,
                 colorPickerProperties = colorPickerProperties,
@@ -402,7 +407,7 @@ fun ThemeSettingsScreen(
                 initialColor = themeColors.backgroundColor,
                 defaultColor = defaultThemeColors.backgroundColor,
                 outlineColor = themeColors.textColor,
-                buttonColor = themeColors.primaryColor,
+                dialogButtonColors = textButtonColors,
                 dialogColors = dialogColors,
                 colorPickerColors = colorPickerColors,
                 colorPickerProperties = colorPickerProperties,
@@ -424,7 +429,7 @@ fun ThemeSettingsScreen(
                 initialColor = themeColors.backgroundColorVariant,
                 defaultColor = defaultThemeColors.backgroundColorVariant,
                 outlineColor = themeColors.textColor,
-                buttonColor = themeColors.primaryColor,
+                dialogButtonColors = textButtonColors,
                 dialogColors = dialogColors,
                 colorPickerColors = colorPickerColors,
                 colorPickerProperties = colorPickerProperties,

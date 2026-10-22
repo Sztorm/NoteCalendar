@@ -2,6 +2,7 @@ package com.sztorm.notecalendar.feature.settings.notes
 
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -49,6 +50,10 @@ fun NotesSettingsScreen(
     val dialogColors = CardDefaults.cardColors().copy(
         containerColor = themeColors.backgroundColor,
         contentColor = themeColors.backgroundColor,
+    )
+    val textButtonColors = ButtonDefaults.textButtonColors(
+        contentColor = themeColors.primaryColor,
+        disabledContentColor = themeColors.inactiveTextColor
     )
     val colorPickerColors = ColorPickerDefaults.colors().copy(
         backgroundColor = themeColors.backgroundColor,
@@ -109,7 +114,7 @@ fun NotesSettingsScreen(
                 titleColor = themeColors.textColor,
                 dialogTitleColor = themeColors.textColor,
                 dialogMessageColor = themeColors.textColor,
-                dialogButtonColor = themeColors.primaryColor,
+                dialogButtonColors = textButtonColors,
                 dialogColors = dialogColors,
                 enabled = enabled
             )
@@ -133,7 +138,7 @@ fun NotesSettingsScreen(
                         dialogColors = it.dialogColors.copy(
                             titleColor = themeColors.textColor,
                             textContentColor = themeColors.textColor,
-                            textButtonColor = themeColors.primaryColor,
+                            textButtonColors = textButtonColors,
                             cardColors = dialogColors
                         )
                     )
@@ -168,7 +173,7 @@ fun NotesSettingsScreen(
                         dialogColors = it.dialogColors.copy(
                             titleColor = themeColors.textColor,
                             textContentColor = themeColors.textColor,
-                            textButtonColor = themeColors.primaryColor,
+                            textButtonColors = textButtonColors,
                             cardColors = dialogColors
                         )
                     )
@@ -243,7 +248,7 @@ fun NotesSettingsScreen(
                 initialColor = themeColors.noteTextColor,
                 defaultColor = preferenceRepository.defaults.noteTextColor,
                 outlineColor = themeColors.textColor,
-                buttonColor = themeColors.primaryColor,
+                dialogButtonColors = textButtonColors,
                 dialogColors = dialogColors,
                 colorPickerColors = colorPickerColors,
                 colorPickerProperties = colorPickerProperties,
@@ -265,7 +270,7 @@ fun NotesSettingsScreen(
                 initialColor = themeColors.noteColor,
                 defaultColor = preferenceRepository.defaults.noteColor,
                 outlineColor = themeColors.textColor,
-                buttonColor = themeColors.primaryColor,
+                dialogButtonColors = textButtonColors,
                 dialogColors = dialogColors,
                 colorPickerColors = colorPickerColors,
                 colorPickerProperties = colorPickerProperties,
@@ -287,7 +292,7 @@ fun NotesSettingsScreen(
                 initialColor = themeColors.noteColorVariant,
                 defaultColor = preferenceRepository.defaults.noteColorVariant,
                 outlineColor = themeColors.textColor,
-                buttonColor = themeColors.primaryColor,
+                dialogButtonColors = textButtonColors,
                 dialogColors = dialogColors,
                 colorPickerColors = colorPickerColors,
                 colorPickerProperties = colorPickerProperties,

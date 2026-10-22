@@ -23,6 +23,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -627,7 +628,10 @@ private fun BoxScope.ActionButtons(
             ?: OffsetDateTime.now().toLocalTime(),
         isOpen = viewModel.state.isReminderDialogOpen,
         titleColor = themeColors.textColor,
-        buttonColor = themeColors.primaryColor,
+        dialogButtonColors = ButtonDefaults.textButtonColors(
+            contentColor = themeColors.primaryColor,
+            disabledContentColor = themeColors.inactiveTextColor
+        ),
         dialogColors = dialogColors,
         timePickerColors = timePickerColors,
         onConfirm = onReminderDialogConfirm,
