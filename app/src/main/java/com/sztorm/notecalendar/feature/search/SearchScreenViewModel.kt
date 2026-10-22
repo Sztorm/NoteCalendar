@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException
+import kotlin.reflect.KClass
 import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(FlowPreview::class)
@@ -30,7 +31,7 @@ class SearchScreenViewModel(
     private val searchRequests = MutableStateFlow(
         SearchRequest(
             query = initialState.searchTextValue.text,
-            filters = initialState.searchFilters
+            filtersByType = initialState.searchFiltersByType
         )
     )
     private var _state = MutableStateFlow(initialState)
@@ -51,25 +52,32 @@ class SearchScreenViewModel(
                             it.copy(uiState = SearchUiState.Loading)
                         }
                         try {
-                            val ignoreCase = !filters.contains(SearchFilter.MatchCase)
+                            val ignoreCase = !filters.contains(SearchFilter.MatchCase::class)
+                            val dateRange = filters.getTyped(SearchFilter.DateRange::class)
                             val results = withContext(Dispatchers.IO) {
                                 noteRepository
                                     .getAll()
                                     .mapNotNull {
                                         val note = it.toNote()
-                                        val matchIndex = note.text
-                                            .indexOf(string = query, ignoreCase = ignoreCase)
 
-                                        if (matchIndex < 0) null
-                                        else {
-                                            val matchIndices = listOf(matchIndex) +
-                                                note.text.indicesOf(
-                                                    string = query,
-                                                    startIndex = matchIndex + query.length,
-                                                    ignoreCase = ignoreCase
-                                                )
-                                            SearchResult(note, matchIndices)
-                                        }
+                                        if (dateRange == null ||
+                                            note.date >= dateRange.start &&
+                                            note.date <= dateRange.end
+                                        ) {
+                                            val matchIndex = note.text
+                                                .indexOf(string = query, ignoreCase = ignoreCase)
+
+                                            if (matchIndex < 0) null
+                                            else {
+                                                val matchIndices = listOf(matchIndex) +
+                                                    note.text.indicesOf(
+                                                        string = query,
+                                                        startIndex = matchIndex + query.length,
+                                                        ignoreCase = ignoreCase
+                                                    )
+                                                SearchResult(note, matchIndices)
+                                            }
+                                        } else null
                                     }
                                     .sortedByDescending { (note, _) -> note.date }
                             }
@@ -106,10 +114,10 @@ class SearchScreenViewModel(
 
             is SearchScreenEvent.SearchFiltersChange -> {
                 searchRequests.update { current ->
-                    current.copy(filters = event.filters)
+                    current.copy(filtersByType = event.filtersByType)
                 }
                 _state.update { current ->
-                    current.copy(searchFilters = event.filters)
+                    current.copy(searchFiltersByType = event.filtersByType)
                 }
             }
         }
@@ -132,11 +140,13 @@ class SearchScreenViewModelFactory(
 
 sealed class SearchScreenEvent {
     data class SearchTextValueChange(val value: TextFieldValue) : SearchScreenEvent()
-    data class SearchFiltersChange(val filters: Set<SearchFilter>) : SearchScreenEvent()
+    data class SearchFiltersChange(
+        val filtersByType: Map<KClass<out SearchFilter>, SearchFilter>
+    ) : SearchScreenEvent()
 }
 
 data class SearchScreenState(
     val uiState: SearchUiState,
     val searchTextValue: TextFieldValue,
-    val searchFilters: Set<SearchFilter>
+    val searchFiltersByType: Map<KClass<out SearchFilter>, SearchFilter>
 )

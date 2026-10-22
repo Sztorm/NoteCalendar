@@ -31,12 +31,14 @@ import java.time.LocalDate
 import java.time.Month
 import java.time.OffsetDateTime
 import java.time.YearMonth
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.time.format.TextStyle
 import java.time.temporal.WeekFields
 import java.util.Locale
 import kotlin.math.max
+import kotlin.reflect.KClass
 import kotlin.time.Duration.Companion.milliseconds
 import java.util.Locale as JLocale
 
@@ -97,6 +99,11 @@ fun OffsetDateTime.remainingDurationFromNow() =
 
 val LocalDate.yearMonth: YearMonth
     get() = YearMonth.of(year, month)
+
+fun LocalDate.toEpochMillis() = this
+    .atStartOfDay(ZoneOffset.UTC)
+    .toInstant()
+    .toEpochMilli()
 
 fun LocalDate.stableHash(): Int {
     val yearValue = year
@@ -434,3 +441,5 @@ fun Path.moveTo(position: Vector2F) = moveTo(position.x, position.y)
 fun Path.lineTo(position: Vector2F) = lineTo(position.x, position.y)
 
 fun JSONArray.toList() = List(length()) { get(it) }
+
+operator fun <T : Any> Map<KClass<out T>, T>.plus(value: T) = this + Pair(value::class, value)

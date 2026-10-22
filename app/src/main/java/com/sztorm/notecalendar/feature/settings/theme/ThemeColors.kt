@@ -18,7 +18,7 @@ class ThemeColors(
     val backgroundColor: Color,
     val backgroundColorVariant: Color
 ) {
-    val inactiveTextColor = textColor.copy(alpha = 0.3333333f)
+    val inactiveTextColor = textColor.copy(alpha = 0.38f)
 
     fun getTextColorOf(dayOfWeek: DayOfWeek, firstDayOfWeek: DayOfWeek): Color {
         val sixthDayOfWeek: DayOfWeek = firstDayOfWeek - 2

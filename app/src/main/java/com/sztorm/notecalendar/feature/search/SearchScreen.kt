@@ -20,7 +20,10 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerFormatter
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,6 +35,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,6 +44,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -47,8 +52,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.core.common.isEven
+import com.sztorm.notecalendar.core.common.plus
+import com.sztorm.notecalendar.core.common.toEpochMillis
 import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
+import com.sztorm.notecalendar.feature.app.AppViewModel
+import com.sztorm.notecalendar.feature.settings.theme.ThemeColors
+import com.sztorm.notecalendar.ui.components.DateRangePickerDialog
 import com.sztorm.notecalendar.ui.components.IconButton
 import java.time.LocalDate
 
@@ -62,6 +72,7 @@ private fun SearchTextField(
 ) = OutlinedTextField(
     value = state.searchTextValue,
     onValueChange = onTextValueChange,
+    maxLines = 1,
     leadingIcon = {
         IconButton(onClick = onBackButtonClick) {
             Icon(
@@ -75,9 +86,9 @@ private fun SearchTextField(
         Row {
             BadgedBox(
                 badge = {
-                    if (state.searchFilters.isNotEmpty()) {
+                    if (state.searchFiltersByType.isNotEmpty()) {
                         Badge(containerColor = MaterialTheme.colorScheme.secondary) {
-                            Text(state.searchFilters.size.toString())
+                            Text(state.searchFiltersByType.size.toString())
                         }
                     }
                 }
@@ -116,21 +127,26 @@ private fun SearchTextField(
 @Composable
 private fun ColumnScope.SearchFilters(
     state: SearchScreenState,
+    dateFormatter: DatePickerFormatter,
     filtersExpanded: Boolean,
     onFilterClearAllClick: () -> Unit,
-    onMatchCaseFilterChange: (Boolean) -> Unit
+    onMatchCaseFilterChange: (Boolean) -> Unit,
+    onDateRangeFilterChange: (LocalDate?, LocalDate?) -> Unit,
+    themeColors: ThemeColors
 ) {
+    var showDateRangePicker by remember { mutableStateOf(false) }
+
     AnimatedVisibility(visible = filtersExpanded) {
-        Column(modifier = Modifier.padding(8.dp)) {
+        Column(modifier = Modifier.padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = "Filters", // TODO: add to strings.xml
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.padding(vertical = 12.dp)
                 )
                 Spacer(modifier = Modifier.weight(1f))
 
-                if (state.searchFilters.isNotEmpty()) {
+                if (state.searchFiltersByType.isNotEmpty()) {
                     TextButton(onClick = onFilterClearAllClick) {
                         Text(
                             text = "Clear all" // TODO: add to strings.xml
@@ -145,23 +161,78 @@ private fun ColumnScope.SearchFilters(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Switch(
-                    checked = state.searchFilters.contains(SearchFilter.MatchCase),
+                    checked = state.searchFiltersByType.contains(SearchFilter.MatchCase::class),
                     onCheckedChange = onMatchCaseFilterChange
                 )
             }
-            // TODO: date range selection
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "Date range", // TODO: add to strings.xml
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                val dateRange = state.searchFiltersByType
+                    .getTyped(SearchFilter.DateRange::class)
+
+                if (dateRange == null) {
+                    TextButton(onClick = { showDateRangePicker = true }) {
+                        Text(
+                            text = "Select" // TODO: add to strings.xml
+                        )
+                    }
+                } else {
+                    TextButton(onClick = { showDateRangePicker = true }) {
+                        val locale = Locale.current.platformLocale
+                        val startDate = dateFormatter.formatDate(
+                            dateMillis = dateRange.start.toEpochMillis(),
+                            locale = locale
+                        )
+                        val endDate = dateFormatter.formatDate(
+                            dateMillis = dateRange.end.toEpochMillis(),
+                            locale = locale
+                        )
+                        Text(
+                            text = "$startDate - $endDate"
+                        )
+                    }
+                    IconButton(onClick = { onDateRangeFilterChange(null, null) }) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Remove date range filter", // TODO: add to strings.xml
+                        )
+                    }
+                }
+            }
         }
+    }
+    if (showDateRangePicker) {
+        DateRangePickerDialog(
+            onDateRangeSelected = { startDate, endDate ->
+                showDateRangePicker = false
+                onDateRangeFilterChange(startDate, endDate)
+            },
+            onDismiss = {
+                showDateRangePicker = false
+            },
+            dateFormatter = dateFormatter,
+            buttonColors = ButtonDefaults.textButtonColors(
+                contentColor = themeColors.primaryColor,
+                disabledContentColor = themeColors.inactiveTextColor
+            )
+        )
     }
 }
 
 @Composable
 private fun SearchBar(
     state: SearchScreenState,
+    dateFormatter: DatePickerFormatter,
     onBackButtonClick: () -> Unit,
     onClearButtonClick: () -> Unit,
     onTextValueChange: (TextFieldValue) -> Unit,
     onFilterClearAllClick: () -> Unit,
-    onMatchCaseFilterChange: (Boolean) -> Unit
+    onMatchCaseFilterChange: (Boolean) -> Unit,
+    onDateRangeFilterChange: (LocalDate?, LocalDate?) -> Unit,
+    themeColors: ThemeColors
 ) {
     var filtersExpanded by rememberSaveable {
         mutableStateOf(false)
@@ -176,9 +247,12 @@ private fun SearchBar(
         )
         SearchFilters(
             state = state,
+            dateFormatter = dateFormatter,
             filtersExpanded = filtersExpanded,
             onFilterClearAllClick = onFilterClearAllClick,
-            onMatchCaseFilterChange = onMatchCaseFilterChange
+            onMatchCaseFilterChange = onMatchCaseFilterChange,
+            onDateRangeFilterChange = onDateRangeFilterChange,
+            themeColors = themeColors,
         )
         HorizontalDivider(color = MaterialTheme.colorScheme.outline)
     }
@@ -189,6 +263,7 @@ private fun SearchResultRow(
     index: Int,
     result: SearchResult,
     searchText: String,
+    dateFormatter: DatePickerFormatter,
     onResultGoButtonClick: (isLongClick: Boolean, date: LocalDate) -> Unit
 ) {
     val backgroundColor =
@@ -216,14 +291,18 @@ private fun SearchResultRow(
             .background(backgroundColor)
             .clickable { expanded = !expanded }
             .animateContentSize()
-            .padding(all = 8.dp)
+            .padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
+            val formattedDate = dateFormatter.formatDate(
+                dateMillis = noteDate.toEpochMillis(),
+                locale = Locale.current.platformLocale
+            ) ?: noteDate.toString()
             Text(
-                text = noteDate.toString(),
+                text = formattedDate,
                 textAlign = TextAlign.Center
             )
             if (!expanded) {
@@ -264,6 +343,7 @@ private fun SearchResultRow(
 @Composable
 private fun ColumnScope.SearchResults(
     state: SearchScreenState,
+    dateFormatter: DatePickerFormatter,
     onNavigateToNote: (isLongClick: Boolean, date: LocalDate) -> Unit
 ) {
     when (val uiState = state.uiState) {
@@ -294,6 +374,7 @@ private fun ColumnScope.SearchResults(
                             index = index,
                             result = result,
                             searchText = state.searchTextValue.text,
+                            dateFormatter = dateFormatter,
                             onResultGoButtonClick = onNavigateToNote
                         )
                     }
@@ -316,6 +397,7 @@ private fun ColumnScope.SearchResults(
 @Composable
 fun SearchScreen(
     logger: AppLogger,
+    appViewModel: AppViewModel,
     onBackButtonClick: () -> Unit,
     onNavigateToNote: (isLongClick: Boolean, date: LocalDate) -> Unit,
     noteRepository: NoteRepository
@@ -325,20 +407,23 @@ fun SearchScreen(
             initialState = SearchScreenState(
                 uiState = SearchUiState.Success(emptyList()),
                 searchTextValue = TextFieldValue(),
-                searchFilters = emptySet()
+                searchFiltersByType = emptyMap()
             ),
             noteRepository = noteRepository,
             logger = logger,
         )
     )
     val state by viewModel.state.collectAsStateWithLifecycle()
-
+    val dateFormatter = remember {
+        DatePickerDefaults.dateFormatter(selectedDateSkeleton = "yyyyMMdd")
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ) {
         SearchBar(
             state = state,
+            dateFormatter = dateFormatter,
             onBackButtonClick = onBackButtonClick,
             onClearButtonClick = {
                 viewModel.onEvent(
@@ -350,27 +435,45 @@ fun SearchScreen(
             },
             onFilterClearAllClick = {
                 viewModel.onEvent(
-                    SearchScreenEvent.SearchFiltersChange(emptySet())
+                    SearchScreenEvent.SearchFiltersChange(emptyMap())
                 )
             },
             onMatchCaseFilterChange = { isChecked ->
                 if (isChecked) {
                     viewModel.onEvent(
                         SearchScreenEvent.SearchFiltersChange(
-                            state.searchFilters + SearchFilter.MatchCase
+                            state.searchFiltersByType + SearchFilter.MatchCase
                         )
                     )
                 } else {
                     viewModel.onEvent(
                         SearchScreenEvent.SearchFiltersChange(
-                            state.searchFilters - SearchFilter.MatchCase
+                            state.searchFiltersByType - SearchFilter.MatchCase::class
                         )
                     )
                 }
-            }
+            },
+            onDateRangeFilterChange = { startDate, endDate ->
+                if (startDate != null && endDate != null) {
+                    viewModel.onEvent(
+                        SearchScreenEvent.SearchFiltersChange(
+                            state.searchFiltersByType +
+                                SearchFilter.DateRange(startDate, endDate)
+                        )
+                    )
+                } else {
+                    viewModel.onEvent(
+                        SearchScreenEvent.SearchFiltersChange(
+                            state.searchFiltersByType - SearchFilter.DateRange::class
+                        )
+                    )
+                }
+            },
+            themeColors = appViewModel.state.themeColors
         )
         SearchResults(
             state = state,
+            dateFormatter = dateFormatter,
             onNavigateToNote = onNavigateToNote
         )
     }
