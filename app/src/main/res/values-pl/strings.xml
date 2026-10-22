@@ -9,6 +9,8 @@
     <string name="August">Sierpień</string>
     <string name="August_GenitiveCase">Sierpnia</string>
     <string name="Cancel">Anuluj</string>
+    <string name="ClearFilters">Wyczyść filtry</string>
+    <string name="ClearSearch">Wyczyść wyszukiwanie</string>
     <string name="ColorPicker">Próbnik kolorów</string>
     <string name="ColorPicker_Alpha">Krycie</string>
     <string name="ColorPicker_Blue">Niebieski</string>
@@ -32,6 +34,7 @@
     <string name="Color_Secondary">Kolor drugorzędny</string>
     <string name="Color_Text">Kolor tekstu</string>
     <string name="Confirm">OK</string>
+    <string name="DateRange">Zakres dat</string>
     <string name="Day">Dzień</string>
     <string name="DayView">Widok dnia</string>
     <string name="December">Grudzień</string>
@@ -44,8 +47,10 @@
     <string name="EncryptionAlgorithm">Algorytm szyfrowania</string>
     <string name="February">Luty</string>
     <string name="February_GenitiveCase">Lutego</string>
+    <string name="Filters">Filtry</string>
     <string name="Friday">Piątek</string>
     <string name="Friday_Short">Pią</string>
+    <string name="GoToSelectedDate">Przejdź do wybranej daty</string>
     <string name="January">Styczeń</string>
     <string name="January_GenitiveCase">Stycznia</string>
     <string name="July">Lipiec</string>
@@ -54,6 +59,7 @@
     <string name="June_GenitiveCase">Czerwca</string>
     <string name="March">Marzec</string>
     <string name="March_GenitiveCase">Marca</string>
+    <string name="MatchCase">Uwzględniaj wielkość liter</string>
     <string name="May">Maj</string>
     <string name="May_GenitiveCase">Maja</string>
     <string name="Message_ExportFailed">Eksport nie powiódł się</string>
@@ -65,6 +71,7 @@
     <string name="Monday_Short">Pon</string>
     <string name="Month">Miesiąc</string>
     <string name="MonthView">Widok miesiąca</string>
+    <string name="NoResults">Brak wyników</string>
     <string name="Notification_NoteFrom_Day">Notatka z %s</string>
     <string name="Notification_Note_ChannelDescription">Informuj o zapisanej notatce codziennie.</string>
     <string name="Notification_Note_ChannelName">Notatki</string>
@@ -73,15 +80,22 @@
     <string name="November_GenitiveCase">Listopada</string>
     <string name="October">Październik</string>
     <string name="October_GenitiveCase">Października</string>
+    <string name="OpenAndEditNote">Otwórz i edytuj notatkę</string>
+    <string name="OpenNote">Otwórz notatkę</string>
     <string name="OpenReminderDialog">Otwórz okno przypomnienia</string>
     <string name="Password">Hasło</string>
     <string name="PasswordStrength_Moderate">Średnie</string>
     <string name="PasswordStrength_Strong">Silne</string>
     <string name="PasswordStrength_Weak">Słabe</string>
     <string name="Password_Error">Hasło jest błędne</string>
+    <string name="RemoveDateRangeFilter">Usuń filtr zakresu dat</string>
     <string name="Saturday">Sobota</string>
     <string name="Saturday_Short">Sob</string>
     <string name="Save">Zapisz</string>
+    <string name="Search">Szukaj</string>
+    <string name="SearchFailed">Wyszukiwanie nie powiodło się</string>
+    <string name="SearchNotes">Szukaj notatek</string>
+    <string name="Select">Wybierz</string>
     <string name="September">Wrzesień</string>
     <string name="September_GenitiveCase">Września</string>
     <string name="SetDefault">Ustaw domyślny</string>
@@ -132,6 +146,7 @@
     <string name="Sunday_Short">Nie</string>
     <string name="Thursday">Czwartek</string>
     <string name="Thursday_Short">Czw</string>
+    <string name="ToggleFilters">Pokaż/ukryj filtry</string>
     <string name="Tuesday">Wtorek</string>
     <string name="Tuesday_Short">Wto</string>
     <string name="UndoDeletion">Cofnij usunięcie</string>

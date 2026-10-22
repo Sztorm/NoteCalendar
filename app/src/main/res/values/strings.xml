@@ -9,6 +9,8 @@
     <string name="August">\?</string>
     <string name="August_GenitiveCase">\?</string>
     <string name="Cancel">Cancel</string>
+    <string name="ClearFilters">Clear all</string>
+    <string name="ClearSearch">Clear search</string>
     <string name="ColorPicker">Color picker</string>
     <string name="ColorPicker_Alpha">Opacity</string>
     <string name="ColorPicker_Blue">Blue</string>
@@ -32,6 +34,7 @@
     <string name="Color_Secondary">Secondary color</string>
     <string name="Color_Text">Text color</string>
     <string name="Confirm">OK</string>
+    <string name="DateRange">Date range</string>
     <string name="Day">Day</string>
     <string name="DayView">Day view</string>
     <string name="December">\?</string>
@@ -44,8 +47,10 @@
     <string name="EncryptionAlgorithm">Encryption algorithm</string>
     <string name="February">\?</string>
     <string name="February_GenitiveCase">\?</string>
+    <string name="Filters">Filters</string>
     <string name="Friday">\?</string>
     <string name="Friday_Short">\?</string>
+    <string name="GoToSelectedDate">Go to selected date</string>
     <string name="January">\?</string>
     <string name="January_GenitiveCase">\?</string>
     <string name="July">\?</string>
@@ -54,6 +59,7 @@
     <string name="June_GenitiveCase">\?</string>
     <string name="March">\?</string>
     <string name="March_GenitiveCase">\?</string>
+    <string name="MatchCase">Match case</string>
     <string name="May">\?</string>
     <string name="May_GenitiveCase">\?</string>
     <string name="Message_ExportFailed">Export failed</string>
@@ -65,6 +71,7 @@
     <string name="Monday_Short">\?</string>
     <string name="Month">Month</string>
     <string name="MonthView">Month view</string>
+    <string name="NoResults">No results</string>
     <string name="Notification_NoteFrom_Day">Note from %s</string>
     <string name="Notification_Note_ChannelDescription">Inform about saved note daily.</string>
     <string name="Notification_Note_ChannelName">Notes</string>
@@ -73,15 +80,22 @@
     <string name="November_GenitiveCase">\?</string>
     <string name="October">\?</string>
     <string name="October_GenitiveCase">\?</string>
+    <string name="OpenAndEditNote">Open and edit note</string>
+    <string name="OpenNote">Open note</string>
     <string name="OpenReminderDialog">Open reminder dialog</string>
     <string name="Password">Password</string>
     <string name="PasswordStrength_Moderate">Moderate</string>
     <string name="PasswordStrength_Strong">Strong</string>
     <string name="PasswordStrength_Weak">Weak</string>
     <string name="Password_Error">Password is incorrect</string>
+    <string name="RemoveDateRangeFilter">Remove date range filter</string>
     <string name="Saturday">\?</string>
     <string name="Saturday_Short">\?</string>
     <string name="Save">Save</string>
+    <string name="Search">Search</string>
+    <string name="SearchFailed">Search failed</string>
+    <string name="SearchNotes">Search notes</string>
+    <string name="Select">Select</string>
     <string name="September">\?</string>
     <string name="September_GenitiveCase">\?</string>
     <string name="SetDefault">Set default</string>
@@ -132,6 +146,7 @@
     <string name="Sunday_Short">\?</string>
     <string name="Thursday">\?</string>
     <string name="Thursday_Short">\?</string>
+    <string name="ToggleFilters">Show/hide filters</string>
     <string name="Tuesday">\?</string>
     <string name="Tuesday_Short">\?</string>
     <string name="UndoDeletion">Undo deletion</string>

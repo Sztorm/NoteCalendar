@@ -37,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
@@ -95,7 +96,7 @@ private fun SearchTextField(
                     Icon(
                         painter = painterResource(R.drawable.icon_outline_rounded_filter_list),
                         tint = MaterialTheme.colorScheme.onBackground,
-                        contentDescription = "Toggle filter list" // TODO: add to strings.xml
+                        contentDescription = stringResource(R.string.ToggleFilters)
                     )
                 }
             }
@@ -105,14 +106,14 @@ private fun SearchTextField(
                 Icon(
                     painter = painterResource(R.drawable.icon_rounded_close),
                     tint = MaterialTheme.colorScheme.onBackground,
-                    contentDescription = "Clear search term"// TODO: add to strings.xml
+                    contentDescription = stringResource(R.string.ClearSearch)
                 )
             }
         }
     },
     placeholder = {
         Text(
-            text = "Search notes" // TODO: Add to strings.xml
+            text = stringResource(R.string.SearchNotes)
         )
     },
     modifier = Modifier
@@ -136,7 +137,7 @@ private fun ColumnScope.SearchFilters(
         Column(modifier = Modifier.padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 8.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "Filters", // TODO: add to strings.xml
+                    text = stringResource(R.string.Filters),
                     style = MaterialTheme.typography.titleSmall,
                     modifier = Modifier.padding(vertical = 12.dp)
                 )
@@ -144,17 +145,12 @@ private fun ColumnScope.SearchFilters(
 
                 if (state.searchFiltersByType.isNotEmpty()) {
                     TextButton(onClick = onFilterClearAllClick) {
-                        Text(
-                            text = "Clear all" // TODO: add to strings.xml
-                        )
+                        Text(text = stringResource(R.string.ClearFilters))
                     }
                 }
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "Match case", // TODO: add to strings.xml
-
-                )
+                Text(text = stringResource(R.string.MatchCase))
                 Spacer(modifier = Modifier.weight(1f))
                 Switch(
                     checked = state.searchFiltersByType.contains(SearchFilter.MatchCase::class),
@@ -162,18 +158,14 @@ private fun ColumnScope.SearchFilters(
                 )
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = "Date range", // TODO: add to strings.xml
-                )
+                Text(text = stringResource(R.string.DateRange))
                 Spacer(modifier = Modifier.weight(1f))
                 val dateRange = state.searchFiltersByType
                     .getTyped(SearchFilter.DateRange::class)
 
                 if (dateRange == null) {
                     TextButton(onClick = { showDateRangePicker = true }) {
-                        Text(
-                            text = "Select" // TODO: add to strings.xml
-                        )
+                        Text(text = stringResource(R.string.Select))
                     }
                 } else {
                     TextButton(onClick = { showDateRangePicker = true }) {
@@ -193,7 +185,7 @@ private fun ColumnScope.SearchFilters(
                     IconButton(onClick = { onDateRangeFilterChange(null, null) }) {
                         Icon(
                             painter = painterResource(R.drawable.icon_rounded_close),
-                            contentDescription = "Remove date range filter", // TODO: add to strings.xml
+                            contentDescription = stringResource(R.string.RemoveDateRangeFilter)
                         )
                     }
                 }
@@ -316,12 +308,12 @@ private fun SearchResultRow(
             IconButton(
                 onClick = { onResultGoButtonClick(false, noteDate) },
                 onLongClick = { onResultGoButtonClick(true, noteDate) },
-                onClickLabel = "Go to note", // TODO: add to strings.xml
-                onLongClickLabel = "Go to note and edit", // TODO: add to strings.xml
+                onClickLabel = stringResource(R.string.OpenNote),
+                onLongClickLabel = stringResource(R.string.OpenAndEditNote)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.icon_rounded_arrow_forward),
-                    contentDescription = "Go to note" // TODO: add to strings.xml
+                    contentDescription = stringResource(R.string.OpenNote)
                 )
             }
         }
@@ -353,7 +345,7 @@ private fun ColumnScope.SearchResults(
             if (uiState.results.isEmpty()) {
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = "No results", // TODO: Add to strings.xml
+                    text = stringResource(R.string.NoResults),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyLarge,
                 )
@@ -403,7 +395,8 @@ fun SearchScreen(
             initialState = SearchScreenState(
                 uiState = SearchUiState.Success(emptyList()),
                 searchTextValue = TextFieldValue(),
-                searchFiltersByType = emptyMap()
+                searchFiltersByType = emptyMap(),
+                defaultSearchErrorMessage = stringResource(R.string.SearchFailed)
             ),
             noteRepository = noteRepository,
             logger = logger,

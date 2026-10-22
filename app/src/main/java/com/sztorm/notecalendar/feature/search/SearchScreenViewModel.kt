@@ -91,7 +91,7 @@ class SearchScreenViewModel(
                             _state.update {
                                 it.copy(
                                     uiState = SearchUiState.Error(
-                                        e.message ?: "Search failed" // TODO: add to strings.xml
+                                        e.message ?: it.defaultSearchErrorMessage
                                     )
                                 )
                             }
@@ -148,5 +148,6 @@ sealed class SearchScreenEvent {
 data class SearchScreenState(
     val uiState: SearchUiState,
     val searchTextValue: TextFieldValue,
-    val searchFiltersByType: Map<KClass<out SearchFilter>, SearchFilter>
+    val searchFiltersByType: Map<KClass<out SearchFilter>, SearchFilter>,
+    val defaultSearchErrorMessage: String
 )
