@@ -1,5 +1,7 @@
 package com.sztorm.notecalendar.feature.settings.other
 
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.painterResource
@@ -11,8 +13,12 @@ import com.sztorm.notecalendar.feature.app.AppEvent
 import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.ui.components.preferences.ListPreference
 import com.sztorm.notecalendar.ui.components.preferences.SubpreferenceScreen
+import com.sztorm.notecalendar.ui.components.preferences.SwitchPreference
+import com.sztorm.notecalendar.ui.components.preferences.TimePickerPreference
 import kotlinx.coroutines.launch
+import java.time.LocalTime
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OtherSettingsScreen(
     @Suppress("unused") logger: AppLogger,
@@ -41,6 +47,24 @@ fun OtherSettingsScreen(
             },
             titleColor = themeColors.textColor,
             summaryColor = themeColors.textColor,
+        )
+        SwitchPreference(
+            title = "Automatically add a reminder", // TODO: add to strings.xml
+            checked = true,
+            onCheckedChange = {},
+            textColor = themeColors.textColor,
+        )
+        TimePickerPreference(
+            title = "Default reminder time", // TODO: add to strings.xml
+            summary = "New notes will automatically get a reminder at the selected time.", // TODO: add to strings.xml
+            initialTime = LocalTime.of(8, 0),
+            onConfirm = {},
+            titleColor = themeColors.textColor,
+            summaryColor = themeColors.textColor,
+            dialogButtonColors = ButtonDefaults.textButtonColors(
+                contentColor = themeColors.primaryColor,
+                disabledContentColor = themeColors.inactiveTextColor
+            )
         )
     }
 }
