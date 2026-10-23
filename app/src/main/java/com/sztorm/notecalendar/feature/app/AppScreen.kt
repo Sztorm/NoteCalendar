@@ -8,25 +8,37 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
@@ -48,6 +60,7 @@ import com.sztorm.notecalendar.feature.settings.SettingsScreen
 import com.sztorm.notecalendar.feature.settings.about.AboutSettingsScreen
 import com.sztorm.notecalendar.feature.settings.calendar.CalendarSettingsScreen
 import com.sztorm.notecalendar.feature.settings.notes.NotesSettingsScreen
+import com.sztorm.notecalendar.feature.settings.other.NavigationPosition
 import com.sztorm.notecalendar.feature.settings.other.OtherSettingsScreen
 import com.sztorm.notecalendar.feature.settings.theme.ThemeSettingsScreen
 import com.sztorm.notecalendar.feature.week.WeekScreen
@@ -65,6 +78,7 @@ private fun NavigationBar(
     @Suppress("unused") logger: AppLogger,
     navController: NavController,
     initialScreen: Screen,
+    navigationPosition: NavigationPosition,
     modifier: Modifier = Modifier
 ) {
     val tabs = listOf(
@@ -98,11 +112,48 @@ private fun NavigationBar(
         }
         ?: initialScreen.toNavigationBarDestination()
         ?: NavigationBarDestination.Day
+    val selectedTabIndex = currentDestination.ordinal
+    val localDensity = LocalDensity.current
+    var rowHeight by remember { mutableFloatStateOf(0f) }
+    val additionalHeight = if (navigationPosition == NavigationPosition.Bottom) 8.dp else 0.dp
 
     PrimaryTabRow(
         selectedTabIndex = currentDestination.ordinal,
-        modifier = modifier,
-        divider = { HorizontalDivider(color = MaterialTheme.colorScheme.outline) }
+        indicator = {
+            if (navigationPosition == NavigationPosition.Top) {
+                TabRowDefaults.PrimaryIndicator(
+                    modifier = Modifier
+                        .tabIndicatorOffset(selectedTabIndex, matchContentSize = true),
+                    width = Dp.Unspecified,
+                )
+            } else {
+                Box(
+                    contentAlignment = Alignment.TopCenter,
+                    modifier = Modifier.height(rowHeight.dp)
+                ) {
+                    TabRowDefaults.PrimaryIndicator(
+                        modifier = Modifier
+                            .tabIndicatorOffset(selectedTabIndex, matchContentSize = true),
+                        width = Dp.Unspecified,
+                    )
+                }
+            }
+        },
+        divider = {
+            if (navigationPosition == NavigationPosition.Top) {
+                HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+            } else {
+                Box(
+                    contentAlignment = Alignment.TopCenter,
+                    modifier = Modifier.height(rowHeight.dp)
+                ) {
+                    HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+                }
+            }
+        },
+        modifier = modifier.onSizeChanged {
+            rowHeight = with(localDensity) { it.height.toDp().value }
+        },
     ) {
         tabs.forEach { tab ->
             val isSelected = currentDestination == tab.screen.toNavigationBarDestination()
@@ -123,7 +174,9 @@ private fun NavigationBar(
                     Icon(
                         imageVector = tab.icon,
                         contentDescription = tab.description,
-                        modifier = Modifier.defaultMinSize(36.dp, 36.dp)
+                        modifier = Modifier
+                            .defaultMinSize(36.dp, 36.dp + additionalHeight)
+                            .padding(top = additionalHeight)
                     )
                 }
             )
@@ -304,45 +357,65 @@ fun AppScreen(
     initialScreen: Screen
 ) {
     val navController = rememberNavController()
+    val navigationPosition = NavigationPosition.Bottom
 
-    Column(
-        modifier = Modifier
-            .windowInsetsPadding(WindowInsets.safeDrawing)
-            .fillMaxWidth()
-    ) {
-        NavigationBar(
-            logger = logger,
-            navController = navController,
-            initialScreen = initialScreen
-        )
-        NavHost(
-            navController = navController,
-            startDestination = initialScreen,
-            enterTransition = {
-                slideInHorizontally(animationSpec = tween(durationMillis = 400)) { -it }
-            },
-            exitTransition = {
-                fadeOut(animationSpec = tween(durationMillis = 400)) +
-                    slideOutVertically(animationSpec = tween(durationMillis = 400)) { it }
+    Scaffold(
+        topBar = {
+            if (navigationPosition == NavigationPosition.Top) {
+                NavigationBar(
+                    logger = logger,
+                    navController = navController,
+                    initialScreen = initialScreen,
+                    navigationPosition = navigationPosition
+                )
             }
+        },
+        bottomBar = {
+            if (navigationPosition == NavigationPosition.Bottom) {
+                NavigationBar(
+                    logger = logger,
+                    navController = navController,
+                    initialScreen = initialScreen,
+                    navigationPosition = navigationPosition
+                )
+            }
+        },
+        modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing)
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxWidth()
         ) {
-            appNavGraph(
-                logger = logger,
-                viewModel = viewModel,
-                permissionManager = permissionManager,
-                notificationManager = notificationManager,
-                noteRepository = noteRepository,
-                navController = navController
-            )
-            settingsNavGraph(
-                logger = logger,
-                viewModel = viewModel,
-                notificationManager = notificationManager,
-                noteRepository = noteRepository,
-                fileRepository = fileRepository,
-                preferenceRepository = preferenceRepository,
-                navController = navController
-            )
+            NavHost(
+                navController = navController,
+                startDestination = initialScreen,
+                enterTransition = {
+                    slideInHorizontally(animationSpec = tween(durationMillis = 400)) { -it }
+                },
+                exitTransition = {
+                    fadeOut(animationSpec = tween(durationMillis = 400)) +
+                        slideOutVertically(animationSpec = tween(durationMillis = 400)) { it }
+                }
+            ) {
+                appNavGraph(
+                    logger = logger,
+                    viewModel = viewModel,
+                    permissionManager = permissionManager,
+                    notificationManager = notificationManager,
+                    noteRepository = noteRepository,
+                    navController = navController
+                )
+                settingsNavGraph(
+                    logger = logger,
+                    viewModel = viewModel,
+                    notificationManager = notificationManager,
+                    noteRepository = noteRepository,
+                    fileRepository = fileRepository,
+                    preferenceRepository = preferenceRepository,
+                    navController = navController
+                )
+            }
         }
     }
 }
