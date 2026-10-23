@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -13,8 +12,8 @@ import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerColors
 import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.VerticalDivider
@@ -30,11 +29,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sztorm.notecalendar.ui.components.ConfirmationDialog
+import com.sztorm.notecalendar.ui.components.TimePickerDialog
 import java.time.LocalTime
 import java.util.Locale
 
@@ -60,7 +58,6 @@ private fun LocalTime.format(is24HourFormat: Boolean) =
         }
     }
 
-@Suppress("unused")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePickerPreference(
@@ -70,13 +67,31 @@ fun TimePickerPreference(
     modifier: Modifier = Modifier,
     is24HourFormat: Boolean = DateFormat.is24HourFormat(LocalContext.current),
     onDismiss: ((LocalTime) -> Unit)? = null,
-    titleColor: Color = Color.Unspecified,
+    titleColor: Color = MaterialTheme.colorScheme.onSurface,
     summary: String? = null,
     summaryColor: Color = Color.Unspecified,
     dividerColor: Color = DividerDefaults.color,
-    dialogColors: CardColors = CardDefaults.cardColors(),
+    dialogColors: CardColors = CardDefaults.cardColors(
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface
+    ),
     dialogButtonColors: ButtonColors = ButtonDefaults.textButtonColors(),
-    timePickerColors: TimePickerColors = TimePickerDefaults.colors(),
+    timePickerColors: TimePickerColors = TimePickerDefaults.colors(
+        clockDialColor = MaterialTheme.colorScheme.surfaceVariant,
+        clockDialSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
+        clockDialUnselectedContentColor = MaterialTheme.colorScheme.onSurface,
+        selectorColor = MaterialTheme.colorScheme.primary,
+        containerColor = MaterialTheme.colorScheme.onSurface,
+        periodSelectorBorderColor = MaterialTheme.colorScheme.onSurface,
+        periodSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
+        periodSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+        periodSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
+        periodSelectorUnselectedContentColor = MaterialTheme.colorScheme.onSurface,
+        timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
+        timeSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+        timeSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
+        timeSelectorUnselectedContentColor = MaterialTheme.colorScheme.onSurface,
+    ),
     icon: Painter? = null,
     iconColorFilter: ColorFilter? = null,
     enabled: Boolean = true
@@ -126,39 +141,24 @@ fun TimePickerPreference(
         }
     }
     if (openDialog) {
-        ConfirmationDialog(
-            onConfirm = {
+        TimePickerDialog(
+            title = title,
+            initialTime = initialTime,
+            onConfirm = { time ->
                 openDialog = false
-                onConfirm(LocalTime.of(timePickerState.hour, timePickerState.minute))
+                onConfirm(time)
             },
-            onDismiss = {
-                val selectedTime = LocalTime.of(timePickerState.hour, timePickerState.minute)
+            onDismiss = { selectedTime ->
                 openDialog = false
                 timePickerState.hour = initialTime.hour
                 timePickerState.minute = initialTime.minute
                 onDismiss?.invoke(selectedTime)
             },
+            state = timePickerState,
+            titleColor = titleColor,
             dialogColors = dialogColors,
-            buttonColors = dialogButtonColors
-        ) {
-            Row(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = title,
-                    color = titleColor,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                TimePicker(
-                    state = timePickerState,
-                    colors = timePickerColors,
-                )
-            }
-        }
+            dialogButtonColors = dialogButtonColors,
+            timePickerColors = timePickerColors,
+        )
     }
 }

@@ -24,12 +24,10 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
-import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -327,26 +325,6 @@ private fun BoxScope.ActionButtons(
     focusRequester: FocusRequester
 ) {
     val themeColors = appViewModel.state.themeColors
-    val dialogColors = CardDefaults.cardColors().copy(
-        containerColor = themeColors.backgroundColor,
-        contentColor = themeColors.backgroundColor,
-    )
-    val timePickerColors = TimePickerDefaults.colors().copy(
-        clockDialColor = themeColors.backgroundColorVariant,
-        selectorColor = themeColors.primaryColor,
-        containerColor = themeColors.textColor,
-        periodSelectorBorderColor = themeColors.textColor,
-        clockDialSelectedContentColor = themeColors.buttonTextColor,
-        clockDialUnselectedContentColor = themeColors.textColor,
-        periodSelectorSelectedContainerColor = themeColors.primaryColor,
-        periodSelectorUnselectedContainerColor = themeColors.backgroundColorVariant,
-        periodSelectorSelectedContentColor = themeColors.buttonTextColor,
-        periodSelectorUnselectedContentColor = themeColors.textColor,
-        timeSelectorSelectedContainerColor = themeColors.primaryColor,
-        timeSelectorUnselectedContainerColor = themeColors.backgroundColorVariant,
-        timeSelectorSelectedContentColor = themeColors.buttonTextColor,
-        timeSelectorUnselectedContentColor = themeColors.textColor,
-    )
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
@@ -768,8 +746,6 @@ private fun BoxScope.ActionButtons(
                 contentColor = themeColors.primaryColor,
                 disabledContentColor = themeColors.inactiveTextColor
             ),
-            dialogColors = dialogColors,
-            timePickerColors = timePickerColors,
             onConfirm = onReminderDialogConfirm,
             onDismiss = onReminderDialogDismiss
         )

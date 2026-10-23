@@ -10,10 +10,12 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerColors
 import androidx.compose.material3.TimePickerDefaults
+import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -34,22 +36,40 @@ fun TimePickerDialog(
     onConfirm: (LocalTime) -> Unit,
     modifier: Modifier = Modifier,
     onDismiss: ((LocalTime) -> Unit)? = null,
-    titleColor: Color = Color.Unspecified,
-    dialogButtonColors: ButtonColors = ButtonDefaults.textButtonColors(),
-    dialogColors: CardColors = CardDefaults.cardColors(),
-    timePickerColors: TimePickerColors = TimePickerDefaults.colors(),
-) {
-    val timePickerState = rememberTimePickerState(
+    state: TimePickerState = rememberTimePickerState(
         initialHour = initialTime.hour,
         initialMinute = initialTime.minute,
         is24Hour = DateFormat.is24HourFormat(LocalContext.current),
+    ),
+    titleColor: Color = Color.Unspecified,
+    dialogButtonColors: ButtonColors = ButtonDefaults.textButtonColors(),
+    dialogColors: CardColors = CardDefaults.cardColors(
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface
+    ),
+    timePickerColors: TimePickerColors = TimePickerDefaults.colors(
+        clockDialColor = MaterialTheme.colorScheme.surfaceVariant,
+        clockDialSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
+        clockDialUnselectedContentColor = MaterialTheme.colorScheme.onSurface,
+        selectorColor = MaterialTheme.colorScheme.primary,
+        containerColor = MaterialTheme.colorScheme.onSurface,
+        periodSelectorBorderColor = MaterialTheme.colorScheme.onSurface,
+        periodSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
+        periodSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+        periodSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
+        periodSelectorUnselectedContentColor = MaterialTheme.colorScheme.onSurface,
+        timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
+        timeSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+        timeSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
+        timeSelectorUnselectedContentColor = MaterialTheme.colorScheme.onSurface,
     )
+) {
     ConfirmationDialog(
         onConfirm = {
-            onConfirm(LocalTime.of(timePickerState.hour, timePickerState.minute))
+            onConfirm(LocalTime.of(state.hour, state.minute))
         },
         onDismiss = {
-            onDismiss?.invoke(LocalTime.of(timePickerState.hour, timePickerState.minute))
+            onDismiss?.invoke(LocalTime.of(state.hour, state.minute))
         },
         properties = DialogProperties(
             dismissOnBackPress = true,
@@ -74,7 +94,7 @@ fun TimePickerDialog(
             modifier = Modifier.fillMaxWidth()
         ) {
             TimePicker(
-                state = timePickerState,
+                state = state,
                 colors = timePickerColors,
             )
         }
