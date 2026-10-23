@@ -48,6 +48,7 @@ import com.sztorm.notecalendar.feature.settings.SettingsScreen
 import com.sztorm.notecalendar.feature.settings.about.AboutSettingsScreen
 import com.sztorm.notecalendar.feature.settings.calendar.CalendarSettingsScreen
 import com.sztorm.notecalendar.feature.settings.notes.NotesSettingsScreen
+import com.sztorm.notecalendar.feature.settings.other.OtherSettingsScreen
 import com.sztorm.notecalendar.feature.settings.theme.ThemeSettingsScreen
 import com.sztorm.notecalendar.feature.week.WeekScreen
 import com.sztorm.notecalendar.platform.notifications.AppNotificationManager
@@ -189,6 +190,7 @@ private fun NavGraphBuilder.appNavGraph(
             onNotesSettingsClick = { navController.navigate(Screen.Settings.Notes) },
             onCalendarSettingsClick = { navController.navigate(Screen.Settings.Calendar) },
             onThemeSettingsClick = { navController.navigate(Screen.Settings.Theme) },
+            onOtherSettingsClick = { navController.navigate(Screen.Settings.Other) },
             onAboutClick = { navController.navigate(Screen.Settings.About) },
         )
     }
@@ -265,6 +267,17 @@ private fun NavGraphBuilder.settingsNavGraph(
             appViewModel = viewModel,
             onBackButtonClick = { navController.navigateUp() },
             fileRepository = fileRepository,
+            preferenceRepository = preferenceRepository
+        )
+    }
+    composable<Screen.Settings.Other>(
+        enterTransition = enterTransition,
+        exitTransition = exitTransition
+    ) {
+        OtherSettingsScreen(
+            logger = logger,
+            appViewModel = viewModel,
+            onBackButtonClick = { navController.navigateUp() },
             preferenceRepository = preferenceRepository
         )
     }

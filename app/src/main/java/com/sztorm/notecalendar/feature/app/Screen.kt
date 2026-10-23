@@ -25,6 +25,9 @@ sealed class Screen {
         data object Theme : Screen()
 
         @Serializable
+        data object Other : Screen()
+
+        @Serializable
         data object About : Screen()
     }
 

@@ -20,6 +20,7 @@ fun SettingsScreen(
     onNotesSettingsClick: () -> Unit,
     onCalendarSettingsClick: () -> Unit,
     onThemeSettingsClick: () -> Unit,
+    onOtherSettingsClick: () -> Unit,
     onAboutClick: () -> Unit,
 ) {
     val themeColors = appViewModel.state.themeColors
@@ -48,6 +49,13 @@ fun SettingsScreen(
             icon = painterResource(R.drawable.icon_outline_rounded_palette),
             iconColorFilter = ColorFilter.tint(themeColors.secondaryColor),
             onClick = onThemeSettingsClick
+        )
+        Preference(
+            title = stringResource(R.string.Settings_Other),
+            titleColor = themeColors.textColor,
+            icon = painterResource(R.drawable.icon_outline_rounded_other),
+            iconColorFilter = ColorFilter.tint(themeColors.secondaryColor),
+            onClick = onOtherSettingsClick
         )
         Preference(
             title = stringResource(R.string.Settings_About),
