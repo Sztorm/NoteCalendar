@@ -129,7 +129,6 @@ fun <V> ListPreference(
     }
 }
 
-@Suppress("unused")
 @Composable
 fun <V> ListPreference(
     title: String,

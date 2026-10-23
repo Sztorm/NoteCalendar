@@ -17,6 +17,7 @@ import com.sztorm.notecalendar.feature.settings.PreferenceKeys
 import com.sztorm.notecalendar.feature.settings.calendar.StartingScreenType
 import com.sztorm.notecalendar.feature.settings.notes.NoteFontSize
 import com.sztorm.notecalendar.feature.settings.notes.NoteLineSpacing
+import com.sztorm.notecalendar.feature.settings.other.NavigationBarPosition
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -103,6 +104,12 @@ class PreferenceRepositoryImpl(context: Context) : PreferenceRepository {
 
     override suspend fun getNoteFontSize(default: NoteFontSize) =
         NoteFontSize(getPreference(PreferenceKeys.NoteFontSize, default.floatValue).sp)
+
+    override suspend fun getNavigationBarPosition(
+        default: NavigationBarPosition
+    ) = NavigationBarPosition.valueOf(
+        getPreference(PreferenceKeys.NavigationBarPosition, default.name)
+    )
 
     override suspend fun getNoteLineSpacing(default: NoteLineSpacing) = NoteLineSpacing(
         fontScaleFactor = getPreference(
@@ -203,6 +210,12 @@ class PreferenceRepositoryImpl(context: Context) : PreferenceRepository {
     override suspend fun setNoteLineSpacing(value: NoteLineSpacing) {
         context.preferences.edit {
             it[PreferenceKeys.NoteLineSpacing] = value.fontScaleFactor
+        }
+    }
+
+    override suspend fun setNavigationBarPosition(value: NavigationBarPosition) {
+        context.preferences.edit {
+            it[PreferenceKeys.NavigationBarPosition] = value.name
         }
     }
 }

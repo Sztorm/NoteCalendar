@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import com.sztorm.notecalendar.feature.settings.calendar.StartingScreenType
 import com.sztorm.notecalendar.feature.settings.notes.NoteFontSize
 import com.sztorm.notecalendar.feature.settings.notes.NoteLineSpacing
+import com.sztorm.notecalendar.feature.settings.other.NavigationBarPosition
 import java.time.DayOfWeek
 import java.time.LocalTime
 
@@ -24,4 +25,5 @@ interface PreferenceDefaults {
     val startingScreen: StartingScreenType
     val noteFontSize: NoteFontSize
     val noteLineSpacing: NoteLineSpacing
+    val navigationBarPosition: NavigationBarPosition
 }

@@ -11,6 +11,7 @@ import com.sztorm.notecalendar.feature.app.AppEvent
 import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.ui.components.preferences.ListPreference
 import com.sztorm.notecalendar.ui.components.preferences.SubpreferenceScreen
+import kotlinx.coroutines.launch
 
 @Composable
 fun OtherSettingsScreen(
@@ -29,11 +30,13 @@ fun OtherSettingsScreen(
         onBackButtonClick = onBackButtonClick
     ) {
         ListPreference(
-            title = "Navigation bar position", // TODO
+            title = "Navigation bar position", //stringResource(R.string.NavigationBarPosition) // TODO
             options = NavigationBarPosition.entries.map { it.getLocalizedName() to it },
             initialSelectedOptionIndex = appViewModel.state.navigationBarPosition.ordinal,
             onRadioButtonClick = { _, navigationPosition ->
-                appViewModel.onEvent(AppEvent.NavigationPositionChange(navigationPosition))
+                coroutineScope.launch {
+                    preferenceRepository.setNavigationBarPosition(navigationPosition)
+                }
                 appViewModel.onEvent(AppEvent.NavigationBarPositionChange(navigationPosition))
             },
             titleColor = themeColors.textColor,
