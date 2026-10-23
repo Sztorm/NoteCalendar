@@ -60,7 +60,7 @@ import com.sztorm.notecalendar.feature.settings.SettingsScreen
 import com.sztorm.notecalendar.feature.settings.about.AboutSettingsScreen
 import com.sztorm.notecalendar.feature.settings.calendar.CalendarSettingsScreen
 import com.sztorm.notecalendar.feature.settings.notes.NotesSettingsScreen
-import com.sztorm.notecalendar.feature.settings.other.NavigationPosition
+import com.sztorm.notecalendar.feature.settings.other.NavigationBarPosition
 import com.sztorm.notecalendar.feature.settings.other.OtherSettingsScreen
 import com.sztorm.notecalendar.feature.settings.theme.ThemeSettingsScreen
 import com.sztorm.notecalendar.feature.week.WeekScreen
@@ -78,7 +78,7 @@ private fun NavigationBar(
     @Suppress("unused") logger: AppLogger,
     navController: NavController,
     initialScreen: Screen,
-    navigationPosition: NavigationPosition,
+    navigationBarPosition: NavigationBarPosition,
     modifier: Modifier = Modifier
 ) {
     val tabs = listOf(
@@ -115,12 +115,12 @@ private fun NavigationBar(
     val selectedTabIndex = currentDestination.ordinal
     val localDensity = LocalDensity.current
     var rowHeight by remember { mutableFloatStateOf(0f) }
-    val additionalHeight = if (navigationPosition == NavigationPosition.Bottom) 8.dp else 0.dp
+    val additionalHeight = if (navigationBarPosition == NavigationBarPosition.Bottom) 8.dp else 0.dp
 
     PrimaryTabRow(
         selectedTabIndex = currentDestination.ordinal,
         indicator = {
-            if (navigationPosition == NavigationPosition.Top) {
+            if (navigationBarPosition == NavigationBarPosition.Top) {
                 TabRowDefaults.PrimaryIndicator(
                     modifier = Modifier
                         .tabIndicatorOffset(selectedTabIndex, matchContentSize = true),
@@ -140,7 +140,7 @@ private fun NavigationBar(
             }
         },
         divider = {
-            if (navigationPosition == NavigationPosition.Top) {
+            if (navigationBarPosition == NavigationBarPosition.Top) {
                 HorizontalDivider(color = MaterialTheme.colorScheme.outline)
             } else {
                 Box(
@@ -360,22 +360,22 @@ fun AppScreen(
 
     Scaffold(
         topBar = {
-            if (viewModel.state.navigationPosition == NavigationPosition.Top) {
+            if (viewModel.state.navigationBarPosition == NavigationBarPosition.Top) {
                 NavigationBar(
                     logger = logger,
                     navController = navController,
                     initialScreen = initialScreen,
-                    navigationPosition = viewModel.state.navigationPosition
+                    navigationBarPosition = viewModel.state.navigationBarPosition
                 )
             }
         },
         bottomBar = {
-            if (viewModel.state.navigationPosition == NavigationPosition.Bottom) {
+            if (viewModel.state.navigationBarPosition == NavigationBarPosition.Bottom) {
                 NavigationBar(
                     logger = logger,
                     navController = navController,
                     initialScreen = initialScreen,
-                    navigationPosition = viewModel.state.navigationPosition
+                    navigationBarPosition = viewModel.state.navigationBarPosition
                 )
             }
         },

@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.sztorm.notecalendar.feature.settings.notes.NoteFontSize
 import com.sztorm.notecalendar.feature.settings.notes.NoteLineSpacing
-import com.sztorm.notecalendar.feature.settings.other.NavigationPosition
+import com.sztorm.notecalendar.feature.settings.other.NavigationBarPosition
 import com.sztorm.notecalendar.feature.settings.theme.ThemeColors
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -23,8 +23,8 @@ class AppViewModel(initialState: AppState) : ViewModel() {
             is AppEvent.FirstDayOfWeekChange -> state.copy(firstDayOfWeek = event.dayOfWeek)
             is AppEvent.NoteFontSizeChange -> state.copy(noteFontSize = event.size)
             is AppEvent.NoteLineSpacingChange -> state.copy(noteLineSpacing = event.lineSpacing)
-            is AppEvent.NavigationPositionChange ->
-                state.copy(navigationPosition = event.navigationPosition)
+            is AppEvent.NavigationBarPositionChange ->
+                state.copy(navigationBarPosition = event.navigationPosition)
         }
     }
 }
@@ -45,7 +45,7 @@ sealed class AppEvent {
     data class FirstDayOfWeekChange(val dayOfWeek: DayOfWeek) : AppEvent()
     data class NoteFontSizeChange(val size: NoteFontSize) : AppEvent()
     data class NoteLineSpacingChange(val lineSpacing: NoteLineSpacing) : AppEvent()
-    data class NavigationPositionChange(val navigationPosition: NavigationPosition) : AppEvent()
+    data class NavigationBarPositionChange(val navigationPosition: NavigationBarPosition) : AppEvent()
 }
 
 data class AppState(
@@ -54,5 +54,5 @@ data class AppState(
     val firstDayOfWeek: DayOfWeek,
     val noteFontSize: NoteFontSize,
     val noteLineSpacing: NoteLineSpacing,
-    val navigationPosition: NavigationPosition
+    val navigationBarPosition: NavigationBarPosition
 )

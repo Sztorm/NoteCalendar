@@ -29,11 +29,12 @@ fun OtherSettingsScreen(
         onBackButtonClick = onBackButtonClick
     ) {
         ListPreference(
-            title = "Navigation position", // TODO
-            options = NavigationPosition.entries.map { it.getLocalizedName() to it },
-            initialSelectedOptionIndex = appViewModel.state.navigationPosition.ordinal,
+            title = "Navigation bar position", // TODO
+            options = NavigationBarPosition.entries.map { it.getLocalizedName() to it },
+            initialSelectedOptionIndex = appViewModel.state.navigationBarPosition.ordinal,
             onRadioButtonClick = { _, navigationPosition ->
                 appViewModel.onEvent(AppEvent.NavigationPositionChange(navigationPosition))
+                appViewModel.onEvent(AppEvent.NavigationBarPositionChange(navigationPosition))
             },
             titleColor = themeColors.textColor,
             summaryColor = themeColors.textColor,
