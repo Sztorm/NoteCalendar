@@ -19,6 +19,7 @@ import com.sztorm.notecalendar.feature.app.AppViewFactory
 import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.feature.app.Screen
 import com.sztorm.notecalendar.feature.settings.calendar.StartingScreenType
+import com.sztorm.notecalendar.feature.settings.other.NavigationPosition
 import com.sztorm.notecalendar.platform.logging.TimberLogger
 import com.sztorm.notecalendar.platform.notifications.AppNotificationManager
 import com.sztorm.notecalendar.platform.notifications.NotificationIntentKeys
@@ -71,7 +72,8 @@ class MainActivity : ComponentActivity() {
                 dayScreenDate = bundleResult?.noteDate?.toLocalDateOrNull() ?: LocalDate.now(),
                 firstDayOfWeek = preferenceRepository.getFirstDayOfWeek(),
                 noteFontSize = preferenceRepository.getNoteFontSize(),
-                noteLineSpacing = preferenceRepository.getNoteLineSpacing()
+                noteLineSpacing = preferenceRepository.getNoteLineSpacing(),
+                navigationPosition = NavigationPosition.Top
             )
         }
         WindowCompat.setDecorFitsSystemWindows(window, false)

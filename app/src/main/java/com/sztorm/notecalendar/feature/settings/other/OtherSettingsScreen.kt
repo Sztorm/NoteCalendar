@@ -7,7 +7,9 @@ import androidx.compose.ui.res.stringResource
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
+import com.sztorm.notecalendar.feature.app.AppEvent
 import com.sztorm.notecalendar.feature.app.AppViewModel
+import com.sztorm.notecalendar.ui.components.preferences.ListPreference
 import com.sztorm.notecalendar.ui.components.preferences.SubpreferenceScreen
 
 @Composable
@@ -26,6 +28,15 @@ fun OtherSettingsScreen(
         iconTint = themeColors.textColor,
         onBackButtonClick = onBackButtonClick
     ) {
-        // TODO: navigation bar location (top, bottom)
+        ListPreference(
+            title = "Navigation position", // TODO
+            options = NavigationPosition.entries.map { it.getLocalizedName() to it },
+            initialSelectedOptionIndex = appViewModel.state.navigationPosition.ordinal,
+            onRadioButtonClick = { _, navigationPosition ->
+                appViewModel.onEvent(AppEvent.NavigationPositionChange(navigationPosition))
+            },
+            titleColor = themeColors.textColor,
+            summaryColor = themeColors.textColor,
+        )
     }
 }

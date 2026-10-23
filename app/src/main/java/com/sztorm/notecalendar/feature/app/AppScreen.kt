@@ -357,26 +357,25 @@ fun AppScreen(
     initialScreen: Screen
 ) {
     val navController = rememberNavController()
-    val navigationPosition = NavigationPosition.Bottom
 
     Scaffold(
         topBar = {
-            if (navigationPosition == NavigationPosition.Top) {
+            if (viewModel.state.navigationPosition == NavigationPosition.Top) {
                 NavigationBar(
                     logger = logger,
                     navController = navController,
                     initialScreen = initialScreen,
-                    navigationPosition = navigationPosition
+                    navigationPosition = viewModel.state.navigationPosition
                 )
             }
         },
         bottomBar = {
-            if (navigationPosition == NavigationPosition.Bottom) {
+            if (viewModel.state.navigationPosition == NavigationPosition.Bottom) {
                 NavigationBar(
                     logger = logger,
                     navController = navController,
                     initialScreen = initialScreen,
-                    navigationPosition = navigationPosition
+                    navigationPosition = viewModel.state.navigationPosition
                 )
             }
         },
