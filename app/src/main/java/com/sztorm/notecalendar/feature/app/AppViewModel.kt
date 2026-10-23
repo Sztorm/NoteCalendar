@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.sztorm.notecalendar.feature.settings.calendar.StartingScreenType
 import com.sztorm.notecalendar.feature.settings.notes.NoteFontSize
 import com.sztorm.notecalendar.feature.settings.notes.NoteLineSpacing
 import com.sztorm.notecalendar.feature.settings.other.NavigationBarPosition
@@ -21,6 +22,7 @@ class AppViewModel(initialState: AppState) : ViewModel() {
             is AppEvent.ThemeChange -> state.copy(themeColors = event.themeColors)
             is AppEvent.DayScreenDateChange -> state.copy(dayScreenDate = event.dayScreenDate)
             is AppEvent.FirstDayOfWeekChange -> state.copy(firstDayOfWeek = event.dayOfWeek)
+            is AppEvent.StartingScreenChange -> state.copy(startingScreen = event.startingScreen)
             is AppEvent.NoteFontSizeChange -> state.copy(noteFontSize = event.size)
             is AppEvent.NoteLineSpacingChange -> state.copy(noteLineSpacing = event.lineSpacing)
             is AppEvent.NavigationBarPositionChange ->
@@ -43,15 +45,19 @@ sealed class AppEvent {
     data class ThemeChange(val themeColors: ThemeColors) : AppEvent()
     data class DayScreenDateChange(val dayScreenDate: LocalDate) : AppEvent()
     data class FirstDayOfWeekChange(val dayOfWeek: DayOfWeek) : AppEvent()
+    data class StartingScreenChange(val startingScreen: StartingScreenType) : AppEvent()
     data class NoteFontSizeChange(val size: NoteFontSize) : AppEvent()
     data class NoteLineSpacingChange(val lineSpacing: NoteLineSpacing) : AppEvent()
-    data class NavigationBarPositionChange(val navigationPosition: NavigationBarPosition) : AppEvent()
+    data class NavigationBarPositionChange(
+        val navigationPosition: NavigationBarPosition
+    ) : AppEvent()
 }
 
 data class AppState(
     val themeColors: ThemeColors,
     val dayScreenDate: LocalDate,
     val firstDayOfWeek: DayOfWeek,
+    val startingScreen: StartingScreenType,
     val noteFontSize: NoteFontSize,
     val noteLineSpacing: NoteLineSpacing,
     val navigationBarPosition: NavigationBarPosition

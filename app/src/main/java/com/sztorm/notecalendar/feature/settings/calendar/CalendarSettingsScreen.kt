@@ -3,12 +3,7 @@ package com.sztorm.notecalendar.feature.settings.calendar
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.sztorm.notecalendar.R
@@ -33,14 +28,6 @@ fun CalendarSettingsScreen(
         contentColor = themeColors.primaryColor,
         disabledContentColor = themeColors.inactiveTextColor
     )
-    var startingViewIndexPair by remember {
-        mutableStateOf(Pair(StartingScreenType.DayScreen, 0))
-    }
-    LaunchedEffect(Unit) {
-        startingViewIndexPair = preferenceRepository
-            .getStartingScreen()
-            .let { it to it.ordinal }
-    }
     SubpreferenceScreen(
         title = stringResource(R.string.Settings_Calendar),
         backButtonIcon = painterResource(R.drawable.icon_rounded_arrow_back),
@@ -68,13 +55,12 @@ fun CalendarSettingsScreen(
         ListPreference(
             title = stringResource(R.string.Settings_Calendar_StartingView),
             options = StartingScreenType.entries.map { it.getLocalizedName() to it },
-            initialSelectedOptionIndex = startingViewIndexPair.second,
-            onConfirm = { index, value ->
-                startingViewIndexPair = Pair(value, index)
-
+            initialSelectedOptionIndex = appViewModel.state.startingScreen.ordinal,
+            onConfirm = { _, startingScreen ->
                 coroutineScope.launch {
-                    preferenceRepository.setStartingScreen(value)
+                    preferenceRepository.setStartingScreen(startingScreen)
                 }
+                appViewModel.onEvent(AppEvent.StartingScreenChange(startingScreen))
             },
             titleColor = themeColors.textColor,
             summaryColor = themeColors.textColor,
