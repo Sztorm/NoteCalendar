@@ -12,6 +12,7 @@ import androidx.compose.material3.DatePickerFormatter
 import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.DateRangePickerDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDateRangePickerState
@@ -35,16 +36,20 @@ fun DateRangePickerDialog(
     dateFormatter: DatePickerFormatter = remember {
         DatePickerDefaults.dateFormatter(selectedDateSkeleton = "yyyyMMdd")
     },
+    selectableDates: SelectableDates = DatePickerDefaults.AllDates,
     colors: DatePickerColors = DatePickerDefaults.colors(
         containerColor = MaterialTheme.colorScheme.surface,
         titleContentColor = MaterialTheme.colorScheme.onSurface,
         headlineContentColor = MaterialTheme.colorScheme.onSurface,
-        subheadContentColor = MaterialTheme.colorScheme.onSurface,
-        yearContentColor = MaterialTheme.colorScheme.onSurface,
-        dayContentColor = MaterialTheme.colorScheme.onSurface,
         weekdayContentColor = MaterialTheme.colorScheme.onSurface,
-        dayInSelectionRangeContainerColor = MaterialTheme.colorScheme.primaryContainer,
+        subheadContentColor = MaterialTheme.colorScheme.onSurface,
+        navigationContentColor = MaterialTheme.colorScheme.onSurface,
+        yearContentColor = MaterialTheme.colorScheme.onSurface,
+        currentYearContentColor = MaterialTheme.colorScheme.primary,
+        selectedYearContentColor = MaterialTheme.colorScheme.onPrimary,
+        dayContentColor = MaterialTheme.colorScheme.onSurface,
         selectedDayContentColor = MaterialTheme.colorScheme.onPrimary,
+        dayInSelectionRangeContainerColor = MaterialTheme.colorScheme.primaryContainer,
         todayDateBorderColor = Color.Transparent,
         dividerColor = MaterialTheme.colorScheme.outline,
     ),
@@ -53,7 +58,7 @@ fun DateRangePickerDialog(
         disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
     )
 ) {
-    val state = rememberDateRangePickerState()
+    val state = rememberDateRangePickerState(selectableDates = selectableDates)
 
     DatePickerDialog(
         onDismissRequest = onDismiss,
@@ -92,12 +97,8 @@ fun DateRangePickerDialog(
                 DateRangePickerDefaults.DateRangePickerTitle(
                     displayMode = state.displayMode,
                     contentColor = colors.titleContentColor,
-                    modifier = Modifier.padding(
-                        top = 16.dp,
-                        bottom = 8.dp,
-                        start = 16.dp,
-                        end = 16.dp,
-                    )
+                    modifier = Modifier
+                        .padding(top = 16.dp, bottom = 8.dp, start = 16.dp, end = 16.dp)
                 )
             },
             headline = {
