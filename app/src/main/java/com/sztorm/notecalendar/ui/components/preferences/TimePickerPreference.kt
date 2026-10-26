@@ -32,31 +32,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sztorm.notecalendar.core.common.format
 import com.sztorm.notecalendar.ui.components.TimePickerDialog
 import java.time.LocalTime
-import java.util.Locale
-
-private fun LocalTime.format(is24HourFormat: Boolean) =
-    when (is24HourFormat) {
-        true -> String.format(Locale.US, "%02d:%02d", hour, minute)
-        false -> when {
-            hour == 0 -> String.format(
-                Locale.US, "12:%02d AM", minute
-            )
-
-            hour < 12 -> String.format(
-                Locale.US, "%02d:%02d AM", hour, minute
-            )
-
-            hour == 12 -> String.format(
-                Locale.US, "12:%02d PM", minute
-            )
-
-            else -> String.format(
-                Locale.US, "%02d:%02d PM", hour % 12, minute
-            )
-        }
-    }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

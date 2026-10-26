@@ -28,6 +28,7 @@ import com.sztorm.notecalendar.R
 import org.json.JSONArray
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.Month
 import java.time.OffsetDateTime
 import java.time.YearMonth
@@ -441,5 +442,14 @@ fun Path.moveTo(position: Vector2F) = moveTo(position.x, position.y)
 fun Path.lineTo(position: Vector2F) = lineTo(position.x, position.y)
 
 fun JSONArray.toList() = List(length()) { get(it) }
+
+fun LocalTime.format(is24HourFormat: Boolean) =
+    if (is24HourFormat) String.format(Locale.US, "%02d:%02d", hour, minute)
+    else when {
+        hour == 0 -> String.format(Locale.US, "12:%02d AM", minute)
+        hour < 12 -> String.format(Locale.US, "%02d:%02d AM", hour, minute)
+        hour == 12 -> String.format(Locale.US, "12:%02d PM", minute)
+        else -> String.format(Locale.US, "%02d:%02d PM", hour % 12, minute)
+    }
 
 operator fun <T : Any> Map<KClass<out T>, T>.plus(value: T) = this + Pair(value::class, value)
