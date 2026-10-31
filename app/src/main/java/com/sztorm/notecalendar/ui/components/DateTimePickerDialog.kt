@@ -24,10 +24,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerColors
 import androidx.compose.material3.TimePickerDefaults
-import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,8 +54,9 @@ enum class DateTimePickerTab { Date, Time }
 @Composable
 fun DateTimePickerDialog(
     title: String,
-    initialDateTime: LocalDateTime,
-    onDateTimeSelected: (LocalDateTime) -> Unit,
+    dateTime: LocalDateTime,
+    onDateTimeValueChange: (LocalDateTime) -> Unit,
+    onConfirm: (LocalDateTime) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
     confirmButtonText: String = stringResource(android.R.string.ok),
@@ -105,14 +106,16 @@ fun DateTimePickerDialog(
         dayInSelectionRangeContainerColor = MaterialTheme.colorScheme.primaryContainer,
         todayDateBorderColor = Color.Transparent,
         dividerColor = MaterialTheme.colorScheme.outline,
-    )
+    ),
+    dateText: @Composable (String) -> Unit = { Text(text = it) },
+    timeText: @Composable (String) -> Unit = { Text(text = it) },
 ) {
     val datePickerState = rememberDatePickerState(
-        initialSelectedDate = initialDateTime.toLocalDate(),
+        initialSelectedDate = dateTime.toLocalDate(),
         selectableDates = selectableDates
     )
-    val initialTime = initialDateTime.toLocalTime()
-    val timePickerState: TimePickerState = rememberTimePickerState(
+    val initialTime = dateTime.toLocalTime()
+    val timePickerState = rememberTimePickerState(
         initialHour = initialTime.hour,
         initialMinute = initialTime.minute,
         is24Hour = DateFormat.is24HourFormat(LocalContext.current),
@@ -123,13 +126,27 @@ fun DateTimePickerDialog(
     var selectedTab by remember { mutableStateOf(initialTab) }
     val locale = Locale.current.platformLocale
 
+    LaunchedEffect(
+        datePickerState.selectedDateMillis,
+        timePickerState.hour,
+        timePickerState.minute
+    ) {
+        val dateMillis = datePickerState.selectedDateMillis
+
+        if (dateMillis != null) {
+            val date = Instant.ofEpochMilli(dateMillis).atZone(ZoneOffset.UTC).toLocalDate()
+            val time = LocalTime.of(timePickerState.hour, timePickerState.minute)
+
+            onDateTimeValueChange(LocalDateTime.of(date, time))
+        }
+    }
     ConfirmationDialog(
         onConfirm = {
             val date = datePickerState.selectedDateMillis?.let {
                 Instant.ofEpochMilli(it).atZone(ZoneOffset.UTC).toLocalDate()
             }
             if (date != null) {
-                onDateTimeSelected(LocalDateTime.of(date, selectedTime))
+                onConfirm(LocalDateTime.of(date, selectedTime))
             }
         },
         onDismiss = onDismiss,
@@ -157,26 +174,24 @@ fun DateTimePickerDialog(
                 selected = selectedTab == DateTimePickerTab.Date,
                 onClick = { selectedTab = DateTimePickerTab.Date },
                 text = {
-                    val dateText = datePickerState
+                    val text = datePickerState
                         .selectedDateMillis
                         ?.let { dateFormatter.formatDate(dateMillis = it, locale = locale) }
 
-                    if (dateText == null) {
+                    if (text == null) {
                         DatePickerDefaults.DatePickerTitle(
                             displayMode = datePickerState.displayMode,
                             contentColor = datePickerColors.titleContentColor
                         )
                     } else {
-                        Text(text = dateText)
+                        dateText(text)
                     }
                 }
             )
             Tab(
                 selected = selectedTab == DateTimePickerTab.Time,
                 onClick = { selectedTab = DateTimePickerTab.Time },
-                text = {
-                    Text(text = selectedTime.format(timePickerState.is24hour))
-                }
+                text = { timeText(selectedTime.format(timePickerState.is24hour)) }
             )
         }
         if (selectedTab == DateTimePickerTab.Date) {
