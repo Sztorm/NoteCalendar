@@ -12,6 +12,7 @@ import com.sztorm.notecalendar.feature.settings.other.NavigationBarPosition
 import com.sztorm.notecalendar.feature.settings.theme.ThemeColors
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalTime
 
 class AppViewModel(initialState: AppState) : ViewModel() {
     var state by mutableStateOf(initialState)
@@ -27,6 +28,11 @@ class AppViewModel(initialState: AppState) : ViewModel() {
             is AppEvent.NoteLineSpacingChange -> state.copy(noteLineSpacing = event.lineSpacing)
             is AppEvent.NavigationBarPositionChange ->
                 state.copy(navigationBarPosition = event.navigationPosition)
+
+            is AppEvent.AutoAddReminderToNewNotesChange ->
+                state.copy(autoAddReminderToNewNotes = event.value)
+
+            is AppEvent.DefaultReminderTimeChange -> state.copy(defaultReminderTime = event.time)
         }
     }
 }
@@ -51,6 +57,9 @@ sealed class AppEvent {
     data class NavigationBarPositionChange(
         val navigationPosition: NavigationBarPosition
     ) : AppEvent()
+
+    data class AutoAddReminderToNewNotesChange(val value: Boolean) : AppEvent()
+    data class DefaultReminderTimeChange(val time: LocalTime) : AppEvent()
 }
 
 data class AppState(
@@ -60,5 +69,7 @@ data class AppState(
     val startingScreen: StartingScreenType,
     val noteFontSize: NoteFontSize,
     val noteLineSpacing: NoteLineSpacing,
-    val navigationBarPosition: NavigationBarPosition
+    val navigationBarPosition: NavigationBarPosition,
+    val autoAddReminderToNewNotes: Boolean,
+    val defaultReminderTime: LocalTime
 )
