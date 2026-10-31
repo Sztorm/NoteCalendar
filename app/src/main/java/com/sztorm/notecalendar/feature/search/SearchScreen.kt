@@ -199,7 +199,7 @@ private fun ColumnScope.SearchFilters(
         DateRangePickerDialog(
             selectedStartDate = selectedStartDate,
             selectedEndDate = selectedEndDate,
-            onDateRangeValueChange = { startDate, endDate ->
+            onDateRangeChange = { startDate, endDate ->
                 selectedStartDate = startDate
                 selectedEndDate = endDate
             },

@@ -25,7 +25,8 @@ object PreferenceKeys {
     val NavigationBarPosition = stringPreferencesKey("PrefKey_NavigationBarPosition")
 }
 
-object ObsoletePreferenceKeys {
+@Suppress("unused")
+object LegacyPreferenceKeys {
     val TurnOnNotifications = booleanPreferencesKey("PrefKey_EnableNotifications")
     val NotificationTime = intPreferencesKey("PrefKey_NotificationTime")
 }

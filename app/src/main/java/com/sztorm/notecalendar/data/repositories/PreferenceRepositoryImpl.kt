@@ -13,7 +13,6 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.sztorm.notecalendar.domain.repositories.PreferenceDefaults
 import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
-import com.sztorm.notecalendar.feature.settings.ObsoletePreferenceKeys
 import com.sztorm.notecalendar.feature.settings.PreferenceKeys
 import com.sztorm.notecalendar.feature.settings.calendar.StartingScreenType
 import com.sztorm.notecalendar.feature.settings.notes.NoteFontSize
@@ -26,13 +25,12 @@ import java.time.DayOfWeek
 import java.time.LocalTime
 
 private const val PREFERENCES_NAME = "com.sztorm.notecalendar_preferences"
-private const val HOUR_BITS: Int = 0b00000000_00000000_00000000_00011111
-private const val HOUR_BITS_SIZE: Int = 5
-private const val MINUTE_BITS: Int = 0b00000000_00000000_00000111_11100000
 
 private val Context.preferences: DataStore<Preferences> by preferencesDataStore(
     name = PREFERENCES_NAME,
-    produceMigrations = { listOf(SharedPreferencesMigration(context = it, PREFERENCES_NAME)) }
+    produceMigrations = {
+        listOf(SharedPreferencesMigration(context = it, PREFERENCES_NAME))
+    }
 )
 
 class PreferenceRepositoryImpl(context: Context) : PreferenceRepository {
@@ -49,15 +47,6 @@ class PreferenceRepositoryImpl(context: Context) : PreferenceRepository {
             }
             .map { it[key] ?: default }
             .first()
-
-    private fun Int.asLocalTime(): LocalTime {
-        val hour = this and HOUR_BITS
-        val minute = (this and MINUTE_BITS) shr HOUR_BITS_SIZE
-
-        return LocalTime.of(hour, minute)
-    }
-
-    private fun LocalTime.asInt(): Int = hour or (minute shl HOUR_BITS_SIZE)
 
     override suspend fun getBackgroundColor(default: Color) =
         Color(getPreference(PreferenceKeys.BackgroundColor, default.toArgb()))
@@ -89,15 +78,9 @@ class PreferenceRepositoryImpl(context: Context) : PreferenceRepository {
     override suspend fun getTextColor(default: Color) =
         Color(getPreference(PreferenceKeys.TextColor, default.toArgb()))
 
-    override suspend fun getTurnOnNotifications(default: Boolean): Boolean =
-        getPreference(ObsoletePreferenceKeys.TurnOnNotifications, default)
-
     override suspend fun getFirstDayOfWeek(default: DayOfWeek): DayOfWeek =
         getPreference(PreferenceKeys.FirstDayOfWeek, default.value.toString())
             .let { DayOfWeek.of(it.toInt()) }
-
-    override suspend fun getNotificationTime(default: LocalTime) =
-        getPreference(ObsoletePreferenceKeys.NotificationTime, default.asInt()).asLocalTime()
 
     override suspend fun getStartingScreen(default: StartingScreenType) =
         getPreference(PreferenceKeys.StartingScreen, default.ordinal.toString())
@@ -186,21 +169,9 @@ class PreferenceRepositoryImpl(context: Context) : PreferenceRepository {
         }
     }
 
-    override suspend fun setTurnOnNotifications(value: Boolean) {
-        context.preferences.edit {
-            it[ObsoletePreferenceKeys.TurnOnNotifications] = value
-        }
-    }
-
     override suspend fun setFirstDayOfWeek(value: DayOfWeek) {
         context.preferences.edit {
             it[PreferenceKeys.FirstDayOfWeek] = value.value.toString()
-        }
-    }
-
-    override suspend fun setNotificationTime(value: LocalTime) {
-        context.preferences.edit {
-            it[ObsoletePreferenceKeys.NotificationTime] = value.asInt()
         }
     }
 

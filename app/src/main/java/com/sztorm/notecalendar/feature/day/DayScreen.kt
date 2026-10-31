@@ -805,7 +805,7 @@ private fun BoxScope.ActionButtons(
         DateTimePickerDialog(
             title = stringResource(R.string.SetReminder),
             dateTime = viewModel.state.reminderDateTime.dateTime,
-            onDateTimeValueChange = onReminderDialogValueChange,
+            onDateTimeChange = onReminderDialogValueChange,
             onConfirm = onReminderDialogConfirm,
             onDismiss = onReminderDialogDismiss,
             selectableDates = DatesFrom(LocalDate.now()),

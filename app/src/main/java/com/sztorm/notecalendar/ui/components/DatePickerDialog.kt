@@ -31,7 +31,7 @@ import java.time.LocalDate
 @Composable
 fun DatePickerDialog(
     date: LocalDate?,
-    onDateValueChange: (LocalDate?) -> Unit,
+    onDateChange: (LocalDate?) -> Unit,
     onConfirm: (LocalDate) -> Unit,
     onDismiss: () -> Unit,
     confirmButtonText: String = stringResource(android.R.string.ok),
@@ -66,17 +66,17 @@ fun DatePickerDialog(
         selectableDates = selectableDates
     )
     LaunchedEffect(state.selectedDateMillis) {
-        onDateValueChange(state.selectedDateMillis?.epochMillisToLocalDate())
+        onDateChange(state.selectedDateMillis?.epochMillisToLocalDate())
     }
     DatePickerDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(
                 onClick = {
-                    val date = state.selectedDateMillis?.epochMillisToLocalDate()
+                    val selectedDate = state.selectedDateMillis?.epochMillisToLocalDate()
 
-                    if (date != null) {
-                        onConfirm(date)
+                    if (selectedDate != null) {
+                        onConfirm(selectedDate)
                     }
                 },
                 enabled = state.selectedDateMillis != null,

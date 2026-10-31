@@ -46,14 +46,8 @@ class PreferenceDefaultsImpl(context: Context) : PreferenceDefaults {
     override val textColor
         get() = getDefaultThemeColors(context.isDarkThemeEnabled).textColor
 
-    override val turnOnNotifications
-        get() = false
-
     override val firstDayOfWeek
         get() = getSystemFirstDayOfWeek()
-
-    override val notificationTime: LocalTime
-        get() = LocalTime.of(8, 0)
 
     override val startingScreen
         get() = StartingScreenType.DayScreen

@@ -45,15 +45,7 @@ interface PreferenceRepository {
         getBackgroundColorVariant(),
     )
 
-    /** Legacy setting */
-    @Suppress("unused")
-    suspend fun getTurnOnNotifications(default: Boolean = defaults.turnOnNotifications): Boolean
-
     suspend fun getFirstDayOfWeek(default: DayOfWeek = defaults.firstDayOfWeek): DayOfWeek
-
-    /** Legacy setting */
-    @Suppress("unused")
-    suspend fun getNotificationTime(default: LocalTime = defaults.notificationTime): LocalTime
 
     suspend fun getStartingScreen(
         default: StartingScreenType = defaults.startingScreen
@@ -109,15 +101,7 @@ interface PreferenceRepository {
             setBackgroundColorVariant(backgroundColorVariant)
         }
 
-    /** Legacy setting */
-    @Suppress("unused")
-    suspend fun setTurnOnNotifications(value: Boolean)
-
     suspend fun setFirstDayOfWeek(value: DayOfWeek)
-
-    /** Legacy setting */
-    @Suppress("unused")
-    suspend fun setNotificationTime(value: LocalTime)
 
     suspend fun setStartingScreen(value: StartingScreenType)
 

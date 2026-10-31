@@ -55,7 +55,7 @@ enum class DateTimePickerTab { Date, Time }
 fun DateTimePickerDialog(
     title: String,
     dateTime: LocalDateTime,
-    onDateTimeValueChange: (LocalDateTime) -> Unit,
+    onDateTimeChange: (LocalDateTime) -> Unit,
     onConfirm: (LocalDateTime) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
@@ -137,7 +137,7 @@ fun DateTimePickerDialog(
             val date = dateMillis.epochMillisToLocalDate()
             val time = LocalTime.of(timePickerState.hour, timePickerState.minute)
 
-            onDateTimeValueChange(LocalDateTime.of(date, time))
+            onDateTimeChange(LocalDateTime.of(date, time))
         }
     }
     ConfirmationDialog(

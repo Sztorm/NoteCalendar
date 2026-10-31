@@ -32,7 +32,7 @@ import java.time.LocalDate
 fun DateRangePickerDialog(
     selectedStartDate: LocalDate?,
     selectedEndDate: LocalDate?,
-    onDateRangeValueChange: (LocalDate?, LocalDate?) -> Unit,
+    onDateRangeChange: (LocalDate?, LocalDate?) -> Unit,
     onConfirm: (LocalDate?, LocalDate?) -> Unit,
     onDismiss: () -> Unit,
     confirmButtonText: String = stringResource(android.R.string.ok),
@@ -68,7 +68,7 @@ fun DateRangePickerDialog(
         selectableDates = selectableDates
     )
     LaunchedEffect(state.selectedStartDateMillis, state.selectedEndDateMillis) {
-        onDateRangeValueChange(
+        onDateRangeChange(
             state.selectedStartDateMillis?.epochMillisToLocalDate(),
             state.selectedEndDateMillis?.epochMillisToLocalDate()
         )

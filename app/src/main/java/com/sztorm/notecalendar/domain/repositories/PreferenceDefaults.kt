@@ -19,9 +19,7 @@ interface PreferenceDefaults {
     val primaryColor: Color
     val secondaryColor: Color
     val textColor: Color
-    val turnOnNotifications: Boolean
     val firstDayOfWeek: DayOfWeek
-    val notificationTime: LocalTime
     val startingScreen: StartingScreenType
     val noteFontSize: NoteFontSize
     val noteLineSpacing: NoteLineSpacing
