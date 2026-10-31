@@ -42,11 +42,11 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import com.sztorm.notecalendar.core.common.epochMillisToLocalDate
 import com.sztorm.notecalendar.core.common.format
-import java.time.Instant
+import com.sztorm.notecalendar.core.common.toEpochMillis
 import java.time.LocalDateTime
 import java.time.LocalTime
-import java.time.ZoneOffset
 
 enum class DateTimePickerTab { Date, Time }
 
@@ -111,7 +111,7 @@ fun DateTimePickerDialog(
     timeText: @Composable (String) -> Unit = { Text(text = it) },
 ) {
     val datePickerState = rememberDatePickerState(
-        initialSelectedDate = dateTime.toLocalDate(),
+        initialSelectedDateMillis = dateTime.toLocalDate().toEpochMillis(),
         selectableDates = selectableDates
     )
     val initialTime = dateTime.toLocalTime()
@@ -134,7 +134,7 @@ fun DateTimePickerDialog(
         val dateMillis = datePickerState.selectedDateMillis
 
         if (dateMillis != null) {
-            val date = Instant.ofEpochMilli(dateMillis).atZone(ZoneOffset.UTC).toLocalDate()
+            val date = dateMillis.epochMillisToLocalDate()
             val time = LocalTime.of(timePickerState.hour, timePickerState.minute)
 
             onDateTimeValueChange(LocalDateTime.of(date, time))
@@ -142,9 +142,8 @@ fun DateTimePickerDialog(
     }
     ConfirmationDialog(
         onConfirm = {
-            val date = datePickerState.selectedDateMillis?.let {
-                Instant.ofEpochMilli(it).atZone(ZoneOffset.UTC).toLocalDate()
-            }
+            val date = datePickerState.selectedDateMillis?.epochMillisToLocalDate()
+
             if (date != null) {
                 onConfirm(LocalDateTime.of(date, selectedTime))
             }
