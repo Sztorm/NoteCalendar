@@ -444,13 +444,21 @@ private fun BoxScope.ActionButtons(
         if (note != null) {
             if (note.reminderDateTime == null) {
                 showReminderTimePicker = true
-                val noteDateTime = viewModel.state.note?.reminderDateTime
-                    ?.toLocalDateTime()
-                    ?.let { ReminderDateTime(it) }
+                val noteDateTime = viewModel.state.note?.reminderDateTime?.toLocalDateTime()
+                val now = LocalDateTime.now()
+                val dateTime =
+                    (noteDateTime ?: LocalDateTime.of(
+                        appViewModel.state.dayScreenDate,
+                        now.toLocalTime()
+                    )).coerceAtLeast(now)
 
                 viewModel.onEvent(
                     DayScreenEvent.ReminderDateTimeChange(
-                        reminderDateTime = noteDateTime ?: ReminderDateTime.now()
+                        ReminderDateTime(
+                            dateTime,
+                            isSelectionInPast = now.year == dateTime.year &&
+                                now.dayOfYear == dateTime.dayOfYear
+                        )
                     )
                 )
             } else {
@@ -480,13 +488,21 @@ private fun BoxScope.ActionButtons(
     }
     val onEditReminderDialogClick = {
         showReminderTimePicker = true
-        val noteDateTime = viewModel.state.note?.reminderDateTime
-            ?.toLocalDateTime()
-            ?.let { ReminderDateTime(it) }
+        val noteDateTime = viewModel.state.note?.reminderDateTime?.toLocalDateTime()
+        val now = LocalDateTime.now()
+        val dateTime =
+            (noteDateTime ?: LocalDateTime.of(
+                appViewModel.state.dayScreenDate,
+                now.toLocalTime()
+            )).coerceAtLeast(now)
 
         viewModel.onEvent(
             DayScreenEvent.ReminderDateTimeChange(
-                reminderDateTime = noteDateTime ?: ReminderDateTime.now()
+                ReminderDateTime(
+                    dateTime,
+                    isSelectionInPast = now.year == dateTime.year &&
+                        now.dayOfYear == dateTime.dayOfYear
+                )
             )
         )
     }
@@ -711,9 +727,16 @@ private fun BoxScope.ActionButtons(
                 val remainingTime = viewModel.state.remainingReminderTime
 
                 if (viewModel.state.note?.reminderDateTime != null && remainingTime != null) {
-                    Text(text = remainingTime.toComponents { hours, minutes, seconds, _ ->
-                        "%02d:%02d:%02d"
-                            .format(Locale.current.platformLocale, hours, minutes, seconds)
+                    Text(text = remainingTime.toComponents { days, hours, minutes, seconds, _ ->
+                        if (days == 0L) {
+                            "%02d:%02d:%02d".format(
+                                Locale.current.platformLocale, hours, minutes, seconds
+                            )
+                        } else {
+                            "%02d:%02d:%02d:%02d".format(
+                                Locale.current.platformLocale, days, hours, minutes, seconds
+                            )
+                        }
                     })
                 }
             }
