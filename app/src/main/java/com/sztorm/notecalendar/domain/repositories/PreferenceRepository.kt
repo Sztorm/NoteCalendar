@@ -47,25 +47,19 @@ interface PreferenceRepository {
 
     /** Legacy setting */
     @Suppress("unused")
-    suspend fun getTurnOnNotifications(
-        default: Boolean = defaults.turnOnNotifications
-    ): Boolean
+    suspend fun getTurnOnNotifications(default: Boolean = defaults.turnOnNotifications): Boolean
 
     suspend fun getFirstDayOfWeek(default: DayOfWeek = defaults.firstDayOfWeek): DayOfWeek
 
     /** Legacy setting */
     @Suppress("unused")
-    suspend fun getNotificationTime(
-        default: LocalTime = defaults.notificationTime
-    ): LocalTime
+    suspend fun getNotificationTime(default: LocalTime = defaults.notificationTime): LocalTime
 
     suspend fun getStartingScreen(
         default: StartingScreenType = defaults.startingScreen
     ): StartingScreenType
 
-    suspend fun getNoteFontSize(
-        default: NoteFontSize = defaults.noteFontSize
-    ): NoteFontSize
+    suspend fun getNoteFontSize(default: NoteFontSize = defaults.noteFontSize): NoteFontSize
 
     suspend fun getNoteLineSpacing(
         default: NoteLineSpacing = defaults.noteLineSpacing
@@ -74,6 +68,12 @@ interface PreferenceRepository {
     suspend fun getNavigationBarPosition(
         default: NavigationBarPosition = defaults.navigationBarPosition
     ): NavigationBarPosition
+
+    suspend fun getAutoAddReminder(default: Boolean = defaults.autoAddReminder): Boolean
+
+    suspend fun getDefaultReminderTime(
+        default: LocalTime = defaults.defaultReminderTime
+    ): LocalTime
 
     suspend fun setBackgroundColor(value: Color)
 
@@ -126,4 +126,8 @@ interface PreferenceRepository {
     suspend fun setNoteLineSpacing(value: NoteLineSpacing)
 
     suspend fun setNavigationBarPosition(value: NavigationBarPosition)
+
+    suspend fun setAutoAddReminder(value: Boolean)
+
+    suspend fun setDefaultReminderTime(value: LocalTime)
 }

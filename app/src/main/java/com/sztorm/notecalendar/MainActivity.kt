@@ -26,7 +26,6 @@ import com.sztorm.notecalendar.platform.permissions.AppPermissionManager
 import com.sztorm.notecalendar.ui.theme.AppTheme
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
-import java.time.LocalTime
 
 data class BundleResult(
     val isLaunchedFromNotification: Boolean,
@@ -65,8 +64,8 @@ class MainActivity : ComponentActivity() {
                 noteFontSize = preferenceRepository.getNoteFontSize(),
                 noteLineSpacing = preferenceRepository.getNoteLineSpacing(),
                 navigationBarPosition = preferenceRepository.getNavigationBarPosition(),
-                autoAddReminder = false,
-                defaultReminderTime = LocalTime.of(8, 0)
+                autoAddReminder = preferenceRepository.getAutoAddReminder(),
+                defaultReminderTime = preferenceRepository.getDefaultReminderTime()
             )
         }
         val startingScreen =

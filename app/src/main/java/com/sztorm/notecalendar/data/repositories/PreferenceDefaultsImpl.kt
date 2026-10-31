@@ -66,4 +66,10 @@ class PreferenceDefaultsImpl(context: Context) : PreferenceDefaults {
 
     override val navigationBarPosition: NavigationBarPosition
         get() = NavigationBarPosition.Top
+
+    override val autoAddReminder: Boolean
+        get() = false
+
+    override val defaultReminderTime: LocalTime
+        get() = LocalTime.of(8, 0)
 }

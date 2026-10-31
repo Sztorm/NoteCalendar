@@ -6,9 +6,11 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 
 object PreferenceKeys {
+    val AutoAddReminder = booleanPreferencesKey("PrefKey_AutoAddReminder")
     val BackgroundColor = intPreferencesKey("PrefKey_BackgroundColor")
     val BackgroundColorVariant = intPreferencesKey("PrefKey_BackgroundColorVariant")
     val ButtonTextColor = intPreferencesKey("PrefKey_ButtonTextColor")
+    val DefaultReminderTime = intPreferencesKey("PrefKey_DefaultReminderTime")
     val InactiveElementColor = intPreferencesKey("PrefKey_InactiveElementColor")
     val NoteColor = intPreferencesKey("PrefKey_NoteColor")
     val NoteColorVariant = intPreferencesKey("PrefKey_NoteColorVariant")
@@ -18,9 +20,12 @@ object PreferenceKeys {
     val TextColor = intPreferencesKey("PrefKey_TextColor")
     val NoteFontSize = floatPreferencesKey("PrefKey_NoteFontSize")
     val NoteLineSpacing = floatPreferencesKey("PrefKey_NoteLineSpacing")
-    val TurnOnNotifications = booleanPreferencesKey("PrefKey_EnableNotifications")
     val FirstDayOfWeek = stringPreferencesKey("PrefKey_FirstDayOfWeek")
-    val NotificationTime = intPreferencesKey("PrefKey_NotificationTime")
     val StartingScreen = stringPreferencesKey("PrefKey_StartingScreen")
     val NavigationBarPosition = stringPreferencesKey("PrefKey_NavigationBarPosition")
+}
+
+object ObsoletePreferenceKeys {
+    val TurnOnNotifications = booleanPreferencesKey("PrefKey_EnableNotifications")
+    val NotificationTime = intPreferencesKey("PrefKey_NotificationTime")
 }

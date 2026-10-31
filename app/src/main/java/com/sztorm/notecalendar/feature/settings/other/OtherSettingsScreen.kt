@@ -62,6 +62,9 @@ fun OtherSettingsScreen(
                 title = "Automatically add a reminder", //stringResource(R.string.Settings_Other_AutoAddReminder) // TODO
                 checked = appViewModel.state.autoAddReminder,
                 onCheckedChange = { value ->
+                    coroutineScope.launch {
+                        preferenceRepository.setAutoAddReminder(value)
+                    }
                     appViewModel.onEvent(AppEvent.AutoAddReminderChange(value))
                 },
                 textColor = themeColors.textColor,
@@ -71,6 +74,9 @@ fun OtherSettingsScreen(
                 summary = "New and edited notes will automatically get a reminder at the selected time.", //stringResource(R.string.Settings_Other_DefaultReminderTime_Summary) // TODO
                 initialTime = appViewModel.state.defaultReminderTime,
                 onConfirm = { time ->
+                    coroutineScope.launch {
+                        preferenceRepository.setDefaultReminderTime(time)
+                    }
                     appViewModel.onEvent(AppEvent.DefaultReminderTimeChange(time))
                 },
                 titleColor = themeColors.textColor,

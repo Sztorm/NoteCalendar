@@ -26,4 +26,6 @@ interface PreferenceDefaults {
     val noteFontSize: NoteFontSize
     val noteLineSpacing: NoteLineSpacing
     val navigationBarPosition: NavigationBarPosition
+    val autoAddReminder: Boolean
+    val defaultReminderTime: LocalTime
 }

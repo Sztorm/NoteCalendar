@@ -13,6 +13,7 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.sztorm.notecalendar.domain.repositories.PreferenceDefaults
 import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
+import com.sztorm.notecalendar.feature.settings.ObsoletePreferenceKeys
 import com.sztorm.notecalendar.feature.settings.PreferenceKeys
 import com.sztorm.notecalendar.feature.settings.calendar.StartingScreenType
 import com.sztorm.notecalendar.feature.settings.notes.NoteFontSize
@@ -89,14 +90,14 @@ class PreferenceRepositoryImpl(context: Context) : PreferenceRepository {
         Color(getPreference(PreferenceKeys.TextColor, default.toArgb()))
 
     override suspend fun getTurnOnNotifications(default: Boolean): Boolean =
-        getPreference(PreferenceKeys.TurnOnNotifications, default)
+        getPreference(ObsoletePreferenceKeys.TurnOnNotifications, default)
 
     override suspend fun getFirstDayOfWeek(default: DayOfWeek): DayOfWeek =
         getPreference(PreferenceKeys.FirstDayOfWeek, default.value.toString())
             .let { DayOfWeek.of(it.toInt()) }
 
     override suspend fun getNotificationTime(default: LocalTime) =
-        getPreference(PreferenceKeys.NotificationTime, default.asInt()).asLocalTime()
+        getPreference(ObsoletePreferenceKeys.NotificationTime, default.asInt()).asLocalTime()
 
     override suspend fun getStartingScreen(default: StartingScreenType) =
         getPreference(PreferenceKeys.StartingScreen, default.ordinal.toString())
@@ -110,6 +111,14 @@ class PreferenceRepositoryImpl(context: Context) : PreferenceRepository {
     ) = NavigationBarPosition.valueOf(
         getPreference(PreferenceKeys.NavigationBarPosition, default.name)
     )
+
+    override suspend fun getAutoAddReminder(default: Boolean) =
+        getPreference(PreferenceKeys.AutoAddReminder, default)
+
+    override suspend fun getDefaultReminderTime(
+        default: LocalTime
+    ): LocalTime = getPreference(PreferenceKeys.DefaultReminderTime, default.toSecondOfDay())
+        .let { LocalTime.ofSecondOfDay(it.toLong()) }
 
     override suspend fun getNoteLineSpacing(default: NoteLineSpacing) = NoteLineSpacing(
         fontScaleFactor = getPreference(
@@ -179,7 +188,7 @@ class PreferenceRepositoryImpl(context: Context) : PreferenceRepository {
 
     override suspend fun setTurnOnNotifications(value: Boolean) {
         context.preferences.edit {
-            it[PreferenceKeys.TurnOnNotifications] = value
+            it[ObsoletePreferenceKeys.TurnOnNotifications] = value
         }
     }
 
@@ -191,7 +200,7 @@ class PreferenceRepositoryImpl(context: Context) : PreferenceRepository {
 
     override suspend fun setNotificationTime(value: LocalTime) {
         context.preferences.edit {
-            it[PreferenceKeys.NotificationTime] = value.asInt()
+            it[ObsoletePreferenceKeys.NotificationTime] = value.asInt()
         }
     }
 
@@ -216,6 +225,18 @@ class PreferenceRepositoryImpl(context: Context) : PreferenceRepository {
     override suspend fun setNavigationBarPosition(value: NavigationBarPosition) {
         context.preferences.edit {
             it[PreferenceKeys.NavigationBarPosition] = value.name
+        }
+    }
+
+    override suspend fun setAutoAddReminder(value: Boolean) {
+        context.preferences.edit {
+            it[PreferenceKeys.AutoAddReminder] = value
+        }
+    }
+
+    override suspend fun setDefaultReminderTime(value: LocalTime) {
+        context.preferences.edit {
+            it[PreferenceKeys.DefaultReminderTime] = value.toSecondOfDay()
         }
     }
 }
