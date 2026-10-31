@@ -16,19 +16,23 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import java.time.Instant
+import com.sztorm.notecalendar.core.common.epochMillisToLocalDate
+import com.sztorm.notecalendar.core.common.toEpochMillis
 import java.time.LocalDate
-import java.time.ZoneOffset
 
+@Suppress("unused")
 @Composable
 fun DatePickerDialog(
-    onDateSelected: (LocalDate) -> Unit,
+    date: LocalDate?,
+    onDateValueChange: (LocalDate?) -> Unit,
+    onConfirm: (LocalDate) -> Unit,
     onDismiss: () -> Unit,
     confirmButtonText: String = stringResource(android.R.string.ok),
     dismissButtonText: String = stringResource(android.R.string.cancel),
@@ -57,18 +61,22 @@ fun DatePickerDialog(
         disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
     )
 ) {
-    val state = rememberDatePickerState(selectableDates = selectableDates)
-
+    val state = rememberDatePickerState(
+        initialSelectedDateMillis = date?.toEpochMillis(),
+        selectableDates = selectableDates
+    )
+    LaunchedEffect(state.selectedDateMillis) {
+        onDateValueChange(state.selectedDateMillis?.epochMillisToLocalDate())
+    }
     DatePickerDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(
                 onClick = {
-                    val date = state.selectedDateMillis?.let {
-                        Instant.ofEpochMilli(it).atZone(ZoneOffset.UTC).toLocalDate()
-                    }
+                    val date = state.selectedDateMillis?.epochMillisToLocalDate()
+
                     if (date != null) {
-                        onDateSelected(date)
+                        onConfirm(date)
                     }
                 },
                 enabled = state.selectedDateMillis != null,
