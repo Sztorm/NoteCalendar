@@ -23,7 +23,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
@@ -48,11 +47,14 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -70,13 +72,14 @@ import com.sztorm.notecalendar.platform.notifications.AppNotificationManager
 import com.sztorm.notecalendar.platform.permissions.AppPermission
 import com.sztorm.notecalendar.platform.permissions.AppPermissionManager
 import com.sztorm.notecalendar.ui.components.ActionButton
+import com.sztorm.notecalendar.ui.components.DateTimePickerDialog
+import com.sztorm.notecalendar.ui.components.DateTimePickerTab
+import com.sztorm.notecalendar.ui.components.DatesFrom
 import com.sztorm.notecalendar.ui.components.DayNote
 import com.sztorm.notecalendar.ui.components.InfiniteHorizontalPager
-import com.sztorm.notecalendar.ui.components.TimePickerDialog
 import com.sztorm.notecalendar.ui.components.TimedContent
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
 import java.time.OffsetDateTime
 import kotlin.time.Duration as KotlinDuration
 
@@ -141,6 +144,7 @@ fun DayScreen(
                     )
                 },
                 noteBackup = null,
+                reminderDateTime = ReminderDateTime.now(),
                 remainingReminderTime = currNote?.reminderDateTime?.remainingDurationFromNow(),
                 haveReminderPermissionsBeenDenied = false
             )
@@ -343,15 +347,25 @@ private fun BoxScope.ActionButtons(
             )
         }
     }
-    val onReminderDialogConfirm = { localTime: LocalTime ->
-        val offsetNow = OffsetDateTime.now()
+    val onReminderDialogValueChange = { dateTime: LocalDateTime ->
         val localNow = LocalDateTime.now()
-        val reminderDateTime = OffsetDateTime.of(
-            if (localTime > localNow.toLocalTime()) localNow.toLocalDate()
-            else localNow.toLocalDate().plusDays(1),
-            localTime,
-            offsetNow.offset
+
+        viewModel.onEvent(
+            DayScreenEvent.ReminderDateTimeChange(
+                ReminderDateTime(
+                    dateTime = dateTime,
+                    isSelectionInPast = dateTime <= localNow
+                )
+            )
         )
+    }
+    val onReminderDialogConfirm = { dateTime: LocalDateTime ->
+        showReminderTimePicker = false
+        val offsetNow = OffsetDateTime.now()
+        val correctedDateTime =
+            if (viewModel.state.reminderDateTime.isSelectionInPast) dateTime.plusDays(1)
+            else dateTime
+        val reminderDateTime = OffsetDateTime.of(correctedDateTime, offsetNow.offset)
         val note = viewModel.state.note
 
         if (note != null) {
@@ -421,7 +435,7 @@ private fun BoxScope.ActionButtons(
             DayScreenEvent.UiStateChange(DayUiState.Viewing)
         )
     }
-    val onReminderDialogDismiss = { _: LocalTime ->
+    val onReminderDialogDismiss = {
         showReminderTimePicker = false
     }
     val onAddOrEditReminderClick = {
@@ -430,6 +444,15 @@ private fun BoxScope.ActionButtons(
         if (note != null) {
             if (note.reminderDateTime == null) {
                 showReminderTimePicker = true
+                val noteDateTime = viewModel.state.note?.reminderDateTime
+                    ?.toLocalDateTime()
+                    ?.let { ReminderDateTime(it) }
+
+                viewModel.onEvent(
+                    DayScreenEvent.ReminderDateTimeChange(
+                        reminderDateTime = noteDateTime ?: ReminderDateTime.now()
+                    )
+                )
             } else {
                 viewModel.onEvent(
                     DayScreenEvent.UiStateChange(
@@ -457,6 +480,15 @@ private fun BoxScope.ActionButtons(
     }
     val onEditReminderDialogClick = {
         showReminderTimePicker = true
+        val noteDateTime = viewModel.state.note?.reminderDateTime
+            ?.toLocalDateTime()
+            ?.let { ReminderDateTime(it) }
+
+        viewModel.onEvent(
+            DayScreenEvent.ReminderDateTimeChange(
+                reminderDateTime = noteDateTime ?: ReminderDateTime.now()
+            )
+        )
     }
     val onUndoNoteDeletionClick = {
         val note = viewModel.state.noteBackup
@@ -737,17 +769,24 @@ private fun BoxScope.ActionButtons(
         )
     }
     if (showReminderTimePicker) {
-        TimePickerDialog(
+        DateTimePickerDialog(
             title = stringResource(R.string.SetReminder),
-            initialTime = viewModel.state.note?.reminderDateTime?.toLocalTime()
-                ?: OffsetDateTime.now().toLocalTime(),
-            titleColor = themeColors.textColor,
-            dialogButtonColors = ButtonDefaults.textButtonColors(
-                contentColor = themeColors.primaryColor,
-                disabledContentColor = themeColors.inactiveTextColor
-            ),
+            dateTime = viewModel.state.reminderDateTime.dateTime,
+            onDateTimeValueChange = onReminderDialogValueChange,
             onConfirm = onReminderDialogConfirm,
-            onDismiss = onReminderDialogDismiss
+            onDismiss = onReminderDialogDismiss,
+            selectableDates = DatesFrom(LocalDate.now()),
+            initialTab = DateTimePickerTab.Time,
+            dateText = {
+                Text(text = buildAnnotatedString {
+                    append(it)
+                    if (viewModel.state.reminderDateTime.isSelectionInPast) {
+                        withStyle(SpanStyle(color = themeColors.primaryColor)) {
+                            append(" +1")
+                        }
+                    }
+                })
+            }
         )
     }
 }
