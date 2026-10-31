@@ -27,6 +27,7 @@ import com.sztorm.mathkit.Vector2F
 import com.sztorm.notecalendar.R
 import org.json.JSONArray
 import java.time.DayOfWeek
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.Month
@@ -77,6 +78,11 @@ val Int.isEven
 
 val Int.isOdd
     get() = (this and 1) != 0
+
+fun Long.epochMillisToLocalDate(): LocalDate = Instant
+    .ofEpochMilli(this)
+    .atZone(ZoneOffset.UTC)
+    .toLocalDate()
 
 fun <T> MutableList<T>.addLastKt(item: T) = add(item)
 
@@ -365,12 +371,12 @@ fun YearMonth.getLocalizedName() =
     "${month.getLocalizedName()} $year"
 
 /**
- * API level 31 (S) and greater: Checks if [AlarmManager.canScheduleExactAlarms] then calls
- * [AlarmManager.setExactAndAllowWhileIdle].
+ * API level 31 (S) and greater: Checks if [canScheduleExactAlarms] then calls
+ * [setExactAndAllowWhileIdle].
  *
- * API level 23 (M) and greater: Calls [AlarmManager.setExactAndAllowWhileIdle].
+ * API level 23 (M) and greater: Calls [setExactAndAllowWhileIdle].
  *
- * Lower API levels: Calls [AlarmManager.setExact].
+ * Lower API levels: Calls [setExact].
  **/
 fun AlarmManager.setExactAndAllowWhileIdleCompat(
     type: Int, triggerAtMillis: Long, operation: PendingIntent

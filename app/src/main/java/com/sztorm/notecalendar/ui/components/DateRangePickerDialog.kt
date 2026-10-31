@@ -17,19 +17,23 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import java.time.Instant
+import com.sztorm.notecalendar.core.common.epochMillisToLocalDate
+import com.sztorm.notecalendar.core.common.toEpochMillis
 import java.time.LocalDate
-import java.time.ZoneOffset
 
 @Composable
 fun DateRangePickerDialog(
-    onDateRangeSelected: (LocalDate?, LocalDate?) -> Unit,
+    selectedStartDate: LocalDate?,
+    selectedEndDate: LocalDate?,
+    onDateRangeValueChange: (LocalDate?, LocalDate?) -> Unit,
+    onConfirm: (LocalDate?, LocalDate?) -> Unit,
     onDismiss: () -> Unit,
     confirmButtonText: String = stringResource(android.R.string.ok),
     dismissButtonText: String = stringResource(android.R.string.cancel),
@@ -58,20 +62,26 @@ fun DateRangePickerDialog(
         disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
     )
 ) {
-    val state = rememberDateRangePickerState(selectableDates = selectableDates)
-
+    val state = rememberDateRangePickerState(
+        initialSelectedStartDateMillis = selectedStartDate?.toEpochMillis(),
+        initialSelectedEndDateMillis = selectedEndDate?.toEpochMillis(),
+        selectableDates = selectableDates
+    )
+    LaunchedEffect(state.selectedStartDateMillis, state.selectedEndDateMillis) {
+        onDateRangeValueChange(
+            state.selectedStartDateMillis?.epochMillisToLocalDate(),
+            state.selectedEndDateMillis?.epochMillisToLocalDate()
+        )
+    }
     DatePickerDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(
                 onClick = {
-                    val startDate = state.selectedStartDateMillis?.let {
-                        Instant.ofEpochMilli(it).atZone(ZoneOffset.UTC).toLocalDate()
-                    }
-                    val endDate = state.selectedEndDateMillis?.let {
-                        Instant.ofEpochMilli(it).atZone(ZoneOffset.UTC).toLocalDate()
-                    }
-                    onDateRangeSelected(startDate, endDate)
+                    onConfirm(
+                        state.selectedStartDateMillis?.epochMillisToLocalDate(),
+                        state.selectedEndDateMillis?.epochMillisToLocalDate()
+                    )
                 },
                 enabled = state.selectedStartDateMillis != null &&
                     state.selectedEndDateMillis != null,

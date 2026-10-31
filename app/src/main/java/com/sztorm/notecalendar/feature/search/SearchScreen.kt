@@ -193,14 +193,21 @@ private fun ColumnScope.SearchFilters(
         }
     }
     if (showDateRangePicker) {
+        var selectedStartDate: LocalDate? by remember { mutableStateOf(null) }
+        var selectedEndDate: LocalDate? by remember { mutableStateOf(null) }
+
         DateRangePickerDialog(
-            onDateRangeSelected = { startDate, endDate ->
+            selectedStartDate = selectedStartDate,
+            selectedEndDate = selectedEndDate,
+            onDateRangeValueChange = { startDate, endDate ->
+                selectedStartDate = startDate
+                selectedEndDate = endDate
+            },
+            onConfirm = { startDate, endDate ->
                 showDateRangePicker = false
                 onDateRangeFilterChange(startDate, endDate)
             },
-            onDismiss = {
-                showDateRangePicker = false
-            },
+            onDismiss = { showDateRangePicker = false },
             dateFormatter = dateFormatter,
             buttonColors = ButtonDefaults.textButtonColors(
                 contentColor = themeColors.primaryColor,
@@ -222,9 +229,8 @@ private fun SearchBar(
     onDateRangeFilterChange: (LocalDate?, LocalDate?) -> Unit,
     themeColors: ThemeColors
 ) {
-    var filtersExpanded by rememberSaveable {
-        mutableStateOf(false)
-    }
+    var filtersExpanded by rememberSaveable { mutableStateOf(false) }
+
     Column(modifier = Modifier.fillMaxWidth()) {
         SearchTextField(
             state = state,
