@@ -44,7 +44,7 @@ fun TimePickerPreference(
     onConfirm: (LocalTime) -> Unit,
     modifier: Modifier = Modifier,
     is24HourFormat: Boolean = DateFormat.is24HourFormat(LocalContext.current),
-    onDismiss: ((LocalTime) -> Unit)? = null,
+    onDismiss: (() -> Unit)? = null,
     titleColor: Color = MaterialTheme.colorScheme.onSurface,
     summary: String? = null,
     summaryColor: Color = Color.Unspecified,
@@ -126,11 +126,9 @@ fun TimePickerPreference(
                 openDialog = false
                 onConfirm(time)
             },
-            onDismiss = { selectedTime ->
+            onDismiss = {
                 openDialog = false
-                timePickerState.hour = initialTime.hour
-                timePickerState.minute = initialTime.minute
-                onDismiss?.invoke(selectedTime)
+                onDismiss?.invoke()
             },
             state = timePickerState,
             titleColor = titleColor,

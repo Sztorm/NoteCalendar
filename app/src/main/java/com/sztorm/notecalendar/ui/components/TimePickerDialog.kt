@@ -18,6 +18,7 @@ import androidx.compose.material3.TimePickerDefaults
 import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,14 +29,70 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import java.time.LocalTime
 
+@Suppress("unused")
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TimePickerDialog(
+    title: String,
+    time: LocalTime,
+    onTimeChange: (LocalTime) -> Unit,
+    onConfirm: (LocalTime) -> Unit,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+    is24Hour: Boolean = DateFormat.is24HourFormat(LocalContext.current),
+    titleColor: Color = Color.Unspecified,
+    dialogButtonColors: ButtonColors = ButtonDefaults.textButtonColors(),
+    dialogColors: CardColors = CardDefaults.cardColors(
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface
+    ),
+    timePickerColors: TimePickerColors = TimePickerDefaults.colors(
+        clockDialColor = MaterialTheme.colorScheme.surfaceVariant,
+        clockDialSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
+        clockDialUnselectedContentColor = MaterialTheme.colorScheme.onSurface,
+        selectorColor = MaterialTheme.colorScheme.primary,
+        containerColor = MaterialTheme.colorScheme.onSurface,
+        periodSelectorBorderColor = MaterialTheme.colorScheme.onSurface,
+        periodSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
+        periodSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+        periodSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
+        periodSelectorUnselectedContentColor = MaterialTheme.colorScheme.onSurface,
+        timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary,
+        timeSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+        timeSelectorSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
+        timeSelectorUnselectedContentColor = MaterialTheme.colorScheme.onSurface,
+    )
+) {
+    val state = rememberTimePickerState(
+        initialHour = time.hour,
+        initialMinute = time.minute,
+        is24Hour = is24Hour,
+    )
+    LaunchedEffect(state.hour, state.minute) {
+        onTimeChange(LocalTime.of(state.hour, state.minute))
+    }
+    TimePickerDialog(
+        title = title,
+        initialTime = time,
+        onConfirm = onConfirm,
+        modifier = modifier,
+        onDismiss = onDismiss,
+        state = state,
+        titleColor = titleColor,
+        dialogButtonColors = dialogButtonColors,
+        dialogColors = dialogColors,
+        timePickerColors = timePickerColors
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePickerDialog(
     title: String,
     initialTime: LocalTime,
     onConfirm: (LocalTime) -> Unit,
+    onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    onDismiss: ((LocalTime) -> Unit)? = null,
     state: TimePickerState = rememberTimePickerState(
         initialHour = initialTime.hour,
         initialMinute = initialTime.minute,
@@ -68,9 +125,7 @@ fun TimePickerDialog(
         onConfirm = {
             onConfirm(LocalTime.of(state.hour, state.minute))
         },
-        onDismiss = {
-            onDismiss?.invoke(LocalTime.of(state.hour, state.minute))
-        },
+        onDismiss = onDismiss,
         properties = DialogProperties(
             dismissOnBackPress = true,
             dismissOnClickOutside = true,
