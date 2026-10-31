@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
                 noteFontSize = preferenceRepository.getNoteFontSize(),
                 noteLineSpacing = preferenceRepository.getNoteLineSpacing(),
                 navigationBarPosition = preferenceRepository.getNavigationBarPosition(),
-                autoAddReminderToNewNotes = false,
+                autoAddReminder = false,
                 defaultReminderTime = LocalTime.of(8, 0)
             )
         }

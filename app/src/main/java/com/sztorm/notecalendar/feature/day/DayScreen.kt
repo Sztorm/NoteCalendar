@@ -348,13 +348,11 @@ private fun BoxScope.ActionButtons(
         }
     }
     val onReminderDialogValueChange = { dateTime: LocalDateTime ->
-        val localNow = LocalDateTime.now()
-
         viewModel.onEvent(
             DayScreenEvent.ReminderDateTimeChange(
                 ReminderDateTime(
                     dateTime = dateTime,
-                    isSelectionInPast = dateTime <= localNow
+                    isSelectionInPast = dateTime <= LocalDateTime.now()
                 )
             )
         )
@@ -643,6 +641,18 @@ private fun BoxScope.ActionButtons(
             viewModel.onEvent(
                 DayScreenEvent.UiStateChange(DayUiState.Viewing)
             )
+            if (appViewModel.state.autoAddReminder) {
+                val now = LocalDateTime.now()
+                val dateTime = LocalDateTime.of(
+                    appViewModel.state.dayScreenDate, appViewModel.state.defaultReminderTime
+                )
+                if (dateTime >= now) {
+                    viewModel.onEvent(
+                        DayScreenEvent.ReminderDateTimeChange(ReminderDateTime(dateTime))
+                    )
+                    onReminderDialogConfirm(dateTime)
+                }
+            }
         }
         focusRequester.freeFocus()
         keyboardController?.hide()

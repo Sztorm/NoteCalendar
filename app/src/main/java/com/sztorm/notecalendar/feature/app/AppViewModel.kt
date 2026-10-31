@@ -29,9 +29,7 @@ class AppViewModel(initialState: AppState) : ViewModel() {
             is AppEvent.NavigationBarPositionChange ->
                 state.copy(navigationBarPosition = event.navigationPosition)
 
-            is AppEvent.AutoAddReminderToNewNotesChange ->
-                state.copy(autoAddReminderToNewNotes = event.value)
-
+            is AppEvent.AutoAddReminderChange -> state.copy(autoAddReminder = event.value)
             is AppEvent.DefaultReminderTimeChange -> state.copy(defaultReminderTime = event.time)
         }
     }
@@ -58,7 +56,7 @@ sealed class AppEvent {
         val navigationPosition: NavigationBarPosition
     ) : AppEvent()
 
-    data class AutoAddReminderToNewNotesChange(val value: Boolean) : AppEvent()
+    data class AutoAddReminderChange(val value: Boolean) : AppEvent()
     data class DefaultReminderTimeChange(val time: LocalTime) : AppEvent()
 }
 
@@ -70,6 +68,6 @@ data class AppState(
     val noteFontSize: NoteFontSize,
     val noteLineSpacing: NoteLineSpacing,
     val navigationBarPosition: NavigationBarPosition,
-    val autoAddReminderToNewNotes: Boolean,
+    val autoAddReminder: Boolean,
     val defaultReminderTime: LocalTime
 )

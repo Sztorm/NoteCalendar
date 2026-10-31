@@ -60,15 +60,15 @@ fun OtherSettingsScreen(
         ) { enabled ->
             SwitchPreference(
                 title = "Automatically add a reminder", //stringResource(R.string.Settings_Other_AutoAddReminder) // TODO
-                checked = appViewModel.state.autoAddReminderToNewNotes,
+                checked = appViewModel.state.autoAddReminder,
                 onCheckedChange = { value ->
-                    appViewModel.onEvent(AppEvent.AutoAddReminderToNewNotesChange(value))
+                    appViewModel.onEvent(AppEvent.AutoAddReminderChange(value))
                 },
                 textColor = themeColors.textColor,
             )
             TimePickerPreference(
                 title = "Default reminder time", //stringResource(R.string.Settings_Other_DefaultReminderTime) // TODO
-                summary = "New notes will automatically get a reminder at the selected time.", //stringResource(R.string.Settings_Other_DefaultReminderTime_Summary) // TODO
+                summary = "New and edited notes will automatically get a reminder at the selected time.", //stringResource(R.string.Settings_Other_DefaultReminderTime_Summary) // TODO
                 initialTime = appViewModel.state.defaultReminderTime,
                 onConfirm = { time ->
                     appViewModel.onEvent(AppEvent.DefaultReminderTimeChange(time))
@@ -79,7 +79,7 @@ fun OtherSettingsScreen(
                     contentColor = themeColors.primaryColor,
                     disabledContentColor = themeColors.inactiveTextColor
                 ),
-                enabled = enabled && appViewModel.state.autoAddReminderToNewNotes,
+                enabled = enabled && appViewModel.state.autoAddReminder,
             )
         }
     }
