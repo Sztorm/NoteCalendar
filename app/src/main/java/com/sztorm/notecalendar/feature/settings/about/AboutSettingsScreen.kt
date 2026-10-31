@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.sp
 import com.mikepenz.aboutlibraries.LibsBuilder
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.feature.app.AppViewModel
-import com.sztorm.notecalendar.ui.components.preferences.CategoryPreference
 import com.sztorm.notecalendar.ui.components.preferences.Preference
 import com.sztorm.notecalendar.ui.components.preferences.SubpreferenceScreen
 import kotlinx.coroutines.launch
@@ -99,6 +98,54 @@ private fun CopyButton(
 }
 
 @Composable
+private fun AboutPreference(
+    title: String,
+    summary: @Composable () -> Unit,
+    onCopy: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.padding(horizontal = 24.dp, vertical = 16.dp)) {
+        Row {
+            Text(
+                text = title,
+                fontSize = 20.sp
+            )
+        }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(top = 8.dp)
+        ) {
+            summary()
+            Spacer(Modifier.weight(1f))
+            CopyButton(
+                onClick = onCopy,
+                iconColor = MaterialTheme.colorScheme.onBackground,
+                borderColor = MaterialTheme.colorScheme.onBackground,
+                pressedBackgroundColor = MaterialTheme.colorScheme.primary,
+            )
+        }
+    }
+}
+
+@Composable
+private fun AboutPreference(
+    title: String,
+    summary: String,
+    onCopy: () -> Unit,
+    modifier: Modifier = Modifier
+) = AboutPreference(
+    title = title,
+    summary = {
+        Text(
+            text = summary,
+            fontSize = 20.sp
+        )
+    },
+    onCopy = onCopy,
+    modifier = modifier,
+)
+
+@Composable
 fun AboutSettingsScreen(
     appViewModel: AppViewModel,
     onBackButtonClick: () -> Unit
@@ -114,214 +161,114 @@ fun AboutSettingsScreen(
         iconTint = themeColors.textColor,
         onBackButtonClick = onBackButtonClick
     ) {
-        CategoryPreference(
-            title = stringResource(R.string.Settings_About_Basic),
-            titleColor = themeColors.secondaryColor
-        ) {
-            Column(
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
-            ) {
-                Row {
-                    Text(
-                        text = stringResource(R.string.Settings_About_Version),
-                        fontSize = 20.sp
-                    )
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(top = 8.dp)
-                ) {
-                    Text(
-                        text = AppInfo.VERSION,
-                        fontSize = 16.sp
-                    )
-                    Spacer(Modifier.weight(1f))
-                    CopyButton(
-                        onClick = {
-                            coroutineScope.launch {
-                                clipboardManager.setClipEntry(
-                                    ClipEntry(
-                                        ClipData.newPlainText(
-                                            "version", AppInfo.VERSION
-                                        )
-                                    )
-                                )
-                            }
-                        },
-                        iconColor = themeColors.textColor,
-                        borderColor = themeColors.textColor,
-                        pressedBackgroundColor = themeColors.primaryColor,
+        AboutPreference(
+            title = stringResource(R.string.Settings_About_Version),
+            summary = AppInfo.VERSION,
+            onCopy = {
+                coroutineScope.launch {
+                    clipboardManager.setClipEntry(
+                        ClipEntry(
+                            ClipData.newPlainText(
+                                "version", AppInfo.VERSION
+                            )
+                        )
                     )
                 }
             }
-            Column(
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
-            ) {
-                Row {
-                    Text(
-                        text = stringResource(R.string.Settings_About_Contact),
-                        fontSize = 20.sp
-                    )
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(top = 8.dp)
-                ) {
-                    Text(
-                        text = AppInfo.CONTACT_EMAIL,
-                        fontSize = 16.sp
-                    )
-                    Spacer(Modifier.weight(1f))
-                    CopyButton(
-                        onClick = {
-                            coroutineScope.launch {
-                                clipboardManager.setClipEntry(
-                                    ClipEntry(
-                                        ClipData.newPlainText(
-                                            "contact email", AppInfo.CONTACT_EMAIL
-                                        )
-                                    )
-                                )
-                            }
-                        },
-                        iconColor = themeColors.textColor,
-                        borderColor = themeColors.textColor,
-                        pressedBackgroundColor = themeColors.primaryColor,
+        )
+        AboutPreference(
+            title = stringResource(R.string.Settings_About_Contact),
+            summary = AppInfo.CONTACT_EMAIL,
+            onCopy = {
+                coroutineScope.launch {
+                    clipboardManager.setClipEntry(
+                        ClipEntry(
+                            ClipData.newPlainText(
+                                "contact email", AppInfo.CONTACT_EMAIL
+                            )
+                        )
                     )
                 }
             }
-            Column(
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
-            ) {
-                Row {
-                    Text(
-                        text = stringResource(R.string.Settings_About_SourceCode),
-                        fontSize = 20.sp
-                    )
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(top = 8.dp)
-                ) {
-                    Link(
-                        text = AppInfo.SOURCE_CODE_GITHUB,
-                        url = AppInfo.SOURCE_CODE_GITHUB_URL
-                    )
-                    Spacer(Modifier.weight(1f))
-                    CopyButton(
-                        onClick = {
-                            coroutineScope.launch {
-                                clipboardManager.setClipEntry(
-                                    ClipEntry(
-                                        ClipData.newPlainText(
-                                            "source code url",
-                                            AppInfo.SOURCE_CODE_GITHUB_URL
-                                        )
-                                    )
-                                )
-                            }
-                        },
-                        iconColor = themeColors.textColor,
-                        borderColor = themeColors.textColor,
-                        pressedBackgroundColor = themeColors.primaryColor,
+        )
+        AboutPreference(
+            title = stringResource(R.string.Settings_About_SourceCode),
+            summary = {
+                Link(
+                    text = AppInfo.SOURCE_CODE_GITHUB,
+                    url = AppInfo.SOURCE_CODE_GITHUB_URL
+                )
+            },
+            onCopy = {
+                coroutineScope.launch {
+                    clipboardManager.setClipEntry(
+                        ClipEntry(
+                            ClipData.newPlainText(
+                                "source code url",
+                                AppInfo.SOURCE_CODE_GITHUB_URL
+                            )
+                        )
                     )
                 }
             }
-            Column(
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
-            ) {
-                Row {
-                    Text(
-                        text = stringResource(R.string.Settings_About_License),
-                        fontSize = 20.sp
-                    )
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(top = 8.dp)
-                ) {
-                    Link(
-                        text = AppInfo.LICENSE,
-                        url = AppInfo.LICENSE_URL
-                    )
-                    Spacer(Modifier.weight(1f))
-                    CopyButton(
-                        onClick = {
-                            coroutineScope.launch {
-                                clipboardManager.setClipEntry(
-                                    ClipEntry(
-                                        ClipData.newPlainText(
-                                            "license url", AppInfo.LICENSE_URL
-                                        )
-                                    )
-                                )
-                            }
-                        },
-                        iconColor = themeColors.textColor,
-                        borderColor = themeColors.textColor,
-                        pressedBackgroundColor = themeColors.primaryColor,
+        )
+        AboutPreference(
+            title = stringResource(R.string.Settings_About_License),
+            summary = {
+                Link(
+                    text = AppInfo.LICENSE,
+                    url = AppInfo.LICENSE_URL
+                )
+            },
+            onCopy = {
+                coroutineScope.launch {
+                    clipboardManager.setClipEntry(
+                        ClipEntry(
+                            ClipData.newPlainText(
+                                "license url", AppInfo.LICENSE_URL
+                            )
+                        )
                     )
                 }
             }
-            Column(
-                modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
-            ) {
-                Row {
-                    Text(
-                        text = stringResource(R.string.Settings_About_PrivacyPolicy),
-                        fontSize = 20.sp
-                    )
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(top = 8.dp)
-                ) {
-                    Link(
-                        text = AppInfo.SOURCE_CODE_GITHUB,
-                        url = AppInfo.PRIVACY_POLICY_URL
-                    )
-                    Spacer(Modifier.weight(1f))
-                    CopyButton(
-                        onClick = {
-                            coroutineScope.launch {
-                                clipboardManager.setClipEntry(
-                                    ClipEntry(
-                                        ClipData.newPlainText(
-                                            "privacy policy url",
-                                            AppInfo.PRIVACY_POLICY_URL
-                                        )
-                                    )
-                                )
-                            }
-                        },
-                        iconColor = themeColors.textColor,
-                        borderColor = themeColors.textColor,
-                        pressedBackgroundColor = themeColors.primaryColor,
+        )
+        AboutPreference(
+            title = stringResource(R.string.Settings_About_PrivacyPolicy),
+            summary = {
+                Link(
+                    text = AppInfo.SOURCE_CODE_GITHUB,
+                    url = AppInfo.PRIVACY_POLICY_URL
+                )
+            },
+            onCopy = {
+                coroutineScope.launch {
+                    clipboardManager.setClipEntry(
+                        ClipEntry(
+                            ClipData.newPlainText(
+                                "privacy policy url",
+                                AppInfo.PRIVACY_POLICY_URL
+                            )
+                        )
                     )
                 }
             }
-        }
-        CategoryPreference(
-            title = stringResource(R.string.Settings_About_Advanced),
-            titleColor = themeColors.secondaryColor
-        ) {
-            val title = stringResource(R.string.Settings_About_LibraryLicenses)
+        )
+        val title = stringResource(R.string.Settings_About_LibraryLicenses)
 
-            Preference(
-                title = title,
-                titleColor = themeColors.textColor,
-                icon = painterResource(R.drawable.icon_outline_rounded_license),
-                iconColorFilter = ColorFilter.tint(themeColors.secondaryColor),
-                onClick = {
-                    context.startActivity(
-                        LibsBuilder()
-                            .withActivityTitle(title)
-                            .withEdgeToEdge(true)
-                            .withSearchEnabled(true)
-                            .intent(context)
-                    )
-                }
-            )
-        }
+        Preference(
+            title = title,
+            titleColor = themeColors.textColor,
+            icon = painterResource(R.drawable.icon_outline_rounded_license),
+            iconColorFilter = ColorFilter.tint(themeColors.secondaryColor),
+            onClick = {
+                context.startActivity(
+                    LibsBuilder()
+                        .withActivityTitle(title)
+                        .withEdgeToEdge(true)
+                        .withSearchEnabled(true)
+                        .intent(context)
+                )
+            }
+        )
     }
 }
