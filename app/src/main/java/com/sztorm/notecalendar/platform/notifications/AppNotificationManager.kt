@@ -16,13 +16,16 @@ import com.sztorm.notecalendar.core.common.setExactAndAllowWhileIdleCompat
 import com.sztorm.notecalendar.core.common.stableHash
 import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.core.logging.LogTags
+import com.sztorm.notecalendar.data.repositories.NoteRepositoryImpl
 import com.sztorm.notecalendar.domain.models.ReminderNote
+import com.sztorm.notecalendar.domain.models.toNote
 import com.sztorm.notecalendar.platform.permissions.AppPermission
 import com.sztorm.notecalendar.platform.permissions.AppPermissionManager
+import com.sztorm.notecalendar.platform.permissions.isGranted
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.util.Calendar
+import java.time.OffsetDateTime
 
 class AppNotificationManager(val context: Context, val logger: AppLogger) {
     private val appContext = context.applicationContext
@@ -144,6 +147,46 @@ class AppNotificationManager(val context: Context, val logger: AppLogger) {
         alarmManager.cancel(pendingIntent)
 
         logger.info("${LogTags.NOTIFICATIONS} Cancelled notification at $noteDate")
+    }
+
+    fun rescheduleAll() {
+        fun scheduleAll() {
+            val noteRepository = NoteRepositoryImpl(logger)
+            val now = OffsetDateTime.now()
+            val validReminders = noteRepository
+                .getAll()
+                .mapNotNull { noteData ->
+                    noteData
+                        .toNote()
+                        .toReminderNoteOrNull()
+                        ?.takeIf { it.reminderDateTime > now }
+                }
+
+            validReminders.forEach {
+                scheduleNotification(it)
+            }
+            logger.info("${LogTags.NOTIFICATIONS} Rescheduled ${validReminders.size} notifications")
+        }
+        if ((AppPermission.ScheduleExactAlarm.isAlwaysGranted ||
+                appContext.isGranted(AppPermission.ScheduleExactAlarm)) &&
+            (AppPermission.PostNotifications.isAlwaysGranted ||
+                appContext.isGranted(AppPermission.PostNotifications))
+        ) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val alarmManager = appContext
+                    .getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+                if (alarmManager.canScheduleExactAlarms()) {
+                    scheduleAll()
+                } else {
+                    logger.info("${LogTags.NOTIFICATIONS} Scheduling failed: alarmManager.canScheduleExactAlarms is false")
+                }
+            } else {
+                scheduleAll()
+            }
+        } else {
+            logger.info("${LogTags.NOTIFICATIONS} Scheduling failed: permissions are denied")
+        }
     }
 
     companion object {

@@ -15,6 +15,10 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.sztorm.notecalendar.platform.lifecycle.DefaultActivityLifecycleCallbacks
 
+fun Context.isGranted(permission: AppPermission) = ContextCompat.checkSelfPermission(
+    this, permission.permissionString
+) == PackageManager.PERMISSION_GRANTED
+
 private class RequestExactAlarmSettingsCallback(
     val onResult: (isGranted: Boolean) -> Unit
 ) : DefaultActivityLifecycleCallbacks {
@@ -34,22 +38,14 @@ private class RequestNotificationsSettingsCallback(
     override fun onActivityResumed(activity: Activity) {
         activity.unregisterActivityLifecycleCallbacks(this)
 
-        onResult(
-            ContextCompat.checkSelfPermission(
-                activity,
-                AppPermission.PostNotifications.permissionString
-            ) == PackageManager.PERMISSION_GRANTED
-        )
+        onResult(activity.isGranted(AppPermission.PostNotifications))
     }
 }
 
 class AppPermissionManager(val activity: ComponentActivity) {
     private val grantsByPermission = BooleanArray(2) { i ->
         AppPermission.entries[i].isAlwaysGranted ||
-            ContextCompat.checkSelfPermission(
-                activity,
-                AppPermission.entries[i].permissionString
-            ) == PackageManager.PERMISSION_GRANTED
+            activity.isGranted(AppPermission.entries[i])
     }
     private val requestsByPermission = mutableMapOf<AppPermission, (Boolean) -> Unit>()
 

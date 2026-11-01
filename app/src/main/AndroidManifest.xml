@@ -9,6 +9,7 @@
     <uses-permission
         android:name="android.permission.USE_EXACT_ALARM"
         tools:ignore="ExactAlarmPolicy" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name="com.sztorm.notecalendar.NoteCalendarApplication"
@@ -29,13 +30,21 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-
             </intent-filter>
         </activity>
 
         <receiver
             android:name="com.sztorm.notecalendar.platform.notifications.NoteNotificationReceiver"
             android:enabled="true" />
+
+        <receiver
+            android:name="com.sztorm.notecalendar.platform.notifications.BootReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
 
         <meta-data
             android:name="DATABASE"
