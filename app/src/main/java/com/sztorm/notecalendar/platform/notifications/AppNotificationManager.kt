@@ -24,7 +24,9 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.Calendar
 
-class AppNotificationManager(val mainActivity: MainActivity, val logger: AppLogger) {
+class AppNotificationManager(val context: Context, val logger: AppLogger) {
+    private val appContext = context.applicationContext
+
     private fun createNotificationChannel(name: String, description: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val importance = NotificationManager.IMPORTANCE_LOW
@@ -34,7 +36,7 @@ class AppNotificationManager(val mainActivity: MainActivity, val logger: AppLogg
             channel.lightColor = Color.BLUE
             channel.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
 
-            val notificationManager: NotificationManager = mainActivity
+            val notificationManager: NotificationManager = appContext
                 .getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
@@ -42,24 +44,22 @@ class AppNotificationManager(val mainActivity: MainActivity, val logger: AppLogg
 
     private fun createNotification(note: ReminderNote): Notification {
         createNotificationChannel(
-            mainActivity.getString(R.string.Notification_Note_ChannelName),
-            mainActivity.getString(R.string.Notification_Note_ChannelDescription)
+            appContext.getString(R.string.Notification_Note_ChannelName),
+            appContext.getString(R.string.Notification_Note_ChannelDescription)
         )
-        val intent = Intent(mainActivity, MainActivity::class.java)
-            .addFlags(Intent.FLAG_RECEIVER_FOREGROUND)
+        val intent = Intent(appContext, MainActivity::class.java)
             .putExtra(NotificationIntentKeys.EXTRA_NOTIFICATION_LAUNCH_DAY_SCREEN, true)
             .putExtra(NotificationIntentKeys.EXTRA_NOTE_DATE, note.date.toString())
         val activity = PendingIntent.getActivity(
-            mainActivity,
+            appContext,
             note.date.stableHash(),
             intent,
             getIntentUpdateCurrentFlags()
         )
-        val builder = NotificationCompat.Builder(
-            mainActivity, NOTIFICATION_CHANNEL_ID_NAME
-        )
+        val builder = NotificationCompat
+            .Builder(appContext, NOTIFICATION_CHANNEL_ID_NAME)
             .setContentTitle(
-                mainActivity
+                appContext
                     .getString(R.string.Notification_NoteFrom_Day)
                     .format(note.date.toString())
             )
@@ -76,25 +76,21 @@ class AppNotificationManager(val mainActivity: MainActivity, val logger: AppLogg
         val id = note.date.stableHash()
         val notification = createNotification(note)
         val notificationIntent =
-            Intent(mainActivity, NoteNotificationReceiver::class.java)
+            Intent(appContext, NoteNotificationReceiver::class.java)
                 .putExtra(NotificationIntentKeys.EXTRA_NOTIFICATION, notification)
                 .putExtra(NotificationIntentKeys.EXTRA_NOTE_DATE_ID, id)
         val pendingIntent = PendingIntent.getBroadcast(
-            mainActivity,
+            appContext,
             id,
             notificationIntent,
             getIntentUpdateCurrentFlags()
         )
-        val calendar = Calendar.getInstance()
-        calendar[Calendar.YEAR] = dateTime.year
-        calendar[Calendar.DAY_OF_YEAR] = dateTime.dayOfYear
-        calendar[Calendar.HOUR_OF_DAY] = dateTime.hour
-        calendar[Calendar.MINUTE] = dateTime.minute
-        calendar[Calendar.SECOND] = 0
-        val alarmManager = mainActivity.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmManager = appContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         alarmManager.setExactAndAllowWhileIdleCompat(
-            AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent
+            AlarmManager.RTC_WAKEUP,
+            dateTime.toInstant().toEpochMilli(),
+            pendingIntent
         )
     }
 
@@ -135,15 +131,15 @@ class AppNotificationManager(val mainActivity: MainActivity, val logger: AppLogg
 
     fun cancelScheduledNotification(noteDate: LocalDate) {
         val notificationIntent = Intent(
-            mainActivity, NoteNotificationReceiver::class.java
+            appContext, NoteNotificationReceiver::class.java
         )
         val pendingIntent: PendingIntent = PendingIntent.getBroadcast(
-            mainActivity,
+            appContext,
             noteDate.stableHash(),
             notificationIntent,
             getIntentCancelCurrentFlags()
         )
-        val alarmManager = mainActivity
+        val alarmManager = appContext
             .getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.cancel(pendingIntent)
 
