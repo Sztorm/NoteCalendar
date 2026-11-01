@@ -30,6 +30,7 @@ Minimum Android version: 5.0 (Lollipop, API level 21)
   * Notes - notes-specific settings, including options to import and export notes.
   * Calendar - calendar-specific settings, such as first day of the week.
   * Theme - choose a light or dark theme, create your own theme, and export it.
+  * Other - miscellaneous options, such as changing the navigation bar position.
   * About - information about the application.
 
 ## Translations
