@@ -1,0 +1,3 @@
+* Added an "Other" subpage to Settings, with options to change the navigation bar position and set an automatic reminder time.
+* Added the option to set a reminder date alongside the existing reminder time on the Day screen.
+* Updated notifications to persist across device restarts.
