@@ -8,6 +8,7 @@
     <string name="April_GenitiveCase">\?</string>
     <string name="August">\?</string>
     <string name="August_GenitiveCase">\?</string>
+    <string name="Bottom">Bottom</string>
     <string name="Cancel">Cancel</string>
     <string name="ClearFilters">Clear all</string>
     <string name="ClearSearch">Clear search</string>
@@ -132,6 +133,12 @@
     <string name="Settings_Notifications_NotificationTime">Notification time</string>
     <string name="Settings_Notifications_TurnOnNotifications">Turn on notifications</string>
     <string name="Settings_Other">Other</string>
+    <string name="Settings_Other_AutoAddReminder">Automatically add a reminder</string>
+    <string name="Settings_Other_DefaultReminderTime">Default reminder time</string>
+    <string name="Settings_Other_DefaultReminderTime_Summary">New and edited notes will automatically get a reminder at the selected time.</string>
+    <string name="Settings_Other_Interface">Interface</string>
+    <string name="Settings_Other_NavigationBarPosition">Navigation bar position</string>
+    <string name="Settings_Other_Reminders">Reminders</string>
     <string name="Settings_Theme">Theme</string>
     <string name="Settings_Theme_CustomTheme">Custom theme</string>
     <string name="Settings_Theme_ExportTheme">Export theme</string>
@@ -147,6 +154,7 @@
     <string name="Thursday">\?</string>
     <string name="Thursday_Short">\?</string>
     <string name="ToggleFilters">Show/hide filters</string>
+    <string name="Top">Top</string>
     <string name="Tuesday">\?</string>
     <string name="Tuesday_Short">\?</string>
     <string name="UndoDeletion">Undo deletion</string>

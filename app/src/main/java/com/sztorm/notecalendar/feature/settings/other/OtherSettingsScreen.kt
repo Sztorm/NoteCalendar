@@ -36,11 +36,11 @@ fun OtherSettingsScreen(
         onBackButtonClick = onBackButtonClick
     ) {
         CategoryPreference(
-            title = "Interface", //stringResource(R.string.Settings_Other_Interface) // TODO
+            title = stringResource(R.string.Settings_Other_Interface),
             titleColor = themeColors.secondaryColor
         ) { enabled ->
             ListPreference(
-                title = "Navigation bar position", //stringResource(R.string.Settings_Other_NavigationBarPosition) // TODO
+                title = stringResource(R.string.Settings_Other_NavigationBarPosition),
                 options = NavigationBarPosition.entries.map { it.getLocalizedName() to it },
                 initialSelectedOptionIndex = appViewModel.state.navigationBarPosition.ordinal,
                 onRadioButtonClick = { _, navigationPosition ->
@@ -55,11 +55,11 @@ fun OtherSettingsScreen(
             )
         }
         CategoryPreference(
-            title = "Reminders", //stringResource(R.string.Settings_Other_Reminders) // TODO
+            title = stringResource(R.string.Settings_Other_Reminders),
             titleColor = themeColors.secondaryColor
         ) { enabled ->
             SwitchPreference(
-                title = "Automatically add a reminder", //stringResource(R.string.Settings_Other_AutoAddReminder) // TODO
+                title = stringResource(R.string.Settings_Other_AutoAddReminder),
                 checked = appViewModel.state.autoAddReminder,
                 onCheckedChange = { value ->
                     coroutineScope.launch {
@@ -70,8 +70,8 @@ fun OtherSettingsScreen(
                 textColor = themeColors.textColor,
             )
             TimePickerPreference(
-                title = "Default reminder time", //stringResource(R.string.Settings_Other_DefaultReminderTime) // TODO
-                summary = "New and edited notes will automatically get a reminder at the selected time.", //stringResource(R.string.Settings_Other_DefaultReminderTime_Summary) // TODO
+                title = stringResource(R.string.Settings_Other_DefaultReminderTime),
+                summary = stringResource(R.string.Settings_Other_DefaultReminderTime_Summary),
                 initialTime = appViewModel.state.defaultReminderTime,
                 onConfirm = { time ->
                     coroutineScope.launch {

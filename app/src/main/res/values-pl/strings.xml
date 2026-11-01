@@ -8,6 +8,7 @@
     <string name="April_GenitiveCase">Kwietnia</string>
     <string name="August">Sierpień</string>
     <string name="August_GenitiveCase">Sierpnia</string>
+    <string name="Bottom">Na dole</string>
     <string name="Cancel">Anuluj</string>
     <string name="ClearFilters">Wyczyść filtry</string>
     <string name="ClearSearch">Wyczyść wyszukiwanie</string>
@@ -132,6 +133,12 @@
     <string name="Settings_Notifications_NotificationTime">Czas powiadomienia</string>
     <string name="Settings_Notifications_TurnOnNotifications">Włącz powiadomienia</string>
     <string name="Settings_Other">Inne</string>
+    <string name="Settings_Other_AutoAddReminder">Automatycznie dodawaj przypomnienie</string>
+    <string name="Settings_Other_DefaultReminderTime">Domyślna godzina przypomnienia</string>
+    <string name="Settings_Other_DefaultReminderTime_Summary">Nowe i edytowane notatki będą automatycznie otrzymywać przypomnienie o wybranej godzinie.</string>
+    <string name="Settings_Other_Interface">Interfejs</string>
+    <string name="Settings_Other_NavigationBarPosition">Położenie paska nawigacji</string>
+    <string name="Settings_Other_Reminders">Przypomnienia</string>
     <string name="Settings_Theme">Motyw</string>
     <string name="Settings_Theme_CustomTheme">Własny motyw</string>
     <string name="Settings_Theme_ExportTheme">Eksportuj motyw</string>
@@ -147,6 +154,7 @@
     <string name="Thursday">Czwartek</string>
     <string name="Thursday_Short">Czw</string>
     <string name="ToggleFilters">Pokaż/ukryj filtry</string>
+    <string name="Top">Na górze</string>
     <string name="Tuesday">Wtorek</string>
     <string name="Tuesday_Short">Wto</string>
     <string name="UndoDeletion">Cofnij usunięcie</string>
