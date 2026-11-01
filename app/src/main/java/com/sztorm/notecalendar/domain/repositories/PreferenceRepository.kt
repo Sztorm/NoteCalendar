@@ -12,6 +12,10 @@ import java.time.LocalTime
 interface PreferenceRepository {
     val defaults: PreferenceDefaults
 
+    suspend fun migratePreferences(storedVersion: Int, targetVersion: Int)
+
+    suspend fun getPreferencesVersion(default: Int = defaults.preferencesVersion): Int
+
     suspend fun getBackgroundColor(default: Color = defaults.backgroundColor): Color
 
     suspend fun getBackgroundColorVariant(default: Color = defaults.backgroundColorVariant): Color

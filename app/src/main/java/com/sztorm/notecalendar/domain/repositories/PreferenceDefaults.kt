@@ -9,6 +9,7 @@ import java.time.DayOfWeek
 import java.time.LocalTime
 
 interface PreferenceDefaults {
+    val preferencesVersion: Int
     val backgroundColor: Color
     val backgroundColorVariant: Color
     val buttonTextColor: Color

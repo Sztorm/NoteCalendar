@@ -16,6 +16,7 @@ object PreferenceKeys {
     val NoteColorVariant = intPreferencesKey("PrefKey_NoteColorVariant")
     val NoteTextColor = intPreferencesKey("PrefKey_NoteTextColor")
     val PrimaryColor = intPreferencesKey("PrefKey_PrimaryColor")
+    val PreferencesVersion = intPreferencesKey("PrefKey_PreferencesVersion")
     val SecondaryColor = intPreferencesKey("PrefKey_SecondaryColor")
     val TextColor = intPreferencesKey("PrefKey_TextColor")
     val NoteFontSize = floatPreferencesKey("PrefKey_NoteFontSize")
@@ -25,8 +26,7 @@ object PreferenceKeys {
     val NavigationBarPosition = stringPreferencesKey("PrefKey_NavigationBarPosition")
 }
 
-@Suppress("unused")
-object LegacyPreferenceKeys {
+object ObsoletePreferenceKeys {
     val TurnOnNotifications = booleanPreferencesKey("PrefKey_EnableNotifications")
     val NotificationTime = intPreferencesKey("PrefKey_NotificationTime")
 }

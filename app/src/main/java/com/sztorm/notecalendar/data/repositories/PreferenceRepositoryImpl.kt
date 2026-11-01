@@ -13,6 +13,7 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.sztorm.notecalendar.domain.repositories.PreferenceDefaults
 import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
+import com.sztorm.notecalendar.feature.settings.ObsoletePreferenceKeys
 import com.sztorm.notecalendar.feature.settings.PreferenceKeys
 import com.sztorm.notecalendar.feature.settings.calendar.StartingScreenType
 import com.sztorm.notecalendar.feature.settings.notes.NoteFontSize
@@ -25,6 +26,7 @@ import java.time.DayOfWeek
 import java.time.LocalTime
 
 private const val PREFERENCES_NAME = "com.sztorm.notecalendar_preferences"
+const val CURRENT_PREFS_VERSION = 1
 
 private val Context.preferences: DataStore<Preferences> by preferencesDataStore(
     name = PREFERENCES_NAME,
@@ -47,6 +49,29 @@ class PreferenceRepositoryImpl(context: Context) : PreferenceRepository {
             }
             .map { it[key] ?: default }
             .first()
+
+    override tailrec suspend fun migratePreferences(storedVersion: Int, targetVersion: Int): Unit =
+        when {
+            storedVersion < targetVersion -> when (storedVersion) {
+                0 -> {
+                    val nextVersion = 1
+
+                    context.preferences.edit {
+                        it.remove(ObsoletePreferenceKeys.NotificationTime)
+                        it.remove(ObsoletePreferenceKeys.TurnOnNotifications)
+                        it[PreferenceKeys.PreferencesVersion] = nextVersion
+                    }
+                    migratePreferences(nextVersion, targetVersion)
+                }
+
+                else -> {}
+            }
+
+            else -> {}
+        }
+
+    override suspend fun getPreferencesVersion(default: Int): Int =
+        getPreference(PreferenceKeys.PreferencesVersion, default)
 
     override suspend fun getBackgroundColor(default: Color) =
         Color(getPreference(PreferenceKeys.BackgroundColor, default.toArgb()))

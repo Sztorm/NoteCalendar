@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.OffsetDateTime
 
-class AppNotificationManager(val context: Context, val logger: AppLogger) {
+class AppNotificationManager(context: Context, private val logger: AppLogger) {
     private val appContext = context.applicationContext
 
     private fun createNotificationChannel(name: String, description: String) {

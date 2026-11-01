@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sztorm.notecalendar.core.common.toLocalDateOrNull
+import com.sztorm.notecalendar.data.repositories.CURRENT_PREFS_VERSION
 import com.sztorm.notecalendar.data.repositories.FileRepositoryImpl
 import com.sztorm.notecalendar.data.repositories.NoteRepositoryImpl
 import com.sztorm.notecalendar.data.repositories.PreferenceRepositoryImpl
@@ -56,6 +57,10 @@ class MainActivity : ComponentActivity() {
         val notificationManager = AppNotificationManager(this, logger)
         val bundleResult = readBundle()
         val initialState = runBlocking {
+            preferenceRepository.migratePreferences(
+                storedVersion = preferenceRepository.getPreferencesVersion(),
+                targetVersion = CURRENT_PREFS_VERSION
+            )
             AppState(
                 themeColors = preferenceRepository.getThemeColors(),
                 dayScreenDate = bundleResult?.noteDate?.toLocalDateOrNull() ?: LocalDate.now(),

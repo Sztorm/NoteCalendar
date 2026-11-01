@@ -14,6 +14,9 @@ import java.time.LocalTime
 class PreferenceDefaultsImpl(context: Context) : PreferenceDefaults {
     private val context = context.applicationContext
 
+    override val preferencesVersion: Int
+        get() = 0
+
     override val backgroundColor
         get() = getDefaultThemeColors(context.isDarkThemeEnabled).backgroundColor
 
