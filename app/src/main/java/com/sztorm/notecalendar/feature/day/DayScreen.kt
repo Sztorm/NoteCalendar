@@ -156,6 +156,7 @@ fun DayScreen(
         InfiniteHorizontalPager(
             verticalAlignment = Alignment.Top,
             key = { viewModel.state.initialDate.plusDays(it.toLong()) },
+            userScrollEnabled = viewModel.state.uiState == DayUiState.Viewing,
             onPageChange = { page ->
                 val date = viewModel.state.initialDate.plusDays(page.toLong())
                 val currentNoteData = noteRepository.getBy(date)
