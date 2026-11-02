@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.ButtonDefaults
@@ -36,10 +38,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.style.TextAlign
@@ -66,60 +70,68 @@ private fun SearchTextField(
     onClearButtonClick: () -> Unit,
     onTextValueChange: (TextFieldValue) -> Unit,
     onFiltersExpand: () -> Unit
-) = OutlinedTextField(
-    value = state.searchTextValue,
-    onValueChange = onTextValueChange,
-    maxLines = 1,
-    leadingIcon = {
-        IconButton(onClick = onBackButtonClick) {
-            Icon(
-                painter = painterResource(R.drawable.icon_rounded_arrow_back),
-                tint = MaterialTheme.colorScheme.onBackground,
-                contentDescription = null
-            )
-        }
-    },
-    trailingIcon = {
-        Row {
-            BadgedBox(
-                badge = {
-                    if (state.searchFiltersByType.isNotEmpty()) {
-                        Badge(containerColor = MaterialTheme.colorScheme.secondary) {
-                            Text(state.searchFiltersByType.size.toString())
+) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    OutlinedTextField(
+        value = state.searchTextValue,
+        onValueChange = onTextValueChange,
+        maxLines = 1,
+        leadingIcon = {
+            IconButton(onClick = onBackButtonClick) {
+                Icon(
+                    painter = painterResource(R.drawable.icon_rounded_arrow_back),
+                    tint = MaterialTheme.colorScheme.onBackground,
+                    contentDescription = null
+                )
+            }
+        },
+        trailingIcon = {
+            Row {
+                BadgedBox(
+                    badge = {
+                        if (state.searchFiltersByType.isNotEmpty()) {
+                            Badge(containerColor = MaterialTheme.colorScheme.secondary) {
+                                Text(state.searchFiltersByType.size.toString())
+                            }
                         }
                     }
+                ) {
+                    IconButton(
+                        onClick = onFiltersExpand
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.icon_outline_rounded_filter_list),
+                            tint = MaterialTheme.colorScheme.onBackground,
+                            contentDescription = stringResource(R.string.ToggleFilters)
+                        )
+                    }
                 }
-            ) {
                 IconButton(
-                    onClick = onFiltersExpand
+                    onClick = onClearButtonClick
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.icon_outline_rounded_filter_list),
+                        painter = painterResource(R.drawable.icon_rounded_close),
                         tint = MaterialTheme.colorScheme.onBackground,
-                        contentDescription = stringResource(R.string.ToggleFilters)
+                        contentDescription = stringResource(R.string.ClearSearch)
                     )
                 }
             }
-            IconButton(
-                onClick = onClearButtonClick
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.icon_rounded_close),
-                    tint = MaterialTheme.colorScheme.onBackground,
-                    contentDescription = stringResource(R.string.ClearSearch)
-                )
-            }
-        }
-    },
-    placeholder = {
-        Text(
-            text = stringResource(R.string.SearchNotes)
-        )
-    },
-    modifier = Modifier
-        .fillMaxWidth()
-        .padding(8.dp)
-)
+        },
+        placeholder = {
+            Text(
+                text = stringResource(R.string.SearchNotes)
+            )
+        },
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(onSearch = {
+            keyboardController?.hide()
+        }),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    )
+}
 
 @Composable
 private fun ColumnScope.SearchFilters(
