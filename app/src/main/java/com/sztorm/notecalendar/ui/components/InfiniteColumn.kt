@@ -9,7 +9,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import com.sztorm.notecalendar.core.common.reachedBottom
 import com.sztorm.notecalendar.core.common.reachedTop
@@ -17,7 +16,7 @@ import com.sztorm.notecalendar.core.common.reachedTop
 @Composable
 fun <T> InfiniteColumn(
     modifier: Modifier = Modifier,
-    items: SnapshotStateList<T>,
+    items: List<T>,
     state: LazyListState = rememberLazyListState(),
     key: (Int, T) -> Any,
     onReachTop: () -> Unit,
