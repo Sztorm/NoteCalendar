@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.sztorm.notecalendar.core.logging.AppLogger
+import com.sztorm.notecalendar.domain.models.Note
 import java.time.LocalDate
 
 class WeekScreenViewModel(
@@ -13,7 +14,7 @@ class WeekScreenViewModel(
     initialState: WeekScreenState,
     private val isSelected: (LocalDate) -> Boolean,
     private val isToday: (LocalDate) -> Boolean,
-    private val hasNote: (LocalDate) -> Boolean,
+    private val getNote: (LocalDate) -> Note?,
     private val itemsSize: Int,
     private val itemsBufferSize: Int,
 ) : ViewModel() {
@@ -22,22 +23,22 @@ class WeekScreenViewModel(
 
     private fun List<WeekItem>.nextItems(): List<WeekItem> {
         return subList(itemsSize - itemsBufferSize, itemsSize) +
-            generateSequence(last().next(isSelected, isToday, hasNote)) { item ->
+            generateSequence(last().next(isSelected, isToday, getNote)) { item ->
                 item.next(
                     isSelected = isSelected,
                     isToday = isToday,
-                    hasNote = hasNote
+                    getNote = getNote
                 )
             }.take(itemsBufferSize)
                 .toList()
     }
 
     private fun List<WeekItem>.prevItems(): List<WeekItem> {
-        return generateSequence(first().prev(isSelected, isToday, hasNote)) { item ->
+        return generateSequence(first().prev(isSelected, isToday, getNote)) { item ->
             item.prev(
                 isSelected = isSelected,
                 isToday = isToday,
-                hasNote = hasNote
+                getNote = getNote
             )
         }.take(itemsBufferSize)
             .toList()
@@ -58,7 +59,7 @@ class WeekScreenViewModelFactory(
     val initialState: WeekScreenState,
     val isSelected: (LocalDate) -> Boolean,
     val isToday: (LocalDate) -> Boolean,
-    val hasNote: (LocalDate) -> Boolean,
+    val getNote: (LocalDate) -> Note?,
     val itemsSize: Int,
     val itemsBufferSize: Int,
 ) : ViewModelProvider.Factory {
@@ -69,7 +70,7 @@ class WeekScreenViewModelFactory(
             initialState = initialState,
             isSelected = isSelected,
             isToday = isToday,
-            hasNote = hasNote,
+            getNote = getNote,
             itemsSize = itemsSize,
             itemsBufferSize = itemsBufferSize
         ) as T
@@ -90,7 +91,7 @@ fun createWeekItems(
     dayScreenDate: LocalDate,
     isSelected: (LocalDate) -> Boolean,
     isToday: (LocalDate) -> Boolean,
-    hasNote: (LocalDate) -> Boolean,
+    getNote: (LocalDate) -> Note?,
 ): List<WeekItem> {
     val startDate: LocalDate = dayScreenDate.minusDays(1)
 
@@ -99,13 +100,13 @@ fun createWeekItems(
             date = startDate,
             isSelected = isSelected(startDate),
             isToday = isToday(startDate),
-            hasNote = hasNote(startDate)
+            note = getNote(startDate)
         ) as WeekItem
     ) { item ->
         item.next(
             isSelected = isSelected,
             isToday = isToday,
-            hasNote = hasNote
+            getNote = getNote
         )
     }.take(size)
         .toList()
