@@ -197,7 +197,7 @@ private fun NavGraphBuilder.appNavGraph(
             logger = logger,
             appViewModel = viewModel,
             onSearchButtonClick = { navController.navigate(Screen.Search) },
-            onDayCellClick = { isLongClick, date ->
+            onNavigateToNote = { isLongClick, date ->
                 viewModel.onEvent(
                     AppEvent.DayScreenDateChange(date)
                 )

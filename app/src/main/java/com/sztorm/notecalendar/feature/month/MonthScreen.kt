@@ -72,7 +72,7 @@ fun MonthScreen(
     logger: AppLogger,
     appViewModel: AppViewModel,
     onSearchButtonClick: () -> Unit,
-    onDayCellClick: (isLongClick: Boolean, date: LocalDate) -> Unit,
+    onNavigateToNote: (isLongClick: Boolean, date: LocalDate) -> Unit,
     noteRepository: NoteRepository,
 ) {
     val themeColors = appViewModel.state.themeColors
@@ -127,7 +127,7 @@ fun MonthScreen(
                     DayCell(
                         modifier = modifier,
                         themeColors = themeColors,
-                        onClick = onDayCellClick,
+                        onClick = onNavigateToNote,
                         dayCell = DayCell(
                             date = date,
                             isSelected = appViewModel.state.dayScreenDate == date,

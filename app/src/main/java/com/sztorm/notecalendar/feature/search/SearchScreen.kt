@@ -297,7 +297,7 @@ private fun SearchResultRow(
             .background(backgroundColor)
             .clickable { expanded = !expanded }
             .animateContentSize()
-            .padding(top = 8.dp, bottom = 8.dp, start = 16.dp, end = 16.dp)
+            .padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -327,7 +327,8 @@ private fun SearchResultRow(
                 onClick = { onResultGoButtonClick(false, noteDate) },
                 onLongClick = { onResultGoButtonClick(true, noteDate) },
                 onClickLabel = stringResource(R.string.OpenNote),
-                onLongClickLabel = stringResource(R.string.OpenAndEditNote)
+                onLongClickLabel = stringResource(R.string.OpenAndEditNote),
+                modifier = Modifier.padding(end = 8.dp)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.icon_rounded_arrow_forward),
@@ -340,7 +341,7 @@ private fun SearchResultRow(
                 text = noteText,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 4.dp)
+                    .padding(bottom = 8.dp, end = 16.dp)
             )
         }
     }
