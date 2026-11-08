@@ -31,31 +31,35 @@ fun ConfirmationPreference(
     dialogMessage: String,
     onConfirm: () -> Unit,
     modifier: Modifier = Modifier,
+    dialogModifier: Modifier = Modifier,
     onDismiss: (() -> Unit)? = null,
-    titleColor: Color = MaterialTheme.colorScheme.onBackground,
     summary: String? = null,
-    summaryColor: Color = MaterialTheme.colorScheme.onBackground,
-    iconColorFilter: ColorFilter? = null,
-    icon: Painter? = null,
-    dialogTitleColor: Color = MaterialTheme.colorScheme.onBackground,
-    dialogMessageColor: Color = MaterialTheme.colorScheme.onBackground,
+    titleColor: Color = MaterialTheme.colorScheme.onSurface,
+    summaryColor: Color = titleColor.copy(alpha = 0.8f),
+    inactiveColor: Color = titleColor.copy(alpha = 0.38f),
+    dialogTitleColor: Color = MaterialTheme.colorScheme.onSurface,
+    dialogMessageColor: Color = MaterialTheme.colorScheme.onSurface,
     dialogColors: CardColors = CardDefaults.cardColors(),
     dialogButtonColors: ButtonColors = ButtonDefaults.textButtonColors(),
+    icon: Painter? = null,
+    iconColorFilter: ColorFilter? = null,
     enabled: Boolean = true
 ) = ConfirmationPreference(
     title = title,
     dialogTitle = dialogTitle,
     onConfirm = onConfirm,
     modifier = modifier,
+    dialogModifier = dialogModifier,
     onDismiss = onDismiss,
-    titleColor = titleColor,
     summary = summary,
+    titleColor = titleColor,
     summaryColor = summaryColor,
-    iconColorFilter = iconColorFilter,
-    icon = icon,
+    inactiveColor = inactiveColor,
     dialogTitleColor = dialogTitleColor,
     dialogColors = dialogColors,
     dialogButtonColors = dialogButtonColors,
+    icon = icon,
+    iconColorFilter = iconColorFilter,
     enabled = enabled
 ) {
     Row(modifier = Modifier.padding(16.dp)) {
@@ -72,20 +76,29 @@ fun ConfirmationPreference(
     dialogTitle: String,
     onConfirm: () -> Unit,
     modifier: Modifier = Modifier,
-    dialogModifier: Modifier = Modifier.padding(horizontal = 32.dp),
+    dialogModifier: Modifier = Modifier,
     onDismiss: (() -> Unit)? = null,
     onClick: (() -> Unit)? = null,
-    titleColor: Color = MaterialTheme.colorScheme.onBackground,
     summary: String? = null,
-    summaryColor: Color = MaterialTheme.colorScheme.onBackground,
-    iconColorFilter: ColorFilter? = null,
+    titleColor: Color = MaterialTheme.colorScheme.onSurface,
+    summaryColor: Color = titleColor.copy(alpha = 0.8f),
+    inactiveColor: Color = titleColor.copy(alpha = 0.38f),
+    dialogTitleColor: Color = MaterialTheme.colorScheme.onSurface,
+    dialogColors: CardColors = CardDefaults.cardColors(
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+    ),
+    dialogButtonColors: ButtonColors = ButtonDefaults.textButtonColors(
+        contentColor = MaterialTheme.colorScheme.primary,
+        disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+    ),
     icon: Painter? = null,
-    dialogTitleColor: Color = MaterialTheme.colorScheme.onBackground,
-    dialogColors: CardColors = CardDefaults.cardColors(),
-    dialogButtonColors: ButtonColors = ButtonDefaults.textButtonColors(),
+    iconColorFilter: ColorFilter? = null,
     enabled: Boolean = true,
     dialogContent: @Composable (ColumnScope.() -> Unit)
 ) {
+    val titleColor = if (enabled) titleColor else inactiveColor
+    val summaryColor = if (enabled) summaryColor else inactiveColor
     var openDialog by remember { mutableStateOf(false) }
 
     Preference(
@@ -95,9 +108,10 @@ fun ConfirmationPreference(
             openDialog = true
         },
         modifier = modifier,
-        titleColor = titleColor,
         summary = summary,
+        titleColor = titleColor,
         summaryColor = summaryColor,
+        inactiveColor = inactiveColor,
         icon = icon,
         iconColorFilter = iconColorFilter,
         enabled = enabled
