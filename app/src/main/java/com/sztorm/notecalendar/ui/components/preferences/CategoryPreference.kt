@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,15 +27,17 @@ import androidx.compose.ui.unit.sp
 fun CategoryPreference(
     title: String,
     modifier: Modifier = Modifier,
-    titleColor: Color = Color.Unspecified,
     summary: String? = null,
-    summaryColor: Color = Color.Unspecified,
+    titleColor: Color = MaterialTheme.colorScheme.secondary,
+    summaryColor: Color = titleColor.copy(alpha = 0.8f),
+    inactiveColor: Color = titleColor.copy(alpha = 0.38f),
     icon: Painter? = null,
     iconColorFilter: ColorFilter? = null,
     enabled: Boolean = true,
     content: @Composable ColumnScope.(Boolean) -> Unit
 ) {
-    val summaryColor = summaryColor.copy(alpha = 0.8f)
+    val titleColor = if (enabled) titleColor else inactiveColor
+    val summaryColor = if (enabled) summaryColor else inactiveColor
 
     Spacer(
         modifier = Modifier
