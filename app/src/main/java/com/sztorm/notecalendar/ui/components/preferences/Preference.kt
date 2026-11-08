@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,9 +29,10 @@ fun Preference(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues = PaddingValues(vertical = 16.dp),
-    titleColor: Color = Color.Unspecified,
     summary: String? = null,
-    summaryColor: Color = Color.Unspecified,
+    titleColor: Color = MaterialTheme.colorScheme.onSurface,
+    summaryColor: Color = titleColor.copy(alpha = 0.8f),
+    inactiveColor: Color = titleColor.copy(alpha = 0.38f),
     icon: Painter? = null,
     iconColorFilter: ColorFilter? = null,
     isClickable: Boolean = true,
@@ -38,8 +40,8 @@ fun Preference(
     enabled: Boolean = true,
     content: @Composable (RowScope.() -> Unit)? = null
 ) {
-    val titleColor = titleColor.copy(alpha = if (enabled) 1f else 0.4f)
-    val summaryColor = summaryColor.copy(alpha = if (enabled) 0.8f else 0.4f)
+    val titleColor = if (enabled) titleColor else inactiveColor
+    val summaryColor = if (enabled) summaryColor else inactiveColor
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
