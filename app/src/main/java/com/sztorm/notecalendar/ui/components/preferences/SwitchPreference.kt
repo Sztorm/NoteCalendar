@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchColors
 import androidx.compose.material3.SwitchDefaults
@@ -21,32 +22,46 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 
-@Suppress("unused")
 @Composable
 fun SwitchPreference(
     title: String,
     checked: Boolean,
     onCheckedChange: ((Boolean) -> Unit)?,
     modifier: Modifier = Modifier,
-    textColor: Color = Color.Unspecified,
-    dividerColor: Color = DividerDefaults.color,
-    switchColors: SwitchColors = SwitchDefaults.colors(),
     summary: String? = null,
+    titleColor: Color = MaterialTheme.colorScheme.onSurface,
+    summaryColor: Color = titleColor.copy(alpha = 0.8f),
+    inactiveColor: Color = titleColor.copy(alpha = 0.38f),
+    dividerColor: Color = DividerDefaults.color,
+    switchColors: SwitchColors = SwitchDefaults.colors(
+        checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+        checkedTrackColor = MaterialTheme.colorScheme.primary,
+        uncheckedThumbColor = MaterialTheme.colorScheme.onSurface,
+        uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+        uncheckedBorderColor = MaterialTheme.colorScheme.onSurface,
+        disabledCheckedThumbColor = MaterialTheme.colorScheme.surface,
+        disabledCheckedTrackColor = inactiveColor,
+        disabledUncheckedThumbColor = inactiveColor,
+        disabledUncheckedTrackColor = MaterialTheme.colorScheme.surface,
+        disabledUncheckedBorderColor = inactiveColor,
+    ),
     icon: Painter? = null,
     iconColorFilter: ColorFilter? = null,
     enabled: Boolean = true
 ) {
-    val titleColor = textColor.copy(alpha = if (enabled) 1f else 0.5f)
-    val summaryColor = titleColor.copy(alpha = if (enabled) 0.8f else 0.5f)
+    val titleColor = if (enabled) titleColor else inactiveColor
+    val summaryColor = if (enabled) summaryColor else inactiveColor
+    val dividerColor = if (enabled) dividerColor else inactiveColor
     val interactionSource = remember { MutableInteractionSource() }
 
     Preference(
         title = title,
         onClick = { onCheckedChange?.invoke(!checked) },
         modifier = modifier,
-        titleColor = titleColor,
         summary = summary,
+        titleColor = titleColor,
         summaryColor = summaryColor,
+        inactiveColor = inactiveColor,
         icon = icon,
         iconColorFilter = iconColorFilter,
         isClickable = onCheckedChange != null,
@@ -72,7 +87,8 @@ fun SwitchPreference(
                 checked = checked,
                 onCheckedChange = onCheckedChange,
                 colors = switchColors,
-                interactionSource = interactionSource
+                interactionSource = interactionSource,
+                enabled = enabled
             )
         }
     }
