@@ -13,7 +13,10 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonColors
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -39,16 +42,29 @@ fun <V> ListPreference(
     onConfirm: (Int, V) -> Unit,
     modifier: Modifier = Modifier,
     onDismiss: ((Int, V) -> Unit)? = null,
-    titleColor: Color = Color.Unspecified,
-    summaryColor: Color = Color.Unspecified,
-    dialogColors: CardColors = CardDefaults.cardColors(),
-    dialogButtonColors: ButtonColors = ButtonDefaults.textButtonColors(),
+    titleColor: Color = MaterialTheme.colorScheme.onSurface,
+    summaryColor: Color = titleColor.copy(alpha = 0.8f),
+    inactiveColor: Color = titleColor.copy(alpha = 0.38f),
+    radioButtonColors: RadioButtonColors = RadioButtonDefaults.colors(
+        selectedColor = MaterialTheme.colorScheme.primary,
+        unselectedColor = MaterialTheme.colorScheme.onSurface,
+        disabledSelectedColor = inactiveColor,
+        disabledUnselectedColor = inactiveColor
+    ),
+    dialogColors: CardColors = CardDefaults.cardColors(
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+    ),
+    dialogButtonColors: ButtonColors = ButtonDefaults.textButtonColors(
+        contentColor = MaterialTheme.colorScheme.primary,
+        disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+    ),
     icon: Painter? = null,
     iconColorFilter: ColorFilter? = null,
     enabled: Boolean = true
 ) {
-    val titleColor = titleColor.copy(alpha = if (enabled) 1f else 0.4f)
-    val summaryColor = summaryColor.copy(alpha = if (enabled) 0.8f else 0.4f)
+    val titleColor = if (enabled) titleColor else inactiveColor
+    val summaryColor = if (enabled) summaryColor else inactiveColor
     var openDialog by remember { mutableStateOf(false) }
     var selectedIndex by remember { mutableIntStateOf(initialSelectedOptionIndex) }
     var selectedValue by remember {
@@ -65,9 +81,10 @@ fun <V> ListPreference(
             openDialog = true
         },
         modifier = modifier,
-        titleColor = titleColor,
         summary = options[initialSelectedOptionIndex].first,
+        titleColor = titleColor,
         summaryColor = summaryColor,
+        inactiveColor = inactiveColor,
         icon = icon,
         iconColorFilter = iconColorFilter,
         enabled = enabled
@@ -116,7 +133,8 @@ fun <V> ListPreference(
                             selectedIndex = i
                             selectedValue = value
                         },
-                        interactionSource = optionInteractionSources[i]
+                        interactionSource = optionInteractionSources[i],
+                        colors = radioButtonColors
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(
@@ -137,14 +155,21 @@ fun <V> ListPreference(
     onRadioButtonClick: (Int, V) -> Unit,
     modifier: Modifier = Modifier,
     summary: String? = null,
-    titleColor: Color = Color.Unspecified,
-    summaryColor: Color = Color.Unspecified,
+    titleColor: Color = MaterialTheme.colorScheme.onSurface,
+    summaryColor: Color = titleColor.copy(alpha = 0.8f),
+    inactiveColor: Color = titleColor.copy(alpha = 0.38f),
+    radioButtonColors: RadioButtonColors = RadioButtonDefaults.colors(
+        selectedColor = MaterialTheme.colorScheme.primary,
+        unselectedColor = MaterialTheme.colorScheme.onSurface,
+        disabledSelectedColor = inactiveColor,
+        disabledUnselectedColor = inactiveColor
+    ),
     icon: Painter? = null,
     iconColorFilter: ColorFilter? = null,
     enabled: Boolean = true
 ) {
-    val titleColor = titleColor.copy(alpha = if (enabled) 1f else 0.4f)
-    val summaryColor = summaryColor.copy(alpha = if (enabled) 0.8f else 0.4f)
+    val titleColor = if (enabled) titleColor else inactiveColor
+    val summaryColor = if (enabled) summaryColor else inactiveColor
     val optionInteractionSources = remember {
         List(options.size) { MutableInteractionSource() }
     }
@@ -153,13 +178,14 @@ fun <V> ListPreference(
         onClick = {},
         isClickable = false,
         modifier = modifier,
+        paddingValues = PaddingValues(top = 16.dp),
         summary = summary,
         titleColor = titleColor,
         summaryColor = summaryColor,
+        inactiveColor = inactiveColor,
         icon = icon,
         iconColorFilter = iconColorFilter,
-        enabled = enabled,
-        paddingValues = PaddingValues(top = 16.dp)
+        enabled = enabled
     )
     for (i in options.indices) {
         val (name, value) = options[i]
@@ -170,14 +196,17 @@ fun <V> ListPreference(
                 .clickable(
                     onClick = { onRadioButtonClick(i, value) },
                     indication = null,
-                    interactionSource = optionInteractionSources[i]
+                    interactionSource = optionInteractionSources[i],
+                    enabled = enabled
                 )
                 .padding(start = 16.dp, end = 16.dp)
         ) {
             RadioButton(
                 selected = i == initialSelectedOptionIndex,
                 onClick = { onRadioButtonClick(i, value) },
-                interactionSource = optionInteractionSources[i]
+                interactionSource = optionInteractionSources[i],
+                colors = radioButtonColors,
+                enabled = enabled
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(
