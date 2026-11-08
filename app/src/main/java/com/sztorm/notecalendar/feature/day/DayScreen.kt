@@ -259,56 +259,47 @@ fun DayScreen(
 
 @Composable
 private fun ColumnScope.DayDateText(
-    date: LocalDate, textColor: Color, modifier: Modifier = Modifier
+    date: LocalDate,
+    textColor: Color,
+    todayTextColor: Color,
+    modifier: Modifier = Modifier
+) = Column(
+    horizontalAlignment = Alignment.CenterHorizontally,
+    modifier = modifier
+        .fillMaxWidth()
+        .weight(0.6f)
 ) {
-    Column(
-        modifier = modifier
-            .verticalScroll(rememberScrollState())
-            .fillMaxWidth()
-            .weight(0.6f)
-    ) {
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.5f)
-        )
-        BasicText(
-            text = date.dayOfMonth.toString(),
-            style = LocalTextStyle.current.copy(
-                color = textColor,
-                textAlign = TextAlign.Center,
-                fontSize = 140.sp
-            ),
-            maxLines = 1,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(4f)
-        )
-        BasicText(
-            text = date.month.getLocalizedGenitiveCaseName(),
-            style = LocalTextStyle.current.copy(
-                color = textColor,
-                textAlign = TextAlign.Center,
-                fontSize = 36.sp
-            ),
-            maxLines = 1,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1.5f)
-        )
-        BasicText(
-            text = date.dayOfWeek.getLocalizedName(),
-            style = LocalTextStyle.current.copy(
-                color = textColor,
-                textAlign = TextAlign.Center,
-                fontSize = 24.sp
-            ),
-            maxLines = 1,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-        )
-    }
+    Spacer(modifier = Modifier.weight(0.5f))
+    BasicText(
+        text = date.dayOfMonth.toString(),
+        style = LocalTextStyle.current.copy(
+            color = todayTextColor,
+            textAlign = TextAlign.Center,
+            fontSize = 140.sp,
+        ),
+        maxLines = 1,
+        modifier = Modifier.weight(4f)
+    )
+    BasicText(
+        text = date.month.getLocalizedGenitiveCaseName(),
+        style = LocalTextStyle.current.copy(
+            color = textColor,
+            textAlign = TextAlign.Center,
+            fontSize = 36.sp
+        ),
+        maxLines = 1,
+        modifier = Modifier.weight(1.5f)
+    )
+    BasicText(
+        text = date.dayOfWeek.getLocalizedName(),
+        style = LocalTextStyle.current.copy(
+            color = textColor,
+            textAlign = TextAlign.Center,
+            fontSize = 24.sp
+        ),
+        maxLines = 1,
+        modifier = Modifier.weight(1f)
+    )
 }
 
 private fun showNotificationPermissionDeniedToast(context: Context) = Toast
@@ -847,7 +838,13 @@ fun DayPageLayout(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(modifier = modifier) {
-        DayDateText(date = date, textColor = themeColors.textColor)
+        DayDateText(
+            date = date,
+            textColor = themeColors.textColor,
+            todayTextColor =
+                if (date == LocalDate.now()) themeColors.secondaryColor
+                else themeColors.textColor
+        )
         Column(
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.End,
