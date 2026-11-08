@@ -18,6 +18,10 @@ class ThemeColors(
     val backgroundColor: Color,
     val backgroundColorVariant: Color
 ) {
+    val primaryContainerColor = lerp(primaryColor, backgroundColor, 0.9f)
+    val secondaryContainerColor = lerp(secondaryColor, backgroundColor, 0.9f)
+    val tertiaryContainerColor = lerp(noteColor, backgroundColor, 0.9f)
+    val outlineColor = lerp(textColor, backgroundColor, 0.5f)
     val inactiveTextColor = textColor.copy(alpha = 0.38f)
 
     fun getTextColorOf(dayOfWeek: DayOfWeek, firstDayOfWeek: DayOfWeek): Color {
@@ -31,45 +35,47 @@ class ThemeColors(
         }
     }
 
-    fun getColorScheme(isDarkTheme: Boolean) = when (isDarkTheme) {
-        true -> darkColorScheme(
+    fun getColorScheme(isDarkTheme: Boolean) =
+        if (isDarkTheme) darkColorScheme(
             primary = primaryColor,
             onPrimary = buttonTextColor,
-            primaryContainer = lerp(primaryColor, backgroundColor, 0.9f),
+            primaryContainer = primaryContainerColor,
             onPrimaryContainer = textColor,
             secondary = secondaryColor,
             onSecondary = buttonTextColor,
-            secondaryContainer = lerp(secondaryColor, backgroundColor, 0.9f),
+            secondaryContainer = secondaryContainerColor,
             onSecondaryContainer = textColor,
             tertiary = noteColor,
             onTertiary = buttonTextColor,
-            tertiaryContainer = lerp(noteColor, backgroundColor, 0.9f),
+            tertiaryContainer = tertiaryContainerColor,
             onTertiaryContainer = textColor,
             background = backgroundColor,
             onBackground = textColor,
             surface = backgroundColor,
             onSurface = textColor,
-            surfaceVariant = backgroundColorVariant
+            surfaceVariant = backgroundColorVariant,
+            outline = outlineColor,
+            outlineVariant = outlineColor
         )
-
-        false -> lightColorScheme(
+        else lightColorScheme(
             primary = primaryColor,
             onPrimary = buttonTextColor,
-            primaryContainer = lerp(primaryColor, backgroundColor, 0.9f),
+            primaryContainer = primaryContainerColor,
             onPrimaryContainer = textColor,
             secondary = secondaryColor,
             onSecondary = buttonTextColor,
-            secondaryContainer = lerp(secondaryColor, backgroundColor, 0.9f),
+            secondaryContainer = secondaryContainerColor,
             onSecondaryContainer = textColor,
             tertiary = noteColor,
             onTertiary = buttonTextColor,
-            tertiaryContainer = lerp(noteColor, backgroundColor, 0.9f),
+            tertiaryContainer = tertiaryContainerColor,
             onTertiaryContainer = textColor,
             background = backgroundColor,
             onBackground = textColor,
             surface = backgroundColor,
             onSurface = textColor,
-            surfaceVariant = backgroundColorVariant
+            surfaceVariant = backgroundColorVariant,
+            outline = outlineColor,
+            outlineVariant = outlineColor
         )
-    }
 }
