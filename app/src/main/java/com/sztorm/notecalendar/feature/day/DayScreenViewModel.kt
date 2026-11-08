@@ -24,6 +24,7 @@ class DayScreenViewModel(initialState: DayScreenState) : ViewModel() {
             )
 
             is DayScreenEvent.DateChange -> state.copy(
+                uiState = DayUiState.Viewing,
                 note = event.note,
                 prevNote = event.prevNote,
                 nextNote = event.nextNote,

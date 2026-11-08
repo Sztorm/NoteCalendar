@@ -16,13 +16,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
@@ -832,9 +828,6 @@ fun DayPageLayout(
         date < dayScreenDate -> viewModel.state.prevNote
         else -> viewModel.state.note
     }
-    val actionType =
-        if (date == dayScreenDate) viewModel.state.uiState
-        else DayUiState.Viewing
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(modifier = modifier) {
@@ -854,8 +847,8 @@ fun DayPageLayout(
         ) {
             AnimatedVisibility(
                 visible = note != null ||
-                    actionType == DayUiState.EditingNote ||
-                    actionType == DayUiState.AddingNote,
+                    viewModel.state.uiState == DayUiState.EditingNote ||
+                    viewModel.state.uiState == DayUiState.AddingNote,
                 enter = scaleIn() + expandIn(),
                 exit = shrinkOut() + scaleOut()
             ) {
@@ -866,12 +859,7 @@ fun DayPageLayout(
                     bendShadowWidth = with(LocalDensity.current) { 1.dp.toPx() },
                     modifier = Modifier.padding(8.dp)
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                            .padding(8.dp)
-                    ) {
+                    Column(modifier = Modifier.padding(8.dp)) {
                         if (note != null) {
                             BasicTextField(
                                 value = note.textValue,
@@ -892,7 +880,7 @@ fun DayPageLayout(
                                         )
                                     }
                                 },
-                                readOnly = actionType == DayUiState.Viewing,
+                                readOnly = viewModel.state.uiState == DayUiState.Viewing,
                                 minLines = 1,
                                 maxLines = Int.MAX_VALUE,
                                 textStyle = TextStyle(
@@ -904,8 +892,14 @@ fun DayPageLayout(
                                 cursorBrush = SolidColor(themeColors.secondaryColor),
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .wrapContentHeight()
-                                    .padding(end = 24.dp)
+                                    .padding(
+                                        end = 24.dp,
+                                        bottom =
+                                            if (viewModel.state.uiState == DayUiState.AddingNote ||
+                                                viewModel.state.uiState == DayUiState.EditingNote
+                                            ) 72.dp
+                                            else 0.dp
+                                    )
                                     .then(
                                         when (date == dayScreenDate) {
                                             true -> Modifier.focusRequester(focusRequester)
@@ -914,9 +908,8 @@ fun DayPageLayout(
                                     )
                             )
                         }
-                        Spacer(modifier = Modifier.height(72.dp))
-                        LaunchedEffect(actionType) {
-                            when (actionType) {
+                        LaunchedEffect(viewModel.state.uiState) {
+                            when (viewModel.state.uiState) {
                                 DayUiState.EditingNote, DayUiState.AddingNote -> {
                                     focusRequester.requestFocus()
                                     keyboardController?.show()
