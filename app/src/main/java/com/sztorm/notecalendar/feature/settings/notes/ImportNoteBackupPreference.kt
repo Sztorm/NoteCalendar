@@ -6,10 +6,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.input.InputTransformation
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.TextObfuscationMode
 import androidx.compose.foundation.text.input.maxLength
 import androidx.compose.foundation.text.input.then
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedSecureTextField
 import androidx.compose.material3.Text
@@ -35,37 +36,6 @@ import com.sztorm.notecalendar.domain.repositories.NoteRepository
 import com.sztorm.notecalendar.ui.components.ConfirmationDialog
 import com.sztorm.notecalendar.ui.components.preferences.Preference
 
-object ImportNoteBackupPreferenceDefaults {
-    private var defaultColorsCached: ImportNoteBackupPreferenceColors? = null
-    private val defaultColors: ImportNoteBackupPreferenceColors
-        @Composable
-        get() {
-            val cached = defaultColorsCached
-
-            if (cached != null) return cached
-            else {
-                val result = ImportNoteBackupPreferenceColors(
-                    titleColor = MaterialTheme.colorScheme.onBackground,
-                    summaryColor = MaterialTheme.colorScheme.onBackground,
-                    iconColorFilter = null,
-                    dialogColors = ImportNoteBackupPreferenceDialogColors(
-                        titleColor = MaterialTheme.colorScheme.onBackground,
-                        textContentColor = MaterialTheme.colorScheme.onBackground,
-                        textButtonColors = ButtonDefaults.textButtonColors(),
-                        errorTextColor = MaterialTheme.colorScheme.error,
-                        cardColors = CardDefaults.cardColors()
-                    )
-                )
-                defaultColorsCached = result
-
-                return result
-            }
-        }
-
-    @Composable
-    fun colors() = defaultColors
-}
-
 @Composable
 fun ImportNoteBackupPreference(
     logger: AppLogger,
@@ -76,13 +46,13 @@ fun ImportNoteBackupPreference(
     texts: ImportNoteBackupPreferenceTexts = ImportNoteBackupPreferenceTexts.english(),
     colors: ImportNoteBackupPreferenceColors = ImportNoteBackupPreferenceDefaults.colors(),
     icon: Painter? = null,
+    showPasswordIcon: Painter? = null,
+    hidePasswordIcon: Painter? = null,
     enabled: Boolean = true,
 ) {
     val context = LocalContext.current
     var openDialog by remember { mutableStateOf(false) }
     var importedNotesBackupFile by remember { mutableStateOf(null as NotesBackupFile?) }
-    val passwordTextState = TextFieldState()
-    var isPasswordCorrect by remember { mutableStateOf(true) }
 
     Preference(
         title = texts.title,
@@ -126,14 +96,19 @@ fun ImportNoteBackupPreference(
             }
         },
         modifier = modifier,
-        titleColor = colors.titleColor,
         summary = texts.summary,
+        titleColor = colors.titleColor,
         summaryColor = colors.summaryColor,
+        inactiveColor = colors.inactiveColor,
         icon = icon,
         iconColorFilter = colors.iconColorFilter,
         enabled = enabled
     )
     if (openDialog) {
+        val passwordTextState = TextFieldState()
+        var isPasswordCorrect by remember { mutableStateOf(true) }
+        var isPasswordVisible by remember { mutableStateOf(false) }
+
         ConfirmationDialog(
             onConfirm = {
                 when (val file = importedNotesBackupFile) {
@@ -155,7 +130,6 @@ fun ImportNoteBackupPreference(
                                 }
                                 openDialog = false
                                 importedNotesBackupFile = null
-                                isPasswordCorrect = true
 
                                 Toast.makeText(
                                     context,
@@ -172,7 +146,6 @@ fun ImportNoteBackupPreference(
             onDismiss = {
                 openDialog = false
                 importedNotesBackupFile = null
-                isPasswordCorrect = true
             },
             properties = DialogProperties(
                 dismissOnBackPress = true,
@@ -191,36 +164,45 @@ fun ImportNoteBackupPreference(
                     fontWeight = FontWeight.Medium
                 )
             }
-            when (importedNotesBackupFile) {
-                null -> {}
-                else -> {
-                    Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                        Column {
-                            Text(
-                                text = texts.dialogTexts.password,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = colors.dialogColors.textContentColor,
-                                modifier = Modifier.padding(vertical = 8.dp)
-                            )
-                            OutlinedSecureTextField(
-                                state = passwordTextState,
-                                isError = !isPasswordCorrect,
-                                inputTransformation = InputTransformation
-                                    .maxLength(128)
-                                    .then {
-                                        isPasswordCorrect = true
-                                    }
-                            )
-                            if (!isPasswordCorrect) {
-                                Text(
-                                    text = texts.dialogTexts.incorrectPassword,
-                                    color = colors.dialogColors.errorTextColor,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    modifier = Modifier.padding(vertical = 4.dp)
+            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                Text(
+                    text = texts.dialogTexts.password,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colors.dialogColors.textContentColor,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+                OutlinedSecureTextField(
+                    state = passwordTextState,
+                    isError = !isPasswordCorrect,
+                    inputTransformation = InputTransformation
+                        .maxLength(128)
+                        .then { isPasswordCorrect = true },
+                    trailingIcon = if (showPasswordIcon != null && hidePasswordIcon != null) {
+                        {
+                            IconButton(onClick = {
+                                isPasswordVisible = !isPasswordVisible
+                            }) {
+                                Icon(
+                                    painter =
+                                        if (isPasswordVisible) hidePasswordIcon
+                                        else showPasswordIcon,
+                                    contentDescription = null
                                 )
                             }
                         }
-                    }
+                    } else null,
+                    textObfuscationMode =
+                        if (isPasswordVisible) TextObfuscationMode.Visible
+                        else TextObfuscationMode.RevealLastTyped,
+                    colors = colors.dialogColors.textFieldColors
+                )
+                if (!isPasswordCorrect) {
+                    Text(
+                        text = texts.dialogTexts.incorrectPassword,
+                        color = colors.dialogColors.errorTextColor,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
                 }
             }
         }
