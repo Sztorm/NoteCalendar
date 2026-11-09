@@ -7,20 +7,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.input.InputTransformation
 import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.TextObfuscationMode
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.maxLength
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedSecureTextField
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -46,38 +46,9 @@ import com.sztorm.notecalendar.domain.repositories.SaveResult
 import com.sztorm.notecalendar.ui.components.PasswordStrengthIndicator
 import com.sztorm.notecalendar.ui.components.measurePasswordStrength
 import com.sztorm.notecalendar.ui.components.preferences.ConfirmationPreference
+import java.security.SecureRandom
 import java.time.LocalDate
 import javax.crypto.spec.IvParameterSpec
-
-object ExportNoteBackupPreferenceDefaults {
-    private var defaultColorsCached: ExportNoteBackupPreferenceColors? = null
-    private val defaultColors: ExportNoteBackupPreferenceColors
-        @Composable
-        get() {
-            val cached = defaultColorsCached
-
-            if (cached != null) return cached
-            else {
-                val result = ExportNoteBackupPreferenceColors(
-                    titleColor = MaterialTheme.colorScheme.onBackground,
-                    summaryColor = MaterialTheme.colorScheme.onBackground,
-                    iconColorFilter = null,
-                    dialogColors = ExportNoteBackupPreferenceDialogColors(
-                        titleColor = MaterialTheme.colorScheme.onBackground,
-                        textContentColor = MaterialTheme.colorScheme.onBackground,
-                        textButtonColors = ButtonDefaults.textButtonColors(),
-                        cardColors = CardDefaults.cardColors()
-                    )
-                )
-                defaultColorsCached = result
-
-                return result
-            }
-        }
-
-    @Composable
-    fun colors() = defaultColors
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,10 +57,12 @@ fun ExportNoteBackupPreference(
     fileRepository: FileRepository,
     noteRepository: NoteRepository,
     modifier: Modifier = Modifier,
-    dialogModifier: Modifier = Modifier.padding(horizontal = 32.dp),
+    dialogModifier: Modifier = Modifier,
     texts: ExportNoteBackupPreferenceTexts = ExportNoteBackupPreferenceTexts.english(),
     colors: ExportNoteBackupPreferenceColors = ExportNoteBackupPreferenceDefaults.colors(),
     icon: Painter? = null,
+    showPasswordIcon: Painter? = null,
+    hidePasswordIcon: Painter? = null,
     enabled: Boolean = true,
 ) {
     var exportEncryptionType by remember { mutableStateOf(EncryptionType.None) }
@@ -99,14 +72,16 @@ fun ExportNoteBackupPreference(
     ConfirmationPreference(
         title = texts.title,
         dialogTitle = texts.dialogTexts.title,
-        titleColor = colors.titleColor,
         summary = texts.summary,
+        titleColor = colors.titleColor,
         summaryColor = colors.summaryColor,
+        inactiveColor = colors.inactiveColor,
         icon = icon,
         iconColorFilter = colors.iconColorFilter,
         onConfirm = {
-            val salt = randomByteArray(32)
-            val iv = IvParameterSpec(randomByteArray(16))
+            val random = SecureRandom()
+            val salt = randomByteArray(32, random)
+            val iv = IvParameterSpec(randomByteArray(16, random))
             val password = passwordTextState.text
             val file = NotesBackupFile.V1.Plain(
                 notes = noteRepository.getAll().map { it.toNote() }
@@ -161,11 +136,14 @@ fun ExportNoteBackupPreference(
         dialogColors = colors.dialogColors.cardColors,
         enabled = enabled
     ) {
-        val encryptionAlgorithms = EncryptionType.entries
+        val encryptionAlgorithmLabels = EncryptionType.entries
             .drop(1)
             .map { it.label }
         var isEncryptionTypeDropDownExpanded by remember { mutableStateOf(false) }
-        var text by remember { mutableStateOf(encryptionAlgorithms[0]) }
+        var selectedEncryptionAlgorithmLabel by remember {
+            mutableStateOf(encryptionAlgorithmLabels.first())
+        }
+        var isPasswordVisible by remember { mutableStateOf(false) }
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -178,7 +156,8 @@ fun ExportNoteBackupPreference(
                         EncryptionType.None -> EncryptionType.Aes256
                         else -> EncryptionType.None
                     }
-                }
+                },
+                colors = colors.dialogColors.checkboxColors
             )
             Text(
                 text = texts.dialogTexts.encryptData,
@@ -186,79 +165,88 @@ fun ExportNoteBackupPreference(
             )
         }
         if (exportEncryptionType != EncryptionType.None) {
-            Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                Column {
-                    Text(
-                        text = texts.dialogTexts.encryptionAlgorithm,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = colors.dialogColors.textContentColor,
-                        modifier = Modifier.padding(vertical = 8.dp)
+            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                Text(
+                    text = texts.dialogTexts.encryptionAlgorithm,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colors.dialogColors.textContentColor,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+                ExposedDropdownMenuBox(
+                    expanded = isEncryptionTypeDropDownExpanded,
+                    onExpandedChange = { isEncryptionTypeDropDownExpanded = it },
+                ) {
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                            .fillMaxWidth(),
+                        value = selectedEncryptionAlgorithmLabel,
+                        onValueChange = {},
+                        readOnly = true,
+                        singleLine = true,
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(
+                                expanded = isEncryptionTypeDropDownExpanded
+                            )
+                        },
+                        colors = colors.dialogColors.textFieldColors,
                     )
-                    ExposedDropdownMenuBox(
+                    ExposedDropdownMenu(
                         expanded = isEncryptionTypeDropDownExpanded,
-                        onExpandedChange = { isEncryptionTypeDropDownExpanded = it },
+                        onDismissRequest = { isEncryptionTypeDropDownExpanded = false },
+                        containerColor = colors.dialogColors.cardColors.containerColor
                     ) {
-                        OutlinedTextField(
-                            modifier = Modifier
-                                .menuAnchor(
-                                    ExposedDropdownMenuAnchorType.PrimaryNotEditable
-                                )
-                                .fillMaxWidth(),
-                            value = text,
-                            onValueChange = {},
-                            readOnly = true,
-                            singleLine = true,
-                            trailingIcon = {
-                                ExposedDropdownMenuDefaults.TrailingIcon(
-                                    expanded = isEncryptionTypeDropDownExpanded
-                                )
-                            },
-                            //colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                            colors = OutlinedTextFieldDefaults.colors(),
-                        )
-                        ExposedDropdownMenu(
-                            expanded = isEncryptionTypeDropDownExpanded,
-                            onDismissRequest = { isEncryptionTypeDropDownExpanded = false },
-                            containerColor = colors.dialogColors.cardColors.containerColor
-                        ) {
-                            encryptionAlgorithms.forEach { option ->
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(
-                                            text = option,
-                                            style = MaterialTheme.typography.bodyLarge
-                                        )
-                                    },
-                                    onClick = {
-                                        text = option
-                                        isEncryptionTypeDropDownExpanded = false
-                                    },
-                                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                                )
-                            }
+                        encryptionAlgorithmLabels.forEach { encryptionAlgorithmLabel ->
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        text = encryptionAlgorithmLabel,
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+                                },
+                                onClick = {
+                                    selectedEncryptionAlgorithmLabel = encryptionAlgorithmLabel
+                                    isEncryptionTypeDropDownExpanded = false
+                                },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                            )
                         }
                     }
                 }
             }
-            Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
-                Column {
-                    Text(
-                        text = texts.dialogTexts.password,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = colors.dialogColors.textContentColor,
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
-                    OutlinedSecureTextField(
-                        state = passwordTextState,
-                        inputTransformation = InputTransformation.maxLength(128),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    PasswordStrengthIndicator(
-                        strength = measurePasswordStrength(passwordTextState.text),
-                        texts = texts.passwordStrengthTexts,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
+            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                Text(
+                    text = texts.dialogTexts.password,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colors.dialogColors.textContentColor,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+                OutlinedSecureTextField(
+                    state = passwordTextState,
+                    inputTransformation = InputTransformation.maxLength(128),
+                    trailingIcon = if (showPasswordIcon != null && hidePasswordIcon != null) {
+                        {
+                            IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                                Icon(
+                                    painter =
+                                        if (isPasswordVisible) hidePasswordIcon
+                                        else showPasswordIcon,
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    } else null,
+                    textObfuscationMode =
+                        if (isPasswordVisible) TextObfuscationMode.Visible
+                        else TextObfuscationMode.RevealLastTyped,
+                    colors = colors.dialogColors.textFieldColors,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                PasswordStrengthIndicator(
+                    strength = measurePasswordStrength(passwordTextState.text),
+                    texts = texts.passwordStrengthTexts,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
     }
