@@ -200,8 +200,7 @@ private fun DayCell(
 
                         dayCell.hasNote -> {
                             drawCircle(
-                                color = themeColors.primaryColor
-                                    .copy(alpha = 0.3333333f),
+                                color = themeColors.primaryColor.copy(alpha = 0.38f),
                                 radius = radius,
                                 style = stroke
                             )
