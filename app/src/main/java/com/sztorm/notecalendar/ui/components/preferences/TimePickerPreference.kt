@@ -43,17 +43,21 @@ fun TimePickerPreference(
     initialTime: LocalTime,
     onConfirm: (LocalTime) -> Unit,
     modifier: Modifier = Modifier,
-    is24HourFormat: Boolean = DateFormat.is24HourFormat(LocalContext.current),
     onDismiss: (() -> Unit)? = null,
-    titleColor: Color = MaterialTheme.colorScheme.onSurface,
     summary: String? = null,
-    summaryColor: Color = Color.Unspecified,
+    is24HourFormat: Boolean = DateFormat.is24HourFormat(LocalContext.current),
+    titleColor: Color = MaterialTheme.colorScheme.onSurface,
+    summaryColor: Color = titleColor.copy(alpha = 0.8f),
+    inactiveColor: Color = titleColor.copy(alpha = 0.38f),
     dividerColor: Color = DividerDefaults.color,
     dialogColors: CardColors = CardDefaults.cardColors(
         containerColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface
     ),
-    dialogButtonColors: ButtonColors = ButtonDefaults.textButtonColors(),
+    dialogButtonColors: ButtonColors = ButtonDefaults.textButtonColors(
+        contentColor = MaterialTheme.colorScheme.primary,
+        disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+    ),
     timePickerColors: TimePickerColors = TimePickerDefaults.colors(
         clockDialColor = MaterialTheme.colorScheme.surfaceVariant,
         clockDialSelectedContentColor = MaterialTheme.colorScheme.onPrimary,
@@ -74,8 +78,9 @@ fun TimePickerPreference(
     iconColorFilter: ColorFilter? = null,
     enabled: Boolean = true
 ) {
-    val titleColor = titleColor.copy(alpha = if (enabled) 1f else 0.4f)
-    val summaryColor = summaryColor.copy(alpha = if (enabled) 0.8f else 0.4f)
+    val titleColor = if (enabled) titleColor else inactiveColor
+    val summaryColor = if (enabled) summaryColor else inactiveColor
+    val dividerColor = if (enabled) dividerColor else inactiveColor
     var openDialog by remember { mutableStateOf(false) }
     val timePickerState = rememberTimePickerState(
         initialHour = initialTime.hour,
@@ -90,9 +95,10 @@ fun TimePickerPreference(
             openDialog = true
         },
         modifier = modifier,
-        titleColor = titleColor,
         summary = summary,
+        titleColor = titleColor,
         summaryColor = summaryColor,
+        inactiveColor = inactiveColor,
         icon = icon,
         iconColorFilter = iconColorFilter,
         enabled = enabled
