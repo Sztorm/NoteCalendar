@@ -75,6 +75,7 @@ fun parseHexCodeOrNull(hexCode: CharSequence): ColorRGBA32? {
         (this[index].digitToInt(16) shl 4) + this[index + 1].digitToInt(16)
         ).toUByte()
 
+    @Suppress("IntroduceWhenSubject")
     return when {
         hexCode.length == 7 &&
             hexCode[0] == '#' &&
@@ -131,7 +132,7 @@ fun ColorPicker(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = colors.backgroundColor)
+            .background(color = colors.containerColor)
     ) {
         val selectedTab = properties.tabs[selectedTabIndex]
 
@@ -499,7 +500,7 @@ private fun RgbTab(
                         value = (state.rgb.red * 255f).roundToInt(),
                         valueRange = 0..255,
                         onValueChange = { state.rgb = state.rgb.copy(red = it.toFloat() / 255f) },
-                        textColor = colors.labelColor,
+                        textColor = colors.contentColor,
                         sliderColors = colors.sliderColors,
                         textFieldColors = colors.textFieldColors
                     )
@@ -510,7 +511,7 @@ private fun RgbTab(
                         value = (state.rgb.green * 255f).roundToInt(),
                         valueRange = 0..255,
                         onValueChange = { state.rgb = state.rgb.copy(green = it.toFloat() / 255f) },
-                        textColor = colors.labelColor,
+                        textColor = colors.contentColor,
                         sliderColors = colors.sliderColors,
                         textFieldColors = colors.textFieldColors
                     )
@@ -521,7 +522,7 @@ private fun RgbTab(
                         value = (state.rgb.blue * 255).roundToInt(),
                         valueRange = 0..255,
                         onValueChange = { state.rgb = state.rgb.copy(blue = it.toFloat() / 255f) },
-                        textColor = colors.labelColor,
+                        textColor = colors.contentColor,
                         sliderColors = colors.sliderColors,
                         textFieldColors = colors.textFieldColors
                     )
@@ -533,7 +534,7 @@ private fun RgbTab(
                             value = (state.alpha * 255).roundToInt(),
                             valueRange = 0..255,
                             onValueChange = { state.alpha = it.toFloat() / 255f },
-                            textColor = colors.labelColor,
+                            textColor = colors.contentColor,
                             sliderColors = colors.sliderColors,
                             textFieldColors = colors.textFieldColors
                         )
@@ -549,7 +550,7 @@ private fun RgbTab(
                         valueRange = 0f..1f,
                         onValueChange = { state.rgb = state.rgb.copy(red = it) },
                         format = { it.formatUpToTwoDecimalPlaces() },
-                        textColor = colors.labelColor,
+                        textColor = colors.contentColor,
                         sliderColors = colors.sliderColors,
                         textFieldColors = colors.textFieldColors
                     )
@@ -561,7 +562,7 @@ private fun RgbTab(
                         valueRange = 0f..1f,
                         onValueChange = { state.rgb = state.rgb.copy(green = it) },
                         format = { it.formatUpToTwoDecimalPlaces() },
-                        textColor = colors.labelColor,
+                        textColor = colors.contentColor,
                         sliderColors = colors.sliderColors,
                         textFieldColors = colors.textFieldColors
                     )
@@ -573,7 +574,7 @@ private fun RgbTab(
                         valueRange = 0f..1f,
                         onValueChange = { state.rgb = state.rgb.copy(blue = it) },
                         format = { it.formatUpToTwoDecimalPlaces() },
-                        textColor = colors.labelColor,
+                        textColor = colors.contentColor,
                         sliderColors = colors.sliderColors,
                         textFieldColors = colors.textFieldColors
                     )
@@ -586,7 +587,7 @@ private fun RgbTab(
                             valueRange = 0f..1f,
                             onValueChange = { state.alpha = it },
                             format = { it.formatUpToTwoDecimalPlaces() },
-                            textColor = colors.labelColor,
+                            textColor = colors.contentColor,
                             sliderColors = colors.sliderColors,
                             textFieldColors = colors.textFieldColors
                         )
@@ -640,7 +641,7 @@ private fun HsvTab(
                         onValueChange = { state.hsv = state.hsv.copy(hue = it) },
                         format = { it.formatToInteger() },
                         suffix = { Text("°") },
-                        textColor = colors.labelColor,
+                        textColor = colors.contentColor,
                         sliderColors = colors.sliderColors,
                         textFieldColors = colors.textFieldColors
                     )
@@ -653,7 +654,7 @@ private fun HsvTab(
                         onValueChange = { state.hsv = state.hsv.copy(saturation = it * 0.01f) },
                         format = { it.formatToInteger() },
                         suffix = { Text("%") },
-                        textColor = colors.labelColor,
+                        textColor = colors.contentColor,
                         sliderColors = colors.sliderColors,
                         textFieldColors = colors.textFieldColors
                     )
@@ -666,7 +667,7 @@ private fun HsvTab(
                         onValueChange = { state.hsv = state.hsv.copy(value = it * 0.01f) },
                         format = { it.formatToInteger() },
                         suffix = { Text("%") },
-                        textColor = colors.labelColor,
+                        textColor = colors.contentColor,
                         sliderColors = colors.sliderColors,
                         textFieldColors = colors.textFieldColors
                     )
@@ -680,7 +681,7 @@ private fun HsvTab(
                             onValueChange = { state.alpha = it * 0.01f },
                             format = { it.formatToInteger() },
                             suffix = { Text("%") },
-                            textColor = colors.labelColor,
+                            textColor = colors.contentColor,
                             sliderColors = colors.sliderColors,
                             textFieldColors = colors.textFieldColors
                         )
@@ -696,7 +697,7 @@ private fun HsvTab(
                         valueRange = 0f..360f,
                         onValueChange = { state.hsv = state.hsv.copy(hue = it) },
                         format = { it.formatToInteger() },
-                        textColor = colors.labelColor,
+                        textColor = colors.contentColor,
                         sliderColors = colors.sliderColors,
                         textFieldColors = colors.textFieldColors
                     )
@@ -708,7 +709,7 @@ private fun HsvTab(
                         valueRange = 0f..1f,
                         onValueChange = { state.hsv = state.hsv.copy(saturation = it) },
                         format = { it.formatUpToTwoDecimalPlaces() },
-                        textColor = colors.labelColor,
+                        textColor = colors.contentColor,
                         sliderColors = colors.sliderColors,
                         textFieldColors = colors.textFieldColors
                     )
@@ -720,7 +721,7 @@ private fun HsvTab(
                         valueRange = 0f..1f,
                         onValueChange = { state.hsv = state.hsv.copy(value = it) },
                         format = { it.formatUpToTwoDecimalPlaces() },
-                        textColor = colors.labelColor,
+                        textColor = colors.contentColor,
                         sliderColors = colors.sliderColors,
                         textFieldColors = colors.textFieldColors
                     )
@@ -733,7 +734,7 @@ private fun HsvTab(
                             valueRange = 0f..1f,
                             onValueChange = { state.alpha = it },
                             format = { it.formatUpToTwoDecimalPlaces() },
-                            textColor = colors.labelColor,
+                            textColor = colors.contentColor,
                             sliderColors = colors.sliderColors,
                             textFieldColors = colors.textFieldColors
                         )
@@ -787,7 +788,7 @@ private fun HslTab(
                         onValueChange = { state.hsl = state.hsl.copy(hue = it) },
                         format = { it.formatToInteger() },
                         suffix = { Text("°") },
-                        textColor = colors.labelColor,
+                        textColor = colors.contentColor,
                         sliderColors = colors.sliderColors,
                         textFieldColors = colors.textFieldColors
                     )
@@ -800,7 +801,7 @@ private fun HslTab(
                         onValueChange = { state.hsl = state.hsl.copy(saturation = it * 0.01f) },
                         format = { it.formatToInteger() },
                         suffix = { Text("%") },
-                        textColor = colors.labelColor,
+                        textColor = colors.contentColor,
                         sliderColors = colors.sliderColors,
                         textFieldColors = colors.textFieldColors
                     )
@@ -813,7 +814,7 @@ private fun HslTab(
                         onValueChange = { state.hsl = state.hsl.copy(lightness = it * 0.01f) },
                         format = { it.formatToInteger() },
                         suffix = { Text("%") },
-                        textColor = colors.labelColor,
+                        textColor = colors.contentColor,
                         sliderColors = colors.sliderColors,
                         textFieldColors = colors.textFieldColors
                     )
@@ -827,7 +828,7 @@ private fun HslTab(
                             onValueChange = { state.alpha = it * 0.01f },
                             format = { it.formatToInteger() },
                             suffix = { Text("%") },
-                            textColor = colors.labelColor,
+                            textColor = colors.contentColor,
                             sliderColors = colors.sliderColors,
                             textFieldColors = colors.textFieldColors
                         )
@@ -843,7 +844,7 @@ private fun HslTab(
                         valueRange = 0f..360f,
                         onValueChange = { state.hsl = state.hsl.copy(hue = it) },
                         format = { it.formatToInteger() },
-                        textColor = colors.labelColor,
+                        textColor = colors.contentColor,
                         sliderColors = colors.sliderColors,
                         textFieldColors = colors.textFieldColors
                     )
@@ -855,7 +856,7 @@ private fun HslTab(
                         valueRange = 0f..1f,
                         onValueChange = { state.hsl = state.hsl.copy(saturation = it) },
                         format = { it.formatUpToTwoDecimalPlaces() },
-                        textColor = colors.labelColor,
+                        textColor = colors.contentColor,
                         sliderColors = colors.sliderColors,
                         textFieldColors = colors.textFieldColors
                     )
@@ -867,7 +868,7 @@ private fun HslTab(
                         valueRange = 0f..1f,
                         onValueChange = { state.hsl = state.hsl.copy(lightness = it) },
                         format = { it.formatUpToTwoDecimalPlaces() },
-                        textColor = colors.labelColor,
+                        textColor = colors.contentColor,
                         sliderColors = colors.sliderColors,
                         textFieldColors = colors.textFieldColors
                     )
@@ -880,7 +881,7 @@ private fun HslTab(
                             valueRange = 0f..1f,
                             onValueChange = { state.alpha = it },
                             format = { it.formatUpToTwoDecimalPlaces() },
-                            textColor = colors.labelColor,
+                            textColor = colors.contentColor,
                             sliderColors = colors.sliderColors,
                             textFieldColors = colors.textFieldColors
                         )

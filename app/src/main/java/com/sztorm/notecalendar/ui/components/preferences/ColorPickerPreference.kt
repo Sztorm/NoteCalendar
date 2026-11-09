@@ -15,6 +15,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -27,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -46,25 +46,34 @@ import com.sztorm.notecalendar.ui.components.colorpicker.rememberColorPickerStat
 fun ColorPickerPreference(
     title: String,
     initialColor: Color,
-    outlineColor: Color,
     onConfirm: (Color) -> Unit,
     modifier: Modifier = Modifier,
-    onDismiss: ((Color) -> Unit)? = null,
-    defaultColor: Color = Color.Unspecified,
-    titleColor: Color = Color.Unspecified,
+    onDismiss: (() -> Unit)? = null,
     summary: String? = null,
-    summaryColor: Color = Color.Unspecified,
+    defaultColor: Color = Color.Unspecified,
+    titleColor: Color = MaterialTheme.colorScheme.onSurface,
+    summaryColor: Color = titleColor.copy(alpha = 0.8f),
+    inactiveColor: Color = titleColor.copy(alpha = 0.38f),
+    outlineColor: Color = MaterialTheme.colorScheme.onSurface,
     dividerColor: Color = DividerDefaults.color,
-    dialogColors: CardColors = CardDefaults.cardColors(),
-    dialogButtonColors: ButtonColors = ButtonDefaults.textButtonColors(),
+    dialogColors: CardColors = CardDefaults.cardColors(
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+    ),
+    dialogButtonColors: ButtonColors = ButtonDefaults.textButtonColors(
+        contentColor = MaterialTheme.colorScheme.primary,
+        disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+    ),
     colorPickerColors: ColorPickerColors = ColorPickerDefaults.colors(),
     colorPickerProperties: ColorPickerProperties = ColorPickerProperties(),
     icon: Painter? = null,
     iconColorFilter: ColorFilter? = null,
     enabled: Boolean = true
 ) {
-    val titleColor = titleColor.copy(alpha = if (enabled) 1f else 0.4f)
-    val summaryColor = summaryColor.copy(alpha = if (enabled) 0.8f else 0.4f)
+    val titleColor = if (enabled) titleColor else inactiveColor
+    val summaryColor = if (enabled) summaryColor else inactiveColor
+    val dividerColor = if (enabled) dividerColor else inactiveColor
+    val outlineColor = if (enabled) outlineColor else inactiveColor
     var openDialog by remember { mutableStateOf(false) }
     val colorPickerState = rememberColorPickerState(initialColor)
     val onDialogConfirm = {
@@ -73,9 +82,8 @@ fun ColorPickerPreference(
     }
     val onDialogDismiss: () -> Unit = {
         openDialog = false
-        val selectedColor = colorPickerState.rgb.toColor()
         colorPickerState.rgb = RgbColor(initialColor.red, initialColor.green, initialColor.blue)
-        onDismiss?.invoke(selectedColor)
+        onDismiss?.invoke()
     }
     val onSetDefault = {
         openDialog = false
@@ -91,9 +99,10 @@ fun ColorPickerPreference(
             openDialog = true
         },
         modifier = modifier,
-        titleColor = titleColor,
         summary = summary,
+        titleColor = titleColor,
         summaryColor = summaryColor,
+        inactiveColor = inactiveColor,
         icon = icon,
         iconColorFilter = iconColorFilter,
         enabled = enabled
@@ -113,18 +122,14 @@ fun ColorPickerPreference(
             }
             Box(
                 modifier = Modifier.drawWithCache {
-                    val stroke = Stroke(width = 2.dp.toPx())
-                    val radius = 16.dp.toPx()
-
                     onDrawBehind {
                         drawCircle(
-                            color = initialColor,
-                            radius = radius
+                            color = outlineColor,
+                            radius = 18.dp.toPx()
                         )
                         drawCircle(
-                            color = outlineColor,
-                            radius = radius,
-                            style = stroke
+                            color = initialColor,
+                            radius = 16.dp.toPx()
                         )
                     }
                 }

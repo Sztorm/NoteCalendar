@@ -16,10 +16,10 @@ object ColorPickerDefaults {
             if (cached != null) return cached
             else {
                 val result = ColorPickerColors(
-                    backgroundColor = MaterialTheme.colorScheme.background,
-                    labelColor = MaterialTheme.colorScheme.onBackground,
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
                     tabButtonColor = MaterialTheme.colorScheme.primary,
-                    iconButtonColor = MaterialTheme.colorScheme.onBackground,
+                    iconButtonColor = MaterialTheme.colorScheme.onSurface,
                     textFieldColors = OutlinedTextFieldDefaults.colors(),
                     sliderColors = SliderDefaults.colors(),
                     segmentedButtonColors = SegmentedButtonDefaults.colors()

@@ -6,8 +6,8 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.ui.graphics.Color
 
 data class ColorPickerColors(
-    val backgroundColor: Color,
-    val labelColor: Color,
+    val containerColor: Color,
+    val contentColor: Color,
     val tabButtonColor: Color,
     val iconButtonColor: Color,
     val textFieldColors: TextFieldColors,
