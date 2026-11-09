@@ -27,9 +27,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,6 +61,8 @@ import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
 import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.feature.settings.theme.ThemeColors
+import com.sztorm.notecalendar.feature.settings.theme.outlinedTextFieldColors
+import com.sztorm.notecalendar.feature.settings.theme.switchColors
 import com.sztorm.notecalendar.ui.components.DateRangePickerDialog
 import com.sztorm.notecalendar.ui.components.IconButton
 import java.time.LocalDate
@@ -69,7 +73,8 @@ private fun SearchTextField(
     onBackButtonClick: () -> Unit,
     onClearButtonClick: () -> Unit,
     onTextValueChange: (TextFieldValue) -> Unit,
-    onFiltersExpand: () -> Unit
+    onFiltersExpand: () -> Unit,
+    colors: TextFieldColors = OutlinedTextFieldDefaults.colors()
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -81,7 +86,6 @@ private fun SearchTextField(
             IconButton(onClick = onBackButtonClick) {
                 Icon(
                     painter = painterResource(R.drawable.icon_rounded_arrow_back),
-                    tint = MaterialTheme.colorScheme.onBackground,
                     contentDescription = null
                 )
             }
@@ -97,36 +101,29 @@ private fun SearchTextField(
                         }
                     }
                 ) {
-                    IconButton(
-                        onClick = onFiltersExpand
-                    ) {
+                    IconButton(onClick = onFiltersExpand) {
                         Icon(
                             painter = painterResource(R.drawable.icon_outline_rounded_filter_list),
-                            tint = MaterialTheme.colorScheme.onBackground,
                             contentDescription = stringResource(R.string.ToggleFilters)
                         )
                     }
                 }
-                IconButton(
-                    onClick = onClearButtonClick
-                ) {
+                IconButton(onClick = onClearButtonClick) {
                     Icon(
                         painter = painterResource(R.drawable.icon_rounded_close),
-                        tint = MaterialTheme.colorScheme.onBackground,
                         contentDescription = stringResource(R.string.ClearSearch)
                     )
                 }
             }
         },
         placeholder = {
-            Text(
-                text = stringResource(R.string.SearchNotes)
-            )
+            Text(text = stringResource(R.string.SearchNotes))
         },
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         keyboardActions = KeyboardActions(onSearch = {
             keyboardController?.hide()
         }),
+        colors = colors,
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
@@ -166,7 +163,8 @@ private fun ColumnScope.SearchFilters(
                 Spacer(modifier = Modifier.weight(1f))
                 Switch(
                     checked = state.searchFiltersByType.contains(SearchFilter.MatchCase::class),
-                    onCheckedChange = onMatchCaseFilterChange
+                    onCheckedChange = onMatchCaseFilterChange,
+                    colors = themeColors.switchColors()
                 )
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -249,7 +247,8 @@ private fun SearchBar(
             onBackButtonClick = onBackButtonClick,
             onClearButtonClick = onClearButtonClick,
             onTextValueChange = onTextValueChange,
-            onFiltersExpand = { filtersExpanded = !filtersExpanded }
+            onFiltersExpand = { filtersExpanded = !filtersExpanded },
+            colors = themeColors.outlinedTextFieldColors()
         )
         SearchFilters(
             state = state,
