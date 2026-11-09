@@ -6,6 +6,7 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.SwitchDefaults
@@ -110,6 +111,14 @@ fun ThemeColors.textButtonColors() = ButtonDefaults.textButtonColors(
     contentColor = primaryColor,
     disabledContainerColor = Color.Transparent,
     disabledContentColor = inactiveTextColor
+)
+
+@Composable
+fun ThemeColors.radioButtonColors() = RadioButtonDefaults.colors(
+    selectedColor = primaryColor,
+    unselectedColor = textColor,
+    disabledSelectedColor = inactiveElementColor,
+    disabledUnselectedColor = inactiveElementColor
 )
 
 @Composable

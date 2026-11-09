@@ -3,6 +3,7 @@ package com.sztorm.notecalendar.feature.settings.notes
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.input.InputTransformation
 import androidx.compose.foundation.text.input.TextFieldState
@@ -194,7 +195,8 @@ fun ImportNoteBackupPreference(
                     textObfuscationMode =
                         if (isPasswordVisible) TextObfuscationMode.Visible
                         else TextObfuscationMode.RevealLastTyped,
-                    colors = colors.dialogColors.textFieldColors
+                    colors = colors.dialogColors.textFieldColors,
+                    modifier = Modifier.fillMaxWidth()
                 )
                 if (!isPasswordCorrect) {
                     Text(

@@ -177,9 +177,6 @@ fun ExportNoteBackupPreference(
                     onExpandedChange = { isEncryptionTypeDropDownExpanded = it },
                 ) {
                     OutlinedTextField(
-                        modifier = Modifier
-                            .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
-                            .fillMaxWidth(),
                         value = selectedEncryptionAlgorithmLabel,
                         onValueChange = {},
                         readOnly = true,
@@ -190,6 +187,9 @@ fun ExportNoteBackupPreference(
                             )
                         },
                         colors = colors.dialogColors.textFieldColors,
+                        modifier = Modifier
+                            .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                            .fillMaxWidth(),
                     )
                     ExposedDropdownMenu(
                         expanded = isEncryptionTypeDropDownExpanded,

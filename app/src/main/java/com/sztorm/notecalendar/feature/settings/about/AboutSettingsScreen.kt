@@ -138,7 +138,7 @@ private fun AboutPreference(
     summary = {
         Text(
             text = summary,
-            fontSize = 20.sp
+            fontSize = 16.sp
         )
     },
     onCopy = onCopy,

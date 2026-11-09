@@ -1,7 +1,5 @@
 package com.sztorm.notecalendar.feature.settings.calendar
 
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.res.painterResource
@@ -11,6 +9,9 @@ import com.sztorm.notecalendar.core.common.getLocalizedName
 import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
 import com.sztorm.notecalendar.feature.app.AppEvent
 import com.sztorm.notecalendar.feature.app.AppViewModel
+import com.sztorm.notecalendar.feature.settings.theme.cardColors
+import com.sztorm.notecalendar.feature.settings.theme.radioButtonColors
+import com.sztorm.notecalendar.feature.settings.theme.textButtonColors
 import com.sztorm.notecalendar.ui.components.preferences.ListPreference
 import com.sztorm.notecalendar.ui.components.preferences.SubpreferenceScreen
 import kotlinx.coroutines.launch
@@ -24,10 +25,10 @@ fun CalendarSettingsScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val themeColors = appViewModel.state.themeColors
-    val textButtonColors = ButtonDefaults.textButtonColors(
-        contentColor = themeColors.primaryColor,
-        disabledContentColor = themeColors.inactiveTextColor
-    )
+    val radioButtonColors = themeColors.radioButtonColors()
+    val dialogColors = themeColors.cardColors()
+    val textButtonColors = themeColors.textButtonColors()
+
     SubpreferenceScreen(
         title = stringResource(R.string.Settings_Calendar),
         backButtonIcon = painterResource(R.drawable.icon_rounded_arrow_back),
@@ -45,12 +46,10 @@ fun CalendarSettingsScreen(
                 appViewModel.onEvent(AppEvent.FirstDayOfWeekChange(firstDayOfWeek))
             },
             titleColor = themeColors.textColor,
-            summaryColor = themeColors.textColor,
-            dialogButtonColors = textButtonColors,
-            dialogColors = CardDefaults.cardColors().copy(
-                containerColor = themeColors.backgroundColor,
-                contentColor = themeColors.backgroundColor,
-            )
+            summaryColor = themeColors.summaryColor,
+            radioButtonColors = radioButtonColors,
+            dialogColors = dialogColors,
+            dialogButtonColors = textButtonColors
         )
         ListPreference(
             title = stringResource(R.string.Settings_Calendar_StartingView),
@@ -63,12 +62,10 @@ fun CalendarSettingsScreen(
                 appViewModel.onEvent(AppEvent.StartingScreenChange(startingScreen))
             },
             titleColor = themeColors.textColor,
-            summaryColor = themeColors.textColor,
-            dialogButtonColors = textButtonColors,
-            dialogColors = CardDefaults.cardColors().copy(
-                containerColor = themeColors.backgroundColor,
-                contentColor = themeColors.backgroundColor,
-            )
+            summaryColor = themeColors.summaryColor,
+            radioButtonColors = radioButtonColors,
+            dialogColors = dialogColors,
+            dialogButtonColors = textButtonColors
         )
     }
 }

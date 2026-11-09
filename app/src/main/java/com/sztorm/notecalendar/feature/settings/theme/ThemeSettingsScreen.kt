@@ -2,8 +2,6 @@ package com.sztorm.notecalendar.feature.settings.theme
 
 import android.widget.Toast
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.ColorFilter
@@ -19,7 +17,6 @@ import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
 import com.sztorm.notecalendar.domain.repositories.SaveResult
 import com.sztorm.notecalendar.feature.app.AppEvent
 import com.sztorm.notecalendar.feature.app.AppViewModel
-import com.sztorm.notecalendar.ui.components.colorpicker.ColorPickerDefaults
 import com.sztorm.notecalendar.ui.components.colorpicker.ColorPickerProperties
 import com.sztorm.notecalendar.ui.components.colorpicker.ColorPickerTab
 import com.sztorm.notecalendar.ui.components.colorpicker.ColorPickerTexts
@@ -43,18 +40,11 @@ fun ThemeSettingsScreen(
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val themeColors = appViewModel.state.themeColors
     val defaultThemeColors = getDefaultThemeColors(isSystemInDarkTheme())
-    val textButtonColors = ButtonDefaults.textButtonColors(
-        contentColor = themeColors.primaryColor,
-        disabledContentColor = themeColors.inactiveTextColor
-    )
-    val colorPickerColors = ColorPickerDefaults.colors().copy(
-        backgroundColor = themeColors.backgroundColor,
-        labelColor = themeColors.textColor,
-        tabButtonColor = themeColors.primaryColor,
-        iconButtonColor = themeColors.textColor,
-    )
+    val themeColors = appViewModel.state.themeColors
+    val dialogColors = themeColors.cardColors()
+    val dialogButtonColors = themeColors.textButtonColors()
+    val colorPickerColors = themeColors.colorPickerColors()
     val colorPickerProperties = ColorPickerProperties(
         tabs = listOf(
             ColorPickerTab.ColorCodes(
@@ -81,11 +71,6 @@ fun ThemeSettingsScreen(
             hsvValue = stringResource(R.string.ColorPicker_hsvValue),
         ),
     )
-    val dialogColors = CardDefaults.cardColors().copy(
-        containerColor = themeColors.backgroundColor,
-        contentColor = themeColors.backgroundColor,
-    )
-
     SubpreferenceScreen(
         title = stringResource(R.string.Settings_Theme),
         backButtonIcon = painterResource(R.drawable.icon_rounded_arrow_back),
@@ -99,6 +84,7 @@ fun ThemeSettingsScreen(
             Preference(
                 title = stringResource(R.string.Settings_Theme_SetLightTheme),
                 titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
                 icon = painterResource(R.drawable.icon_outline_rounded_sun),
                 iconColorFilter = ColorFilter.tint(themeColors.secondaryColor),
                 onClick = {
@@ -115,6 +101,7 @@ fun ThemeSettingsScreen(
             Preference(
                 title = stringResource(R.string.Settings_Theme_SetDarkTheme),
                 titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
                 icon = painterResource(R.drawable.icon_outline_rounded_moon),
                 iconColorFilter = ColorFilter.tint(themeColors.secondaryColor),
                 onClick = {
@@ -131,8 +118,9 @@ fun ThemeSettingsScreen(
             Preference(
                 title = stringResource(R.string.Settings_Theme_SetDefaultTheme),
                 titleColor = themeColors.textColor,
+                summaryColor = themeColors.summaryColor,
+                inactiveColor = themeColors.inactiveElementColor,
                 summary = stringResource(R.string.Settings_Theme_SetDefaultTheme_Summary),
-                summaryColor = themeColors.textColor,
                 icon = painterResource(R.drawable.icon_outline_rounded_sun_and_moon),
                 iconColorFilter = ColorFilter.tint(themeColors.secondaryColor),
                 onClick = {
@@ -149,6 +137,7 @@ fun ThemeSettingsScreen(
             Preference(
                 title = stringResource(R.string.Settings_Theme_ImportTheme),
                 titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
                 icon = painterResource(R.drawable.icon_outline_rounded_folder_open),
                 iconColorFilter = ColorFilter.tint(themeColors.secondaryColor),
                 onClick = {
@@ -190,6 +179,7 @@ fun ThemeSettingsScreen(
             Preference(
                 title = stringResource(R.string.Settings_Theme_ExportTheme),
                 titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
                 icon = painterResource(R.drawable.icon_outline_rounded_save_as),
                 iconColorFilter = ColorFilter.tint(themeColors.secondaryColor),
                 onClick = {
@@ -228,14 +218,7 @@ fun ThemeSettingsScreen(
         ) { enabled ->
             ColorPickerPreference(
                 title = stringResource(R.string.Color_Primary),
-                titleColor = themeColors.textColor,
                 initialColor = themeColors.primaryColor,
-                defaultColor = defaultThemeColors.primaryColor,
-                outlineColor = themeColors.textColor,
-                dialogButtonColors = textButtonColors,
-                dialogColors = dialogColors,
-                colorPickerColors = colorPickerColors,
-                colorPickerProperties = colorPickerProperties,
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setPrimaryColor(color)
@@ -246,18 +229,19 @@ fun ThemeSettingsScreen(
                         )
                     }
                 },
+                defaultColor = defaultThemeColors.primaryColor,
+                titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
+                outlineColor = themeColors.textColor,
+                dialogColors = dialogColors,
+                dialogButtonColors = dialogButtonColors,
+                colorPickerColors = colorPickerColors,
+                colorPickerProperties = colorPickerProperties,
                 enabled = enabled
             )
             ColorPickerPreference(
                 title = stringResource(R.string.Color_Secondary),
-                titleColor = themeColors.textColor,
                 initialColor = themeColors.secondaryColor,
-                defaultColor = defaultThemeColors.secondaryColor,
-                outlineColor = themeColors.textColor,
-                dialogButtonColors = textButtonColors,
-                dialogColors = dialogColors,
-                colorPickerColors = colorPickerColors,
-                colorPickerProperties = colorPickerProperties,
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setSecondaryColor(color)
@@ -268,18 +252,19 @@ fun ThemeSettingsScreen(
                         )
                     }
                 },
+                defaultColor = defaultThemeColors.secondaryColor,
+                titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
+                outlineColor = themeColors.textColor,
+                dialogColors = dialogColors,
+                dialogButtonColors = dialogButtonColors,
+                colorPickerColors = colorPickerColors,
+                colorPickerProperties = colorPickerProperties,
                 enabled = enabled
             )
             ColorPickerPreference(
                 title = stringResource(R.string.Color_InactiveElement),
-                titleColor = themeColors.textColor,
                 initialColor = themeColors.inactiveElementColor,
-                defaultColor = defaultThemeColors.inactiveElementColor,
-                outlineColor = themeColors.textColor,
-                dialogButtonColors = textButtonColors,
-                dialogColors = dialogColors,
-                colorPickerColors = colorPickerColors,
-                colorPickerProperties = colorPickerProperties,
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setInactiveElementColor(color)
@@ -290,18 +275,19 @@ fun ThemeSettingsScreen(
                         )
                     }
                 },
+                defaultColor = defaultThemeColors.inactiveElementColor,
+                titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
+                outlineColor = themeColors.textColor,
+                dialogColors = dialogColors,
+                dialogButtonColors = dialogButtonColors,
+                colorPickerColors = colorPickerColors,
+                colorPickerProperties = colorPickerProperties,
                 enabled = enabled
             )
             ColorPickerPreference(
                 title = stringResource(R.string.Color_Note),
-                titleColor = themeColors.textColor,
                 initialColor = themeColors.noteColor,
-                defaultColor = defaultThemeColors.noteColor,
-                outlineColor = themeColors.textColor,
-                dialogButtonColors = textButtonColors,
-                dialogColors = dialogColors,
-                colorPickerColors = colorPickerColors,
-                colorPickerProperties = colorPickerProperties,
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setNoteColor(color)
@@ -312,18 +298,19 @@ fun ThemeSettingsScreen(
                         )
                     }
                 },
+                defaultColor = defaultThemeColors.noteColor,
+                titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
+                outlineColor = themeColors.textColor,
+                dialogColors = dialogColors,
+                dialogButtonColors = dialogButtonColors,
+                colorPickerColors = colorPickerColors,
+                colorPickerProperties = colorPickerProperties,
                 enabled = enabled
             )
             ColorPickerPreference(
                 title = stringResource(R.string.Color_NoteVariant),
-                titleColor = themeColors.textColor,
                 initialColor = themeColors.noteColorVariant,
-                defaultColor = defaultThemeColors.noteColorVariant,
-                outlineColor = themeColors.textColor,
-                dialogButtonColors = textButtonColors,
-                dialogColors = dialogColors,
-                colorPickerColors = colorPickerColors,
-                colorPickerProperties = colorPickerProperties,
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setNoteColorVariant(color)
@@ -334,18 +321,19 @@ fun ThemeSettingsScreen(
                         )
                     }
                 },
+                defaultColor = defaultThemeColors.noteColorVariant,
+                titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
+                outlineColor = themeColors.textColor,
+                dialogColors = dialogColors,
+                dialogButtonColors = dialogButtonColors,
+                colorPickerColors = colorPickerColors,
+                colorPickerProperties = colorPickerProperties,
                 enabled = enabled
             )
             ColorPickerPreference(
                 title = stringResource(R.string.Color_Text),
-                titleColor = themeColors.textColor,
                 initialColor = themeColors.textColor,
-                defaultColor = defaultThemeColors.textColor,
-                outlineColor = themeColors.textColor,
-                dialogButtonColors = textButtonColors,
-                dialogColors = dialogColors,
-                colorPickerColors = colorPickerColors,
-                colorPickerProperties = colorPickerProperties,
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setTextColor(color)
@@ -356,18 +344,19 @@ fun ThemeSettingsScreen(
                         )
                     }
                 },
+                defaultColor = defaultThemeColors.textColor,
+                titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
+                outlineColor = themeColors.textColor,
+                dialogColors = dialogColors,
+                dialogButtonColors = dialogButtonColors,
+                colorPickerColors = colorPickerColors,
+                colorPickerProperties = colorPickerProperties,
                 enabled = enabled
             )
             ColorPickerPreference(
                 title = stringResource(R.string.Color_ButtonText),
-                titleColor = themeColors.textColor,
                 initialColor = themeColors.buttonTextColor,
-                defaultColor = defaultThemeColors.buttonTextColor,
-                outlineColor = themeColors.textColor,
-                dialogButtonColors = textButtonColors,
-                dialogColors = dialogColors,
-                colorPickerColors = colorPickerColors,
-                colorPickerProperties = colorPickerProperties,
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setButtonTextColor(color)
@@ -378,18 +367,19 @@ fun ThemeSettingsScreen(
                         )
                     }
                 },
+                defaultColor = defaultThemeColors.buttonTextColor,
+                titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
+                outlineColor = themeColors.textColor,
+                dialogColors = dialogColors,
+                dialogButtonColors = dialogButtonColors,
+                colorPickerColors = colorPickerColors,
+                colorPickerProperties = colorPickerProperties,
                 enabled = enabled
             )
             ColorPickerPreference(
                 title = stringResource(R.string.Color_NoteText),
-                titleColor = themeColors.textColor,
                 initialColor = themeColors.noteTextColor,
-                defaultColor = defaultThemeColors.noteTextColor,
-                outlineColor = themeColors.textColor,
-                dialogButtonColors = textButtonColors,
-                dialogColors = dialogColors,
-                colorPickerColors = colorPickerColors,
-                colorPickerProperties = colorPickerProperties,
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setNoteTextColor(color)
@@ -400,18 +390,19 @@ fun ThemeSettingsScreen(
                         )
                     }
                 },
+                defaultColor = defaultThemeColors.noteTextColor,
+                titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
+                outlineColor = themeColors.textColor,
+                dialogColors = dialogColors,
+                dialogButtonColors = dialogButtonColors,
+                colorPickerColors = colorPickerColors,
+                colorPickerProperties = colorPickerProperties,
                 enabled = enabled
             )
             ColorPickerPreference(
                 title = stringResource(R.string.Color_Background),
-                titleColor = themeColors.textColor,
                 initialColor = themeColors.backgroundColor,
-                defaultColor = defaultThemeColors.backgroundColor,
-                outlineColor = themeColors.textColor,
-                dialogButtonColors = textButtonColors,
-                dialogColors = dialogColors,
-                colorPickerColors = colorPickerColors,
-                colorPickerProperties = colorPickerProperties,
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setBackgroundColor(color)
@@ -422,18 +413,19 @@ fun ThemeSettingsScreen(
                         )
                     }
                 },
+                defaultColor = defaultThemeColors.backgroundColor,
+                titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
+                outlineColor = themeColors.textColor,
+                dialogColors = dialogColors,
+                dialogButtonColors = dialogButtonColors,
+                colorPickerColors = colorPickerColors,
+                colorPickerProperties = colorPickerProperties,
                 enabled = enabled
             )
             ColorPickerPreference(
                 title = stringResource(R.string.Color_BackgroundVariant),
-                titleColor = themeColors.textColor,
                 initialColor = themeColors.backgroundColorVariant,
-                defaultColor = defaultThemeColors.backgroundColorVariant,
-                outlineColor = themeColors.textColor,
-                dialogButtonColors = textButtonColors,
-                dialogColors = dialogColors,
-                colorPickerColors = colorPickerColors,
-                colorPickerProperties = colorPickerProperties,
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setBackgroundColorVariant(color)
@@ -444,6 +436,14 @@ fun ThemeSettingsScreen(
                         )
                     }
                 },
+                defaultColor = defaultThemeColors.backgroundColorVariant,
+                titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
+                outlineColor = themeColors.textColor,
+                dialogColors = dialogColors,
+                dialogButtonColors = dialogButtonColors,
+                colorPickerColors = colorPickerColors,
+                colorPickerProperties = colorPickerProperties,
                 enabled = enabled
             )
         }

@@ -2,8 +2,6 @@ package com.sztorm.notecalendar.feature.settings.notes
 
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -19,9 +17,14 @@ import com.sztorm.notecalendar.domain.repositories.NoteRepository
 import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
 import com.sztorm.notecalendar.feature.app.AppEvent
 import com.sztorm.notecalendar.feature.app.AppViewModel
+import com.sztorm.notecalendar.feature.settings.theme.cardColors
+import com.sztorm.notecalendar.feature.settings.theme.colorPickerColors
+import com.sztorm.notecalendar.feature.settings.theme.exportNoteBackupPreferenceColors
+import com.sztorm.notecalendar.feature.settings.theme.importNoteBackupPreferenceColors
+import com.sztorm.notecalendar.feature.settings.theme.sliderColors
+import com.sztorm.notecalendar.feature.settings.theme.textButtonColors
 import com.sztorm.notecalendar.platform.notifications.AppNotificationManager
 import com.sztorm.notecalendar.ui.components.PasswordStrengthTexts
-import com.sztorm.notecalendar.ui.components.colorpicker.ColorPickerDefaults
 import com.sztorm.notecalendar.ui.components.colorpicker.ColorPickerProperties
 import com.sztorm.notecalendar.ui.components.colorpicker.ColorPickerTab
 import com.sztorm.notecalendar.ui.components.colorpicker.ColorPickerTexts
@@ -47,20 +50,10 @@ fun NotesSettingsScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val themeColors = appViewModel.state.themeColors
-    val dialogColors = CardDefaults.cardColors().copy(
-        containerColor = themeColors.backgroundColor,
-        contentColor = themeColors.backgroundColor,
-    )
-    val textButtonColors = ButtonDefaults.textButtonColors(
-        contentColor = themeColors.primaryColor,
-        disabledContentColor = themeColors.inactiveTextColor
-    )
-    val colorPickerColors = ColorPickerDefaults.colors().copy(
-        backgroundColor = themeColors.backgroundColor,
-        labelColor = themeColors.textColor,
-        tabButtonColor = themeColors.primaryColor,
-        iconButtonColor = themeColors.textColor,
-    )
+    val dialogColors = themeColors.cardColors()
+    val dialogButtonColors = themeColors.textButtonColors()
+    val sliderColors = themeColors.sliderColors()
+    val colorPickerColors = themeColors.colorPickerColors()
     val colorPickerProperties = ColorPickerProperties(
         tabs = listOf(
             ColorPickerTab.ColorCodes(
@@ -101,8 +94,6 @@ fun NotesSettingsScreen(
                 title = stringResource(R.string.Settings_Notes_DeleteAllNotes),
                 dialogTitle = stringResource(R.string.Settings_Notes_DeleteAllNotes_DialogTitle),
                 dialogMessage = stringResource(R.string.Settings_Notes_DeleteAllNotes_DialogMessage),
-                icon = painterResource(R.drawable.icon_outline_rounded_delete_forever),
-                iconColorFilter = ColorFilter.tint(themeColors.secondaryColor),
                 onConfirm = {
                     logger.info("${LogTags.APPLICATION} Delete all notes confirmed.")
                     noteRepository.getAll().forEach { noteData ->
@@ -113,10 +104,13 @@ fun NotesSettingsScreen(
                     noteRepository.deleteAll()
                 },
                 titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
                 dialogTitleColor = themeColors.textColor,
                 dialogMessageColor = themeColors.textColor,
-                dialogButtonColors = textButtonColors,
                 dialogColors = dialogColors,
+                dialogButtonColors = dialogButtonColors,
+                icon = painterResource(R.drawable.icon_outline_rounded_delete_forever),
+                iconColorFilter = ColorFilter.tint(themeColors.secondaryColor),
                 enabled = enabled
             )
             ImportNoteBackupPreference(
@@ -132,21 +126,12 @@ fun NotesSettingsScreen(
                         incorrectPassword = stringResource(R.string.Password_Error)
                     )
                 ),
-                colors = ImportNoteBackupPreferenceDefaults.colors().let {
-                    it.copy(
-                        titleColor = themeColors.textColor,
-                        iconColorFilter = ColorFilter.tint(themeColors.secondaryColor),
-                        dialogColors = it.dialogColors.copy(
-                            titleColor = themeColors.textColor,
-                            textContentColor = themeColors.textColor,
-                            textButtonColors = textButtonColors,
-                            cardColors = dialogColors
-                        )
-                    )
-                },
+                colors = themeColors.importNoteBackupPreferenceColors(),
                 icon = painterResource(R.drawable.icon_outline_rounded_folder_open),
-                dialogModifier = Modifier.verticalScroll(rememberScrollState()),
-                enabled = enabled
+                showPasswordIcon = painterResource(R.drawable.icon_outline_rounded_visibility),
+                hidePasswordIcon = painterResource(R.drawable.icon_outline_rounded_visibility_off),
+                enabled = enabled,
+                dialogModifier = Modifier.verticalScroll(rememberScrollState())
             )
             ExportNoteBackupPreference(
                 logger = logger,
@@ -167,21 +152,12 @@ fun NotesSettingsScreen(
                         strong = stringResource(R.string.PasswordStrength_Strong)
                     )
                 ),
-                colors = ExportNoteBackupPreferenceDefaults.colors().let {
-                    it.copy(
-                        titleColor = themeColors.textColor,
-                        iconColorFilter = ColorFilter.tint(themeColors.secondaryColor),
-                        dialogColors = it.dialogColors.copy(
-                            titleColor = themeColors.textColor,
-                            textContentColor = themeColors.textColor,
-                            textButtonColors = textButtonColors,
-                            cardColors = dialogColors
-                        )
-                    )
-                },
+                colors = themeColors.exportNoteBackupPreferenceColors(),
                 icon = painterResource(R.drawable.icon_outline_rounded_save_as),
-                dialogModifier = Modifier.verticalScroll(rememberScrollState()),
-                enabled = enabled
+                showPasswordIcon = painterResource(R.drawable.icon_outline_rounded_visibility),
+                hidePasswordIcon = painterResource(R.drawable.icon_outline_rounded_visibility_off),
+                enabled = enabled,
+                dialogModifier = Modifier.verticalScroll(rememberScrollState())
             )
         }
         CategoryPreference(
@@ -199,7 +175,7 @@ fun NotesSettingsScreen(
                 """.trimIndent(),
                 noteFontSize = appViewModel.state.noteFontSize,
                 noteLineSpacing = appViewModel.state.noteLineSpacing,
-                previewTextColor = themeColors.textColor.copy(alpha = 0.8f),
+                previewTextColor = themeColors.summaryColor,
                 noteTextColor = themeColors.noteTextColor,
                 noteColor = themeColors.noteColor,
                 noteColorVariant = themeColors.noteColorVariant,
@@ -219,7 +195,9 @@ fun NotesSettingsScreen(
                     appViewModel.onEvent(AppEvent.NoteFontSizeChange(size))
                 },
                 titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
                 iconColor = themeColors.textColor,
+                sliderColors = sliderColors,
                 enabled = enabled
             )
             SizeSliderPreference(
@@ -239,20 +217,15 @@ fun NotesSettingsScreen(
                     appViewModel.onEvent(AppEvent.NoteLineSpacingChange(lineSpacing))
                 },
                 titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
                 iconColor = themeColors.textColor,
+                sliderColors = sliderColors,
                 enabled = enabled
             )
             // TODO: note font
             ColorPickerPreference(
-                title = stringResource(R.string.Color_Text),
-                titleColor = themeColors.textColor,
+                title = stringResource(R.string.Color_NoteText),
                 initialColor = themeColors.noteTextColor,
-                defaultColor = preferenceRepository.defaults.noteTextColor,
-                outlineColor = themeColors.textColor,
-                dialogButtonColors = textButtonColors,
-                dialogColors = dialogColors,
-                colorPickerColors = colorPickerColors,
-                colorPickerProperties = colorPickerProperties,
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setNoteTextColor(color)
@@ -263,18 +236,19 @@ fun NotesSettingsScreen(
                         )
                     }
                 },
+                defaultColor = preferenceRepository.defaults.noteTextColor,
+                titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
+                outlineColor = themeColors.textColor,
+                dialogColors = dialogColors,
+                dialogButtonColors = dialogButtonColors,
+                colorPickerColors = colorPickerColors,
+                colorPickerProperties = colorPickerProperties,
                 enabled = enabled
             )
             ColorPickerPreference(
-                title = stringResource(R.string.Color_Background),
-                titleColor = themeColors.textColor,
+                title = stringResource(R.string.Color_Note),
                 initialColor = themeColors.noteColor,
-                defaultColor = preferenceRepository.defaults.noteColor,
-                outlineColor = themeColors.textColor,
-                dialogButtonColors = textButtonColors,
-                dialogColors = dialogColors,
-                colorPickerColors = colorPickerColors,
-                colorPickerProperties = colorPickerProperties,
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setNoteColor(color)
@@ -285,18 +259,19 @@ fun NotesSettingsScreen(
                         )
                     }
                 },
+                defaultColor = preferenceRepository.defaults.noteColor,
+                titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
+                outlineColor = themeColors.textColor,
+                dialogColors = dialogColors,
+                dialogButtonColors = dialogButtonColors,
+                colorPickerColors = colorPickerColors,
+                colorPickerProperties = colorPickerProperties,
                 enabled = enabled
             )
             ColorPickerPreference(
-                title = stringResource(R.string.Color_BackgroundVariant),
-                titleColor = themeColors.textColor,
+                title = stringResource(R.string.Color_NoteVariant),
                 initialColor = themeColors.noteColorVariant,
-                defaultColor = preferenceRepository.defaults.noteColorVariant,
-                outlineColor = themeColors.textColor,
-                dialogButtonColors = textButtonColors,
-                dialogColors = dialogColors,
-                colorPickerColors = colorPickerColors,
-                colorPickerProperties = colorPickerProperties,
                 onConfirm = { color ->
                     coroutineScope.launch {
                         preferenceRepository.setNoteColorVariant(color)
@@ -307,6 +282,14 @@ fun NotesSettingsScreen(
                         )
                     }
                 },
+                defaultColor = preferenceRepository.defaults.noteColorVariant,
+                titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
+                outlineColor = themeColors.textColor,
+                dialogColors = dialogColors,
+                dialogButtonColors = dialogButtonColors,
+                colorPickerColors = colorPickerColors,
+                colorPickerProperties = colorPickerProperties,
                 enabled = enabled
             )
         }

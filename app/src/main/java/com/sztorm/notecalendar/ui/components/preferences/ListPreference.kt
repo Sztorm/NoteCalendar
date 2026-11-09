@@ -41,7 +41,7 @@ fun <V> ListPreference(
     initialSelectedOptionIndex: Int,
     onConfirm: (Int, V) -> Unit,
     modifier: Modifier = Modifier,
-    onDismiss: ((Int, V) -> Unit)? = null,
+    onDismiss: (() -> Unit)? = null,
     titleColor: Color = MaterialTheme.colorScheme.onSurface,
     summaryColor: Color = titleColor.copy(alpha = 0.8f),
     inactiveColor: Color = titleColor.copy(alpha = 0.38f),
@@ -99,7 +99,7 @@ fun <V> ListPreference(
                 openDialog = false
                 selectedIndex = initialSelectedOptionIndex
                 selectedValue = options[initialSelectedOptionIndex].second
-                onDismiss?.invoke(selectedIndex, selectedValue)
+                onDismiss?.invoke()
             },
             dialogColors = dialogColors,
             buttonColors = dialogButtonColors

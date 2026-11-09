@@ -1,6 +1,5 @@
 package com.sztorm.notecalendar.feature.settings.other
 
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -11,6 +10,10 @@ import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
 import com.sztorm.notecalendar.feature.app.AppEvent
 import com.sztorm.notecalendar.feature.app.AppViewModel
+import com.sztorm.notecalendar.feature.settings.theme.cardColors
+import com.sztorm.notecalendar.feature.settings.theme.radioButtonColors
+import com.sztorm.notecalendar.feature.settings.theme.textButtonColors
+import com.sztorm.notecalendar.feature.settings.theme.timePickerColors
 import com.sztorm.notecalendar.ui.components.preferences.CategoryPreference
 import com.sztorm.notecalendar.ui.components.preferences.ListPreference
 import com.sztorm.notecalendar.ui.components.preferences.SubpreferenceScreen
@@ -50,7 +53,8 @@ fun OtherSettingsScreen(
                     appViewModel.onEvent(AppEvent.NavigationBarPositionChange(navigationPosition))
                 },
                 titleColor = themeColors.textColor,
-                summaryColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
+                radioButtonColors = themeColors.radioButtonColors(),
                 enabled = enabled,
             )
         }
@@ -67,7 +71,9 @@ fun OtherSettingsScreen(
                     }
                     appViewModel.onEvent(AppEvent.AutoAddReminderChange(value))
                 },
-                textColor = themeColors.textColor,
+                titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
+                enabled = enabled,
             )
             TimePickerPreference(
                 title = stringResource(R.string.Settings_Other_DefaultReminderTime),
@@ -80,11 +86,12 @@ fun OtherSettingsScreen(
                     appViewModel.onEvent(AppEvent.DefaultReminderTimeChange(time))
                 },
                 titleColor = themeColors.textColor,
-                summaryColor = themeColors.textColor,
-                dialogButtonColors = ButtonDefaults.textButtonColors(
-                    contentColor = themeColors.primaryColor,
-                    disabledContentColor = themeColors.inactiveTextColor
-                ),
+                summaryColor = themeColors.summaryColor,
+                inactiveColor = themeColors.inactiveElementColor,
+                dividerColor = themeColors.outlineColor,
+                dialogColors = themeColors.cardColors(),
+                dialogButtonColors = themeColors.textButtonColors(),
+                timePickerColors = themeColors.timePickerColors(),
                 enabled = enabled && appViewModel.state.autoAddReminder,
             )
         }
