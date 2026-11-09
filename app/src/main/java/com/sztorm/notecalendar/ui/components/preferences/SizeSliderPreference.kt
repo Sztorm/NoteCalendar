@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderColors
 import androidx.compose.material3.SliderDefaults
@@ -35,21 +36,38 @@ fun <S> SizeSliderPreference(
     selectedIndex: Int,
     onSizeChange: (Int, S) -> Unit,
     modifier: Modifier = Modifier,
-    titleColor: Color = Color.Unspecified,
     summary: String? = null,
-    summaryColor: Color = Color.Unspecified,
-    iconColor: Color = Color.Unspecified,
-    sliderColors: SliderColors = SliderDefaults.colors(),
+    titleColor: Color = MaterialTheme.colorScheme.onSurface,
+    summaryColor: Color = titleColor.copy(alpha = 0.8f),
+    inactiveColor: Color = titleColor.copy(alpha = 0.38f),
+    iconColor: Color = MaterialTheme.colorScheme.onSurface,
+    sliderColors: SliderColors = SliderDefaults.colors(
+        thumbColor = MaterialTheme.colorScheme.primary,
+        activeTrackColor = MaterialTheme.colorScheme.primary,
+        activeTickColor = MaterialTheme.colorScheme.primaryContainer,
+        inactiveTrackColor = MaterialTheme.colorScheme.primaryContainer,
+        inactiveTickColor = MaterialTheme.colorScheme.primary,
+        disabledThumbColor = inactiveColor,
+        disabledActiveTrackColor = inactiveColor,
+        disabledActiveTickColor = inactiveColor,
+        disabledInactiveTickColor = inactiveColor,
+        disabledInactiveTrackColor = MaterialTheme.colorScheme.surfaceVariant,
+    ),
     enabled: Boolean = true,
 ) {
+    val titleColor = if (enabled) titleColor else inactiveColor
+    val summaryColor = if (enabled) summaryColor else inactiveColor
+    val iconColor = if (enabled) iconColor else inactiveColor
+
     Preference(
         title = title,
         onClick = {},
         modifier = modifier,
         paddingValues = PaddingValues(top = 16.dp),
-        titleColor = titleColor,
         summary = summary,
+        titleColor = titleColor,
         summaryColor = summaryColor,
+        inactiveColor = inactiveColor,
         isClickable = false,
         enabled = enabled
     )
@@ -67,7 +85,8 @@ fun <S> SizeSliderPreference(
                 onClick = {
                     val index = max(0, selectedIndex - 1)
                     onSizeChange(index, sizes[index])
-                }
+                },
+                enabled = enabled
             ) {
                 Icon(
                     painter = painterResource(R.drawable.icon_rounded_minus),
@@ -119,7 +138,8 @@ fun <S> SizeSliderPreference(
                 onClick = {
                     val index = min(sizes.size - 1, selectedIndex + 1)
                     onSizeChange(index, sizes[index])
-                }
+                },
+                enabled = enabled
             ) {
                 Icon(
                     painter = painterResource(R.drawable.icon_rounded_plus),
