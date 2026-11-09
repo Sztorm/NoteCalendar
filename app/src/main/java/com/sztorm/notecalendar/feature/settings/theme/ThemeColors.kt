@@ -3,6 +3,7 @@ package com.sztorm.notecalendar.feature.settings.theme
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -218,6 +219,24 @@ fun ThemeColors.timePickerColors() = TimePickerDefaults.colors(
     timeSelectorUnselectedContainerColor = backgroundColorVariant,
     timeSelectorSelectedContentColor = buttonTextColor,
     timeSelectorUnselectedContentColor = textColor,
+)
+
+@Composable
+fun ThemeColors.datePickerColors() = DatePickerDefaults.colors(
+    containerColor = backgroundColor,
+    titleContentColor = textColor,
+    headlineContentColor = textColor,
+    weekdayContentColor = textColor,
+    subheadContentColor = textColor,
+    navigationContentColor = textColor,
+    yearContentColor = textColor,
+    currentYearContentColor = primaryColor,
+    selectedYearContentColor = buttonTextColor,
+    dayContentColor = textColor,
+    selectedDayContentColor = buttonTextColor,
+    dayInSelectionRangeContainerColor = primaryContainerColor,
+    todayDateBorderColor = Color.Transparent,
+    dividerColor = outlineColor,
 )
 
 @Composable

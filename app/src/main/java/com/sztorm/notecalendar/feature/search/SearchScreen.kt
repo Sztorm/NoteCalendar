@@ -18,7 +18,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerFormatter
@@ -61,8 +60,10 @@ import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
 import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.feature.settings.theme.ThemeColors
+import com.sztorm.notecalendar.feature.settings.theme.datePickerColors
 import com.sztorm.notecalendar.feature.settings.theme.outlinedTextFieldColors
 import com.sztorm.notecalendar.feature.settings.theme.switchColors
+import com.sztorm.notecalendar.feature.settings.theme.textButtonColors
 import com.sztorm.notecalendar.ui.components.DateRangePickerDialog
 import com.sztorm.notecalendar.ui.components.IconButton
 import java.time.LocalDate
@@ -219,10 +220,8 @@ private fun ColumnScope.SearchFilters(
             },
             onDismiss = { showDateRangePicker = false },
             dateFormatter = dateFormatter,
-            buttonColors = ButtonDefaults.textButtonColors(
-                contentColor = themeColors.primaryColor,
-                disabledContentColor = themeColors.inactiveTextColor
-            )
+            buttonColors = themeColors.textButtonColors(),
+            colors = themeColors.datePickerColors(),
         )
     }
 }

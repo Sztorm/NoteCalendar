@@ -64,6 +64,10 @@ import com.sztorm.notecalendar.domain.models.ReminderNote
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
 import com.sztorm.notecalendar.feature.app.AppEvent
 import com.sztorm.notecalendar.feature.app.AppViewModel
+import com.sztorm.notecalendar.feature.settings.theme.cardColors
+import com.sztorm.notecalendar.feature.settings.theme.datePickerColors
+import com.sztorm.notecalendar.feature.settings.theme.textButtonColors
+import com.sztorm.notecalendar.feature.settings.theme.timePickerColors
 import com.sztorm.notecalendar.platform.notifications.AppNotificationManager
 import com.sztorm.notecalendar.platform.permissions.AppPermission
 import com.sztorm.notecalendar.platform.permissions.AppPermissionManager
@@ -798,6 +802,10 @@ private fun BoxScope.ActionButtons(
             onDismiss = onReminderDialogDismiss,
             selectableDates = DatesFrom(LocalDate.now()),
             initialTab = DateTimePickerTab.Time,
+            buttonColors = themeColors.textButtonColors(),
+            dialogColors = themeColors.cardColors(),
+            datePickerColors = themeColors.datePickerColors(),
+            timePickerColors = themeColors.timePickerColors(),
             dateText = {
                 Text(text = buildAnnotatedString {
                     append(it)
