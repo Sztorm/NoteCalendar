@@ -26,8 +26,8 @@
     <string name="Color_Background">Background color</string>
     <string name="Color_BackgroundVariant">Background color variant</string>
     <string name="Color_ButtonText">Button text color</string>
-    <string name="Color_InactiveElement">Inactive item color</string>
-    <string name="Color_InactiveElementVariant">Inactive item color variant</string>
+    <string name="Color_InactiveElement">Inactive element color</string>
+    <string name="Color_InactiveElementVariant">Inactive element color variant</string>
     <string name="Color_Note">Note color</string>
     <string name="Color_NoteText">Note text color</string>
     <string name="Color_NoteVariant">Note color variant</string>
