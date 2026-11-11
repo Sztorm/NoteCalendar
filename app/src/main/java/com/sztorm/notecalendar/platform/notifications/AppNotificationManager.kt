@@ -9,11 +9,13 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
+import androidx.compose.material3.DatePickerDefaults
 import androidx.core.app.NotificationCompat
 import com.sztorm.notecalendar.MainActivity
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.core.common.setExactAndAllowWhileIdleCompat
 import com.sztorm.notecalendar.core.common.stableHash
+import com.sztorm.notecalendar.core.common.toEpochMillis
 import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.core.logging.LogTags
 import com.sztorm.notecalendar.data.repositories.NoteRepositoryImpl
@@ -26,6 +28,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.OffsetDateTime
+import java.util.Locale
 
 class AppNotificationManager(context: Context, private val logger: AppLogger) {
     private val appContext = context.applicationContext
@@ -59,12 +62,15 @@ class AppNotificationManager(context: Context, private val logger: AppLogger) {
             intent,
             getIntentUpdateCurrentFlags()
         )
+        val dateFormatter = DatePickerDefaults.dateFormatter(selectedDateSkeleton = "yyyyMMdd")
+        val formattedDate = dateFormatter
+            .formatDate(note.date.toEpochMillis(), Locale.getDefault())
         val builder = NotificationCompat
             .Builder(appContext, NOTIFICATION_CHANNEL_ID_NAME)
             .setContentTitle(
                 appContext
                     .getString(R.string.Notification_NoteFrom_Day)
-                    .format(note.date.toString())
+                    .format(formattedDate)
             )
             .setContentText(note.text)
             .setAutoCancel(true)

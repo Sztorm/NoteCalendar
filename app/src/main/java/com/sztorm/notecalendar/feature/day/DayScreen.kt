@@ -724,13 +724,17 @@ private fun BoxScope.ActionButtons(
 
                 if (viewModel.state.note?.reminderDateTime != null && remainingTime != null) {
                     Text(text = remainingTime.toComponents { days, hours, minutes, seconds, _ ->
-                        if (days == 0L) {
-                            "%02d:%02d:%02d".format(
+                        when {
+                            days != 0L -> "%02d:%02d:%02d:%02d".format(
+                                Locale.current.platformLocale, days, hours, minutes, seconds
+                            )
+
+                            hours != 0 -> "%02d:%02d:%02d".format(
                                 Locale.current.platformLocale, hours, minutes, seconds
                             )
-                        } else {
-                            "%02d:%02d:%02d:%02d".format(
-                                Locale.current.platformLocale, days, hours, minutes, seconds
+
+                            else -> "%02d:%02d".format(
+                                Locale.current.platformLocale, minutes, seconds
                             )
                         }
                     })
