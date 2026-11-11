@@ -1,0 +1,8 @@
+ * Added Spanish translation (thanks @Galab!)
+ * Added the ability to view note content on the Week screen by tapping on the background. (#4, #25)
+ * Updated the Day screen to show the current day number in the secondary text color. (#25)
+ * Updated the visual appearance of the app.
+ * Fixed a misleading keyboard action in Search screen's text field. (#25)
+ * Fixed the note text cursor on the Day screen not scrolling into view when adding new lines.
+ * Fixed the inactive element color not being applied throughout the app.
+ * Removed the ability to swipe between days while adding or editing a note on the Day screen. (#25)
