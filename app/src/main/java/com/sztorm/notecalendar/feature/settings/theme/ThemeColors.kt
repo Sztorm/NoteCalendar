@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.lerp
+import com.sztorm.notecalendar.core.common.isEven
 import com.sztorm.notecalendar.feature.settings.notes.ExportNoteBackupPreferenceColors
 import com.sztorm.notecalendar.feature.settings.notes.ExportNoteBackupPreferenceDialogColors
 import com.sztorm.notecalendar.feature.settings.notes.ImportNoteBackupPreferenceColors
@@ -44,14 +45,15 @@ class ThemeColors(
     val summaryColor = textColor.copy(alpha = 0.8f)
     val inactiveTextColor = textColor.copy(alpha = 0.38f)
 
-    fun getTextColorOf(dayOfWeek: DayOfWeek, firstDayOfWeek: DayOfWeek): Color {
+    fun getBackgroundColorOf(dayOfWeek: DayOfWeek, firstDayOfWeek: DayOfWeek, index: Int): Color {
         val sixthDayOfWeek: DayOfWeek = firstDayOfWeek - 2
         val seventhDayOfWeek: DayOfWeek = firstDayOfWeek - 1
+        val backgroundColor = if (index.isEven) backgroundColor else backgroundColorVariant
 
         return when (dayOfWeek) {
-            seventhDayOfWeek -> primaryColor
-            sixthDayOfWeek -> secondaryColor
-            else -> textColor
+            seventhDayOfWeek -> lerp(secondaryColor, backgroundColor, 0.9f)
+            sixthDayOfWeek -> lerp(secondaryColor, backgroundColor, 0.9f)
+            else -> backgroundColor
         }
     }
 

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -24,12 +25,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sztorm.notecalendar.R
@@ -41,10 +43,12 @@ import com.sztorm.notecalendar.domain.repositories.NoteRepository
 import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.feature.settings.theme.ThemeColors
 import com.sztorm.notecalendar.ui.components.ActionButton
+import com.sztorm.notecalendar.ui.components.CalendarDateIndicator
 import com.sztorm.notecalendar.ui.components.IconButton
 import com.sztorm.notecalendar.ui.components.InfiniteColumn
 import java.time.DayOfWeek
 import java.time.LocalDate
+import kotlin.math.min
 
 @Composable
 private fun BoxScope.ActionButtons(
@@ -72,24 +76,14 @@ private fun BoxScope.ActionButtons(
 @Composable
 fun DayRow(
     item: WeekItem.Day,
-    onNavigateToNote: (isLongClick: Boolean, date: LocalDate) -> Unit,
     index: Int,
+    onNavigateToNote: (isLongClick: Boolean, date: LocalDate) -> Unit,
     firstDayOfWeek: DayOfWeek,
+    indicatorSize: Dp,
     themeColors: ThemeColors
 ) {
-    val backgroundColor =
-        if (index.isEven) themeColors.backgroundColor
-        else themeColors.backgroundColorVariant
-    val dayOfMonthTextColor = when {
-        item.isSelected -> themeColors.buttonTextColor
-        else -> themeColors.getTextColorOf(
-            item.date.dayOfWeek, firstDayOfWeek
-        )
-    }
-    val dayOfWeekTextColor = when {
-        item.isToday -> themeColors.secondaryColor
-        else -> themeColors.textColor
-    }
+    val backgroundColor = themeColors
+        .getBackgroundColorOf(item.date.dayOfWeek, firstDayOfWeek, index)
     var expanded by rememberSaveable(item.key()) { mutableStateOf(false) }
 
     Column(
@@ -100,60 +94,27 @@ fun DayRow(
             .animateContentSize()
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(
-                contentAlignment = Alignment.Center,
+            CalendarDateIndicator(
+                text = item.date.dayOfMonth.toString(),
+                isSelected = item.isSelected,
+                isToday = item.isToday,
+                hasNote = item.note != null,
+                selectedTextColor = themeColors.buttonTextColor,
+                unselectedTextColor = themeColors.textColor,
+                todayTextColor = themeColors.secondaryColor,
+                selectedCircleColor = themeColors.secondaryColor,
+                noteRingColor = themeColors.primaryColor,
+                todayBadgeColor = themeColors.secondaryColor,
+                todayBadgeOutlineColor = backgroundColor,
                 modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .size(48.dp)
-                    .drawWithCache {
-                        val stroke = Stroke(width = 3.dp.toPx())
-                        val height = size.height
-                        val radius = height * 0.44f
-                        val radiusWithStroke = radius + stroke.width * 0.5f
-                        val secondRadius = radius * 0.8f
-
-                        onDrawBehind {
-                            when {
-                                item.isSelected && item.note != null -> {
-                                    drawCircle(
-                                        color = themeColors.secondaryColor,
-                                        radius = secondRadius
-                                    )
-                                    drawCircle(
-                                        color = themeColors.primaryColor,
-                                        radius = radius,
-                                        style = stroke
-                                    )
-                                }
-
-                                item.isSelected -> {
-                                    drawCircle(
-                                        color = themeColors.secondaryColor,
-                                        radius = radiusWithStroke
-                                    )
-                                }
-
-                                item.note != null -> {
-                                    drawCircle(
-                                        color = themeColors.primaryColor,
-                                        radius = radius,
-                                        style = stroke
-                                    )
-                                }
-                            }
-                        }
-                    }
-            ) {
-                Text(
-                    text = item.date.dayOfMonth.toString(),
-                    color = dayOfMonthTextColor
-                )
-            }
+                    .size(indicatorSize)
+                    .padding(4.dp)
+            )
             Text(
                 text = item.date.dayOfWeek.getLocalizedName(),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Light,
-                color = dayOfWeekTextColor,
+                color = themeColors.textColor,
             )
             Spacer(Modifier.weight(1f))
             IconButton(
@@ -181,6 +142,23 @@ fun DayRow(
 }
 
 @Composable
+fun WeekRow(item: WeekItem.Week, index: Int, themeColors: ThemeColors) {
+    val backgroundColor =
+        if (index.isEven) themeColors.backgroundColor
+        else themeColors.backgroundColorVariant
+    val weekStting = stringResource(R.string.Week)
+
+    Text(
+        text = "$weekStting ${item.number}",
+        color = themeColors.textColor,
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = backgroundColor)
+            .padding(horizontal = 16.dp, vertical = 4.dp)
+    )
+}
+
+@Composable
 fun MonthRow(item: WeekItem.Month, index: Int, themeColors: ThemeColors) {
     val backgroundColor =
         if (index.isEven) themeColors.backgroundColor
@@ -194,7 +172,8 @@ fun MonthRow(item: WeekItem.Month, index: Int, themeColors: ThemeColors) {
         modifier = Modifier
             .fillMaxWidth()
             .background(color = backgroundColor)
-            .padding(horizontal = 16.dp, vertical = 10.dp)
+            .heightIn(min = 56.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
     )
 }
 
@@ -231,7 +210,10 @@ fun WeekScreen(
         )
     )
     val itemsListState = rememberLazyListState()
-
+    val window = LocalWindowInfo.current
+    val indicatorSize = with(LocalDensity.current) {
+        (min(window.containerSize.width, window.containerSize.height) / 7).toDp()
+    }
     Box(modifier = Modifier.fillMaxSize()) {
         InfiniteColumn(
             modifier = Modifier.fillMaxSize(),
@@ -248,9 +230,16 @@ fun WeekScreen(
             when (item) {
                 is WeekItem.Day -> DayRow(
                     item = item,
-                    onNavigateToNote = onNavigateToNote,
                     index = index,
+                    onNavigateToNote = onNavigateToNote,
                     firstDayOfWeek = appViewModel.state.firstDayOfWeek,
+                    indicatorSize = indicatorSize,
+                    themeColors = appViewModel.state.themeColors,
+                )
+
+                is WeekItem.Week -> WeekRow(
+                    item = item,
+                    index = index,
                     themeColors = appViewModel.state.themeColors,
                 )
 

@@ -21,8 +21,8 @@ class WeekScreenViewModel(
     var state by mutableStateOf(initialState)
         private set
 
-    private fun List<WeekItem>.nextItems(): List<WeekItem> {
-        return subList(itemsSize - itemsBufferSize, itemsSize) +
+    private fun List<WeekItem>.nextItems(): List<WeekItem> =
+        subList(itemsSize - itemsBufferSize, itemsSize) +
             generateSequence(last().next(isSelected, isToday, getNote)) { item ->
                 item.next(
                     isSelected = isSelected,
@@ -31,10 +31,9 @@ class WeekScreenViewModel(
                 )
             }.take(itemsBufferSize)
                 .toList()
-    }
 
-    private fun List<WeekItem>.prevItems(): List<WeekItem> {
-        return generateSequence(first().prev(isSelected, isToday, getNote)) { item ->
+    private fun List<WeekItem>.prevItems(): List<WeekItem> =
+        generateSequence(first().prev(isSelected, isToday, getNote)) { item ->
             item.prev(
                 isSelected = isSelected,
                 isToday = isToday,
@@ -44,7 +43,6 @@ class WeekScreenViewModel(
             .toList()
             .reversed() +
             subList(0, itemsSize - itemsBufferSize)
-    }
 
     fun onEvent(event: WeekScreenEvent) {
         state = when (event) {
