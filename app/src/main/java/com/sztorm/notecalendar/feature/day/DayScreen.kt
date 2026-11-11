@@ -10,18 +10,16 @@ import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -49,10 +47,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.intl.Locale
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.core.common.getLocalizedGenitiveCaseName
@@ -258,48 +254,46 @@ fun DayScreen(
 }
 
 @Composable
-private fun ColumnScope.DayDateText(
+private fun DayDateText(
     date: LocalDate,
     textColor: Color,
     todayTextColor: Color,
     modifier: Modifier = Modifier
-) = Column(
-    horizontalAlignment = Alignment.CenterHorizontally,
-    modifier = modifier
-        .fillMaxWidth()
-        .weight(0.6f)
 ) {
-    Spacer(modifier = Modifier.weight(0.5f))
-    BasicText(
-        text = date.dayOfMonth.toString(),
-        style = LocalTextStyle.current.copy(
-            color = todayTextColor,
-            textAlign = TextAlign.Center,
-            fontSize = 140.sp,
-        ),
-        maxLines = 1,
-        modifier = Modifier.weight(4f)
-    )
-    BasicText(
-        text = date.month.getLocalizedGenitiveCaseName(),
-        style = LocalTextStyle.current.copy(
-            color = textColor,
-            textAlign = TextAlign.Center,
-            fontSize = 36.sp
-        ),
-        maxLines = 1,
-        modifier = Modifier.weight(1.5f)
-    )
-    BasicText(
-        text = date.dayOfWeek.getLocalizedName(),
-        style = LocalTextStyle.current.copy(
-            color = textColor,
-            textAlign = TextAlign.Center,
-            fontSize = 24.sp
-        ),
-        maxLines = 1,
-        modifier = Modifier.weight(1f)
-    )
+    val density = LocalDensity.current
+
+    BoxWithConstraints(modifier.fillMaxWidth()) {
+        val size = maxHeight
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Spacer(modifier = Modifier.weight(0.06f))
+            Text(
+                text = date.dayOfMonth.toString(),
+                fontSize = with(density) { (size * 0.52f).toSp() },
+                maxLines = 1,
+                color = todayTextColor,
+                modifier = Modifier.weight(0.57f)
+            )
+            Text(
+                text = date.month.getLocalizedGenitiveCaseName(),
+                fontSize = with(density) { (size * 0.14f).toSp() },
+                maxLines = 1,
+                color = textColor,
+                modifier = Modifier.weight(0.18f)
+            )
+            Text(
+                text = date.dayOfWeek.getLocalizedName(),
+                fontSize = with(density) { (size * 0.09f).toSp() },
+                maxLines = 1,
+                color = textColor,
+                modifier = Modifier.weight(0.13f)
+            )
+            Spacer(modifier = Modifier.weight(0.06f))
+        }
+    }
 }
 
 private fun showNotificationPermissionDeniedToast(context: Context) = Toast
@@ -844,14 +838,15 @@ fun DayPageLayout(
             textColor = themeColors.textColor,
             todayTextColor =
                 if (date == LocalDate.now()) themeColors.secondaryColor
-                else themeColors.textColor
+                else themeColors.textColor,
+            modifier = Modifier.weight(0.375f)
         )
         Column(
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.End,
             modifier = Modifier
+                .weight(0.625f)
                 .fillMaxSize()
-                .weight(1f)
         ) {
             AnimatedVisibility(
                 visible = note != null ||
