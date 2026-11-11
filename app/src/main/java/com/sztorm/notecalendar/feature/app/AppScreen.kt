@@ -94,7 +94,7 @@ private fun NavigationBar(
         ),
         MainTab(
             screen = Screen.Day(),
-            icon = ImageVector.vectorResource(R.drawable.icon_outline_rounded_day),
+            icon = ImageVector.vectorResource(R.drawable.icon_outline_rounded_note),
             description = stringResource(R.string.Day)
         ),
         MainTab(
