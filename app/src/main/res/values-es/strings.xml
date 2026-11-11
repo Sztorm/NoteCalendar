@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="AddNote">Agregar nota</string>
+    <string name="AddReminder">Agregar recordatorio</string>
+    <string name="App_Name">Note Calendar</string>
+    <string name="August">Agosto</string>
+    <string name="Cancel">Cancelar</string>
+    <string name="ClearSearch">Limpiar búsqueda</string>
+    <string name="ColorPicker_Alpha">Opacidad</string>
+    <string name="ColorPicker_Blue">Azul</string>
+    <string name="ColorPicker_Green">Verde</string>
+    <string name="ColorPicker_Red">Rojo</string>
+    <string name="ColorPicker_hslHue">Tono</string>
+    <string name="ColorPicker_hslLightness">Brillo</string>
+    <string name="ColorPicker_hslSaturation">Saturación</string>
+    <string name="ColorPicker_hsvHue">Tono</string>
+    <string name="ColorPicker_hsvSaturation">Saturación</string>
+    <string name="ColorPicker_hsvValue">Valor</string>
+    <string name="Color_Background">Color de fondo</string>
+    <string name="Color_BackgroundVariant">Color de fondo alternativo</string>
+    <string name="Color_ButtonText">Color de botón de texto</string>
+    <string name="Color_InactiveElement">Color de elemento inactivo</string>
+    <string name="Color_InactiveElementVariant">Color alternativo de elemento inactivo</string>
+    <string name="Color_Note">Color de nota</string>
+    <string name="Color_NoteText">Cooked de texto de nota</string>
+    <string name="Color_NoteVariant">Color alternativo de nota</string>
+    <string name="Color_Primary">Color primario</string>
+    <string name="Color_Secondary">Color secundario</string>
+    <string name="Color_Text">Come de texto</string>
+    <string name="Confirm">OK</string>
+    <string name="DateRange">Rango de fecha</string>
+    <string name="Day">Día</string>
+    <string name="DayView">Vista diaria</string>
+    <string name="December">Diciembre</string>
+    <string name="DeleteNote">Borrar nota</string>
+    <string name="DeleteReminder">Borrar recordatorio</string>
+    <string name="EditNote">Editar nota</string>
+    <string name="EditReminder">Editar recordatorio</string>
+    <string name="EncryptData">Encriptar datos</string>
+    <string name="February">Febrero</string>
+    <string name="Accept">Aceptar</string>
+    <string name="April">Abril</string>
+    <string name="ClearFilters">Limpiar</string>
+</resources>
