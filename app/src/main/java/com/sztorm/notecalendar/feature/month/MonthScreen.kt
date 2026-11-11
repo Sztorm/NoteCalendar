@@ -1,5 +1,6 @@
 package com.sztorm.notecalendar.feature.month
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -9,19 +10,21 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.core.common.getLocalizedName
@@ -33,16 +36,10 @@ import com.sztorm.notecalendar.domain.repositories.NoteRepository
 import com.sztorm.notecalendar.feature.app.AppViewModel
 import com.sztorm.notecalendar.feature.settings.theme.ThemeColors
 import com.sztorm.notecalendar.ui.components.ActionButton
+import com.sztorm.notecalendar.ui.components.CalendarDateIndicator
 import com.sztorm.notecalendar.ui.components.InfiniteHorizontalPager
 import java.time.LocalDate
-
-data class DayCell(
-    val date: LocalDate,
-    val isSelected: Boolean,
-    val isToday: Boolean,
-    val isInCurrentMonth: Boolean,
-    val hasNote: Boolean,
-)
+import kotlin.math.min
 
 @Composable
 private fun BoxScope.ActionButtons(
@@ -68,6 +65,36 @@ private fun BoxScope.ActionButtons(
 }
 
 @Composable
+private fun DayCell(
+    onClick: (isLongClick: Boolean, date: LocalDate) -> Unit,
+    dayCell: DayCell,
+    themeColors: ThemeColors,
+    modifier: Modifier,
+) {
+    val alpha = if (dayCell.isInCurrentMonth) 1f else 0.38f
+
+    CalendarDateIndicator(
+        text = dayCell.date.dayOfMonth.toString(),
+        isSelected = dayCell.isSelected,
+        isToday = dayCell.isToday,
+        hasNote = dayCell.hasNote,
+        selectedTextColor = themeColors.buttonTextColor,
+        unselectedTextColor = themeColors.textColor.copy(alpha),
+        todayTextColor = themeColors.secondaryColor,
+        selectedCircleColor = themeColors.secondaryColor,
+        noteRingColor = themeColors.primaryColor.copy(alpha),
+        todayBadgeColor = themeColors.secondaryColor,
+        todayBadgeOutlineColor = themeColors.backgroundColor,
+        modifier = modifier
+            .padding(4.dp)
+            .combinedClickable(
+                onClick = { onClick(false, dayCell.date) },
+                onLongClick = { onClick(true, dayCell.date) },
+            )
+    )
+}
+
+@Composable
 fun MonthScreen(
     logger: AppLogger,
     appViewModel: AppViewModel,
@@ -86,6 +113,11 @@ fun MonthScreen(
             )
         )
     )
+    val window = LocalWindowInfo.current
+    val density = LocalDensity.current
+    val calendarWidth = with(density) {
+        min(window.containerSize.width, window.containerSize.height).toDp()
+    }
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -94,38 +126,44 @@ fun MonthScreen(
         ) {
             Text(
                 text = viewModel.state.yearMonth.getLocalizedName(),
-                fontSize = 38.sp,
+                style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Light,
                 color = themeColors.textColor,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(15.dp)
+                    .padding(16.dp)
             )
             DayOfWeekBar(
-                modifier = Modifier.padding(vertical = 8.dp),
                 firstDayOfWeek = appViewModel.state.firstDayOfWeek,
-                dayOfWeekText = { it.getLocalizedShortName() },
-                backgroundColor = themeColors.secondaryColor,
-                textColor = themeColors.buttonTextColor,
-                fontSize = 16.sp,
-            )
+                modifier = Modifier
+                    .width(calendarWidth)
+                    .background(themeColors.secondaryColor)
+                    .padding(vertical = 8.dp)
+            ) { dayOfWeek ->
+                Text(
+                    text = dayOfWeek.getLocalizedShortName(),
+                    textAlign = TextAlign.Center,
+                    color = themeColors.buttonTextColor,
+                    modifier = Modifier.weight(1f)
+                )
+            }
             InfiniteHorizontalPager(
                 verticalAlignment = Alignment.Top,
                 key = { initialYearMonth.plusMonths(it.toLong()) },
                 onPageChange = { page ->
                     val currentYearMonth = initialYearMonth.plusMonths(page.toLong())
                     viewModel.onEvent(MonthScreenEvent.YearMonthChange(currentYearMonth))
-                }
+                },
+                modifier = Modifier.width(calendarWidth)
             ) {
                 val yearMonth = initialYearMonth.plusMonths(it.toLong())
 
                 MonthPage(
-                    modifier = Modifier.fillMaxSize(),
                     yearMonth = yearMonth,
-                    firstDayOfWeek = appViewModel.state.firstDayOfWeek
-                ) { date, modifier ->
+                    firstDayOfWeek = appViewModel.state.firstDayOfWeek,
+                    modifier = Modifier.fillMaxSize()
+                ) { date ->
                     DayCell(
-                        modifier = modifier,
                         themeColors = themeColors,
                         onClick = onNavigateToNote,
                         dayCell = DayCell(
@@ -134,7 +172,10 @@ fun MonthScreen(
                             isToday = date == today,
                             isInCurrentMonth = date.month == yearMonth.month,
                             hasNote = viewModel.state.notesCache.getBy(date) != null
-                        )
+                        ),
+                        modifier = Modifier
+                            .aspectRatio(1f)
+                            .weight(1f)
                     )
                 }
             }
@@ -143,80 +184,6 @@ fun MonthScreen(
             logger = logger,
             appViewModel = appViewModel,
             onSearchButtonClick = onSearchButtonClick
-        )
-    }
-}
-
-@Composable
-private fun DayCell(
-    modifier: Modifier,
-    onClick: (isLongClick: Boolean, date: LocalDate) -> Unit,
-    dayCell: DayCell,
-    themeColors: ThemeColors
-) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-            .aspectRatio(1f)
-            .combinedClickable(
-                onClick = { onClick(false, dayCell.date) },
-                onLongClick = { onClick(true, dayCell.date) },
-            )
-            .drawWithCache {
-                val stroke = Stroke(width = 3.dp.toPx())
-                val height = size.height
-                val radius = height * 0.36f
-                val radiusWithStroke = radius + stroke.width * 0.5f
-                val secondRadius = radius * 0.8f
-
-                onDrawBehind {
-                    when {
-                        dayCell.isSelected && dayCell.hasNote -> {
-                            drawCircle(
-                                color = themeColors.secondaryColor,
-                                radius = secondRadius
-                            )
-                            drawCircle(
-                                color = themeColors.primaryColor,
-                                radius = radius,
-                                style = stroke
-                            )
-                        }
-
-                        dayCell.isSelected -> {
-                            drawCircle(
-                                color = themeColors.secondaryColor,
-                                radius = radiusWithStroke
-                            )
-                        }
-
-                        dayCell.hasNote && dayCell.isInCurrentMonth -> {
-                            drawCircle(
-                                color = themeColors.primaryColor,
-                                radius = radius,
-                                style = stroke
-                            )
-                        }
-
-                        dayCell.hasNote -> {
-                            drawCircle(
-                                color = themeColors.primaryColor.copy(alpha = 0.38f),
-                                radius = radius,
-                                style = stroke
-                            )
-                        }
-                    }
-                }
-            }
-    ) {
-        Text(
-            text = dayCell.date.dayOfMonth.toString(),
-            color = when {
-                dayCell.isSelected -> themeColors.buttonTextColor
-                dayCell.isToday -> themeColors.secondaryColor
-                dayCell.isInCurrentMonth -> themeColors.textColor
-                else -> themeColors.inactiveTextColor
-            }
         )
     }
 }
