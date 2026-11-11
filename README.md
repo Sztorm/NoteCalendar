@@ -3,8 +3,8 @@
 </p>
 <h1 align="center">NoteCalendar</h1>
 
-*Note Calendar* is a simple offline app which allows to manage notes for different days and offers a
-quick way to reach each of them.
+*Note Calendar* is a simple, customizable, ad-free offline app for your daily notes, with a day view
+inspired by a classic tear-off calendar.
 
 Minimum Android version: 5.0 (Lollipop, API level 21)
 
@@ -19,14 +19,15 @@ Minimum Android version: 5.0 (Lollipop, API level 21)
 
 ## Features
 
-* Day screen - used to add, edit or delete note and set a reminder for it.
-* Month screen and week screen
+* Day view - used to add, edit or delete note and set a reminder for it.
+* Month and Week views
   * Days that constain a note are marked with a ring.
   * The currently selected day is marked with a solid circle.
-  * Today's date is marked with a different text color.
+  * Today's date is marked with a different text color and a badge.
   * Long-press on a day's number to quickly add or edit a note for that day.
   * A find button that allows to search notes by text, with optional case-sensitive and date-range filters.
-* Settings screen
+  * Tap a day in the Week view to see its note.
+* Settings view
   * Notes - notes-specific settings, including options to import and export notes.
   * Calendar - calendar-specific settings, such as first day of the week.
   * Theme - choose a light or dark theme, create your own theme, and export it.
