@@ -138,6 +138,7 @@ private fun ColumnScope.SearchFilters(
     filtersExpanded: Boolean,
     onFilterClearAllClick: () -> Unit,
     onMatchCaseFilterChange: (Boolean) -> Unit,
+    onRegularExpressionFilterChange: (Boolean) -> Unit,
     onDateRangeFilterChange: (LocalDate?, LocalDate?) -> Unit,
     themeColors: ThemeColors
 ) {
@@ -169,6 +170,16 @@ private fun ColumnScope.SearchFilters(
                 )
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "Regular expression")//stringResource(R.string.RegularExpression)) // TODO
+                Spacer(modifier = Modifier.weight(1f))
+                Switch(
+                    checked = state.searchFiltersByType
+                        .contains(SearchFilter.RegularExpression::class),
+                    onCheckedChange = onRegularExpressionFilterChange,
+                    colors = themeColors.switchColors()
+                )
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = stringResource(R.string.DateRange))
                 Spacer(modifier = Modifier.weight(1f))
                 val dateRange = state.searchFiltersByType
@@ -186,7 +197,7 @@ private fun ColumnScope.SearchFilters(
                             locale = locale
                         )
                         val endDate = dateFormatter.formatDate(
-                            dateMillis = dateRange.end.toEpochMillis(),
+                            dateMillis = dateRange.endInclusive.toEpochMillis(),
                             locale = locale
                         )
                         Text(
@@ -235,6 +246,7 @@ private fun SearchBar(
     onTextValueChange: (TextFieldValue) -> Unit,
     onFilterClearAllClick: () -> Unit,
     onMatchCaseFilterChange: (Boolean) -> Unit,
+    onRegularExpressionFilterChange: (Boolean) -> Unit,
     onDateRangeFilterChange: (LocalDate?, LocalDate?) -> Unit,
     themeColors: ThemeColors
 ) {
@@ -256,6 +268,7 @@ private fun SearchBar(
             onFilterClearAllClick = onFilterClearAllClick,
             onMatchCaseFilterChange = onMatchCaseFilterChange,
             onDateRangeFilterChange = onDateRangeFilterChange,
+            onRegularExpressionFilterChange = onRegularExpressionFilterChange,
             themeColors = themeColors,
         )
         HorizontalDivider(color = MaterialTheme.colorScheme.outline)
@@ -266,7 +279,6 @@ private fun SearchBar(
 private fun SearchResultRow(
     index: Int,
     result: SearchResult,
-    searchText: String,
     dateFormatter: DatePickerFormatter,
     onResultGoButtonClick: (isLongClick: Boolean, date: LocalDate) -> Unit
 ) {
@@ -278,14 +290,14 @@ private fun SearchResultRow(
     val noteText = buildAnnotatedString {
         append(result.note.text)
 
-        result.matchIndices.forEach { startIndex ->
+        result.matchRanges.forEach { range ->
             addStyle(
                 style = SpanStyle(
                     background = MaterialTheme.colorScheme.secondaryContainer,
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 ),
-                start = startIndex,
-                end = startIndex + searchText.length
+                start = range.first,
+                end = range.last + 1
             )
         }
     }
@@ -378,7 +390,6 @@ private fun ColumnScope.SearchResults(
                         SearchResultRow(
                             index = index,
                             result = result,
-                            searchText = state.searchTextValue.text,
                             dateFormatter = dateFormatter,
                             onResultGoButtonClick = onNavigateToNote
                         )
@@ -432,48 +443,35 @@ fun SearchScreen(
             dateFormatter = dateFormatter,
             onBackButtonClick = onBackButtonClick,
             onClearButtonClick = {
-                viewModel.onEvent(
-                    SearchScreenEvent.SearchTextValueChange(TextFieldValue())
-                )
+                viewModel.onEvent(SearchScreenEvent.SearchTextValueChange(TextFieldValue()))
             },
             onTextValueChange = {
                 viewModel.onEvent(SearchScreenEvent.SearchTextValueChange(it))
             },
             onFilterClearAllClick = {
-                viewModel.onEvent(
-                    SearchScreenEvent.SearchFiltersChange(emptyMap())
-                )
+                viewModel.onEvent(SearchScreenEvent.SearchFiltersChange(emptyMap()))
             },
             onMatchCaseFilterChange = { isChecked ->
-                if (isChecked) {
-                    viewModel.onEvent(
-                        SearchScreenEvent.SearchFiltersChange(
-                            state.searchFiltersByType + SearchFilter.MatchCase
-                        )
-                    )
-                } else {
-                    viewModel.onEvent(
-                        SearchScreenEvent.SearchFiltersChange(
-                            state.searchFiltersByType - SearchFilter.MatchCase::class
-                        )
-                    )
-                }
+                val filtersByType =
+                    if (isChecked) state.searchFiltersByType + SearchFilter.MatchCase
+                    else state.searchFiltersByType - SearchFilter.MatchCase::class
+
+                viewModel.onEvent(SearchScreenEvent.SearchFiltersChange(filtersByType))
+            },
+            onRegularExpressionFilterChange = { isChecked ->
+                val filtersByType =
+                    if (isChecked) state.searchFiltersByType + SearchFilter.RegularExpression
+                    else state.searchFiltersByType - SearchFilter.RegularExpression::class
+
+                viewModel.onEvent(SearchScreenEvent.SearchFiltersChange(filtersByType))
             },
             onDateRangeFilterChange = { startDate, endDate ->
-                if (startDate != null && endDate != null) {
-                    viewModel.onEvent(
-                        SearchScreenEvent.SearchFiltersChange(
-                            state.searchFiltersByType +
-                                SearchFilter.DateRange(startDate, endDate)
-                        )
-                    )
-                } else {
-                    viewModel.onEvent(
-                        SearchScreenEvent.SearchFiltersChange(
-                            state.searchFiltersByType - SearchFilter.DateRange::class
-                        )
-                    )
-                }
+                val filtersByType =
+                    if (startDate != null && endDate != null)
+                        state.searchFiltersByType + SearchFilter.DateRange(startDate, endDate)
+                    else state.searchFiltersByType - SearchFilter.DateRange::class
+
+                viewModel.onEvent(SearchScreenEvent.SearchFiltersChange(filtersByType))
             },
             themeColors = appViewModel.state.themeColors
         )

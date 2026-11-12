@@ -47,54 +47,67 @@ class SearchScreenViewModel(
                         _state.update {
                             it.copy(uiState = SearchUiState.Success(emptyList()))
                         }
-                    } else {
-                        _state.update {
-                            it.copy(uiState = SearchUiState.Loading)
-                        }
-                        try {
-                            val ignoreCase = !filters.contains(SearchFilter.MatchCase::class)
-                            val dateRange = filters.getTyped(SearchFilter.DateRange::class)
-                            val results = withContext(Dispatchers.IO) {
-                                noteRepository
-                                    .getAll()
-                                    .mapNotNull {
-                                        val note = it.toNote()
+                        return@collectLatest
+                    }
+                    _state.update {
+                        it.copy(uiState = SearchUiState.Loading)
+                    }
+                    try {
+                        val ignoreCase = !filters.contains(SearchFilter.MatchCase::class)
+                        val regex =
+                            if (filters.contains(SearchFilter.RegularExpression::class)) {
+                                val options =
+                                    if (ignoreCase) setOf(RegexOption.IGNORE_CASE)
+                                    else emptySet()
 
-                                        if (dateRange == null ||
-                                            note.date >= dateRange.start &&
-                                            note.date <= dateRange.end
-                                        ) {
-                                            val matchIndex = note.text
-                                                .indexOf(string = query, ignoreCase = ignoreCase)
+                                Regex(query, options)
+                            } else null
+                        val dateRange = filters.getTyped(SearchFilter.DateRange::class)
+                        val results = withContext(Dispatchers.IO) {
+                            noteRepository
+                                .getAll()
+                                .mapNotNull { noteData ->
+                                    val note = noteData.toNote()
 
-                                            if (matchIndex < 0) null
+                                    when {
+                                        dateRange != null && note.date !in dateRange -> null
+
+                                        regex == null -> {
+                                            val matchRanges = note.text
+                                                .indicesOf(string = query, ignoreCase = ignoreCase)
+                                                .map { it..<it + query.length }
+
+                                            if (matchRanges.isEmpty()) null
+                                            else SearchResult(note, matchRanges)
+                                        }
+
+                                        else -> {
+                                            val results = regex.findAll(note.text)
+
+                                            if (!results.any()) null
                                             else {
-                                                val matchIndices = listOf(matchIndex) +
-                                                    note.text.indicesOf(
-                                                        string = query,
-                                                        startIndex = matchIndex + query.length,
-                                                        ignoreCase = ignoreCase
-                                                    )
-                                                SearchResult(note, matchIndices)
-                                            }
-                                        } else null
-                                    }
-                                    .sortedByDescending { (note, _) -> note.date }
-                            }
+                                                val matchRanges = results.map { it.range }.toList()
 
-                            _state.update {
-                                it.copy(uiState = SearchUiState.Success(results))
-                            }
-                        } catch (e: CancellationException) {
-                            throw e
-                        } catch (e: Exception) {
-                            _state.update {
-                                it.copy(
-                                    uiState = SearchUiState.Error(
-                                        e.message ?: it.defaultSearchErrorMessage
-                                    )
+                                                SearchResult(note, matchRanges)
+                                            }
+                                        }
+                                    }
+                                }
+                                .sortedByDescending { (note, _) -> note.date }
+                        }
+
+                        _state.update {
+                            it.copy(uiState = SearchUiState.Success(results))
+                        }
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        _state.update {
+                            it.copy(
+                                uiState = SearchUiState.Error(
+                                    e.message ?: it.defaultSearchErrorMessage
                                 )
-                            }
+                            )
                         }
                     }
                 }
