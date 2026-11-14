@@ -18,6 +18,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.core.graphics.ColorUtils
@@ -430,6 +432,9 @@ fun Color.toHexCodeFormat(includeAlpha: Boolean = false): String {
         else -> "#%02x%02x%02x".format(r.toInt(), g.toInt(), b.toInt())
     }
 }
+
+fun Color.normalizeLightness(fraction: Float) =
+    lerp(start = this, stop = if (luminance() < 0.5f) Color.White else Color.Black, fraction)
 
 fun Offset.toVector2F() = Vector2F(x, y)
 

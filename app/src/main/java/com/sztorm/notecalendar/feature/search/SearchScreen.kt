@@ -21,12 +21,14 @@ import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerFormatter
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -54,6 +56,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.core.common.isEven
+import com.sztorm.notecalendar.core.common.normalizeLightness
 import com.sztorm.notecalendar.core.common.plus
 import com.sztorm.notecalendar.core.common.toEpochMillis
 import com.sztorm.notecalendar.core.logging.AppLogger
@@ -66,6 +69,8 @@ import com.sztorm.notecalendar.feature.settings.theme.switchColors
 import com.sztorm.notecalendar.feature.settings.theme.textButtonColors
 import com.sztorm.notecalendar.ui.components.DateRangePickerDialog
 import com.sztorm.notecalendar.ui.components.IconButton
+import com.sztorm.notecalendar.ui.components.TooltipButton
+import dev.jeziellago.compose.markdowntext.MarkdownText
 import java.time.LocalDate
 
 @Composable
@@ -131,6 +136,7 @@ private fun SearchTextField(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ColumnScope.SearchFilters(
     state: SearchScreenState,
@@ -171,6 +177,22 @@ private fun ColumnScope.SearchFilters(
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = "Regular expression")//stringResource(R.string.RegularExpression)) // TODO
+                TooltipButton(
+                    icon = painterResource(R.drawable.icon_outline_rounded_info),
+                    contentDescription = "About regular expressions", //stringResource(R.string.RegularExpression_ContentDescription)) // TODO
+                ) {
+                    PlainTooltip(
+                        contentColor = themeColors.textColor,
+                        containerColor = themeColors.backgroundColorVariant
+                    ) {
+                        MarkdownText(
+                            markdown = "Search using a pattern. For example, ``cat|dog`` matches ``cat`` or ``dog``, while ``\\d+`` matches one or more digits, such as ``24``.", //stringResource(R.string.RegularExpression_Tooltip)), // TODO
+                            syntaxHighlightColor = themeColors.backgroundColorVariant
+                                .normalizeLightness(0.08f),
+                            syntaxHighlightTextColor = themeColors.textColor
+                        )
+                    }
+                }
                 Spacer(modifier = Modifier.weight(1f))
                 Switch(
                     checked = state.searchFiltersByType
