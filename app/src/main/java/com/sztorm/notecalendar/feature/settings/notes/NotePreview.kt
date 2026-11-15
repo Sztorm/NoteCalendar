@@ -13,13 +13,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import com.sztorm.notecalendar.core.common.normalizeLightness
 import com.sztorm.notecalendar.ui.components.DayNote
+import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
 fun NotePreview(
     previewText: String,
     noteText: String,
+    noteDisplayMode: NoteDisplayMode,
     noteFontSize: NoteFontSize,
     noteLineSpacing: NoteLineSpacing,
     previewTextColor: Color,
@@ -57,13 +61,28 @@ fun NotePreview(
                 .padding(start = 8.dp, end = 8.dp, bottom = 1.dp)
                 .height(previewHeight)
         ) {
-            Text(
-                text = noteText,
-                fontSize = noteFontSize.value,
-                lineHeight = noteFontSize.value * noteLineSpacing.fontScaleFactor,
-                color = noteTextColor,
-                modifier = Modifier.padding(8.dp)
-            )
+            when (noteDisplayMode) {
+                NoteDisplayMode.PlainText -> Text(
+                    text = noteText,
+                    fontSize = noteFontSize.value,
+                    lineHeight = noteFontSize.value * noteLineSpacing.fontScaleFactor,
+                    color = noteTextColor,
+                    modifier = Modifier.padding(8.dp)
+                )
+
+                NoteDisplayMode.Markdown -> MarkdownText(
+                    markdown = noteText,
+                    syntaxHighlightColor = noteColor.normalizeLightness(0.08f),
+                    syntaxHighlightTextColor = noteTextColor,
+                    style = TextStyle(
+                        color = noteTextColor,
+                        fontSize = noteFontSize.value,
+                        lineHeight = noteFontSize.value * noteLineSpacing.fontScaleFactor
+                    ),
+                    disableLinkMovementMethod = true,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
         }
     }
 }

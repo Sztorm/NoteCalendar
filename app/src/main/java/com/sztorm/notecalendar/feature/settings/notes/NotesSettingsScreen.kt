@@ -21,6 +21,7 @@ import com.sztorm.notecalendar.feature.settings.theme.cardColors
 import com.sztorm.notecalendar.feature.settings.theme.colorPickerColors
 import com.sztorm.notecalendar.feature.settings.theme.exportNoteBackupPreferenceColors
 import com.sztorm.notecalendar.feature.settings.theme.importNoteBackupPreferenceColors
+import com.sztorm.notecalendar.feature.settings.theme.radioButtonColors
 import com.sztorm.notecalendar.feature.settings.theme.sliderColors
 import com.sztorm.notecalendar.feature.settings.theme.textButtonColors
 import com.sztorm.notecalendar.platform.notifications.AppNotificationManager
@@ -32,6 +33,7 @@ import com.sztorm.notecalendar.ui.components.colorpicker.ColorPickerType
 import com.sztorm.notecalendar.ui.components.preferences.CategoryPreference
 import com.sztorm.notecalendar.ui.components.preferences.ColorPickerPreference
 import com.sztorm.notecalendar.ui.components.preferences.ConfirmationPreference
+import com.sztorm.notecalendar.ui.components.preferences.ListPreference
 import com.sztorm.notecalendar.ui.components.preferences.SizeSliderPreference
 import com.sztorm.notecalendar.ui.components.preferences.SubpreferenceScreen
 import kotlinx.coroutines.launch
@@ -167,12 +169,13 @@ fun NotesSettingsScreen(
             NotePreview(
                 previewText = stringResource(R.string.Settings_Notes_Preview),
                 noteText = """
-                Aa Bb Cc 123
-                Αα Ββ Γγ 123
-                Аа Бб Вв 123
-                あ か さ 123
-                中 文 123
+                - Aa Bb Cc **123**
+                - Αα Ββ Γγ _123_
+                - Аа Бб Вв _**123**_ 
+                - あ か さ ~~123~~
+                - 中 文 ``123``
                 """.trimIndent(),
+                noteDisplayMode = appViewModel.state.noteDisplayMode,
                 noteFontSize = appViewModel.state.noteFontSize,
                 noteLineSpacing = appViewModel.state.noteLineSpacing,
                 previewTextColor = themeColors.summaryColor,
@@ -180,6 +183,18 @@ fun NotesSettingsScreen(
                 noteColor = themeColors.noteColor,
                 noteColorVariant = themeColors.noteColorVariant,
                 backgroundColor = themeColors.backgroundColorVariant,
+            )
+            ListPreference(
+                title = "Display mode", // stringResource(R.string.Settings_Notes_DisplayMode) // TODO
+                options = NoteDisplayMode.entries.map { it.getLocalizedName() to it },
+                initialSelectedOptionIndex = appViewModel.state.noteDisplayMode.ordinal,
+                onRadioButtonClick = { _, displayMode ->
+                    appViewModel.onEvent(AppEvent.NoteDisplayModeChange(displayMode))
+                },
+                titleColor = themeColors.textColor,
+                inactiveColor = themeColors.inactiveElementColor,
+                radioButtonColors = themeColors.radioButtonColors(),
+                enabled = enabled,
             )
             SizeSliderPreference(
                 title = stringResource(R.string.Settings_Notes_FontSize),
