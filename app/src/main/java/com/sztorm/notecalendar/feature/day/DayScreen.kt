@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -34,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
@@ -44,7 +42,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.intl.Locale
@@ -56,6 +53,7 @@ import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.core.common.Corner
 import com.sztorm.notecalendar.core.common.getLocalizedGenitiveCaseName
 import com.sztorm.notecalendar.core.common.getLocalizedName
+import com.sztorm.notecalendar.core.common.normalizeLightness
 import com.sztorm.notecalendar.core.common.remainingDurationFromNow
 import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.data.models.NoteData
@@ -81,13 +79,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import kotlin.time.Duration as KotlinDuration
-
-enum class DayUiState {
-    Viewing,
-    EditingNote,
-    AddingNote,
-    EditingReminder,
-}
 
 @Composable
 fun DayScreen(
@@ -252,49 +243,6 @@ fun DayScreen(
                 )
             }
             keyboardController?.show()
-        }
-    }
-}
-
-@Composable
-private fun DayDateText(
-    date: LocalDate,
-    textColor: Color,
-    todayTextColor: Color,
-    modifier: Modifier = Modifier
-) {
-    val density = LocalDensity.current
-
-    BoxWithConstraints(modifier.fillMaxWidth()) {
-        val size = maxHeight
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Spacer(modifier = Modifier.weight(0.06f))
-            Text(
-                text = date.dayOfMonth.toString(),
-                fontSize = with(density) { (size * 0.52f).toSp() },
-                maxLines = 1,
-                color = todayTextColor,
-                modifier = Modifier.weight(0.57f)
-            )
-            Text(
-                text = date.month.getLocalizedGenitiveCaseName(),
-                fontSize = with(density) { (size * 0.14f).toSp() },
-                maxLines = 1,
-                color = textColor,
-                modifier = Modifier.weight(0.18f)
-            )
-            Text(
-                text = date.dayOfWeek.getLocalizedName(),
-                fontSize = with(density) { (size * 0.09f).toSp() },
-                maxLines = 1,
-                color = textColor,
-                modifier = Modifier.weight(0.13f)
-            )
-            Spacer(modifier = Modifier.weight(0.06f))
         }
     }
 }
@@ -822,7 +770,151 @@ private fun BoxScope.ActionButtons(
 }
 
 @Composable
-fun DayPageLayout(
+private fun DayDateText(
+    date: LocalDate,
+    textColor: Color,
+    todayTextColor: Color,
+    modifier: Modifier = Modifier
+) {
+    val density = LocalDensity.current
+
+    BoxWithConstraints(modifier.fillMaxWidth()) {
+        val size = maxHeight
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Spacer(modifier = Modifier.weight(0.06f))
+            Text(
+                text = date.dayOfMonth.toString(),
+                fontSize = with(density) { (size * 0.52f).toSp() },
+                maxLines = 1,
+                color = todayTextColor,
+                modifier = Modifier.weight(0.57f)
+            )
+            Text(
+                text = date.month.getLocalizedGenitiveCaseName(),
+                fontSize = with(density) { (size * 0.14f).toSp() },
+                maxLines = 1,
+                color = textColor,
+                modifier = Modifier.weight(0.18f)
+            )
+            Text(
+                text = date.dayOfWeek.getLocalizedName(),
+                fontSize = with(density) { (size * 0.09f).toSp() },
+                maxLines = 1,
+                color = textColor,
+                modifier = Modifier.weight(0.13f)
+            )
+            Spacer(modifier = Modifier.weight(0.06f))
+        }
+    }
+}
+
+@Composable
+private fun DayNote(
+    appViewModel: AppViewModel,
+    viewModel: DayScreenViewModel,
+    focusRequester: FocusRequester,
+    date: LocalDate,
+    modifier: Modifier = Modifier
+) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val themeColors = appViewModel.state.themeColors
+    val dayScreenDate = appViewModel.state.dayScreenDate
+    val note = when {
+        date > dayScreenDate -> viewModel.state.nextNote
+        date < dayScreenDate -> viewModel.state.prevNote
+        else -> viewModel.state.note
+    }
+    Column(
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.End,
+        modifier = modifier.fillMaxWidth()
+    ) {
+        AnimatedVisibility(
+            visible = note != null ||
+                viewModel.state.uiState == DayUiState.EditingNote ||
+                viewModel.state.uiState == DayUiState.AddingNote,
+            enter = scaleIn() + expandIn(),
+            exit = shrinkOut() + scaleOut(),
+        ) {
+            DayNote(
+                color = themeColors.noteColor,
+                foldedCornerTint = themeColors.noteColorVariant,
+                foldedCornerPosition =
+                    if (LocalLayoutDirection.current == LayoutDirection.Ltr) Corner.TopEnd
+                    else Corner.TopStart,
+                foldedCornerWidth = 32.dp,
+                foldedCornerShadowWidth = 1.dp,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp)
+            ) {
+                if (note != null) {
+                    val isReadOnly = viewModel.state.uiState != DayUiState.AddingNote &&
+                        viewModel.state.uiState != DayUiState.EditingNote
+
+                    NoteText(
+                        text = note.textValue,
+                        onTextChange = {
+                            val actionType = viewModel.state.uiState
+
+                            if (actionType == DayUiState.AddingNote ||
+                                actionType == DayUiState.EditingNote
+                            ) {
+                                viewModel.onEvent(
+                                    DayScreenEvent.NoteChange(
+                                        DayScreenNote(
+                                            date = date,
+                                            textValue = it,
+                                            reminderDateTime = note.reminderDateTime
+                                        )
+                                    )
+                                )
+                            }
+                        },
+                        displayMode = appViewModel.state.noteDisplayMode,
+                        fontSize = appViewModel.state.noteFontSize,
+                        lineSpacing = appViewModel.state.noteLineSpacing,
+                        readOnly = isReadOnly,
+                        textColor = themeColors.noteTextColor,
+                        cursorColor = themeColors.secondaryColor,
+                        syntaxHighlightColor = themeColors.noteColor
+                            .normalizeLightness(0.08f),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                start = 8.dp,
+                                end = (24 + 8).dp,
+                                top = 8.dp,
+                                bottom = if (isReadOnly) 8.dp else (72 + 8).dp
+                            )
+                            .then(
+                                if (isReadOnly || date != dayScreenDate) Modifier
+                                else Modifier.focusRequester(focusRequester)
+                            )
+                    )
+                    LaunchedEffect(viewModel.state.uiState) {
+                        if (viewModel.state.uiState == DayUiState.EditingNote ||
+                            viewModel.state.uiState == DayUiState.AddingNote
+                        ) {
+                            focusRequester.requestFocus()
+                            keyboardController?.show()
+                        } else {
+                            focusRequester.freeFocus()
+                            keyboardController?.hide()
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun DayPageLayout(
     @Suppress("unused") logger: AppLogger,
     modifier: Modifier = Modifier,
     appViewModel: AppViewModel,
@@ -831,13 +923,6 @@ fun DayPageLayout(
     date: LocalDate
 ) {
     val themeColors = appViewModel.state.themeColors
-    val dayScreenDate = appViewModel.state.dayScreenDate
-    val note = when {
-        date > dayScreenDate -> viewModel.state.nextNote
-        date < dayScreenDate -> viewModel.state.prevNote
-        else -> viewModel.state.note
-    }
-    val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(modifier = modifier) {
         DayDateText(
@@ -848,97 +933,12 @@ fun DayPageLayout(
                 else themeColors.textColor,
             modifier = Modifier.weight(0.375f)
         )
-        Column(
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.End,
-            modifier = Modifier
-                .weight(0.625f)
-                .fillMaxSize()
-        ) {
-            AnimatedVisibility(
-                visible = note != null ||
-                    viewModel.state.uiState == DayUiState.EditingNote ||
-                    viewModel.state.uiState == DayUiState.AddingNote,
-                enter = scaleIn() + expandIn(),
-                exit = shrinkOut() + scaleOut()
-            ) {
-                DayNote(
-                    color = themeColors.noteColor,
-                    foldedCornerTint = themeColors.noteColorVariant,
-                    foldedCornerPosition =
-                        if (LocalLayoutDirection.current == LayoutDirection.Ltr) Corner.TopEnd
-                        else Corner.TopStart,
-                    foldedCornerWidth = 32.dp,
-                    foldedCornerShadowWidth = 1.dp,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(8.dp)
-                ) {
-                    Column(modifier = Modifier.padding(8.dp)) {
-                        if (note != null) {
-                            BasicTextField(
-                                value = note.textValue,
-                                onValueChange = {
-                                    val actionType = viewModel.state.uiState
-
-                                    if (actionType == DayUiState.AddingNote ||
-                                        actionType == DayUiState.EditingNote
-                                    ) {
-                                        viewModel.onEvent(
-                                            DayScreenEvent.NoteChange(
-                                                DayScreenNote(
-                                                    date = date,
-                                                    textValue = it,
-                                                    reminderDateTime = note.reminderDateTime
-                                                )
-                                            )
-                                        )
-                                    }
-                                },
-                                readOnly = viewModel.state.uiState == DayUiState.Viewing,
-                                minLines = 1,
-                                maxLines = Int.MAX_VALUE,
-                                textStyle = TextStyle(
-                                    color = themeColors.noteTextColor,
-                                    fontSize = appViewModel.state.noteFontSize.value,
-                                    lineHeight = appViewModel.state.noteFontSize.value *
-                                        appViewModel.state.noteLineSpacing.fontScaleFactor,
-                                ),
-                                cursorBrush = SolidColor(themeColors.secondaryColor),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(
-                                        end = 24.dp,
-                                        bottom =
-                                            if (viewModel.state.uiState == DayUiState.AddingNote ||
-                                                viewModel.state.uiState == DayUiState.EditingNote
-                                            ) 72.dp
-                                            else 0.dp
-                                    )
-                                    .then(
-                                        when (date == dayScreenDate) {
-                                            true -> Modifier.focusRequester(focusRequester)
-                                            false -> Modifier
-                                        }
-                                    )
-                            )
-                        }
-                        LaunchedEffect(viewModel.state.uiState) {
-                            when (viewModel.state.uiState) {
-                                DayUiState.EditingNote, DayUiState.AddingNote -> {
-                                    focusRequester.requestFocus()
-                                    keyboardController?.show()
-                                }
-
-                                else -> {
-                                    focusRequester.freeFocus()
-                                    keyboardController?.hide()
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        DayNote(
+            appViewModel = appViewModel,
+            viewModel = viewModel,
+            focusRequester = focusRequester,
+            date = date,
+            modifier = Modifier.weight(0.625f)
+        )
     }
 }
