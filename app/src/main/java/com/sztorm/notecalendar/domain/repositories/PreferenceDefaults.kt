@@ -2,6 +2,7 @@ package com.sztorm.notecalendar.domain.repositories
 
 import androidx.compose.ui.graphics.Color
 import com.sztorm.notecalendar.feature.settings.calendar.StartingScreenType
+import com.sztorm.notecalendar.feature.settings.notes.NoteDisplayMode
 import com.sztorm.notecalendar.feature.settings.notes.NoteFontSize
 import com.sztorm.notecalendar.feature.settings.notes.NoteLineSpacing
 import com.sztorm.notecalendar.feature.settings.other.NavigationBarPosition
@@ -22,6 +23,7 @@ interface PreferenceDefaults {
     val textColor: Color
     val firstDayOfWeek: DayOfWeek
     val startingScreen: StartingScreenType
+    val noteNoteDisplayMode: NoteDisplayMode
     val noteFontSize: NoteFontSize
     val noteLineSpacing: NoteLineSpacing
     val navigationBarPosition: NavigationBarPosition

@@ -5,6 +5,7 @@ import com.sztorm.notecalendar.core.common.getSystemFirstDayOfWeek
 import com.sztorm.notecalendar.core.common.isDarkThemeEnabled
 import com.sztorm.notecalendar.domain.repositories.PreferenceDefaults
 import com.sztorm.notecalendar.feature.settings.calendar.StartingScreenType
+import com.sztorm.notecalendar.feature.settings.notes.NoteDisplayMode
 import com.sztorm.notecalendar.feature.settings.notes.NoteFontSize
 import com.sztorm.notecalendar.feature.settings.notes.NoteLineSpacing
 import com.sztorm.notecalendar.feature.settings.other.NavigationBarPosition
@@ -54,6 +55,9 @@ class PreferenceDefaultsImpl(context: Context) : PreferenceDefaults {
 
     override val startingScreen
         get() = StartingScreenType.DayScreen
+
+    override val noteNoteDisplayMode
+        get() = NoteDisplayMode.PlainText
 
     override val noteFontSize
         get() = NoteFontSize.Sizes[3]

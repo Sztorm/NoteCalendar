@@ -16,6 +16,7 @@ import com.sztorm.notecalendar.domain.repositories.PreferenceRepository
 import com.sztorm.notecalendar.feature.settings.ObsoletePreferenceKeys
 import com.sztorm.notecalendar.feature.settings.PreferenceKeys
 import com.sztorm.notecalendar.feature.settings.calendar.StartingScreenType
+import com.sztorm.notecalendar.feature.settings.notes.NoteDisplayMode
 import com.sztorm.notecalendar.feature.settings.notes.NoteFontSize
 import com.sztorm.notecalendar.feature.settings.notes.NoteLineSpacing
 import com.sztorm.notecalendar.feature.settings.other.NavigationBarPosition
@@ -111,8 +112,17 @@ class PreferenceRepositoryImpl(context: Context) : PreferenceRepository {
         getPreference(PreferenceKeys.StartingScreen, default.ordinal.toString())
             .let { StartingScreenType.entries[it.toInt()] }
 
+    override suspend fun getNoteDisplayMode(default: NoteDisplayMode) =
+        NoteDisplayMode.valueOf(getPreference(PreferenceKeys.NoteDisplayMode, default.name))
+
     override suspend fun getNoteFontSize(default: NoteFontSize) =
         NoteFontSize(getPreference(PreferenceKeys.NoteFontSize, default.floatValue).sp)
+
+    override suspend fun getNoteLineSpacing(default: NoteLineSpacing) = NoteLineSpacing(
+        fontScaleFactor = getPreference(
+            PreferenceKeys.NoteLineSpacing, default.fontScaleFactor
+        )
+    )
 
     override suspend fun getNavigationBarPosition(
         default: NavigationBarPosition
@@ -127,12 +137,6 @@ class PreferenceRepositoryImpl(context: Context) : PreferenceRepository {
         default: LocalTime
     ): LocalTime = getPreference(PreferenceKeys.DefaultReminderTime, default.toSecondOfDay())
         .let { LocalTime.ofSecondOfDay(it.toLong()) }
-
-    override suspend fun getNoteLineSpacing(default: NoteLineSpacing) = NoteLineSpacing(
-        fontScaleFactor = getPreference(
-            PreferenceKeys.NoteLineSpacing, default.fontScaleFactor
-        )
-    )
 
     override suspend fun setBackgroundColor(value: Color) {
         context.preferences.edit {
@@ -203,6 +207,12 @@ class PreferenceRepositoryImpl(context: Context) : PreferenceRepository {
     override suspend fun setStartingScreen(value: StartingScreenType) {
         context.preferences.edit {
             it[PreferenceKeys.StartingScreen] = value.ordinal.toString()
+        }
+    }
+
+    override suspend fun setNoteDisplayMode(value: NoteDisplayMode) {
+        context.preferences.edit {
+            it[PreferenceKeys.NoteDisplayMode] = value.name
         }
     }
 

@@ -19,6 +19,7 @@ object PreferenceKeys {
     val PreferencesVersion = intPreferencesKey("PrefKey_PreferencesVersion")
     val SecondaryColor = intPreferencesKey("PrefKey_SecondaryColor")
     val TextColor = intPreferencesKey("PrefKey_TextColor")
+    val NoteDisplayMode = stringPreferencesKey("PrefKey_NoteDisplayMode")
     val NoteFontSize = floatPreferencesKey("PrefKey_NoteFontSize")
     val NoteLineSpacing = floatPreferencesKey("PrefKey_NoteLineSpacing")
     val FirstDayOfWeek = stringPreferencesKey("PrefKey_FirstDayOfWeek")

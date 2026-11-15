@@ -189,6 +189,9 @@ fun NotesSettingsScreen(
                 options = NoteDisplayMode.entries.map { it.getLocalizedName() to it },
                 initialSelectedOptionIndex = appViewModel.state.noteDisplayMode.ordinal,
                 onRadioButtonClick = { _, displayMode ->
+                    coroutineScope.launch {
+                        preferenceRepository.setNoteDisplayMode(displayMode)
+                    }
                     appViewModel.onEvent(AppEvent.NoteDisplayModeChange(displayMode))
                 },
                 titleColor = themeColors.textColor,

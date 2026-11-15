@@ -2,6 +2,7 @@ package com.sztorm.notecalendar.domain.repositories
 
 import androidx.compose.ui.graphics.Color
 import com.sztorm.notecalendar.feature.settings.calendar.StartingScreenType
+import com.sztorm.notecalendar.feature.settings.notes.NoteDisplayMode
 import com.sztorm.notecalendar.feature.settings.notes.NoteFontSize
 import com.sztorm.notecalendar.feature.settings.notes.NoteLineSpacing
 import com.sztorm.notecalendar.feature.settings.other.NavigationBarPosition
@@ -54,6 +55,10 @@ interface PreferenceRepository {
     suspend fun getStartingScreen(
         default: StartingScreenType = defaults.startingScreen
     ): StartingScreenType
+
+    suspend fun getNoteDisplayMode(
+        default: NoteDisplayMode = defaults.noteNoteDisplayMode
+    ): NoteDisplayMode
 
     suspend fun getNoteFontSize(default: NoteFontSize = defaults.noteFontSize): NoteFontSize
 
@@ -108,6 +113,8 @@ interface PreferenceRepository {
     suspend fun setFirstDayOfWeek(value: DayOfWeek)
 
     suspend fun setStartingScreen(value: StartingScreenType)
+
+    suspend fun setNoteDisplayMode(value: NoteDisplayMode)
 
     suspend fun setNoteFontSize(value: NoteFontSize)
 
