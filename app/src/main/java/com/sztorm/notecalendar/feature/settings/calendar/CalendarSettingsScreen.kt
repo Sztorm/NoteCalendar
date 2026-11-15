@@ -13,6 +13,7 @@ import com.sztorm.notecalendar.feature.settings.theme.cardColors
 import com.sztorm.notecalendar.feature.settings.theme.radioButtonColors
 import com.sztorm.notecalendar.feature.settings.theme.textButtonColors
 import com.sztorm.notecalendar.ui.components.preferences.ListPreference
+import com.sztorm.notecalendar.ui.components.preferences.ListPreferenceOption
 import com.sztorm.notecalendar.ui.components.preferences.SubpreferenceScreen
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
@@ -37,7 +38,9 @@ fun CalendarSettingsScreen(
     ) {
         ListPreference(
             title = stringResource(R.string.Settings_Calendar_FirstDayOfWeek),
-            options = DayOfWeek.entries.map { it.getLocalizedName() to it },
+            options = DayOfWeek.entries.map {
+                ListPreferenceOption(it, it.getLocalizedName())
+            },
             initialSelectedOptionIndex = appViewModel.state.firstDayOfWeek.ordinal,
             onConfirm = { _, firstDayOfWeek ->
                 coroutineScope.launch {
@@ -53,7 +56,9 @@ fun CalendarSettingsScreen(
         )
         ListPreference(
             title = stringResource(R.string.Settings_Calendar_StartingView),
-            options = StartingScreenType.entries.map { it.getLocalizedName() to it },
+            options = StartingScreenType.entries.map {
+                ListPreferenceOption(it, it.getLocalizedName())
+            },
             initialSelectedOptionIndex = appViewModel.state.startingScreen.ordinal,
             onConfirm = { _, startingScreen ->
                 coroutineScope.launch {

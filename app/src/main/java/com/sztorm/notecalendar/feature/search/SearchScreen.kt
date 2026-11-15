@@ -189,7 +189,8 @@ private fun ColumnScope.SearchFilters(
                             markdown = "Search using a pattern. For example, ``cat|dog`` matches ``cat`` or ``dog``, while ``\\d+`` matches one or more digits, such as ``24``.", //stringResource(R.string.RegularExpression_Tooltip)), // TODO
                             syntaxHighlightColor = themeColors.backgroundColorVariant
                                 .normalizeLightness(0.08f),
-                            syntaxHighlightTextColor = themeColors.textColor
+                            syntaxHighlightTextColor = themeColors.textColor,
+                            disableLinkMovementMethod = true
                         )
                     }
                 }

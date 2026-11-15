@@ -8,6 +8,13 @@ enum class NoteDisplayMode { PlainText, Markdown }
 @Composable
 @ReadOnlyComposable
 fun NoteDisplayMode.getLocalizedName() = when (this) {
-    NoteDisplayMode.PlainText -> "Plain text"//stringResource(R.string.PlainText) // TODO
+    NoteDisplayMode.PlainText -> "Plain text"//stringResource(R.string.Settings_Notes_DisplayMode_PlainText) // TODO
     NoteDisplayMode.Markdown -> "Markdown"
+}
+
+@Composable
+@ReadOnlyComposable
+fun NoteDisplayMode.getLocalizedSummary() = when (this) {
+    NoteDisplayMode.PlainText -> null
+    NoteDisplayMode.Markdown -> "Displays Markdown formatting, such as **bold** and # headings." //stringResource(R.string.Settings_Notes_DisplayMode_Markdown_Summary) // TODO
 }

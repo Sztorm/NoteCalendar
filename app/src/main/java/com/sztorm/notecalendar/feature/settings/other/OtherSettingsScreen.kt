@@ -16,6 +16,7 @@ import com.sztorm.notecalendar.feature.settings.theme.textButtonColors
 import com.sztorm.notecalendar.feature.settings.theme.timePickerColors
 import com.sztorm.notecalendar.ui.components.preferences.CategoryPreference
 import com.sztorm.notecalendar.ui.components.preferences.ListPreference
+import com.sztorm.notecalendar.ui.components.preferences.ListPreferenceOption
 import com.sztorm.notecalendar.ui.components.preferences.SubpreferenceScreen
 import com.sztorm.notecalendar.ui.components.preferences.SwitchPreference
 import com.sztorm.notecalendar.ui.components.preferences.TimePickerPreference
@@ -44,7 +45,9 @@ fun OtherSettingsScreen(
         ) { enabled ->
             ListPreference(
                 title = stringResource(R.string.Settings_Other_NavigationBarPosition),
-                options = NavigationBarPosition.entries.map { it.getLocalizedName() to it },
+                options = NavigationBarPosition.entries.map {
+                    ListPreferenceOption(it, it.getLocalizedName())
+                },
                 initialSelectedOptionIndex = appViewModel.state.navigationBarPosition.ordinal,
                 onRadioButtonClick = { _, navigationPosition ->
                     coroutineScope.launch {

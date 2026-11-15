@@ -2,6 +2,7 @@ package com.sztorm.notecalendar.ui.components.preferences
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,10 +35,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sztorm.notecalendar.ui.components.ConfirmationDialog
 
+data class ListPreferenceOption<V>(val value: V, val label: String, val summary: String? = null)
+
 @Composable
 fun <V> ListPreference(
     title: String,
-    options: List<Pair<String, V>>,
+    options: List<ListPreferenceOption<V>>,
     initialSelectedOptionIndex: Int,
     onConfirm: (Int, V) -> Unit,
     modifier: Modifier = Modifier,
@@ -68,7 +71,7 @@ fun <V> ListPreference(
     var openDialog by remember { mutableStateOf(false) }
     var selectedIndex by remember { mutableIntStateOf(initialSelectedOptionIndex) }
     var selectedValue by remember {
-        mutableStateOf(options[initialSelectedOptionIndex].second)
+        mutableStateOf(options[initialSelectedOptionIndex].value)
     }
     val optionInteractionSources = remember {
         List(options.size) { MutableInteractionSource() }
@@ -77,11 +80,11 @@ fun <V> ListPreference(
         title = title,
         onClick = {
             selectedIndex = initialSelectedOptionIndex
-            selectedValue = options[initialSelectedOptionIndex].second
+            selectedValue = options[initialSelectedOptionIndex].value
             openDialog = true
         },
         modifier = modifier,
-        summary = options[initialSelectedOptionIndex].first,
+        summary = options[initialSelectedOptionIndex].label,
         titleColor = titleColor,
         summaryColor = summaryColor,
         inactiveColor = inactiveColor,
@@ -98,7 +101,7 @@ fun <V> ListPreference(
             onDismiss = {
                 openDialog = false
                 selectedIndex = initialSelectedOptionIndex
-                selectedValue = options[initialSelectedOptionIndex].second
+                selectedValue = options[initialSelectedOptionIndex].value
                 onDismiss?.invoke()
             },
             dialogColors = dialogColors,
@@ -113,7 +116,7 @@ fun <V> ListPreference(
                 )
             }
             for (i in options.indices) {
-                val (name, value) = options[i]
+                val (value, label, summary) = options[i]
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -137,10 +140,20 @@ fun <V> ListPreference(
                         colors = radioButtonColors
                     )
                     Spacer(modifier = Modifier.width(16.dp))
-                    Text(
-                        text = name,
-                        color = titleColor
-                    )
+                    Column {
+                        Text(
+                            text = label,
+                            color = titleColor
+                        )
+                        if (summary != null) {
+                            Text(
+                                text = summary,
+                                color = summaryColor,
+                                fontSize = 14.sp,
+                                lineHeight = 16.sp
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -150,7 +163,7 @@ fun <V> ListPreference(
 @Composable
 fun <V> ListPreference(
     title: String,
-    options: List<Pair<String, V>>,
+    options: List<ListPreferenceOption<V>>,
     initialSelectedOptionIndex: Int,
     onRadioButtonClick: (Int, V) -> Unit,
     modifier: Modifier = Modifier,
@@ -188,7 +201,7 @@ fun <V> ListPreference(
         enabled = enabled
     )
     for (i in options.indices) {
-        val (name, value) = options[i]
+        val (value, label, summary) = options[i]
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -209,10 +222,20 @@ fun <V> ListPreference(
                 enabled = enabled
             )
             Spacer(modifier = Modifier.width(16.dp))
-            Text(
-                text = name,
-                color = titleColor
-            )
+            Column {
+                Text(
+                    text = label,
+                    color = titleColor
+                )
+                if (summary != null) {
+                    Text(
+                        text = summary,
+                        color = summaryColor,
+                        fontSize = 14.sp,
+                        lineHeight = 16.sp
+                    )
+                }
+            }
         }
     }
     Spacer(modifier = Modifier.height(16.dp))

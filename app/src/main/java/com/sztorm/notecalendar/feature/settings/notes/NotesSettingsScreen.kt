@@ -34,6 +34,7 @@ import com.sztorm.notecalendar.ui.components.preferences.CategoryPreference
 import com.sztorm.notecalendar.ui.components.preferences.ColorPickerPreference
 import com.sztorm.notecalendar.ui.components.preferences.ConfirmationPreference
 import com.sztorm.notecalendar.ui.components.preferences.ListPreference
+import com.sztorm.notecalendar.ui.components.preferences.ListPreferenceOption
 import com.sztorm.notecalendar.ui.components.preferences.SizeSliderPreference
 import com.sztorm.notecalendar.ui.components.preferences.SubpreferenceScreen
 import kotlinx.coroutines.launch
@@ -186,7 +187,13 @@ fun NotesSettingsScreen(
             )
             ListPreference(
                 title = "Display mode", // stringResource(R.string.Settings_Notes_DisplayMode) // TODO
-                options = NoteDisplayMode.entries.map { it.getLocalizedName() to it },
+                options = NoteDisplayMode.entries.map {
+                    ListPreferenceOption(
+                        it,
+                        it.getLocalizedName(),
+                        it.getLocalizedSummary()
+                    )
+                },
                 initialSelectedOptionIndex = appViewModel.state.noteDisplayMode.ordinal,
                 onRadioButtonClick = { _, displayMode ->
                     coroutineScope.launch {
