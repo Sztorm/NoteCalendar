@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -48,9 +49,11 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sztorm.notecalendar.R
+import com.sztorm.notecalendar.core.common.Corner
 import com.sztorm.notecalendar.core.common.getLocalizedGenitiveCaseName
 import com.sztorm.notecalendar.core.common.getLocalizedName
 import com.sztorm.notecalendar.core.common.remainingDurationFromNow
@@ -861,10 +864,15 @@ fun DayPageLayout(
             ) {
                 DayNote(
                     color = themeColors.noteColor,
-                    bendTint = themeColors.noteColorVariant,
-                    bendWidth = with(LocalDensity.current) { 32.dp.toPx() },
-                    bendShadowWidth = with(LocalDensity.current) { 1.dp.toPx() },
-                    modifier = Modifier.padding(8.dp)
+                    foldedCornerTint = themeColors.noteColorVariant,
+                    foldedCornerPosition =
+                        if (LocalLayoutDirection.current == LayoutDirection.Ltr) Corner.TopEnd
+                        else Corner.TopStart,
+                    foldedCornerWidth = 32.dp,
+                    foldedCornerShadowWidth = 1.dp,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
                 ) {
                     Column(modifier = Modifier.padding(8.dp)) {
                         if (note != null) {

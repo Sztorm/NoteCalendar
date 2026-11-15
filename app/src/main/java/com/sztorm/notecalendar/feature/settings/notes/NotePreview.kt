@@ -13,8 +13,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.sztorm.notecalendar.core.common.Corner
 import com.sztorm.notecalendar.core.common.normalizeLightness
 import com.sztorm.notecalendar.ui.components.DayNote
 import dev.jeziellago.compose.markdowntext.MarkdownText
@@ -53,9 +56,12 @@ fun NotePreview(
         )
         DayNote(
             color = noteColor,
-            bendTint = noteColorVariant,
-            bendWidth = with(LocalDensity.current) { 32.dp.toPx() },
-            bendShadowWidth = with(LocalDensity.current) { 1.dp.toPx() },
+            foldedCornerTint = noteColorVariant,
+            foldedCornerPosition =
+                if (LocalLayoutDirection.current == LayoutDirection.Ltr) Corner.TopEnd
+                else Corner.TopStart,
+            foldedCornerWidth = 32.dp,
+            foldedCornerShadowWidth = 1.dp,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 8.dp, end = 8.dp, bottom = 1.dp)

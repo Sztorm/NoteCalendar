@@ -452,6 +452,10 @@ fun Path.moveTo(position: Vector2F) = moveTo(position.x, position.y)
 
 fun Path.lineTo(position: Vector2F) = lineTo(position.x, position.y)
 
+fun Path.moveTo(position: Offset) = moveTo(position.x, position.y)
+
+fun Path.lineTo(position: Offset) = lineTo(position.x, position.y)
+
 fun JSONArray.toList() = List(length()) { get(it) }
 
 fun LocalTime.format(is24HourFormat: Boolean) =
