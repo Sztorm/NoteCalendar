@@ -10,8 +10,8 @@
     <string name="ColorPicker">颜色选择器</string>
     <string name="Color_Background">背景颜色</string>
     <string name="Color_ButtonText">按钮文本颜色</string>
-    <string name="Color_InactiveElement">非活动项目颜色</string>
-    <string name="Color_InactiveElementVariant">非活动项目颜色变体</string>
+    <string name="Color_InactiveElement">非活动元素颜色</string>
+    <string name="Color_InactiveElementVariant">非活动元素颜色变体</string>
     <string name="Color_Note">笔记颜色</string>
     <string name="Color_NoteText">笔记文本颜色</string>
     <string name="Color_NoteVariant">笔记颜色变体</string>
