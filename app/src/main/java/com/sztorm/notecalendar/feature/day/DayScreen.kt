@@ -855,6 +855,7 @@ private fun DayNote(
                 if (note != null) {
                     val isReadOnly = viewModel.state.uiState != DayUiState.AddingNote &&
                         viewModel.state.uiState != DayUiState.EditingNote
+                    val fontSize = appViewModel.state.noteFontSize.value
 
                     NoteText(
                         text = note.textValue,
@@ -876,8 +877,8 @@ private fun DayNote(
                             }
                         },
                         displayMode = appViewModel.state.noteDisplayMode,
-                        fontSize = appViewModel.state.noteFontSize,
-                        lineSpacing = appViewModel.state.noteLineSpacing,
+                        fontSize = fontSize,
+                        lineHeight = fontSize * appViewModel.state.noteLineSpacing.fontScaleFactor,
                         readOnly = isReadOnly,
                         textColor = themeColors.noteTextColor,
                         cursorColor = themeColors.secondaryColor,

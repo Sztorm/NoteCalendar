@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -37,10 +38,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sztorm.notecalendar.R
 import com.sztorm.notecalendar.core.common.getLocalizedName
 import com.sztorm.notecalendar.core.common.isEven
+import com.sztorm.notecalendar.core.common.normalizeLightness
 import com.sztorm.notecalendar.core.logging.AppLogger
 import com.sztorm.notecalendar.domain.models.toNote
 import com.sztorm.notecalendar.domain.repositories.NoteRepository
 import com.sztorm.notecalendar.feature.app.AppViewModel
+import com.sztorm.notecalendar.feature.day.NoteText
+import com.sztorm.notecalendar.feature.settings.notes.NoteDisplayMode
 import com.sztorm.notecalendar.feature.settings.theme.ThemeColors
 import com.sztorm.notecalendar.ui.components.ActionButton
 import com.sztorm.notecalendar.ui.components.CalendarDateIndicator
@@ -79,6 +83,7 @@ fun DayRow(
     index: Int,
     onNavigateToNote: (isLongClick: Boolean, date: LocalDate) -> Unit,
     firstDayOfWeek: DayOfWeek,
+    noteDisplayMode: NoteDisplayMode,
     indicatorSize: Dp,
     themeColors: ThemeColors
 ) {
@@ -131,8 +136,13 @@ fun DayRow(
             }
         }
         if (expanded && item.note != null) {
-            Text(
-                text = item.note.text,
+            NoteText(
+                text = TextFieldValue(item.note.text),
+                onTextChange = {},
+                displayMode = noteDisplayMode,
+                readOnly = true,
+                markdownTextScrollState = null,
+                syntaxHighlightColor = backgroundColor.normalizeLightness(0.08f),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp, bottom = 16.dp, start = 16.dp, end = 16.dp)
@@ -233,6 +243,7 @@ fun WeekScreen(
                     index = index,
                     onNavigateToNote = onNavigateToNote,
                     firstDayOfWeek = appViewModel.state.firstDayOfWeek,
+                    noteDisplayMode = appViewModel.state.noteDisplayMode,
                     indicatorSize = indicatorSize,
                     themeColors = appViewModel.state.themeColors,
                 )
